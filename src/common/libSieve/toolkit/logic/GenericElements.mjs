@@ -326,6 +326,7 @@ function initTests() {
  *
  * @param {*} capabilities
  */
+// eslint-disable-next-line no-unused-vars
 function createGrammar(capabilities) {
   initActions();
   initTests();

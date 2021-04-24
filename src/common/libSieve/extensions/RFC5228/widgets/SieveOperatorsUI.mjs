@@ -59,7 +59,7 @@ class SieveNotUI extends SieveSimpleBoxUI {
     const elm = (new SieveTemplate()).convert(FRAGMENT);
     elm
       .querySelector(".sivNotTest")
-      .appendChild(this.getSieve().test().html());
+      .append(this.getSieve().test().html());
 
     return elm;
   }
@@ -158,22 +158,22 @@ class SieveAnyOfAllOfUI extends SieveDialogBoxUI {
         .drop(new SieveMultaryDropHandler(), test[TEST_ELEMENT])
         .html();
 
-      testElms.appendChild(dropbox);
+      testElms.append(dropbox);
 
       const ul = document.createElement("ul");
       ul.classList.add("mb-0");
-      ul.classList.add("pl-3");
+      ul.classList.add("ps-3");
 
       const li = document.createElement("li");
-      li.appendChild(test[TEST_ELEMENT].html());
+      li.append(test[TEST_ELEMENT].html());
       li.classList.add("sivOperatorChild");
 
-      ul.appendChild(li);
+      ul.append(li);
 
-      testElms.appendChild(ul);
+      testElms.append(ul);
     }
 
-    testElms.appendChild(
+    testElms.append(
       (new SieveDropBoxUI(this, "sivOperatorSpacer"))
         .drop(new SieveMultaryDropHandler())
         .html());

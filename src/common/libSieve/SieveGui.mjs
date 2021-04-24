@@ -81,37 +81,37 @@ function init() {
   // populate the action section
   const actions = document.querySelector("#sivActions");
   while (actions.firstChild)
-    actions.removeChild(actions.firstChild);
+    actions.firstChild.remove();
 
   for (key in SieveLexer.types["action"])
     if (SieveLexer.types["action"][key].onCapable(SieveLexer.capabilities()))
-      actions.appendChild(createMenuItem(key, "sieve/action", docShell));
+      actions.append(createMenuItem(key, "sieve/action", docShell));
 
   // populate the test section
   const tests = document.querySelector("#sivTests");
   while (tests.firstChild)
-    tests.removeChild(tests.firstChild);
+    tests.firstChild.remove();
 
   for (key in SieveLexer.types["test"])
     if (SieveLexer.types["test"][key].onCapable(SieveLexer.capabilities()))
       if (key !== "test/boolean")
-        tests.appendChild(createMenuItem(key, "sieve/test", docShell));
+        tests.append(createMenuItem(key, "sieve/test", docShell));
 
   // populate the operator section
   const operators = document.querySelector("#sivOperators");
   while (operators.firstChild)
-    operators.removeChild(operators.firstChild);
+    operators.firstChild.remove();
 
   for (key in SieveLexer.types["operator"])
     if (SieveLexer.types["operator"][key].onCapable(SieveLexer.capabilities()))
-      operators.appendChild(createMenuItem(key, "sieve/operator", docShell));
+      operators.append(createMenuItem(key, "sieve/operator", docShell));
 
   // create the trash bin
   const trash = document.querySelector("#sivTrash");
   while (trash.firstChild)
-    trash.removeChild(trash.firstChild);
+    trash.firstChild.remove();
 
-  trash.appendChild(
+  trash.append(
     new SieveTrashBoxUI(docShell).html());
 }
 
@@ -169,9 +169,9 @@ function setSieveScript(script, capabilities) {
 
   const output = document.querySelector(`#divOutput`);
   while (output.firstChild)
-    output.removeChild(output.firstChild);
+    output.firstChild.remove();
 
-  output.appendChild(dom2.html());
+  output.append(dom2.html());
 }
 
 /**
@@ -274,19 +274,19 @@ async function main() {
 
   const debug = document.querySelector(`#debug2`);
   while (debug.firstChild)
-    debug.removeChild(debug.firstChild);
+    debug.firstChild.remove();
 
   // ... and append the new element
-  debug.appendChild(
+  debug.append(
     (await (new SieveTemplate()).load("./templates/debug.html")));
 
   // Clear any existing left overs...
   const sidebar = document.querySelector(`#toolbar`);
   while (sidebar.firstChild)
-    sidebar.removeChild(sidebar.firstChild);
+    sidebar.firstChild.remove();
 
   // ... and append the new element
-  sidebar.appendChild(
+  sidebar.append(
     (await (new SieveTemplate()).load("./templates/sidebar.html")));
 
   init();
@@ -300,7 +300,7 @@ async function main() {
   document.querySelector("#CapabilitiesReset")
     .addEventListener("click", () => { loadCapabilities(); });
 
-  document.querySelector('a[data-toggle="tab"][href="#debugcapabilities"]')
+  document.querySelector('a[data-bs-toggle="tab"][href="#debugcapabilities"]')
     .addEventListener('show.bs.tab', function () { loadCapabilities(); });
 
 

@@ -48,9 +48,11 @@
     /**
      * Initiates a connection. It waits until the sandbox signals
      * its readiness.
+     *
+     * @returns {Promise<undefined>}
      */
     async connect() {
-      return await new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
 
         const child = this.getChildProcess();
 
@@ -103,11 +105,12 @@
         throw new Error("Sandbox not initialized");
 
       scripts = scripts.map((script) => {
-        if (script.startsWith("./../common/"))
-          script = path.join(__dirname, "./../../../src/common/", script);
 
-        if (script.startsWith("./validators/"))
-          script = path.join(__dirname, "./../../tests/", script);
+        // FIXME : Should be read from a config ...
+        if (script.startsWith("${workspace}"))
+          script = script.replace("${workspace}", path.join(__dirname, "../../../build/test/app"));
+
+        script = path.normalize(script);
 
         if (!fs.existsSync(script))
           throw new Error(`No such file ${path.resolve(script)}`);
@@ -120,8 +123,9 @@
 
     /**
      * Destroys the sandbox including the context.
+     *
+     * @returns {Promise<undefined>}
      */
-    // eslint-disable-next-line require-await
     async destroy() {
 
       return new Promise((resolve, reject) => {
@@ -171,6 +175,8 @@
     }
 
     /**
+     * Runs a command inside the sandbox and waits for the result.
+     * In case the command fails an exception is thrown.
      *
      * @param {*} report
      * @param {*} type
@@ -178,7 +184,7 @@
      */
     async execute(report, type, data) {
 
-      return await new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
 
         const child = this.getChildProcess();
 

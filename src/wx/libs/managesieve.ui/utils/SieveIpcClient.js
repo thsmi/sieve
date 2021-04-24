@@ -9,55 +9,45 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
+/* global browser */
+import { SieveLogger } from "./SieveLogger.mjs";
+import { SieveAbstractIpcClient } from "./SieveAbstractIpcClient.mjs";
 
-  "use strict";
-
-  /* global browser */
-  const { SieveLogger } = require("./SieveLogger.js");
-  const { SieveAbstractIpcClient } = require("./SieveAbstractIpcClient.js");
+/**
+ * An abstract implementation for a inter process/frame communication.
+ */
+class SieveWxIpcClient extends SieveAbstractIpcClient {
 
   /**
-   * An abstract implementation for a inter process/frame communication.
+   * @inheritdoc
    */
-  class SieveWxIpcClient extends SieveAbstractIpcClient {
-
-    /**
-     * @inheritdoc
-     */
-    static getLogger() {
-      return SieveLogger.getInstance();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    static parseMessageFromEvent(e) {
-      return JSON.parse(e.data);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    // eslint-disable-next-line no-unused-vars
-    static dispatch(message, target) {
-
-      if (typeof(message) !== 'string') {
-        message = JSON.stringify(message);
-      }
-
-      browser.runtime.sendMessage(message);
-    }
+  static getLogger() {
+    return SieveLogger.getInstance();
   }
 
-  browser.runtime.onMessage.addListener((request, sender) => {
-    SieveWxIpcClient.onMessage({data : request, source: sender});
-  });
+  /**
+   * @inheritdoc
+   */
+  static parseMessageFromEvent(e) {
+    return JSON.parse(e.data);
+  }
 
-  // Require modules need to use export.module
-  if (typeof(module) !== "undefined" && module && module.exports)
-    module.exports.SieveIpcClient = SieveWxIpcClient;
-  else
-    exports.SieveIpcClient = SieveWxIpcClient;
+  /**
+   * @inheritdoc
+   */
+  // eslint-disable-next-line no-unused-vars
+  static dispatch(message, target) {
 
-})(this);
+    if (typeof (message) !== 'string') {
+      message = JSON.stringify(message);
+    }
+
+    browser.runtime.sendMessage(message);
+  }
+}
+
+browser.runtime.onMessage.addListener((request, sender) => {
+  SieveWxIpcClient.onMessage({ data: request, source: sender });
+});
+
+export { SieveWxIpcClient as SieveIpcClient };

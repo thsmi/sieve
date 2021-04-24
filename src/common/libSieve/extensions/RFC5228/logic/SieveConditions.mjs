@@ -154,6 +154,8 @@ class SieveIf extends SieveBlock {
    * @returns {SieveAbstractElement}
    */
   removeChild(childId, cascade, stop) {
+
+    // eslint-disable-next-line unicorn/prefer-node-remove
     const elm = super.removeChild(childId);
     if (cascade && elm)
       return this;

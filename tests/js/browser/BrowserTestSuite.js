@@ -33,7 +33,7 @@
 
       document
         .querySelector("#divFrame")
-        .appendChild(iframe);
+        .append(iframe);
 
       await new Promise((resolve) => {
         iframe.addEventListener('load', () => {
@@ -56,12 +56,16 @@
      */
     async require(report, scripts) {
 
-      const iframe = document.getElementById(this.getUniqueId());
+      const iframe = document.querySelector(`#${this.getUniqueId()}`);
 
       if (!iframe)
         throw new Error("Sandbox not initialized");
 
       scripts = scripts.map((script) => {
+
+        if (script.startsWith("${workspace}/"))
+          script = script.replace("${workspace}/", "/test/wx/");
+
         if (script.startsWith("./../common/"))
           script = script.replace("./../common/libSieve/", "/gui/libSieve/");
 
@@ -74,12 +78,11 @@
     /**
      * Destroys the sandbox and removes the Iframe.
      */
-    // eslint-disable-next-line require-await
     async destroy() {
-      const el = document.getElementById(this.getUniqueId());
+      const el = document.querySelector(`#${this.getUniqueId()}`);
 
       if (el)
-        el.parentNode.removeChild(el);
+        el.remove();
     }
 
     /**
@@ -91,7 +94,7 @@
     getUniqueId() {
 
       if (!this.id) {
-        this.id = (new Date()).getTime().toString(ASCII)
+        this.id = Date.now().toString(ASCII)
           + "-" + Math.random().toString(ASCII).substr(SEED_OFFSET, SEED_LENGTH);
       }
 
@@ -107,12 +110,13 @@
      */
     async run(name, report) {
 
-      const iframe = document.getElementById(this.getUniqueId());
+      const iframe = document.querySelector(`#${this.getUniqueId()}`);
 
       if (!iframe)
         throw new Error("Sandbox not initialized");
 
-      await this.execute(report, "RunTest", name);
+      const rv = await this.execute(report, "RunTest", name);
+      return rv;
     }
 
     /**
@@ -130,15 +134,14 @@
      *   the actions return value
      */
     async execute(report, type, data) {
-      const iframe = document.getElementById(this.getUniqueId());
+      const iframe = document.querySelector(`#${this.getUniqueId()}`);
 
       if (!iframe)
         throw new Error("Sandbox not initialized");
 
-      return await new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
 
-        window.addEventListener("message", function onMessage() {
-
+        const onMessage = (event) => {
           const msg = JSON.parse(event.data);
 
           if (msg.type === "LogSignal") {
@@ -147,17 +150,19 @@
           }
 
           if (msg.type === `${type}Resolve`) {
-            resolve(msg.payload);
             window.removeEventListener("message", onMessage);
+            resolve(msg.payload);
             return;
           }
 
           if (msg.type === `${type}Reject`) {
-            reject(new Error(msg.payload.message, msg.payload.stack));
             window.removeEventListener("message", onMessage);
+            reject(new Error(msg.payload.message, msg.payload.stack));
             return;
           }
-        });
+        };
+
+        window.addEventListener("message", onMessage);
 
         const msg = {
           type: `${type}`,

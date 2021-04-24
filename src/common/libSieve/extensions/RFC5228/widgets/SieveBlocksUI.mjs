@@ -31,7 +31,7 @@ class SieveRootNodeUI extends SieveAbstractBoxUI {
    * @inheritdoc
    */
   createHtml(parent) {
-    parent.appendChild(
+    parent.append(
       this.getSieve().elms[FIRST_ELEMENT].html());
 
     return parent;
@@ -57,7 +57,7 @@ class SieveBlockUI extends SieveAbstractBoxUI {
    */
   createBlockChild(item) {
     const child = document.createElement('div');
-    child.appendChild(item);
+    child.append(item);
     child.classList.add("sivBlockChild");
 
     return child;
@@ -76,17 +76,17 @@ class SieveBlockUI extends SieveAbstractBoxUI {
       if (!item)
         continue;
 
-      elm.appendChild((new SieveDropBoxUI(this, "sivBlockSpacer"))
+      elm.append((new SieveDropBoxUI(this, "sivBlockSpacer"))
         .drop(new SieveBlockDropHandler(), sivElm)
         .html());
-      elm.appendChild(this.createBlockChild(item));
+      elm.append(this.createBlockChild(item));
     }
 
-    elm.appendChild((new SieveDropBoxUI(this, "sivBlockSpacer"))
+    elm.append((new SieveDropBoxUI(this, "sivBlockSpacer"))
       .drop(new SieveBlockDropHandler())
       .html());
 
-    parent.appendChild(elm);
+    parent.append(elm);
     return parent;
   }
 }

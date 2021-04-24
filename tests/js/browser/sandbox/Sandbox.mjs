@@ -24,7 +24,6 @@ class SandboxedTestFixture extends AbstractSandboxedTestFixture {
 
     window.addEventListener("message", (ev) => {
       try {
-        console.log(ev.data);
         this.onMessage(ev.data);
       } catch (ex) {
         console.error(ex);
@@ -68,7 +67,7 @@ class SandboxedTestFixture extends AbstractSandboxedTestFixture {
         }, true);
 
         elm.src = "" + script;
-        document.head.appendChild(elm);
+        document.head.append(elm);
       });
     }
 

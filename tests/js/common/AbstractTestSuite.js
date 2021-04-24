@@ -1,7 +1,5 @@
 (function (exports) {
 
-  const TOKEN_FOUND = -1;
-
   /**
    * Runs the actual test case inside the sandbox.
    */
@@ -127,7 +125,7 @@
         this.getReport().addTrace(
           "Checking if environment is compatible with " + agent + " ...");
 
-        if (userAgent.indexOf(agent) > TOKEN_FOUND) {
+        if (userAgent.includes(agent)) {
           this.getReport().addTrace("... Yes");
           return true;
         }
@@ -173,7 +171,7 @@
         // and run the scripts
         for (const name of await sandbox.getTests()) {
           const test = this.createTestCase(name);
-          await test.run(this.getReport(), sandbox);
+          await (test.run(this.getReport(), sandbox));
         }
 
         this.getReport().complete();

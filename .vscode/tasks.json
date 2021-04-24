@@ -18,7 +18,6 @@
       "args": [
         "./src/**/*.js",
         "./src/**/*.mjs",
-        "./src/**/*.jsm",
         "./tests/**/*.js",
         "./tests/**/*.mjs"
       ],

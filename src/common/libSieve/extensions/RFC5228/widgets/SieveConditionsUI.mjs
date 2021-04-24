@@ -34,14 +34,14 @@ class SieveIfUI extends SieveBlockUI {
   createHtml(parent) {
 
     const test = document.createElement("div");
-    test.appendChild(this.getSieve().test().html());
+    test.append(this.getSieve().test().html());
     test.classList.add("sivConditionalChild");
 
     const elm = document.createElement("div");
     elm.id = `sivElm${this.id()}`;
     elm.classList.add("sivConditional");
-    elm.appendChild(test);
-    elm.appendChild(super.createHtml(parent));
+    elm.append(test);
+    elm.append(super.createHtml(parent));
 
     return elm;
   }
@@ -60,7 +60,7 @@ class SieveElseUI extends SieveBlockUI {
     const elm = document.createElement("div");
     elm.id = `sivElm${this.id()}`;
     elm.classList.add("sivConditional");
-    elm.appendChild(super.createHtml(parent));
+    elm.append(super.createHtml(parent));
 
     return elm;
   }
@@ -129,7 +129,7 @@ class SieveConditionUI extends SieveSourceBoxUI {
     const children = this.getSieve().children();
     for (let i = 0; i < children.length; i++) {
 
-      elm2.appendChild((new SieveDropBoxUI(this, "sivConditionSpacer"))
+      elm2.append((new SieveDropBoxUI(this, "sivConditionSpacer"))
         .drop(new SieveConditionDropHandler(), children[i])
         .html());
 
@@ -145,14 +145,14 @@ class SieveConditionUI extends SieveSourceBoxUI {
       condition.querySelector(".sivIconCode").addEventListener("click", (e) => {
         return this.onToggleView(e);
       });
-      elm2.appendChild(condition);
+      elm2.append(condition);
 
       const child = item.querySelector(".sivConditionChild").cloneNode(true);
-      child.appendChild(children[i].html());
-      elm2.appendChild(child);
+      child.append(children[i].html());
+      elm2.append(child);
     }
 
-    elm2.appendChild((new SieveDropBoxUI(this, "sivConditionSpacer"))
+    elm2.append((new SieveDropBoxUI(this, "sivConditionSpacer"))
       .drop(new SieveConditionDropHandler())
       .html());
 
@@ -160,7 +160,7 @@ class SieveConditionUI extends SieveSourceBoxUI {
     content.id = `${this.uniqueId}-summary`;
 
     while (elm2.children.length)
-      content.appendChild(elm2.firstChild);
+      content.append(elm2.firstChild);
 
     const code = item.querySelector(".sivConditionCode");
     code.id = `${this.uniqueId}-code`;
@@ -171,8 +171,8 @@ class SieveConditionUI extends SieveSourceBoxUI {
       return this.onToggleView(e);
     });
 
-    parent.appendChild(content);
-    parent.appendChild(code);
+    parent.append(content);
+    parent.append(code);
 
     return parent;
   }

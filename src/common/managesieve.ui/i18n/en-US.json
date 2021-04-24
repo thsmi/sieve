@@ -77,9 +77,9 @@
   "credentials.sasl.default" : "Use suggested Mechanism",
   "credentials.sasl.plain" : "Force plain",
   "credentials.sasl.login" : "Force login (Deprecated)",
-  "credentials.sasl.crammd5" : "Force CRAM-MD5",
   "credentials.sasl.scramsha1" : "Force SCRAM-SHA-1",
   "credentials.sasl.scramsha256" : "Force SCRAM-SHA-256",
+  "credentials.sasl.scramsha512" : "Force SCRAM-SHA-512",
   "credentials.sasl.external" : "Force External",
   "credentials.sasl.none" : "No authentication",
   "credentials.username" : "Username",
@@ -140,11 +140,9 @@
   "authorization.accept" : "Authorize",
 
   "cert.title" : "Security alert",
-  "cert.description1" : "Your mail server's authenticity cannot be verified!",
-  "cert.description2" : "Someone might try to impersonate your mail server.",
-  "cert.error" : "The validation failed with the following error message:",
-  "cert.fingerprint" : "You need to verify manually, if the fingerprint matches your mailserver's fingerprint:",
-  "cert.warning" : "Continue only if the fingerprints match and the error message is reasonable!",
+  "cert.description1" : "Your mail server's authenticity could not be verified!",
+  "cert.warning" : "Continue only if the fingerprints match your mail server's fingerprints and the error message is reasonable.",
+  "cert.warning2" : "Someone might have impersonated your mail server!",
   "cert.accept" : "Continue",
 
   "script.create.title" : "Create Script",
@@ -234,11 +232,15 @@
   "debug.transport.states" : "Exceptions and State Machine Information",
   "debug.transport.rawdump" : "Raw Dump/Dump Byte Stream",
   "debug.transport.session" : "Session management",
+  "debug.transport.trace" : "Print full stack trace for log messages",
 
   "debug.global.title" : "Global",
   "debug.global.description" : "Used to log and debug the app's UI and rendering. The settings are global and apply to all accounts after restarting the app.",
   "debug.global.actions" : "User Events and Actions",
   "debug.global.ipc" : "IPC Messages",
   "debug.global.widgets" : "Widgets",
-  "debug.global.i18n" : "Internationalization (I18n)"
+  "debug.global.i18n" : "Internationalization (I18n)",
+
+  "debug.console.show" : "Show Console",
+  "debug.ui.reload" : "Reload UI"
 }

@@ -415,7 +415,7 @@ class SieveGenericDependentItem extends SieveGenericMandatoryItem {
  * This also means they have an implicit default value which makes parsing awkward.
  *
  * In case the tag is missing (which means using the implicit default) the class is fully transparent.
- * Otherwise it is greedy and eats leading and tailing whitespaces.
+ * Otherwise it is greedy and eats leading and trailing whitespaces.
  */
 class SieveGenericOptionalItem extends SieveAbstractGeneric {
 
@@ -749,7 +749,7 @@ class SieveGenericStructure extends SieveAbstractElement {
         try {
           element.parse(parser);
         }
-        catch (ex) {
+        catch {
           // TODO reset item
           // Reset the position as if nothing happened
           parser.pos(pos);
@@ -769,7 +769,7 @@ class SieveGenericStructure extends SieveAbstractElement {
         try {
           element.parse(parser);
 
-        } catch (ex) {
+        } catch {
 
           prev.enabled = false;
 

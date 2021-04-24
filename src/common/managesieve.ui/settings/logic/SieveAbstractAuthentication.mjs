@@ -1,0 +1,55 @@
+/*
+ * The content of this file is licensed. You may obtain a copy of
+ * the license at https://github.com/thsmi/sieve/ or request it via
+ * email from the author.
+ *
+ * Do not remove or change this comment.
+ *
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ */
+
+/**
+ * An base class common for all authentication mechanisms
+ **/
+class SieveAbstractAuthentication {
+
+  /**
+   * Create a new instance.
+   *
+   * @param {SieveAccount} account
+   *   a reference to the parent sieve account.
+   */
+  constructor(account) {
+    this.account = account;
+  }
+
+  /**
+   * Returns the password for the chosen mechanism.
+   *
+   * Not all mechanisms require a password.
+   * Others e.g. when prompting do not always return a password.
+   *
+   * @abstract
+   *
+   * @returns {string | null}
+   *   the password or null e.g. when the password prompt was dismissed.
+   **/
+  async getPassword() {
+    throw new Error("Implement getPassword()");
+  }
+
+  /**
+   * Returns the username for the account.
+   *
+   * @abstract
+   *
+   * @returns {string}
+   *   the username as string.
+   **/
+  async getUsername() {
+    throw new Error("Implement getUsername()");
+  }
+}
+
+export { SieveAbstractAuthentication };

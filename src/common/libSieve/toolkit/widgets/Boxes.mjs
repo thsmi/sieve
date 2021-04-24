@@ -253,7 +253,7 @@ class SieveDropBoxUI extends SieveAbstractBoxUI {
   createHtml(parent) {
     parent.classList.add("sivDropBox");
     parent.classList.add(this.name);
-    parent.appendChild(document.createElement("div"));
+    parent.append(document.createElement("div"));
 
     return parent;
   }
@@ -335,7 +335,7 @@ class SieveSourceBoxUI extends SieveAbstractBoxUI {
     // update the code section
     const code = document.querySelector(`#${this.uniqueId}-code > code`);
     while (code.firstChild)
-      code.removeChild(code.firstChild);
+      code.firstChild.remove();
 
     code.textContent = this.getSieve().toScript();
 
@@ -363,9 +363,9 @@ class SieveSimpleBoxUI extends SieveAbstractBoxUI {
     const summary = document.createElement("div");
     summary.classList.add("sivSummaryContent");
     summary.id = `${this.uniqueId}-summary`;
-    summary.appendChild(this.getSummary());
+    summary.append(this.getSummary());
 
-    parent.appendChild(summary);
+    parent.append(summary);
 
     return parent;
   }
@@ -391,7 +391,7 @@ class SieveDialogBoxUI extends SieveSourceBoxUI {
 
     const body = document.querySelector("#sivDialogBody");
     while (body.firstChild)
-      body.removeChild(body.firstChild);
+      body.firstChild.remove();
 
     // Hide the dialog...
     bootstrap.Modal
@@ -401,14 +401,14 @@ class SieveDialogBoxUI extends SieveSourceBoxUI {
     // update the summary section
     const summary = document.querySelector(`#${this.uniqueId}-summary`);
     while (summary.firstChild)
-      summary.removeChild(summary.firstChild);
+      summary.firstChild.remove();
 
-    summary.appendChild(this.getSummary());
+    summary.append(this.getSummary());
 
     // update the code section
     const code = document.querySelector(`#${this.uniqueId}-code > code`);
     while (code.firstChild)
-      code.removeChild(code.firstChild);
+      code.firstChild.remove();
 
     code.textContent = this.getSieve().toScript();
   }
@@ -419,7 +419,7 @@ class SieveDialogBoxUI extends SieveSourceBoxUI {
   async showEditor() {
 
     // TODO hide the save button in case we have only a help tab...
-    (new bootstrap.Modal(document.querySelector('#sivDialog2'))).show();
+    (new bootstrap.Modal('#sivDialog2')).show();
 
     const save = () => { this.save(); };
 
@@ -436,11 +436,11 @@ class SieveDialogBoxUI extends SieveSourceBoxUI {
     // Empty the existing dialog.
     const dialogTabs = document.querySelector("#sivDialogTabs");
     while (dialogTabs.firstChild)
-      dialogTabs.removeChild(dialogTabs.firstChild);
+      dialogTabs.firstChild.remove();
 
     const dialogBody = document.querySelector("#sivDialogBody");
     while (dialogBody.firstChild)
-      dialogBody.removeChild(dialogBody.firstChild);
+      dialogBody.firstChild.remove();
 
 
     const template = await (new SieveTemplate()).load(this.getTemplate());
@@ -450,7 +450,7 @@ class SieveDialogBoxUI extends SieveSourceBoxUI {
       throw new Error("Failed to load template, no tab section specified");
 
     while (tabs.children.length)
-      dialogTabs.appendChild(tabs.firstChild);
+      dialogTabs.append(tabs.firstChild);
 
 
     const content = template.querySelector("#template-content");
@@ -458,7 +458,7 @@ class SieveDialogBoxUI extends SieveSourceBoxUI {
       throw new Error("Failed to load template, no content section specified");
 
     while (content.children.length)
-      dialogBody.appendChild(content.firstChild);
+      dialogBody.append(content.firstChild);
 
     this.onLoad();
   }
@@ -508,18 +508,18 @@ class SieveDialogBoxUI extends SieveSourceBoxUI {
       return true;
     });
 
-    content.appendChild(this.getSummary());
+    content.append(this.getSummary());
 
     // We need this container to make customizing the box easier.
     // e.g. for the allof/anyof operator.
     const div = document.createElement("div");
     div.classList.add("sivEditableElement");
 
-    div.appendChild(content);
-    div.appendChild(code);
-    div.appendChild(controls);
+    div.append(content);
+    div.append(code);
+    div.append(controls);
 
-    parent.appendChild(div);
+    parent.append(div);
 
     return parent;
   }

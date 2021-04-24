@@ -37,17 +37,17 @@
         ]
       }
     },
-    "SieveSessionApi": {
-      "schema": "api/sieve/SieveSessionApi.json",
+    "SieveSocketApi": {
+      "schema": "api/sieve/SieveSocketApi.json",
       "parent": {
         "scopes": [
           "addon_parent"
         ],
-        "script": "api/sieve/SieveSessionApi.js",
+        "script": "api/sieve/SieveSocketApi.js",
         "paths": [
           [
             "sieve",
-            "session"
+            "socket"
           ]
         ]
       }

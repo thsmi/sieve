@@ -30,7 +30,7 @@
 
       document
         .querySelector("#divOutput > div:last-child")
-        .appendChild(div);
+        .append(div);
     }
 
     /**
@@ -135,7 +135,7 @@
       document
         .querySelector(`#tests input[value='${this.getName()}']`)
         .parentNode
-        .classList.add("success");
+        .classList.add(this.hasFailed() ? "failure" : "success");
 
       return this;
     }
@@ -178,7 +178,7 @@
 
       document
         .querySelector("#divOutput")
-        .appendChild(div);
+        .append(div);
 
       this.getLogger().header(`Test fixture '${name}'`);
       return new BrowserTestFixtureReport(name, this.getLogger());
@@ -193,7 +193,7 @@
 
       const container = document.querySelector("#divOutput");
       while (container.firstChild)
-        container.removeChild(container.firstChild);
+        container.firstChild.remove();
 
       for (const elm of document.querySelectorAll("#tests .success"))
         elm.classList.remove("success");

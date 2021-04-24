@@ -131,7 +131,7 @@ class SieveSpamtestUI extends SieveTestDialogBoxUI {
         const elm = await ((new SieveTemplate())
           .load("./extensions/spamtest/templates/SieveSpamtestPlusValue.html"));
 
-        document.querySelector("#sivSpamtestPlaceholder").appendChild(elm);
+        document.querySelector("#sivSpamtestPlaceholder").append(elm);
 
         this.onLoadPercentualValue();
       })();
@@ -142,7 +142,7 @@ class SieveSpamtestUI extends SieveTestDialogBoxUI {
       const elm = await ((new SieveTemplate())
         .load("./extensions/spamtest/templates/SieveSpamtestValue.html"));
 
-      document.querySelector("#sivSpamtestPlaceholder").appendChild(elm);
+      document.querySelector("#sivSpamtestPlaceholder").append(elm);
 
       this.onLoadValue();
     })();

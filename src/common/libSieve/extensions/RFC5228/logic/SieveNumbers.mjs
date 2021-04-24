@@ -84,9 +84,9 @@ class SieveNumber extends SieveAbstractElement {
     if (typeof (number) === "undefined" || number === null)
       throw new Error("Invalid Number");
 
-    number = parseInt(number, 10);
+    number = Number.parseInt(number, 10);
 
-    if (isNaN(number))
+    if (Number.isNaN(number))
       throw new Error("Not a number: " + number);
 
     this._number = number;

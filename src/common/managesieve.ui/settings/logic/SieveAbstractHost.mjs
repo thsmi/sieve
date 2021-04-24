@@ -12,6 +12,8 @@
 const PORT_SIEVE_RFC = 4190;
 const CONFIG_HOST_PORT = "port";
 
+
+
 /**
  * An abstract implementation for the host settings.
  * They define the hostname as well as the port.
@@ -51,7 +53,6 @@ class SieveAbstractHost {
   async getKeepAlive() {
     throw new Error("Implement getKeepAlive()");
   }
-
 }
 
 /**
@@ -90,16 +91,15 @@ class SieveCustomHost extends SieveAbstractHost {
    *   a self reference
    */
   async setPort(port) {
-    port = parseInt(port, 10);
+    port = Number.parseInt(port, 10);
 
-    if (isNaN(port))
+    if (Number.isNaN(port))
       port = PORT_SIEVE_RFC;
 
     await this.account.getConfig().setInteger(CONFIG_HOST_PORT, port);
     return this;
   }
 }
-
 
 export {
   SieveCustomHost,

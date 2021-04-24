@@ -7,11 +7,8 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-
 const RESPONSE_CODE_NAME = 0;
 const RESPONSE_CODE_EXTENSION = 1;
-
-const NOT_FOUND = -1;
 
 /**
  * The response codes is a string with optional additional arguments
@@ -105,10 +102,10 @@ class SieveResponseCodeReferral extends SieveResponseCode {
     this.hostname = uri.slice("sieve://".length);
 
     // cleanup any script urls.
-    if (this.hostname.indexOf("/") >= 0)
+    if (this.hostname.includes("/"))
       this.hostname = this.hostname.slice(0, this.hostname.indexOf("/"));
 
-    if (this.hostname.indexOf(":") === NOT_FOUND)
+    if (!this.hostname.includes(":"))
       return;
 
     // extract the port

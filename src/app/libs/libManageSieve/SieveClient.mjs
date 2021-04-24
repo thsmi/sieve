@@ -9,16 +9,12 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-
 import { SieveAbstractClient } from "./SieveAbstractClient.mjs";
 
 import { SieveCertValidationException } from "./SieveExceptions.mjs";
 
-
 const net = require('net');
 const tls = require('tls');
-
-const NOT_FOUND = -1;
 
 /**
  * Uses Node networking to realize a sieve client.
@@ -33,7 +29,6 @@ class SieveNodeClient extends SieveAbstractClient {
    **/
   constructor(logger) {
     super();
-
 
     this.tlsSocket = null;
     this._logger = logger;
@@ -75,7 +70,6 @@ class SieveNodeClient extends SieveAbstractClient {
     this.host = host;
     this.port = port;
     this.secure = secure;
-
 
     this.socket = net.connect(this.port, this.host);
 
@@ -138,14 +132,14 @@ class SieveNodeClient extends SieveAbstractClient {
           }
 
           // so let's check the if the server's sha1 fingerprint matches the pinned one.
-          if (options.fingerprints.indexOf(cert.fingerprint) !== NOT_FOUND) {
+          if (options.fingerprints.includes(cert.fingerprint)) {
             resolve();
             this.getLogger().logState('Socket upgraded! (Chain of Trust and pinned SHA1 fingerprint)');
             return;
           }
 
           // then check the sha256 fingerprint.
-          if (options.fingerprints.indexOf(cert.fingerprint256) !== NOT_FOUND) {
+          if (options.fingerprints.includes(cert.fingerprint256)) {
             resolve();
             this.getLogger().logState('Socket upgraded! (Chain of Trust and pinned SHA256 fingerprint)');
             return;
@@ -169,10 +163,10 @@ class SieveNodeClient extends SieveAbstractClient {
         const error = this.tlsSocket.ssl.verifyError();
 
         // dealing with self signed certificates
-        if (options.ignoreCertErrors.indexOf(error.code) !== NOT_FOUND) {
+        if (options.ignoreCertErrors.includes(error.code)) {
 
           // Check if the fingerprint is well known...
-          if (options.fingerprints.indexOf(cert.fingerprint) !== NOT_FOUND) {
+          if (options.fingerprints.includes(cert.fingerprint)) {
             resolve();
 
             this.getLogger().logState('Socket upgraded! (Trusted SHA1 Finger Print)');
@@ -180,7 +174,7 @@ class SieveNodeClient extends SieveAbstractClient {
           }
 
           // Check if the fingerprint is well known...
-          if (options.fingerprints.indexOf(cert.fingerprint256) !== NOT_FOUND) {
+          if (options.fingerprints.includes(cert.fingerprint256)) {
             resolve();
 
             this.getLogger().logState('Socket upgraded! (Trusted SHA256 Finger Print)');
@@ -266,8 +260,7 @@ class SieveNodeClient extends SieveAbstractClient {
 
     if (this.getLogger().isLevelStream()) {
       // Force String to UTF-8...
-      const output = Array.prototype.slice.call(
-        new Uint8Array(new TextEncoder().encode(data)));
+      const output = Array.prototype.slice.call((new TextEncoder()).encode(data));
 
       this.getLogger().logStream(`Client -> Server [Byte Array]:\n${output}`);
     }

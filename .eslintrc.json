@@ -3,7 +3,8 @@
         "jsdoc"
     ],
     "extends": [
-        "eslint:recommended"
+        "eslint:recommended",
+        "plugin:unicorn/recommended"
     ],
     "env": {
         "browser": true,
@@ -206,6 +207,41 @@
         "jsdoc/require-hyphen-before-param-description": 0,
 
         "jsdoc/check-alignment": 1,
-        "jsdoc/check-examples": ["warn", {"paddedIndent": 4 }]
+        "jsdoc/check-examples": ["warn", {"paddedIndent": 4 }],
+
+        "unicorn/prefer-type-error" : "off",
+        "unicorn/prefer-math-trunc" : "off",
+        "unicorn/prefer-ternary" : "off",
+        "unicorn/catch-error-name": "off",
+        "unicorn/prefer-string-slice" : "off",
+        "unicorn/explicit-length-check": "off",
+        "unicorn/no-fn-reference-in-iterator":"off",
+        "unicorn/no-unused-properties": "error",
+        "unicorn/no-useless-undefined" : "off",
+        "unicorn/prefer-optional-catch-binding" : "warn",
+
+        // Rules which make no sense
+        "unicorn/prevent-abbreviations" : "off",
+        "unicorn/empty-brace-spaces" : "off",
+        "unicorn/no-static-only-class" : "off",
+        "unicorn/no-lonely-if" : "off",
+        "unicorn/no-array-for-each" : "off",
+        "unicorn/filename-case": "off",
+        "unicorn/no-null": "off",
+        "unicorn/no-for-loop":"off",
+        "unicorn/consistent-destructuring" : "off",
+
+        // Rules which ae broken or design flaws which cannot work.
+        "unicorn/prefer-array-some" : "off",
+        "unicorn/no-array-callback-reference" : "off",
+        "unicorn/prefer-dom-node-remove" : "off",
+        "unicorn/consistent-function-scoping" : "off",
+        "unicorn/prefer-spread" : "off",
+        "unicorn/better-regex" : "off",
+        "unicorn/prefer-module" : "off",
+
+        // Currently off requires a newer node version
+        "unicorn/prefer-node-protocol" : "off"
+
    }
 }

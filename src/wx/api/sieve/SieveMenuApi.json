@@ -10,15 +10,15 @@
         "async": true,
         "parameters": [
           {
-          "name": "windowId",
-          "type": "string",
-          "description" : "The unique window id"
+            "name": "windowId",
+            "type": "string",
+            "description": "The unique window id"
           },
           {
-          "name": "widgetId",
-          "type": "string",
-          "description" : "the widget unique id",
-          "additionalProperties" :true
+            "name": "widgetId",
+            "type": "string",
+            "description": "the widget unique id",
+            "additionalProperties": true
           }
         ]
       },
@@ -31,13 +31,13 @@
           {
             "name": "windowId",
             "type": "string",
-            "description" : "The unique window id"
+            "description": "The unique window id"
           },
           {
             "name": "widget",
             "type": "object",
-            "description" : "the widget description",
-            "additionalProperties" :true
+            "description": "the widget description",
+            "additionalProperties": true
           }
         ]
       },
@@ -48,15 +48,15 @@
         "async": true,
         "parameters": [
           {
-          "name": "windowId",
-          "type": "string",
-          "description" : "The unique window id"
+            "name": "windowId",
+            "type": "string",
+            "description": "The unique window id"
           },
           {
-          "name": "widgetId",
-          "type": "string",
-          "description" : "the widget unique id",
-          "additionalProperties" :true
+            "name": "widgetId",
+            "type": "string",
+            "description": "the widget unique id",
+            "additionalProperties": true
           }
         ]
       }

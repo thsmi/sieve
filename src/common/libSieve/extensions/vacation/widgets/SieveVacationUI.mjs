@@ -179,14 +179,14 @@ class SieveVacationUI extends SieveActionDialogBoxUI {
     (new SieveOverlayWidget("action/vacation/interval/", "#sivVacationIntervalOverlay"))
       .init(this.getSieve());
 
-    document.querySelector('a[data-toggle="tab"][href="#sieve-widget-envelope"]')
+    document.querySelector('a[data-bs-toggle="tab"][href="#sieve-widget-envelope"]')
       .addEventListener('hide.bs.tab', () => {
         this.onEnvelopeChanged();
       });
 
     document.querySelector("#vacationEnvelopeEdit").addEventListener("click", () => {
       document
-        .querySelector(`a[data-toggle="tab"][href="#sieve-widget-envelope"]`)
+        .querySelector(`a[data-bs-toggle="tab"][href="#sieve-widget-envelope"]`)
         .click();
     });
 

@@ -96,7 +96,7 @@ class SieveStringListWidget {
         if (this._min >= this.items().length)
           return;
 
-        item.parentNode.removeChild(item);
+        item.remove();
       });
 
     // connect the drop down menu...
@@ -171,13 +171,13 @@ class SieveStringListWidget {
     const container = document.createElement("div");
 
     const item = document.querySelector(`${this._selector} .sieve-stringlist-items`);
-    item.appendChild(container);
+    item.append(container);
 
     const template = (await (new SieveTemplate())
       .load("./toolkit/templates/SieveStringListWidget.html"))
       .querySelector(".string-list-item-template");
 
-    container.appendChild(template);
+    container.append(template);
     this.onItemAdded(container, value);
 
     return this;
@@ -196,7 +196,7 @@ class SieveStringListWidget {
     const elm = document.querySelector(this._selector);
 
     while (elm.firstChild)
-      elm.removeChild(elm.firstChild);
+      elm.firstChild.remove();
 
     const items = document.createElement("div");
     items.classList.add("sieve-stringlist-items");
@@ -204,8 +204,8 @@ class SieveStringListWidget {
     const controls = document.createElement("div");
     controls.classList.add("sieve-stringlist-control");
 
-    elm.appendChild(items);
-    elm.appendChild(controls);
+    elm.append(items);
+    elm.append(controls);
 
 
     (async () => {
@@ -213,14 +213,14 @@ class SieveStringListWidget {
         .load("./toolkit/templates/SieveStringListWidget.html"))
         .querySelector(".sieve-stringlist-add");
 
-      controls.appendChild(template);
+      controls.append(template);
       controls
         .addEventListener("click", () => { this.addItem(); });
     })();
 
-    this._min = parseInt(elm.dataset.listMin, 10);
+    this._min = Number.parseInt(elm.dataset.listMin, 10);
 
-    if (isNaN(this._min))
+    if (Number.isNaN(this._min))
       this._min = DEFAULT_STRING_LIST_MIN;
 
     // init values if possible
@@ -334,10 +334,10 @@ class SieveDropDownWidget {
 
     const elm = document.querySelector(this.selector);
     while (elm.firstChild)
-      elm.removeChild(elm.firstChild);
+      elm.firstChild.remove();
 
     while (template.children.length)
-      elm.appendChild(template.firstChild);
+      elm.append(template.firstChild);
 
     this.initWidgets(sivElement);
   }
@@ -448,11 +448,11 @@ class SieveAbstractItemWidget {
     const container = document.createElement("div");
 
     while (template.children.length)
-      container.appendChild(template.firstChild);
+      container.append(template.firstChild);
 
     container.dataset.nodename = this.constructor.nodeName();
 
-    this.getElement().appendChild(container);
+    this.getElement().append(container);
 
     this.load(sivElement);
 
@@ -518,10 +518,10 @@ class SieveDropDownItemWidget extends SieveAbstractItemWidget {
     const activeElement = this.getActiveItem();
 
     while (activeElement.firstChild)
-      activeElement.removeChild(activeElement.firstChild);
+      activeElement.firstChild.remove();
 
     while (menuElement.firstChild)
-      activeElement.appendChild(menuElement.firstChild);
+      activeElement.append(menuElement.firstChild);
 
     activeElement.dataset.nodename = this.constructor.nodeName();
     activeElement.dataset.value = menuElement.dataset.value;
@@ -828,7 +828,7 @@ class SieveStringWidget {
       .load("./toolkit/templates/SieveStringWidget.html"))
       .querySelector(".string-item-template");
 
-    document.querySelector(this._selector).appendChild(template);
+    document.querySelector(this._selector).append(template);
 
     this.setValue(value);
   }
@@ -850,7 +850,7 @@ class SieveStringWidget {
       .querySelector(".sieve-string-dropdown");
 
     button.classList.remove("d-none");
-    button.insertAdjacentElement('afterend', menu);
+    button.after(menu);
 
     this.initClickHandler(menu);
     this.initUpdatables(menu);
@@ -971,10 +971,10 @@ class SieveNumericWidget {
 
     const elm = document.querySelector(this._selector);
     while (elm.firstChild)
-      elm.removeChild(elm.firstChild);
+      elm.firstChild.remove();
 
     while (template.children.length)
-      elm.appendChild(template.firstChild);
+      elm.append(template.firstChild);
 
     document
       .querySelector(`${this._selector} .sieve-numeric-value`)

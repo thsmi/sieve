@@ -21,12 +21,12 @@
   If a request succeeded, the corresponding response listener of the request
   will be notified.
 
-  The addResponse(), getNextRequest(), hasNextRequest(), cancel() Methods are
+  The onResponse(), getNextRequest(), hasNextRequest() Methods are
   used by the Sieve object, and should not be invoked manually.
 
-  When the sieve object receives a response, it is passed to the addResponse()
+  When the sieve object receives a response, it is passed to the onResponse()
   Method of the requesting object. A timeout is signaled by passing invoking
-  the cancel() Method.
+  the abort() Method.
 
 */
 
@@ -41,6 +41,7 @@ import {
 
 import { SieveCrypto } from "./SieveCrypto.mjs";
 
+import { SieveBase64Encoder } from "./SieveBase64.mjs";
 
 const STATE_LOGIN_INITIALIZED = 0;
 const STATE_LOGIN_USERNAME = 1;
@@ -67,7 +68,9 @@ class SieveAbstractRequest {
     this.byeListener = null;
 
     this.responseListener = null;
+
     this.optional = false;
+    this.abandoned = false;
   }
 
   /**
@@ -214,7 +217,7 @@ class SieveAbstractRequest {
    * Returns the next request as a string. It uses the given
    * Request builder to assemble the string.
    *
-   * @param  {SieveAbstractRequestBuilder} builder
+   * @param  {SieveRequestBuilder} builder
    *   a reference to a stateless request builder which can be used
    *   to form the request string.
    * @returns {string}
@@ -227,17 +230,44 @@ class SieveAbstractRequest {
   }
 
   /**
-   * Triggers a timeout on the error listener.
-   * This should never be invoked directly by any other object than the sieve connection.
+   * Marks this request as abandoned because the request timedout or the socket
+   * was closed.This should never be invoked directly by any other object than
+   * the sieve connection.
    *
    * @param {Error} [reason]
-   *   the optional reason why the request was canceled.
+   *   the optional reason why the request was abandoned.
    */
-  cancel(reason) {
-    if (this.optional)
+  abandon(reason) {
+    this.abandoned = true;
+    this.reason = reason;
+  }
+
+  /**
+   * Checks if this message was abandoned.
+   *
+   * @returns {boolean}
+   *   true in case the request is abandoned otherwise false.
+   */
+  isAbandoned() {
+    return this.aborted;
+  }
+
+  /**
+   * Triggers the request timeout listener.
+   *
+   * The request has to be abandoned and non optional otherwise the
+   * call is silently discarded.
+   */
+  async onAbandon() {
+
+    if (!this.isAbandoned())
       return;
+
+    if (this.isOptional())
+      return;
+
     if (this.timeoutListener)
-      this.timeoutListener(reason);
+      this.timeoutListener(this.reason);
   }
 
   /**
@@ -281,7 +311,7 @@ class SieveAbstractRequest {
    * @abstract
    */
   async onOk(response) {
-    throw new Error(`Abstract Method override me ${response}`);
+    throw new Error(`Abstract method override me ${response}`);
   }
 
   /**
@@ -293,14 +323,15 @@ class SieveAbstractRequest {
    * @returns {SieveAbstractRequest}
    *   a self reference
    */
-  async addResponse(response) {
+  async onResponse(response) {
 
     if (response.getResponse() === RESPONSE_OK) {
       await this.onOk(response);
       return this;
     }
+
     if (this.isOptional())
-      throw new Error("Invalid Response for an Optional Request");
+      throw new Error("Invalid Response for an optional Request");
 
     if (response.getResponse() === RESPONSE_BYE) {
       await this.onBye(response);
@@ -452,9 +483,9 @@ class SieveGetScriptRequest extends SieveAbstractRequest {
   /**
    * @inheritdoc
    */
-  async addResponse(parser) {
-    return await (super.addResponse(
-      (new SieveGetScriptResponse(this.script)).parse(parser)));
+  async onResponse(parser) {
+    return await (super.onResponse(
+      await (new SieveGetScriptResponse(this.script)).parse(parser)));
   }
 }
 
@@ -506,9 +537,9 @@ class SievePutScriptRequest extends SieveAbstractRequest {
   /**
    * @inheritdoc
    */
-  async addResponse(parser) {
-    return await (super.addResponse(
-      (new SieveSimpleResponse()).parse(parser)));
+  async onResponse(parser) {
+    return await(super.onResponse(
+      await (new SieveSimpleResponse()).parse(parser)));
   }
 }
 
@@ -569,9 +600,9 @@ class SieveCheckScriptRequest extends SieveAbstractRequest {
   /**
    * @inheritdoc
    */
-  async addResponse(parser) {
-    return await (super.addResponse(
-      (new SieveSimpleResponse()).parse(parser)));
+  async onResponse(parser) {
+    return await(super.onResponse(
+      await (new SieveSimpleResponse()).parse(parser)));
   }
 }
 
@@ -620,9 +651,9 @@ class SieveSetActiveRequest extends SieveAbstractRequest {
   /**
    * @inheritdoc
    */
-  async addResponse(parser) {
-    return await (super.addResponse(
-      (new SieveSimpleResponse()).parse(parser)));
+  async onResponse(parser) {
+    return await(super.onResponse(
+      await (new SieveSimpleResponse()).parse(parser)));
   }
 }
 
@@ -659,9 +690,9 @@ class SieveCapabilitiesRequest extends SieveAbstractRequest {
   /**
    * @inheritdoc
    */
-  async addResponse(parser) {
-    return await (super.addResponse(
-      (new SieveCapabilitiesResponse()).parse(parser)));
+  async onResponse(parser) {
+    return await(super.onResponse(
+      await (new SieveCapabilitiesResponse()).parse(parser)));
   }
 }
 
@@ -702,9 +733,9 @@ class SieveDeleteScriptRequest extends SieveAbstractRequest {
   /**
    * @inheritdoc
    */
-  async addResponse(parser) {
-    return await (super.addResponse(
-      (new SieveSimpleResponse()).parse(parser)));
+  async onResponse(parser) {
+    return await(super.onResponse(
+      await (new SieveSimpleResponse()).parse(parser)));
   }
 }
 
@@ -735,9 +766,9 @@ class SieveNoopRequest extends SieveAbstractRequest {
   /**
    * @inheritdoc
    */
-  async addResponse(parser) {
-    return await (super.addResponse(
-      (new SieveSimpleResponse()).parse(parser)));
+  async onResponse(parser) {
+    return await(super.onResponse(
+      await (new SieveSimpleResponse()).parse(parser)));
   }
 }
 
@@ -785,9 +816,9 @@ class SieveRenameScriptRequest extends SieveAbstractRequest {
   /**
    * @inheritdoc
    */
-  async addResponse(parser) {
-    return await (super.addResponse(
-      (new SieveSimpleResponse()).parse(parser)));
+  async onResponse(parser) {
+    return await(super.onResponse(
+      await (new SieveSimpleResponse()).parse(parser)));
   }
 }
 
@@ -816,9 +847,9 @@ class SieveListScriptsRequest extends SieveAbstractRequest {
   /**
    * @inheritdoc
    */
-  async addResponse(parser) {
-    return await (super.addResponse(
-      new SieveListScriptsResponse().parse(parser)));
+  async onResponse(parser) {
+    return await(super.onResponse(
+      await (new SieveListScriptsResponse()).parse(parser)));
   }
 }
 
@@ -846,9 +877,9 @@ class SieveStartTLSRequest extends SieveAbstractRequest {
   /**
    * @inheritdoc
    */
-  async addResponse(parser) {
-    return await (super.addResponse(
-      (new SieveSimpleResponse()).parse(parser)));
+  async onResponse(parser) {
+    return await(super.onResponse(
+      await (new SieveSimpleResponse()).parse(parser)));
   }
 }
 
@@ -891,9 +922,9 @@ class SieveLogoutRequest extends SieveAbstractRequest {
   /**
    * @inheritdoc
    */
-  async addResponse(parser) {
-    return await (super.addResponse(
-      (new SieveSimpleResponse()).parse(parser)));
+  async onResponse(parser) {
+    return await(super.onResponse(
+      await (new SieveSimpleResponse()).parse(parser)));
   }
 }
 
@@ -932,9 +963,9 @@ class SieveInitRequest extends SieveAbstractRequest {
   /**
    * @inheritdoc
    */
-  async addResponse(parser) {
-    return await (super.addResponse(
-      (new SieveCapabilitiesResponse()).parse(parser)));
+  async onResponse(parser) {
+    return await(super.onResponse(
+      await (new SieveCapabilitiesResponse()).parse(parser)));
   }
 }
 
@@ -973,9 +1004,9 @@ class SieveSaslPlainRequest extends SieveAbstractSaslRequest {
   /**
    * @inheritdoc
    */
-  async addResponse(parser) {
-    return await (super.addResponse(
-      (new SieveSimpleResponse()).parse(parser)));
+  async onResponse(parser) {
+    return await(super.onResponse(
+      await (new SieveSimpleResponse()).parse(parser)));
   }
 }
 
@@ -1037,6 +1068,9 @@ class SieveSaslLoginRequest extends SieveAbstractSaslRequest {
    * @inheritdoc
    */
   hasNextRequest() {
+    if (this.response.hasError())
+      return false;
+
     if (this.response.getState() === STATE_LOGIN_COMPLETED)
       return false;
 
@@ -1046,15 +1080,20 @@ class SieveSaslLoginRequest extends SieveAbstractSaslRequest {
   /**
    * @inheritdoc
    */
-  async addResponse(parser) {
-    this.response.parse(parser);
+  async onResponse(parser) {
+    await this.response.parse(parser);
 
     if (this.hasNextRequest())
       return this;
 
-    return await (super.addResponse(this.response));
+    return await(super.onResponse(this.response));
   }
 }
+
+const SHA_STATE_FIRST_MESSAGE = 0;
+const SHA_STATE_FINAL_MESSAGE = 1;
+const SHA_STATE_EMPTY_MESSAGE = 2;
+const SHA_STATE_COMPLETED = 4;
 
 /**
  * This request implements an abstract base class for the "Salted Challenge Response Authentication
@@ -1107,18 +1146,48 @@ class SieveAbstractSaslScramRequest extends SieveAbstractSaslRequest {
   }
 
   /**
+   * Before sending the username to the server is needs to be normalized.
+   * The comma and the equal character have a special meaning and need to
+   * escaped.
    *
-   * @param  {SieveAbstractRequestBuilder} builder
+   * @param {string} username
+   *   the username which should be escaped
+   * @returns {string}
+   *   the escaped username
+   */
+  normalizeUsername(username) {
+
+    // Safe Chars:
+    // UTF8-char except "=" and ","
+    // 0x01-0x2B, 0x2D-0x3C, 0X3E-0x7F,
+    // UTF8-2, UTF8-3, UTF8-4
+
+    // Theoretically we should run SASLPrep on str but the server does ist anyway.
+    return username.replace("=", "=3D").replace(",", "=2C");
+  }
+
+  /**
+   * Calculates a nonce for the initial request.
+   *
+   * @returns {string}
+   *   a sequence of printable ascii characters except a comma (,).
+   */
+  async generateNonce() {
+    return await (this.getCrypto().H("" + (Math.random() * SEED), "hex"));
+  }
+
+  /**
+   * Sends the "client-first-message" to the server.
+   *
+   * @param  {SieveRequestBuilder} builder
    *   a reference to an request builder.
    *
-   * @returns {SieveAbstractRequestBuilder}
+   * @returns {SieveRequestBuilder}
    *   a builder which contains the request data.
    */
-  async onChallengeServer(builder) {
+  async sendFirstRequest(builder) {
 
-    const crypto = this.getCrypto();
-
-    this._cnonce = await (crypto.H("" + (Math.random() * SEED), "hex"));
+    this._cnonce = await this.generateNonce();
 
     // For integration tests, we need to fake the nonce...
     // ... so we take the nonce from the rfc otherwise the verification fails.
@@ -1127,19 +1196,15 @@ class SieveAbstractSaslScramRequest extends SieveAbstractSaslRequest {
     // this._cnonce = "fyko+d2lbbFgONRv9qkxdawL";
     // this._username = "user";
     // this._password = "pencil";
+    // this._authorization = "";
     //
     // ### DEBUG SHA256 ###
     // this._cnonce = "rOprNGfwEbeRWgbNEkqO";
     // this._username = "user";
     // this._password = "pencil";
 
-    // TODO SCRAM: escape/normalize authorization and username
-    // ;; UTF8-char except NUL, "=", and ","
-    // "=" is escaped by =2C and "," by =3D
-
-    // Store client-first-message-bare
-    this._authMessage = "n=" + this._username + ",r=" + this._cnonce;
-    this._g2Header = "n," + (this._authorization !== "" ? "a=" + this._authorization : "") + ",";
+    this._authMessage = `n=${this.normalizeUsername(this._username)},r=${this._cnonce}`;
+    this._g2Header = `n,${(this._authorization !== "" ? "a=" + this.normalizeUsername(this._authorization) : "")},`;
 
     return builder
       .addLiteral("AUTHENTICATE")
@@ -1148,14 +1213,16 @@ class SieveAbstractSaslScramRequest extends SieveAbstractSaslRequest {
   }
 
   /**
+   * Sends the "client-final-message" to the server.
    *
-   * @param  {SieveAbstractRequestBuilder} builder
+   * @param  {SieveRequestBuilder} builder
    *   a reference to an request builder.
    *
-   * @returns {SieveAbstractRequestBuilder}
+   * @returns {SieveRequestBuilder}
    *   a builder which contains the request data.
    */
-  async onValidateChallenge(builder) {
+  async sendFinalRequest(builder) {
+
     // Check if the server returned our nonce. This should prevent...
     // ... man in the middle attacks.
     const nonce = this.response.getNonce();
@@ -1168,18 +1235,18 @@ class SieveAbstractSaslScramRequest extends SieveAbstractSaslRequest {
     const salt = this.response.getSalt();
     const iter = this.response.getIterationCounter();
 
-    // TODO Normalize password; and convert it into a byte array...
-    // ... It might contain special characters.
+    const password = (new TextEncoder()).encode(this._password);
 
     // ... this is done by applying a simplified PBKDF2 algorithm...
     // ... so we endup by calling Hi(Normalize(password), salt, i)
-    this._saltedPassword = crypto.Hi(this._password, salt, iter);
+    this._saltedPassword = await (crypto.Hi(crypto.normalize(password), salt, iter));
 
     // the clientKey is defined as HMAC(SaltedPassword, "Client Key")
     const clientKey = await (crypto.HMAC(this._saltedPassword, "Client Key"));
 
     // create the client-final-message-without-proof, ...
-    const msg = "c=" + builder.convertToBase64(this._g2Header) + ",r=" + nonce;
+
+    const msg = `c=${(new SieveBase64Encoder(this._g2Header)).toUtf8()},r=${nonce}`;
     // ... append it and the server-first-message to client-first-message-bare...
     this._authMessage += "," + this.response.getServerFirstMessage() + "," + msg;
 
@@ -1203,7 +1270,7 @@ class SieveAbstractSaslScramRequest extends SieveAbstractSaslRequest {
     // Every thing done so let's send the message...
     // "c=" base64( (("" / "y") "," [ "a=" saslname ] "," ) "," "r=" c-nonce s-nonce ["," extensions] "," "p=" base64
     return builder
-      .addQuotedBase64(msg + ",p=" + builder.convertToBase64(clientProof));
+      .addQuotedBase64(`${msg},p=${(new SieveBase64Encoder(clientProof)).toUtf8()}`);
     //      return "\""+btoa(msg+",p="+btoa(this.byteArrayToStr(clientProof)))+"\"\r\n";
   }
 
@@ -1217,27 +1284,31 @@ class SieveAbstractSaslScramRequest extends SieveAbstractSaslRequest {
     //
     // e.g.: "AUTHENTICATE \"SCRAM-SHA-1\" \"n,,n=user,r=fyko+d2lbbFgONRv9qkxdawL\"\r\n"
 
+
     switch (this.response.getState()) {
-      case 0:
-        return await (this.onChallengeServer(builder));
-      case 1:
-        return await (this.onValidateChallenge(builder));
-      case 2:
-        // obviously we have to send an empty response. The server did not wrap...
+      case SHA_STATE_FIRST_MESSAGE:
+        return await (this.sendFirstRequest(builder));
+      case SHA_STATE_FINAL_MESSAGE:
+        return await (this.sendFinalRequest(builder));
+      case SHA_STATE_EMPTY_MESSAGE:
+        // We have to send an empty response. The server did not wrap...
         // ... the verifier into the Response Code...
         return builder
           .addQuotedString("");
-      // return "\"\"\r\n";
     }
 
-    throw new Error("Illegal state in SASL SCRAM");
+    throw new Error(`Illegal state ${this.response.getState()} in SASL SCRAM`);
   }
 
   /**
    * @inheritdoc
    */
   hasNextRequest() {
-    if (this.response.getState() === 4)
+
+    if (this.response.hasError())
+      return false;
+
+    if (this.response.getState() === SHA_STATE_COMPLETED)
       return false;
 
     return true;
@@ -1251,15 +1322,15 @@ class SieveAbstractSaslScramRequest extends SieveAbstractSaslRequest {
     const crypto = this.getCrypto();
 
     const serverSignature = await (crypto.HMAC(
-      await (crypto.HMAC(
-        this._saltedPassword,
-        "Server Key")),
+      await (crypto.HMAC(this._saltedPassword, "Server Key")),
       this._authMessage
     ));
 
     if (response.getVerifier() !== crypto.byteArrayToStr(serverSignature)) {
-      response.message = "Server Signature not invalid ";
-      response.response = 2;
+
+      response.setResponse(RESPONSE_NO);
+      response.setMessage("Server Signature not invalid");
+
       await this.onNo(response);
       return;
     }
@@ -1270,14 +1341,14 @@ class SieveAbstractSaslScramRequest extends SieveAbstractSaslRequest {
   /**
    * @inheritdoc
    */
-  async addResponse(parser) {
+  async onResponse(parser) {
 
-    this.response.parse(parser);
+    await this.response.parse(parser);
 
     if (this.hasNextRequest())
       return this;
 
-    return await (super.addResponse(this.response));
+    return await(super.onResponse(this.response));
   }
 }
 
@@ -1297,7 +1368,7 @@ class SieveSaslScramSha1Request extends SieveAbstractSaslScramRequest {
    * @inheritdoc
    */
   getCrypto() {
-    return new SieveCrypto("SHA1");
+    return new SieveCrypto("SHA-1");
   }
 }
 
@@ -1317,7 +1388,7 @@ class SieveSaslScramSha256Request extends SieveAbstractSaslScramRequest {
    * @inheritdoc
    */
   getCrypto() {
-    return new SieveCrypto("SHA256");
+    return new SieveCrypto("SHA-256");
   }
 }
 
@@ -1337,7 +1408,7 @@ class SieveSaslScramSha512Request extends SieveAbstractSaslScramRequest {
    * @inheritdoc
    */
   getCrypto() {
-    return new SieveCrypto("SHA512");
+    return new SieveCrypto("SHA-512");
   }
 }
 
@@ -1382,9 +1453,9 @@ class SieveSaslExternalRequest extends SieveAbstractSaslRequest {
   /**
    * @inheritdoc
    */
-  async addResponse(parser) {
-    return await (super.addResponse.call(this,
-      (new SieveSimpleResponse()).parse(parser)));
+  async onResponse(parser) {
+    return await(super.onResponse(
+      await (new SieveSimpleResponse()).parse(parser)));
   }
 }
 

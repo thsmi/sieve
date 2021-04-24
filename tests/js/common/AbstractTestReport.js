@@ -254,7 +254,7 @@
      */
     // eslint-disable-next-line no-unused-vars
     fail(ex) {
-      this.status = STATUS_ERROR;
+      this.status = STATUS_FAILURE;
       this.stop();
 
       this.getLogger().logFailure(

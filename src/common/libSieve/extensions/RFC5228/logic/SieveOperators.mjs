@@ -202,8 +202,10 @@ SieveAnyOfAllOfTest.prototype.test
     // Release old test...
     this.append(item, old);
 
-    if (typeof (old) !== "undefined")
+    if (typeof (old) !== "undefined") {
+      // eslint-disable-next-line unicorn/prefer-node-remove
       this.removeChild(old.id());
+    }
     /* if (this._test)
       this._test.parent(null);
 

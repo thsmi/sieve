@@ -3,7 +3,6 @@
 
 (function (exports) {
 
-
   /* global BrowserTestSuite */
   /* global BrowserTestReport */
 
@@ -56,7 +55,7 @@
     document.querySelector("#result-clear").addEventListener('click', () => {
       const container = document.querySelector("#divOutput");
       while (container.firstChild)
-        container.removeChild(container.firstChild);
+        container.firstChild.remove();
 
       for (const elm of document.querySelectorAll("#tests .success"))
         elm.classList.remove("success");
@@ -97,10 +96,10 @@
       });
 
       const div = document.createElement("div");
-      div.appendChild(input);
-      div.appendChild(span);
+      div.append(input);
+      div.append(span);
 
-      elm.appendChild(div);
+      elm.append(div);
     }
   }
 

@@ -96,7 +96,7 @@ class SieveSetActionUI extends SieveActionDialogBoxUI {
 
     // Sort the modifiers...
     let modifiers = document.querySelectorAll(`${widget.selector} .sieve-modifier`);
-    modifiers = Array.from(modifiers).sort((lhs, rhs) => {
+    modifiers = [...modifiers].sort((lhs, rhs) => {
       rhs = rhs.querySelector("input[type='checkbox'][name^='modifier/']").name;
       lhs = lhs.querySelector("input[type='checkbox'][name^='modifier/']").name;
 
@@ -104,7 +104,7 @@ class SieveSetActionUI extends SieveActionDialogBoxUI {
     });
 
     for (const modifier of modifiers)
-      document.querySelector(`${widget.selector}`).appendChild(modifier);
+      document.querySelector(`${widget.selector}`).append(modifier);
   }
 
   /**

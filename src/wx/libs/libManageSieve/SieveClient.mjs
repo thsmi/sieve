@@ -37,7 +37,6 @@ class SieveMozClient extends SieveAbstractClient {
 
     super();
 
-
     this._logger = logger;
     this.secure = true;
   }
@@ -62,7 +61,6 @@ class SieveMozClient extends SieveAbstractClient {
    *
    **/
   async startTLS() {
-
     await super.startTLS();
 
     this.getLogger().logState("[SieveClient:startTLS()] Upgrading to secure socket");
@@ -90,7 +88,6 @@ class SieveMozClient extends SieveAbstractClient {
   async connect(host, port) {
     if (this.socket)
       return this;
-
 
     this.host = host;
     this.port = port;
@@ -139,7 +136,6 @@ class SieveMozClient extends SieveAbstractClient {
     if (!this.socket) {
       this.getLogger().logState(`[SieveClient:disconnect()] ... no valid socket`);
       return;
-
     }
 
     this.getLogger().logState(`[SieveClient:disconnect()] ... destroying socket...`);
@@ -160,7 +156,7 @@ class SieveMozClient extends SieveAbstractClient {
 
     // Convert string into an UTF-8 array...
     const output = Array.prototype.slice.call(
-      new Uint8Array(new TextEncoder().encode(data)));
+      (new TextEncoder()).encode(data));
 
     if (this.getLogger().isLevelStream())
       this.getLogger().logStream(`Client -> Server [Byte Array]:\n${output}`);

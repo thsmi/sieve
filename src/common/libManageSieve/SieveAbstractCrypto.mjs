@@ -16,6 +16,14 @@ const MAX_CHAR_CODE = 255;
 
 const HEX_STRING = 16;
 
+const HASH_SHA1 = "SHA-1";
+const HASH_SHA256 = "SHA-256";
+const HASH_SHA512 = "SHA-512";
+
+// eslint-disable-next-line no-magic-numbers
+const MAGIC_SALT = [0, 0, 0, 1];
+
+
 /**
  * Crypto implementations are very browser specific.
  * Which means we need a separate wrapper for each browser.
@@ -28,7 +36,22 @@ class SieveAbstractCrypto {
    *   the crypto algorithms name.
    */
   constructor(name) {
+
+    if ((name !== HASH_SHA1) && (name !== HASH_SHA256) && (this.name !== HASH_SHA512))
+      throw new Error(`Unknown Hash algorithm ${name}`);
+
     this.name = name;
+  }
+
+  /**
+   * Returns the hashing algorithm.
+   * In case the algorithm is unknown an exception is thrown.
+   *
+   * @returns {string}
+   *   the hash algorithm
+   */
+  getCryptoHash() {
+    return this.name;
   }
 
   /**
@@ -119,7 +142,7 @@ class SieveAbstractCrypto {
    * @returns {byte[]}
    *   the calculated hash value for the input string.s
    */
-  H(bytes) {
+  async H(bytes) {
     throw new Error(`Implement Hashing Algorithm for ${this.name} with data ${bytes}`);
   }
 
@@ -142,45 +165,81 @@ class SieveAbstractCrypto {
    *
    *   Hi := U1 XOR U2 XOR ... XOR Ui
    *
-   * @param {byte[]|string} str
+   * @param {Uint8Array} key
    *   an octet input string
-   * @param {byte[]|string} salt
+   * @param {Uint8Array} salt
    *   random octet string
-   * @param {int} i
+   * @param {int} iterations
    *   iteration count a positive number (>= 1), suggested to be at least 4096
    *
-   * @returns {byte[]}
+   * @returns {Uint8Array}
    *   the pseudorandom value as byte string
    */
-  Hi(str, salt, i) {
+  async Hi(key, salt, iterations) {
 
-    if (Array.isArray(str) === false)
-      str = this.strToByteArray(str);
+    if (!(key instanceof Uint8Array))
+      throw new Error("Key not an Uint8Array");
 
-    if (Array.isArray(salt) === false)
-      salt = this.strToByteArray(salt);
+    if (!(salt instanceof Uint8Array))
+      throw new Error("Salt not an Uint8Array");
 
     if (salt.length < MIN_SALT_LENGTH)
       throw new Error("Insufficient salt");
 
-    if (i <= MIN_ITERATION_COUNT)
+    if (iterations <= MIN_ITERATION_COUNT)
       throw new Error("Invalid Iteration counter");
 
-    salt.push(0, 0, 0, 1);
+    salt = new Uint8Array([...salt, ...MAGIC_SALT]);
 
-    salt = this.HMAC(str, salt);
+    salt = await this.HMAC(key, salt);
 
     const hi = salt;
 
-    while (--i) {
-      salt = this.HMAC(str, salt);
+    while (--iterations) {
+      salt = await this.HMAC(key, salt);
 
       for (let j = 0; j < hi.length; j++)
         hi[j] ^= salt[j];
     }
 
-    return hi;
+    return new Uint8Array(hi);
+  }
+
+  /**
+   * Applies the SASLprep profile [RFC4013] of the"stringprep" algorithm
+   * [RFC3454] to the given UTF-8 encoded byte array.
+   *
+   * The resulting byte array is also in UTF-8.
+   *
+   * When applying SASLprep, "str" is treated as a "stored strings", which
+   * means that unassigned Unicode codepoints are prohibited.
+   *
+   * @param {Uint8Array} data
+   *   the string to be normalized
+   * @returns {Uint8Array}
+   *   the normalized string
+   */
+  normalize(data) {
+    return data;
+    /*
+    // RFC 4013 and 3454
+    C12 -> ""
+    B1 -> ""
+
+    str = str.normalize("NFKC");
+
+    // Illegal code points
+    C12, C21, C22, C3, C4, C5, C6, C7, C8, C9, A1
+    -> throw
+
+    // D1 && D2
+    -> throw
+
+    // D1 is allowed only one as first or last character
+    */
   }
 }
 
-export { SieveAbstractCrypto };
+export {
+  SieveAbstractCrypto
+};

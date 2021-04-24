@@ -37,7 +37,6 @@ class SieveAbstractSecurity {
     return await true;
   }
 
-
   /**
    * Gets the currently configured sasl mechanism.
    *

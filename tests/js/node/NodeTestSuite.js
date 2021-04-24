@@ -52,7 +52,7 @@
      * @returns {Promise<undefined>}
      */
     async connect() {
-      return await new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
 
         const child = this.getChildProcess();
 
@@ -105,11 +105,12 @@
         throw new Error("Sandbox not initialized");
 
       scripts = scripts.map((script) => {
-        if (script.startsWith("./../common/"))
-          script = path.join(__dirname, "./../../../src/common/", script);
 
-        if (script.startsWith("./validators/"))
-          script = path.join(__dirname, "./../../tests/", script);
+        // FIXME : Should be read from a config ...
+        if (script.startsWith("${workspace}"))
+          script = script.replace("${workspace}", path.join(__dirname, "../../../build/test/app"));
+
+        script = path.normalize(script);
 
         if (!fs.existsSync(script))
           throw new Error(`No such file ${path.resolve(script)}`);
@@ -183,7 +184,7 @@
      */
     async execute(report, type, data) {
 
-      return await new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
 
         const child = this.getChildProcess();
 

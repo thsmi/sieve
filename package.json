@@ -2,6 +2,7 @@
   "name": "sieve",
   "version": "0.5.3",
   "description": "Configures server-side sieve email filters",
+  "main": "main_esm.js",
   "directories": {
     "doc": "docs",
     "test": "tests"
@@ -9,23 +10,24 @@
   "devDependencies": {
     "bootstrap": "^5.0.0-alpha2",
     "codemirror": "^5.58.3",
-    "electron": "^11.0.3",
+    "electron": "^12.0.2",
     "electron-packager": "^15.2.0",
     "eslint": "^7.15.0",
-    "eslint-plugin-jsdoc": "^30.7.7",
+    "eslint-plugin-jsdoc": "^32.3.0",
+    "eslint-plugin-unicorn": "^31.0.0",
     "gulp": "^4.0.0",
-    "node-abi": "^2.19.3",
-    "tar": "^6.0.5",
+    "node-abi": "^2.21.0",
+    "tar": "^6.1.0",
     "yazl": "^2.5.1"
   },
   "scripts": {
     "start-win32": "gulp \"app:package-win32\" && cd ./build/electron/out/sieve-win32-x64/ && sieve.exe",
     "start": "./node_modules/.bin/electron ./build/electron/resources/",
     "debug": "./node_modules/.bin/electron ./build/electron/resources/ --debug",
-    "test": "node ./tests/index.js",
+    "test": "gulp \"test:package\" && node ./tests/index.js ./build/test/app",
     "server": "node ./tools/Server/Server.js",
     "gulp": "gulp",
-    "lint": "eslint --config .eslintrc.json ./src/**/*.js ./src/**/*.mjs ./tests/**/*.js ./tests/**/*.mjs gulpfile.js ./gulp"
+    "lint": "eslint --config .eslintrc.json ./src/**/*.js ./src/**/*.mjs ./tests/**/*.js ./tests/**/*.mjs gulpfile.mjs ./gulp/**.mjs"
   },
   "repository": {
     "type": "git",

@@ -29,22 +29,6 @@ class SieveNodeSession extends SieveAbstractSession {
     await super.startTLS(options);
   }
 
-  /**
-   * The default error handler called upon any unhandled error or exception.
-   * Called e.g. when the connection to the server was terminated unexpectedly.
-   *
-   * The default behaviour is to disconnect.
-   *
-   * @param {Error} error
-   *   the error message which causes this exceptional state.
-   */
-  async onError(error) {
-
-    this.getLogger().logSession(`OnError: ${error.message}`);
-
-    await this.disconnect(true);
-  }
-
 }
 
 export { SieveNodeSession as SieveSession };

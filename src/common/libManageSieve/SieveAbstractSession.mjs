@@ -9,7 +9,6 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-
 import { SieveLogger } from "./SieveLogger.mjs";
 import { Sieve } from "./SieveClient.mjs";
 
@@ -102,7 +101,7 @@ class SieveAbstractSession {
    * Creates a new sieve client for this session.
    */
   createSieve() {
-    if (typeof (this.sieve) !== "undefined" && this.sieve !== null)
+    if (typeof(this.sieve) !== "undefined" && this.sieve !== null)
       throw new SieveClientException("Sieve Connection Active");
 
     this.sieve = new Sieve(this.getLogger());
@@ -135,9 +134,7 @@ class SieveAbstractSession {
   }
 
   /**
-   *
-   * @param {boolean} hadError
-   *   indicates if the connection was terminated due to an error.
+   * Called when the connection gets disconnected by the server.
    */
   async onDisconnected() {
     this.getLogger().logSession(`SieveAbstractSession: onDisconnected`);
@@ -222,7 +219,6 @@ class SieveAbstractSession {
         case "PLAIN":
           return new SieveSaslPlainRequest();
 
-
         case "SCRAM-SHA-1":
           return new SieveSaslScramSha1Request();
 
@@ -292,11 +288,6 @@ class SieveAbstractSession {
 
     if (name === "authorize") {
       this.listeners.onAuthorize = callback;
-      return;
-    }
-
-    if (name === "proxy") {
-      this.listeners.onProxyLookup = callback;
       return;
     }
 
@@ -386,7 +377,6 @@ class SieveAbstractSession {
    */
   async startTLS(options) {
 
-
     if (!this.getSieve().isSecure())
       return;
 
@@ -462,7 +452,6 @@ class SieveAbstractSession {
 
       if (init)
         init();
-
     });
   }
 
@@ -579,9 +568,6 @@ class SieveAbstractSession {
     // TODO do we really need this? Or do we need this only for keep alive?
     this.getSieve().addListener(this);
 
-    let proxy = null;
-    if (this.listeners.onProxyLookup)
-      proxy = await this.listeners.onProxyLookup(hostname, port);
     // A referral during connection means we need to connect to the new
     // server and start the whole handshake process again.
     this.disableReferrals();
@@ -593,7 +579,7 @@ class SieveAbstractSession {
           hostname, port,
           this.getOption("secure", true),
           this,
-          proxy);
+          null);
       };
 
       this.setCapabilities(

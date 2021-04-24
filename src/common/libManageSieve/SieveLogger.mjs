@@ -9,7 +9,6 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-
 const TWO_CHARS = 2;
 const THREE_CHARS = 3;
 

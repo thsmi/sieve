@@ -10,8 +10,8 @@
  */
 
 /* global browser */
-import { SieveLogger } from "./SieveLogger.js";
-import { SieveAbstractIpcClient } from "./SieveAbstractIpcClient.js";
+import { SieveLogger } from "./SieveLogger.mjs";
+import { SieveAbstractIpcClient } from "./SieveAbstractIpcClient.mjs";
 
 /**
  * An abstract implementation for a inter process/frame communication.

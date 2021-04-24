@@ -14,6 +14,7 @@
   /* global ExtensionCommon */
   /* global Components */
   /* global ChromeUtils */
+  const { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 
   // Input & output stream constants.
   const STREAM_BUFFERED = 0;
@@ -23,8 +24,8 @@
 
   const TRANSPORT_SECURE = 1;
 
-  const NEW_TRANSPORT_API = 4;
-  const OLD_TRANSPORT_API = 5;
+  const OLD_TRANSPORT_API = 4;
+  const REALLY_OLD_TRANSPORT_API = 5;
 
   const STRING_AS_HEX = 16;
 
@@ -46,27 +47,28 @@
 
   const SOCKET_STATUS = {
     // eslint-disable-next-line no-magic-numbers
-    0x804b0003 : "resolving",
+    0x804B0003 : "resolving",
     // eslint-disable-next-line no-magic-numbers
-    0x804b000b : "resolved",
+    0x804B000B : "resolved",
     // eslint-disable-next-line no-magic-numbers
-    0x804b0007 : "connecting",
+    0x804B0007 : "connecting",
     // eslint-disable-next-line no-magic-numbers
-    0x804b0004 : "connected",
+    0x804B0004 : "connected",
     // eslint-disable-next-line no-magic-numbers
-    0x804b0005 : "sending",
+    0x804B0005 : "sending",
     // eslint-disable-next-line no-magic-numbers
-    0x804b000a : "waiting",
+    0x804B000A : "waiting",
     // eslint-disable-next-line no-magic-numbers
-    0x804b0006 : "receiving",
+    0x804B0006 : "receiving",
     // eslint-disable-next-line no-magic-numbers
-    0x804b000c : "tls handshake stated",
+    0x804B000C : "tls handshake stated",
     // eslint-disable-next-line no-magic-numbers
-    0x804b000d : "tls handshake stopped"
+    0x804B000D : "tls handshake stopped"
   };
 
   const NS_BASE_STREAM_CLOSED = 0x80470002;
   const NS_ERROR_FAILURE = 0x80004005;
+  const NS_FAILURE_FLAG = 0x80000000;
 
   // eslint-disable-next-line no-magic-numbers
   const LOG_STATE = (1 << 2);
@@ -95,8 +97,8 @@
       this.socket = null;
 
       this.host = host;
-      this.port = parseInt(port, 10);
-      this.level = parseInt(level, 10);
+      this.port = Number.parseInt(port, 10);
+      this.level = Number.parseInt(level, 10);
 
       this.outstream = null;
       this.instream = null;
@@ -160,13 +162,23 @@
         Cc["@mozilla.org/network/socket-transport-service;1"]
           .getService(Ci.nsISocketTransportService);
 
-      if (transportService.createTransport.length === NEW_TRANSPORT_API)
+      // The createTransport API changed several times so we need some magic.
+      //
+      // We currently have to support three versions. Thunderbird before 69 take
+      // five arguments. Between 69 and 89 take four arguments and after 89 they
+      // are back to five.
+
+      // We know if it is before 78 we need to test if it is the really old API
+      if (Services.vc.compare(Services.appinfo.platformVersion, "78.0") < 0) {
+        if (transportService.createTransport.length === REALLY_OLD_TRANSPORT_API)
+          return transportService.createTransport(["starttls"], TRANSPORT_SECURE, this.host, this.port, proxyInfo);
+      }
+
+      // After 78 we know it is either the old or the new api.
+      if (transportService.createTransport.length === OLD_TRANSPORT_API)
         return transportService.createTransport(["starttls"], this.host, this.port, proxyInfo);
 
-      if (transportService.createTransport.length === OLD_TRANSPORT_API)
-        return transportService.createTransport(["starttls"], TRANSPORT_SECURE, this.host, this.port, proxyInfo);
-
-      throw new Error("Unknown Create Transport signature");
+      return transportService.createTransport(["starttls"], this.host, this.port, proxyInfo, null);
     }
 
     /**
@@ -241,10 +253,14 @@
      * We use it only to detect the point when we are connected and
      * ready to send and receive data.
      *
-     * @param {*} transport
-     * @param {*} status
-     * @param {*} progress
-     * @param {*} progressMax
+     * @param {nsITransport} transport
+     *   the transport which triggered this status update
+     * @param {int} status
+     *   the status as error code
+     * @param {int} progress
+     *   the amount of data read or written depending on the status code.
+     * @param {int} progressMax
+     *   the maximum amount of data which will be read or written.
      */
     // eslint-disable-next-line no-unused-vars
     onTransportStatus(transport, status, progress, progressMax) {
@@ -314,7 +330,7 @@
       }
 
       // In case is it is no error code we can skip.
-      if (!(status & 0x80000000)) {
+      if (!(status & NS_FAILURE_FLAG)) {
         this.log(`[SieveSocketApi:onInputStreamError()] ... skipping, `
           + `${status.toString(STRING_AS_HEX)} is not an error code`);
         return;
@@ -534,8 +550,7 @@
         if (errorClass === Ci.nsINSSErrorsService.ERROR_CLASS_BAD_CERT)
           return true;
 
-        return false;
-      } catch (ex) {
+      } catch {
         this.log(`Failed to extract error class`);
       }
 
@@ -604,8 +619,8 @@
 
         error.message = nssErrorsService.getErrorMessage(status);
         this.log(`[SieveSocketApi:getSocketError()] ... ${error.message} ...`);
-      } catch (ex) {
-        // do nothing here
+      } catch {
+        // do nothing here we fallback to our generic default.
       }
 
       this.log(`[SieveSocketApi:getSocketError()] ... done`);
@@ -635,16 +650,17 @@
      *
      * @private
      * @param {nsIRequest} request
-     *   thr request for which the proxy information as requested.
-     * @param {*} aURI
-     * @param {*} aProxyInfo
+     *   the request for which the proxy information as requested.
+     * @param {nsIChannel} channel
+     *   the channel for which the proxy information was requested.
+     * @param {nsIProxyInfo} aProxyInfo
      *   the proxy information from the lookup, if null a direct
      *   connection will be used.
-     * @param {*} status
-     *
+     * @param {int} status
+     *   the failure code in case the proxy could not be resolved.
      **/
     // eslint-disable-next-line no-unused-vars
-    onProxyAvailable(request, aURI, aProxyInfo, status) {
+    onProxyAvailable(request, channel, aProxyInfo, status) {
 
       if (aProxyInfo)
         this.log(`Using Proxy: [${aProxyInfo.type}] ${aProxyInfo.host}:${aProxyInfo.port}`);
@@ -764,8 +780,6 @@
       }
 
       // Clear caches that could prevent upgrades from working properly
-      const { Services } = ChromeUtils.import(
-        "resource://gre/modules/Services.jsm");
       Services.obs.notifyObservers(null, "startupcache-invalidate", null);
     }
 

@@ -53,10 +53,10 @@ class SieveDataTransfer {
   isBugFree() {
 
     // Check if we are running in electron...
-    if (window.navigator.userAgent.toLowerCase().indexOf(" electron/"))
+    if (window.navigator.userAgent.toLowerCase().includes(" electron/"))
       return false;
 
-    if (window.navigator.userAgent.toLowerCase().indexOf(" chrome/"))
+    if (window.navigator.userAgent.toLowerCase().includes(" chrome/"))
       return false;
 
     return true;

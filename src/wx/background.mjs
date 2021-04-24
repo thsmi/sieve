@@ -256,6 +256,8 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
         await sessions.get(id).connect(hostname, `${port}`);
       } catch (ex) {
 
+        await (actions["account-disconnect"](msg));
+
         if (ex instanceof SieveCertValidationException) {
           const secInfo = ex.getSecurityInfo();
 
@@ -279,20 +281,16 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
           await (browser.sieve.socket.addCertErrorOverride(
             secInfo.host, `${secInfo.port}`, secInfo.rawDER, overrideBits));
 
-          await (actions["account-disconnect"](msg));
           await (actions["account-connect"](msg));
-
           return;
         }
 
         // connecting failed for some reason, which means we
         // need to handle the error.
-        console.error(ex);
+        logger.logAction("Connecting failed due to an error " + ex);
 
         await SieveIpcClient.sendMessage(
           "accounts", "account-show-error", ex.message);
-
-        throw ex;
       }
     },
 
@@ -302,7 +300,7 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
       if (!sessions.has(id))
         return;
 
-      await sessions.get(id).disconnect(msg.payload.account);
+      await (sessions.get(id).disconnect(msg.payload.account));
       sessions.delete(id);
     },
 

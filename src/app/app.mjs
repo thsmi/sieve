@@ -45,6 +45,13 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
   const accounts = await (new SieveAccounts().load());
   const sessions = new SieveSessions();
 
+  let keytar = null;
+  try {
+    keytar = require("./libs/keytar");
+  } catch (ex) {
+    logger.log("Could not initialize keytar " + ex);
+  }
+
   const actions = {
 
     "update-check": async () => {
@@ -597,6 +604,22 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
 
     "reload-ui" : async() => {
       await ipcRenderer.invoke("reload-ui");
+    },
+
+    "keystore-ready" : async() => {
+      return ((typeof(keytar) !== undefined) && (keytar !== null));
+    },
+
+    "keystore-forget" : async(msg) => {
+      await keytar.deletePassword("Sieve Editor", msg.payload.username);
+    },
+
+    "keystore-store" : async(msg) => {
+      await keytar.setPassword("Sieve Editor", msg.payload.username, msg.payload.password);
+    },
+
+    "keystore-get" : async(msg) => {
+      return await keytar.getPassword("Sieve Editor", msg.payload.username);
     }
   };
 

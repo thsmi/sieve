@@ -47,24 +47,17 @@ class SieveIpcClient extends SieveAbstractIpcClient {
 
     this.getLogger().logIpcMessage(`Sending message ${message}`);
 
-    if (target !== window) {
-      target.postMessage(message, origin);
+    target.postMessage(message, origin);
+
+    // In case the target is the current window, we also notify
+    // all child frames.
+    if (target !== window)
       return;
-    }
 
     for (let idx = 0; idx < frames.length; idx++)
       frames[idx].postMessage(message, origin);
   }
 
-  /**
-   * @inheritdoc
-   */
-  static onMessage(e) {
-    if (e.source === window)
-      return;
-
-    super.onMessage(e);
-  }
 }
 
 window.addEventListener("message", (ev) => { SieveIpcClient.onMessage(ev); }, false);

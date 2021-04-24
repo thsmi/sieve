@@ -14,7 +14,6 @@ import { SieveAbstractAuthentication } from "./SieveAbstractAuthentication.mjs";
 
 import { SieveIpcClient } from "./../../utils/SieveIpcClient.mjs";
 
-let keytar = null;
 const KEY_USERNAME = "authentication.username";
 
 /**
@@ -22,6 +21,13 @@ const KEY_USERNAME = "authentication.username";
  */
 class SieveElectronAuthentication extends SieveAbstractAuthentication {
 
+  /**
+   * @inheritdoc
+   */
+  constructor(account) {
+    super(account);
+    this.canStore = null;
+  }
   /**
    * Sets the username.
    *
@@ -55,35 +61,12 @@ class SieveElectronAuthentication extends SieveAbstractAuthentication {
    * @returns {boolean}
    *   true in case a password can be stored otherwise false.
    */
-  canStorePassword() {
-    const keystore = this.getKeyStore();
-
-    if (typeof (keystore) === "undefined" || keystore === null)
-      return false;
-
-    return true;
-  }
-
-  /**
-   * Returns the system wide keystore.
-   * There is no guarantee that it exists.
-   * It may fail due to missing external dependencies or because it was
-   * just disabled by the administrator.
-   *
-   * @returns {Keytar}
-   *   the keytar object.
-   */
-  getKeyStore() {
-    if (typeof (keytar) !== "undefined" && keytar !== null)
-      return keytar;
-
-    try {
-      keytar = require("./../../../keytar");
-    } catch (ex) {
-      this.account.getLogger().logAction("Could not initialize keystore: " + ex);
+  async canStorePassword() {
+    if (typeof (this.canStore) === "undefined" || this.canStore === null) {
+      this.canStore = await SieveIpcClient.sendMessage("core", "keystore-ready", "", window);
     }
 
-    return keytar;
+    return (this.canStore === true);
   }
 
   /**
@@ -92,11 +75,14 @@ class SieveElectronAuthentication extends SieveAbstractAuthentication {
    */
   async forget() {
     try {
-      if (!this.canStorePassword())
+      if (!await this.canStorePassword())
         return;
 
       const username = await this.getUsername();
-      await this.getKeyStore().deletePassword("Sieve Editor", username);
+
+      await SieveIpcClient.sendMessage(
+        "core", "keystore-forget", { "username": username }, window);
+
     } catch (ex) {
       this.account.getLogger().logAction("Forgetting password failed " + ex);
     }
@@ -111,11 +97,14 @@ class SieveElectronAuthentication extends SieveAbstractAuthentication {
    */
   async setStoredPassword(password) {
     try {
-      if (!this.canStorePassword())
+      if (! await this.canStorePassword())
         return;
 
       const username = await this.getUsername();
-      await this.getKeyStore().setPassword("Sieve Editor", username, password);
+
+      await SieveIpcClient.sendMessage(
+        "core", "keystore-store", { "username": username, "password": password }, window);
+
     } catch (ex) {
       this.account.getLogger().logAction("Storing password failed " + ex);
     }
@@ -129,11 +118,14 @@ class SieveElectronAuthentication extends SieveAbstractAuthentication {
    */
   async getStoredPassword() {
     try {
-      if (!this.canStorePassword())
+      if (!await this.canStorePassword())
         return null;
 
       const username = await this.getUsername();
-      return await this.getKeyStore().getPassword("Sieve Editor", username);
+
+      return await SieveIpcClient.sendMessage(
+        "core", "keystore-get", { "username": username }, window);
+
     } catch (ex) {
       this.account.getLogger().logAction("Getting password failed " + ex);
     }
@@ -149,12 +141,10 @@ class SieveElectronAuthentication extends SieveAbstractAuthentication {
    */
   async hasStoredPassword() {
     try {
-      if (!this.canStorePassword())
+      if (!await this.canStorePassword())
         return false;
 
-      const username = await this.getUsername();
-
-      if (await this.getKeyStore().getPassword("Sieve Editor", username) === null)
+      if (await this.getStoredPassword() === null)
         return false;
 
       return true;
@@ -176,7 +166,7 @@ class SieveElectronAuthentication extends SieveAbstractAuthentication {
     const request = {
       "username": await this.getUsername(),
       "displayname": await (await this.account.getHost()).getDisplayName(),
-      "remember": this.canStorePassword()
+      "remember": await this.canStorePassword()
     };
 
     const credentials = await SieveIpcClient.sendMessage(

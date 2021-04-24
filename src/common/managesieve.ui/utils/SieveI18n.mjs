@@ -21,12 +21,14 @@ const LANGUAGES = new Set();
 LANGUAGES.add("en-US");
 LANGUAGES.add("de-DE");
 LANGUAGES.add("hu-HU");
+LANGUAGES.add("cz-CZ");
 
 // Maps a language to a supported language.
 const LANGUAGE_MAPPING = new Map();
 LANGUAGE_MAPPING.set("en", "en-US");
 LANGUAGE_MAPPING.set("de", "de-DE");
 LANGUAGE_MAPPING.set("hu", "hu-HU");
+LANGUAGE_MAPPING.set("cz", "cz-CZ");
 
 let instance = null;
 

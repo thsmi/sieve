@@ -195,13 +195,13 @@
   "debug.transport.states": "Výjimky a informace o stavovém automatu",
   "debug.transport.rawdump": "Přímý dump/dump byte streamu",
   "debug.transport.session": "Správa relací",
-  "debug.transport.trace": "Print full stack trace for log messages",
+  "debug.transport.trace": "Vypsat kompletní trasování pro zprávy protokolů",
   "debug.global.title": "Globální",
   "debug.global.description": "Používá se k zaznamenávání a ladění uživatelského rozhraní aplikace a vykreslování. Nastavení jsou globální a vztahují se na všechny účty po restartování aplikace.",
   "debug.global.actions": "Události a akce uživatele",
   "debug.global.ipc": "Zprávy IPC",
   "debug.global.widgets": "Miniaplikace",
   "debug.global.i18n": "Internacionalizace (I18n)",
-  "debug.console.show": "Show Console",
-  "debug.ui.reload": "Reload UI"
+  "debug.console.show": "Zobrazit konzoli",
+  "debug.ui.reload": "Znovu načíst uživatelské rozhraní"
 }

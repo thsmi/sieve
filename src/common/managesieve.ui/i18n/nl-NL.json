@@ -120,7 +120,7 @@
   "authorization.placeholder": "Autorisatie",
   "authorization.accept": "Autoriseren",
   "cert.title": "Beveiligingswaarschuwing",
-  "cert.description1": "Your mail server's authenticity could not be verified!",
+  "cert.description1": "Your mail server’s authenticity could not be verified!",
   "cert.warning": "Continue only if the fingerprints match your mail server's fingerprints and the error message is reasonable.",
   "cert.warning2": "Someone might have impersonated your mail server!",
   "cert.accept": "Doorgaan",

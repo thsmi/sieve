@@ -3,3 +3,5 @@ files:
     translation: /src/common/managesieve.ui/i18n/%locale%.json
   - source: /src/common/libSieve/i18n/en-US.json
     translation: /src/common/libSieve/i18n/%locale%.json
+  - source: /src/wx/_locales/en/messages.json
+    translation: /src/wx/_locales/%two_letters_code%/%original_file_name%

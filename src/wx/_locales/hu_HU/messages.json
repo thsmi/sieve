@@ -1,10 +1,10 @@
 {
   "extensionDescription": {
-    "message": "Manages Sieve Message Filters",
+    "message": "Szita üzenetszűrők kezelése",
     "description": "Description of the extension."
   },
   "menuTitle": {
-    "message": "Sieve Message Filters",
+    "message": "Szita üzenetszűrők",
     "description": "The menu item's name."
   },
   "menuAccessKey": {

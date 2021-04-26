@@ -1,10 +1,10 @@
 {
   "extensionDescription": {
-    "message": "Manages Sieve Message Filters",
+    "message": "Verwaltet Sieve Filter",
     "description": "Description of the extension."
   },
   "menuTitle": {
-    "message": "Sieve Message Filters",
+    "message": "Sieve Filter",
     "description": "The menu item's name."
   },
   "menuAccessKey": {

@@ -111,6 +111,8 @@ async function main() {
 
     await (SieveI18n.getInstance()).load();
 
+    document.title = SieveI18n.getInstance().getString("title.accounts");
+
     const accounts = new SieveAccounts();
     accounts.render();
 

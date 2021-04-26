@@ -52,6 +52,8 @@ async function main() {
 
   await (SieveI18n.getInstance()).load();
 
+  document.title = SieveI18n.getInstance().getString("title.editor");
+
   const url = new URL(window.location);
   const script = url.searchParams.get("script");
   const account = url.searchParams.get("account");

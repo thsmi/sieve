@@ -38,9 +38,10 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
 (async function () {
   const logger = SieveLogger.getInstance();
 
-  // TODO remove me this file should not have any dependency to i18n
   await (SieveI18n.getInstance())
     .load("default", "./libs/managesieve.ui/i18n/");
+
+  document.title = SieveI18n.getInstance().getString("title.app");
 
   const accounts = await (new SieveAccounts().load());
   const sessions = new SieveSessions();

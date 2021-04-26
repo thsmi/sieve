@@ -495,7 +495,7 @@
   "environment.name.location": "További információkat nyújt a parancsfájlt kiértékelő szolgáltatás típusáról.\nJól ismert szolgáltatások: MTA (Message Transfer Agent - üzenet-továbbító ügynök), MDA (Mail Delivery Agent - postai kézbesítési ügynök), MUA (Mail User Agent - üzenet felhasználói ügynök) és MS (Message Store - üzenettár).",
   "environment.name.name": "Szita tolmács neve.",
   "environment.name.phase": "A jelenlegi kézbesítési szakasz.\nLehet előtte (pre), közben (during) és a végső kézbesítés után (post)",
-  "environment.name.remotehost": "A távoli ügyfél állomásneve, mint teljes tartománynév (FQDN)\nAz üres karakterlánc azt jelenti, hogy a Szitának nem sikerült megszereznie ezeket az információkat",
+  "environment.name.remotehost": "A távoli ügyfél állomásneve, mint a FQDN (Fully Qualified Domain Name - teljes tartománynév)\nAz üres karakterlánc azt jelenti, hogy a Szitának nem sikerült megszereznie ezeket az információkat",
   "environment.name.remoteip": "Távoli ügyfél IP-címe szabványos jelöléssel",
   "environment.name.version": "Szita tolmácsa változat száma.",
   "environment.keys": "… az alábbi kulcsok bármelyike…",
@@ -560,7 +560,7 @@
   "notifymethodcapability.no": "no",
   "notifymethodcapability.no.text": "Az értesítési URI (notification-uri) által azonosított entitás jelenleg nem áll rendelkezésre azonnali értesítéshez.",
   "notifymethodcapability.maybe": "maybe",
-  "notifymethodcapability.maybe.text": "A Sieve tolmács nem tudja megállapítani, hogy az értesítési uri által azonosított entitás elérhető-e vagy sem",
+  "notifymethodcapability.maybe.text": "A Szita tolmács nem tudja megállapítani, hogy az értesítési-uri által azonosított entitás elérhető-e vagy sem",
   "notifymethodcapability.help": "A notify_method_capability (értesítési_módszer_képességi) vizsgálatot beolvassa az adott módszer értesítési képességét és összehangolja az adott értékekkel.\n\nA képesség paraméter nem különbözteti meg a kis- és nagybetűket. Jelenleg csak egyetlen „online\" képesség van meghatározva. De a Szita értesítési kiterjesztések további képességeket is hozzáadhatnak.\n\nAz „online” képességek eredménye vagy „igen”, „nem” vagy „talán”. És leírja a sikeres szállítás valószínűségét.\n\nVegye figyelembe, hogy még az „igen” után sem garantálható, hogy mikor és mikor érkezik az értesítés. A szállítási hibák, a címzettek házirendje stb. megakadályozhatják ezt.",
   "notifymethodcapability.summary": "Ellenőrizze az értesítési képességeket."
 }

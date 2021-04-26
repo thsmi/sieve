@@ -41,7 +41,11 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
   await (SieveI18n.getInstance())
     .load("default", "./libs/managesieve.ui/i18n/");
 
-  document.title = SieveI18n.getInstance().getString("title.app");
+  try {
+    document.title = SieveI18n.getInstance().getString("title.app");
+  } catch {
+    document.title = "Manage Sieve Scripts";
+  }
 
   const accounts = await (new SieveAccounts().load());
   const sessions = new SieveSessions();

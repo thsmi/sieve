@@ -111,7 +111,11 @@ async function main() {
 
     await (SieveI18n.getInstance()).load();
 
-    document.title = SieveI18n.getInstance().getString("title.accounts");
+    try {
+      document.title = SieveI18n.getInstance().getString("title.accounts");
+    } catch {
+      document.title = "Sieve Message Filters";
+    }
 
     const accounts = new SieveAccounts();
     accounts.render();

@@ -9,7 +9,7 @@
     "page": "background.html"
   },
   "manifest_version": 2,
-  "default_locale": "en",
+  "default_locale": "en-US",
   "browser_specific_settings": {
     "gecko": {
       "id": "sieve@mozdev.org",

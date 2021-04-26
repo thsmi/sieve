@@ -1,10 +1,10 @@
 {
   "extensionDescription": {
-    "message": "Manages Sieve Message Filters",
+    "message": "Spravuje Sieve filtry zpráv",
     "description": "Description of the extension."
   },
   "menuTitle": {
-    "message": "Sieve Message Filters",
+    "message": "Sieve filtry zpráv",
     "description": "The menu item's name."
   },
   "menuAccessKey": {

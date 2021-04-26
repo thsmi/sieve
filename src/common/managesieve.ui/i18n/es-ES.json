@@ -1,4 +1,7 @@
 {
+  "title.accounts": "Sieve Message Filters",
+  "title.editor": "Edit Sieve Script",
+  "title.app": "Manage Sieve Scripts",
   "import.title": "Import Accounts",
   "import.verify": "Verifying configuration, please wait...",
   "import.account": "Account Name",

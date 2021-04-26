@@ -1,0 +1,14 @@
+{
+  "extensionDescription": {
+    "message": "Manages Sieve Message Filters",
+    "description": "Description of the extension."
+  },
+  "menuTitle": {
+    "message": "Sieve Message Filters",
+    "description": "The menu item's name."
+  },
+  "menuAccessKey": {
+    "message": "S",
+    "description": "The menu item's access key."
+  }
+}

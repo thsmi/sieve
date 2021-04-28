@@ -1,0 +1,26 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: y18n
+    versions:
+    - 3.2.2
+  - dependency-name: electron
+    versions:
+    - 11.2.1
+    - 11.2.2
+    - 11.2.3
+    - 12.0.0
+    - 12.0.1
+  - dependency-name: eslint-plugin-jsdoc
+    versions:
+    - 31.3.3
+    - 31.6.1
+    - 32.0.0
+  - dependency-name: eslint
+    versions:
+    - 7.18.0

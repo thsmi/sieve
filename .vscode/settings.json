@@ -16,5 +16,6 @@
     "editor.wordWrap": "on"
   },
   "python.linting.enabled": true,
-  "python.linting.pylintEnabled": true
+  "python.linting.pylintEnabled": true,
+  "python.pythonPath": ".venv\\Scripts\\python.exe"
 }

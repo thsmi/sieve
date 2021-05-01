@@ -1,4 +1,7 @@
 {
+  "title.accounts": "Sieve filtry zpráv",
+  "title.editor": "Upravit Sieve skript",
+  "title.app": "Spravovat Sieve skripty",
   "import.title": "Importovat účty",
   "import.verify": "Ověřuji nastavení, vyčkejte prosím...",
   "import.account": "Název účtu",

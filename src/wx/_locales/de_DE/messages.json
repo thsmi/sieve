@@ -1,0 +1,14 @@
+{
+  "extensionDescription": {
+    "message": "Verwaltet Sieve Filter",
+    "description": "Description of the extension."
+  },
+  "menuTitle": {
+    "message": "Sieve Filter",
+    "description": "The menu item's name."
+  },
+  "menuAccessKey": {
+    "message": "S",
+    "description": "The menu item's access key."
+  }
+}

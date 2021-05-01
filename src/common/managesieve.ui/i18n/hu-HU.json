@@ -1,4 +1,7 @@
 {
+  "title.accounts": "Szita üzenetszűrők",
+  "title.editor": "Szita parancsfájl szerkesztése",
+  "title.app": "Szita parancsfájlok kezelése",
   "import.title": "Fiókok importálása",
   "import.verify": "Konfiguráció ellenőrzése, kérjük, várjon…",
   "import.account": "Fióknév",

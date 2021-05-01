@@ -7,7 +7,7 @@ But you can also send an email to schmid-thomas at gmx.net
 
 In order to process bugs faster consider the following:
 
-* Try if the [most recent nightly build](https://github.com/thsmi/sieve/blob/master/nightly/README.md) fixes your issue.
+* Try if the [most recent nightly build](https://github.com/thsmi/sieve/wiki/FAQ---General-Questions#nightly-build-artifacts) fixes your issue.
 
 * Check if you issue is already reported. The list with open issues is small.
   Try to avoid to duplicate an issue. It slows down the development.
@@ -34,20 +34,23 @@ In order to process bugs faster consider the following:
 
 [crowdin](http://www.crowdin.net) is an collaborative translation tool.
 
-- [Log into you Crowding Account](http://crowdin.net/login) or [join/signup for free](http://crowdin.net/join)
-- Join the project http://crowdin.net/project/sieve/invite
-- Translate and vote for translations
+* [Log into you Crowding Account](http://crowdin.net/login) or [join/signup for free](http://crowdin.net/join)
+* Join the project http://crowdin.net/project/sieve/invite
+* Translate and vote for translations
 
-I'll copy all crowdin translation prior to a release into the source tree.
+I'll merge crowdin translation prior to a release into the source tree.
 
 ## Contributing via Github
 
-- Make sure you have a [GitHub Account](https://github.com/signup/free)
-- Fork [Sieve](https://github.com/thsmi/sieve/)
-  ([how to fork a repo](https://help.github.com/articles/fork-a-repo))
-- Make your changes
-- Submit a pull request
-([how to create a pull request](https://help.github.com/articles/fork-a-repo))
+* Make sure you have a [GitHub Account](https://github.com/signup/free)
+
+* Fork [Sieve](https://github.com/thsmi/sieve/)
+  ([How to fork a repo](https://help.github.com/articles/fork-a-repo))
+  
+* Make your changes
+
+* Submit a pull request
+  ([How to create a pull request](https://help.github.com/articles/fork-a-repo))
 
 ## Contributing via eMail
 

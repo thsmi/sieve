@@ -107,8 +107,8 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
       "type": "menu-label",
       "reference": "filtersCmd",
       "position": "before",
-      "label": "Sieve Message Filters",
-      "accesskey": "S"
+      "label": browser.i18n.getMessage("menuTitle"),
+      "accesskey": browser.i18n.getMessage("menuAccessKey")
     });
 
     browser.sieve.menu.add(id, {
@@ -133,8 +133,8 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
       "id": "appMenuSieveListDialog",
       "type": "appmenu-label",
       "reference": ref,
-      "label": "Sieve Message Filters",
-      "accesskey": "S",
+      "label": browser.i18n.getMessage("menuTitle"),
+      "accesskey":browser.i18n.getMessage("menuAccessKey"),
       "position": "before"
     });
 

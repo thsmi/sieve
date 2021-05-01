@@ -1,4 +1,7 @@
 {
+  "title.accounts": "Sieve Filter",
+  "title.editor": "Sieve Skript bearbeiten",
+  "title.app": "Sieve Filter",
   "import.title": "Benutzerkonten importieren",
   "import.verify": "Konfiguration wird überprüft, bitte warten...",
   "import.account": "Benutzerkonto",

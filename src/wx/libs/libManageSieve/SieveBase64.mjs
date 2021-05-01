@@ -55,6 +55,9 @@ const SECOND_BYTE = 1;
 const THIRD_BYTE = 2;
 const FOURTH_BYTE = 3;
 
+const ONE_BYTE = 1;
+const TWO_BYTES = 2;
+
 const BASE64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 /**
@@ -116,12 +119,12 @@ class SieveWebBase64Encoder extends SieveAbstractBase64Encoder {
    *   the encoded quantum.
    */
   encodeSecondByte(q1, q2) {
-    if ((typeof(q2) === "undefined") || (q2 === null))
+    if ((typeof (q2) === "undefined") || (q2 === null))
       return this.lookup((q1 << Q1_LOW_SHIFT) & Q1_LOW_MASK);
 
     return this.lookup(
       ((q1 << Q1_LOW_SHIFT) & Q1_LOW_MASK)
-        + ((q2 >> Q2_HIGH_SHIFT) & Q2_HIGH_MASK));
+      + ((q2 >> Q2_HIGH_SHIFT) & Q2_HIGH_MASK));
   }
 
   /**
@@ -139,12 +142,12 @@ class SieveWebBase64Encoder extends SieveAbstractBase64Encoder {
    *   the encoded quantum.
    */
   encodeThirdByte(q2, q3) {
-    if ((typeof(q3) === "undefined") || (q3 === null))
+    if ((typeof (q3) === "undefined") || (q3 === null))
       return this.lookup(((q2 << Q2_LOW_SHIFT) & Q2_LOW_MASK));
 
     return this.lookup(
       ((q2 << Q2_LOW_SHIFT) & Q2_LOW_MASK)
-        + ((q3 >> Q3_HIGH_SHIFT) & Q3_HIGH_MASK));
+      + ((q3 >> Q3_HIGH_SHIFT) & Q3_HIGH_MASK));
   }
 
   /**
@@ -187,8 +190,10 @@ class SieveWebBase64Encoder extends SieveAbstractBase64Encoder {
     if (padding === ONE_QUANTUM) {
       const offset = data.length - ENCODED_QUANTUM;
 
-      data[offset + FIRST_BYTE] = this.encodeFirstByte(decoded[decoded.length - 1]);
-      data[offset + SECOND_BYTE] = this.encodeSecondByte(decoded[decoded.length - 1]);
+      data[offset + FIRST_BYTE] = this.encodeFirstByte(
+        decoded[decoded.length - ONE_BYTE]);
+      data[offset + SECOND_BYTE] = this.encodeSecondByte(
+        decoded[decoded.length - ONE_BYTE]);
       data[offset + THIRD_BYTE] = CHAR_PADDING;
       data[offset + FOURTH_BYTE] = CHAR_PADDING;
     }
@@ -197,11 +202,11 @@ class SieveWebBase64Encoder extends SieveAbstractBase64Encoder {
       const offset = data.length - ENCODED_QUANTUM;
 
       data[offset + FIRST_BYTE] = this.encodeFirstByte(
-        decoded[decoded.length - 2]);
+        decoded[decoded.length - TWO_BYTES]);
       data[offset + SECOND_BYTE] = this.encodeSecondByte(
-        decoded[decoded.length - 2], decoded[decoded.length - 1]);
+        decoded[decoded.length - TWO_BYTES], decoded[decoded.length - ONE_BYTE]);
       data[offset + THIRD_BYTE] = this.encodeThirdByte(
-        decoded[decoded.length - 1]);
+        decoded[decoded.length - ONE_BYTE]);
       data[offset + FOURTH_BYTE] = CHAR_PADDING;
     }
 
@@ -245,12 +250,12 @@ class SieveWebBase64Decoder extends SieveAbstractBase64Decoder {
 
     // If the last character is not equals to "=" then we know
     // the last quantum is fully or empty.
-    if (encoded[encoded.length - 1] !== CHAR_PADDING)
+    if (encoded[encoded.length - ONE_BYTE] !== CHAR_PADDING)
       return length;
 
     // In case the last two bytes are not equal to "=" we know
     // we know the last quantum is 16bit.
-    if (encoded[encoded.length - 2] !== CHAR_PADDING)
+    if (encoded[encoded.length - TWO_BYTES] !== CHAR_PADDING)
       return length - ONE_QUANTUM;
 
     // Otherwise it is a single "=" at the end which means the
@@ -325,6 +330,7 @@ class SieveWebBase64Decoder extends SieveAbstractBase64Decoder {
 
     const data = new Uint8Array(this.calculateLength(encoded));
 
+    // eslint-disable-next-line no-magic-numbers
     for (let i = 0; i < data.length - 1; i += DECODED_QUANTUM) {
       const offset = (i / DECODED_QUANTUM) * ENCODED_QUANTUM;
 
@@ -337,13 +343,13 @@ class SieveWebBase64Decoder extends SieveAbstractBase64Decoder {
 
     if (padding === TWO_QUANTUM) {
       const offset = ((data.length - padding) / DECODED_QUANTUM) * ENCODED_QUANTUM;
-      data[data.length - 2] = this.decodeFirstQuantum(offset, encoded);
-      data[data.length - 1] = this.decodeSecondQuantum(offset, encoded);
+      data[data.length - TWO_BYTES] = this.decodeFirstQuantum(offset, encoded);
+      data[data.length - ONE_BYTE] = this.decodeSecondQuantum(offset, encoded);
     }
 
     if (padding === ONE_QUANTUM) {
       const offset = ((data.length - padding) / DECODED_QUANTUM) * ENCODED_QUANTUM;
-      data[data.length - 1] = this.decodeFirstQuantum(offset, encoded);
+      data[data.length - ONE_BYTE] = this.decodeFirstQuantum(offset, encoded);
     }
 
     return data;

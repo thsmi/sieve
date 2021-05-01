@@ -38,9 +38,9 @@ Project statistics are available at
 A big thank you to everyone who has [contributed and supported](CONTRIBUTORS.md) the project.
 
 If you want to support the project consider donating
-* code, patches or localizations
-* via Paypal [![PayPayl donate button](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://paypal.me/thsmi "Donate to this project using Paypal")
-* via Bitcoin [1GEnrRVobFYuqYj2opdvRQNtG3Z8znvfKw](bitcoin:1GEnrRVobFYuqYj2opdvRQNtG3Z8znvfKw?label=Donation%20for%20Sieve%20Addon)
+  * code, patches or localizations
+  * via Paypal [![PayPayl donate button](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://paypal.me/thsmi "Donate to this project using Paypal")
+  * via Bitcoin [1GEnrRVobFYuqYj2opdvRQNtG3Z8znvfKw](bitcoin:1GEnrRVobFYuqYj2opdvRQNtG3Z8znvfKw?label=Donation%20for%20Sieve%20Addon)
 
 ## Bugs and Contributing
 
@@ -54,7 +54,6 @@ to `schmid-thomas at gmx.net`. Please read and understand the [Contributing Guid
 Give me 1-2 weeks for a reply. If you did not receive a reply at all, it
 might be a good idea to check your spam filter.
 
-
 ## License
 
 The code is licensed as free and open source software. It is made available to you under the terms of the
@@ -63,7 +62,6 @@ The code is licensed as free and open source software. It is made available to y
 Refer to
 [Licensing information](https://github.com/thsmi/sieve/blob/master/LICENSING_INFO.md)
 for details about third party licenses included into this project.
-
 
 ## Releases
 
@@ -78,7 +76,4 @@ Continuous builds are triggered upon each change to the master. You can find the
 | Windows <br> [![Build Status](https://img.shields.io/azure-devops/tests/thsmi/sieve/4) ![Test Status](https://img.shields.io/azure-devops/build/thsmi/sieve/4)](https://dev.azure.com/thsmi/sieve/_build/latest?definitionId=4&branchName=master) | Linux <br> [![Build Status](https://img.shields.io/azure-devops/tests/thsmi/sieve/2) ![Test Status](https://img.shields.io/azure-devops/build/thsmi/sieve/2)](https://dev.azure.com/thsmi/sieve/_build/latest?definitionId=2&branchName=master) | macOS <br> [![Build Status](https://img.shields.io/azure-devops/tests/thsmi/sieve/6) ![Test Status](https://img.shields.io/azure-devops/build/thsmi/sieve/6)](https://dev.azure.com/thsmi/sieve/_build/latest?definitionId=6&branchName=master) | WebExtension <br>[![Build Status](https://img.shields.io/azure-devops/tests/thsmi/sieve/5) ![Test Status](https://img.shields.io/azure-devops/build/thsmi/sieve/5)](https://dev.azure.com/thsmi/sieve/_build/latest?definitionId=5&branchName=master) |
 |---------|-------|-------|--------------|
 
-
-
-Click on the test or build status to see more details or to download the build Artifacts. The later can be accessed by selecting a build and then clicking on "Published" in the "Related" section.
-
+Click on the test or build status to see more details or to [download nightly build Artifacts](https://github.com/thsmi/sieve/wiki/FAQ---General-Questions#nightly-build-artifacts). The later can be accessed by selecting a build and then clicking on "Published" in the "Related" section.

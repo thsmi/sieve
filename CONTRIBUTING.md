@@ -43,9 +43,12 @@ I'll merge crowdin translation prior to a release into the source tree.
 ## Contributing via Github
 
 * Make sure you have a [GitHub Account](https://github.com/signup/free)
+
 * Fork [Sieve](https://github.com/thsmi/sieve/)
   ([How to fork a repo](https://help.github.com/articles/fork-a-repo))
+  
 * Make your changes
+
 * Submit a pull request
   ([How to create a pull request](https://help.github.com/articles/fork-a-repo))
 

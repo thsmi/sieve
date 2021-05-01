@@ -38,10 +38,9 @@ Project statistics are available at
 A big thank you to everyone who has [contributed and supported](CONTRIBUTORS.md) the project.
 
 If you want to support the project consider donating
-
-* code, patches or localizations
-* via Paypal [![PayPayl donate button](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://paypal.me/thsmi "Donate to this project using Paypal")
-* via Bitcoin [1GEnrRVobFYuqYj2opdvRQNtG3Z8znvfKw](bitcoin:1GEnrRVobFYuqYj2opdvRQNtG3Z8znvfKw?label=Donation%20for%20Sieve%20Addon)
+  * code, patches or localizations
+  * via Paypal [![PayPayl donate button](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://paypal.me/thsmi "Donate to this project using Paypal")
+  * via Bitcoin [1GEnrRVobFYuqYj2opdvRQNtG3Z8znvfKw](bitcoin:1GEnrRVobFYuqYj2opdvRQNtG3Z8znvfKw?label=Donation%20for%20Sieve%20Addon)
 
 ## Bugs and Contributing
 

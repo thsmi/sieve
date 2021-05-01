@@ -9,7 +9,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-import { SieveAbstractAccount } from "./SieveAbstractAccount.js";
+import { SieveAbstractAccount } from "./SieveAbstractAccount.mjs";
 
 /**
  * Manages the account specific settings

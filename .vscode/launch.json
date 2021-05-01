@@ -4,6 +4,14 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
+
+    {
+      "name": "Python: Debug main ",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/web/main.py",
+      "console": "integratedTerminal"
+    },
     {
       "name": "Python: Current File",
       "type": "python",
@@ -17,7 +25,7 @@
       "name": "Run Unit Tests",
       "program": "${workspaceFolder}/tests/index.js",
       "skipFiles": [
-        //"<node_internals>/**"
+        "<node_internals>/**"
       ]
     },
     {

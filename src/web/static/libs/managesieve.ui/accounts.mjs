@@ -19,11 +19,11 @@ import {
   SieveRenameScriptDialog,
   SieveScriptBusyDialog,
   SievePasswordDialog
-} from "./dialogs/SieveDialogUI.js";
+} from "./dialogs/SieveDialogUI.mjs";
 
-import { SieveLogger } from "./utils/SieveLogger.js";
-import { SieveI18n } from "./utils/SieveI18n.js";
-import { SieveIpcClient } from "./utils/SieveIpcClient.js";
+import { SieveLogger } from "./utils/SieveLogger.mjs";
+import { SieveI18n } from "./utils/SieveI18n.mjs";
+import { SieveIpcClient } from "./utils/SieveIpcClient.mjs";
 
 /**
  * Shows a prompt which asks the user for the new script name.

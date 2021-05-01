@@ -9,10 +9,10 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-const { src, dest, watch, parallel, series } = require('gulp');
-const path = require('path');
+import gulp from 'gulp';
+import common from "./gulpfile.common.mjs";
 
-const common = require("./gulpfile.common.js");
+import path from 'path';
 
 const BUILD_DIR_WEB = path.join(common.BASE_DIR_BUILD, "web/");
 
@@ -28,9 +28,9 @@ const BASE_DIR_APP = "./src/app/";
  *   a stream to be consumed by gulp
  */
 function packageLicense() {
-  return src([
+  return gulp.src([
     "./LICENSE.md"
-  ]).pipe(dest(BUILD_DIR_WEB));
+  ]).pipe(gulp.dest(BUILD_DIR_WEB));
 }
 
 
@@ -65,10 +65,10 @@ function packageBootstrap() {
  */
 function packageSrc() {
 
-  return src([
+  return gulp.src([
     BASE_DIR_WEB + "/**",
     `!${BASE_DIR_WEB}/static/libs/libManageSieve/**`
-  ]).pipe(dest(BUILD_DIR_WEB));
+  ]).pipe(gulp.dest(BUILD_DIR_WEB));
 }
 
 /**
@@ -85,9 +85,9 @@ function packageLibManageSieve() {
   const BASE_COMMON = path.join(common.BASE_DIR_COMMON, "libManageSieve");
 
   return common.src2(BASE_WEB)
-    .pipe(common.src2(BASE_WX, ["SieveResponseParser.mjs", "SieveRequestBuilder.mjs"]))
+    .pipe(common.src2(BASE_WX, ["SieveTimer.mjs", "SieveCrypto.mjs", "SieveBase64.mjs"]))
     .pipe(common.src2(BASE_COMMON))
-    .pipe(dest(path.join(BUILD_DIR_WEB, 'static/libs/libManageSieve')));
+    .pipe(gulp.dest(path.join(BUILD_DIR_WEB, 'static/libs/libManageSieve')));
 }
 
 /**
@@ -121,26 +121,25 @@ function packageManageSieveUiApp() {
   const destination = path.join(BUILD_DIR_WEB, 'static/libs/managesieve.ui');
   const base = path.join(BASE_DIR_APP, "libs/managesieve.ui");
 
-  return src([
-    path.join(base, "/tabs/*.js"),
-    path.join(base, "/tabs/*.tpl"),
-    path.join(base, "/utils/SieveIpcClient.js")
-  ], { base: base }).pipe(dest(destination));
+  return gulp.src([
+    path.join(base, "/tabs/*.mjs"),
+    path.join(base, "/tabs/*.html"),
+    path.join(base, "/utils/SieveIpcClient.mjs")
+  ], { base: base }).pipe(gulp.dest(destination));
 }
 
 /**
  * Watches for changed source files and copies them into the build directory.
  */
-function watchSrc() {
+function watch() {
 
-  watch(
+  gulp.watch(
     ['./src/**/*.js',
-      './src/**/*.jsm',
+      './src/**/*.mjs',
       './src/**/*.html',
-      './src/**/*.tpl',
       './src/**/*.css',
       './src/**/*.json'],
-    parallel(
+    gulp.parallel(
       packageSrc,
       packageManageSieveUi,
       packageManageSieveUiApp,
@@ -149,22 +148,25 @@ function watchSrc() {
   );
 }
 
-exports["watch"] = watchSrc;
+export default {
+  watch,
 
-exports["packageCodeMirror"] = packageCodeMirror;
-exports["packageBootstrap"] = packageBootstrap;
-exports["packageLicense"] = packageLicense;
-exports["packageSrc"] = packageSrc;
+  packageCodeMirror : packageCodeMirror,
+  packageBootstrap : packageBootstrap,
+  packageLicense : packageLicense,
+  packageSrc : packageSrc,
 
-exports['package'] = series(
-  parallel(
-    packageCodeMirror,
-    packageBootstrap,
-    packageLicense,
-    packageLibManageSieve,
-    packageLibSieve,
-    packageManageSieveUi,
-    packageManageSieveUiApp
-  ),
-  packageSrc
-);
+  packageWeb: gulp.series(
+    gulp.parallel(
+      packageCodeMirror,
+      packageBootstrap,
+      packageLicense,
+      packageLibManageSieve,
+      packageLibSieve,
+      packageManageSieveUi,
+      packageManageSieveUiApp
+    ),
+    packageSrc
+  )
+
+};

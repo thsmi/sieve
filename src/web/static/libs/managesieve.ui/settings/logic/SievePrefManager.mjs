@@ -9,9 +9,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-/* global browser */
-
-import { SieveAbstractPrefManager } from "./SieveAbstractPrefManager.js";
+import { SieveAbstractPrefManager } from "./SieveAbstractPrefManager.mjs";
 
 /**
  * Manages preferences.

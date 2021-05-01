@@ -162,8 +162,6 @@ class SieveMozClient extends SieveAbstractClient {
       this.getLogger().logStream(`Client -> Server [Byte Array]:\n${output}`);
 
     browser.sieve.socket.send(this.socket, output);
-
-    return;
   }
 }
 

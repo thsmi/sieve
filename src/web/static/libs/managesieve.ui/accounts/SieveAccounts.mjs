@@ -11,7 +11,7 @@
 
 // TODO the server should provide a json with all basic settings.
 
-import { SieveAbstractAccounts } from "./SieveAbstractAccounts.js";
+import { SieveAbstractAccounts } from "./SieveAbstractAccounts.mjs";
 
 /**
  * @inheritdoc

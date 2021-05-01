@@ -15,6 +15,7 @@ import common from './gulp/gulpfile.common.mjs';
 import app from './gulp/gulpfile.app.mjs';
 import wx from './gulp/gulpfile.wx.mjs';
 import testing from './gulp/gulpfile.testing.mjs';
+import web from "./gulp/gulpfile.web.mjs";
 
 // App Related Tasks
 
@@ -99,6 +100,11 @@ testing.watchTests.displayName = "test:watch";
 testing.packageTests.displayName = "test:package";
 
 export const { watchTests : testWatch, packageTests : testPackage } = testing;
+
+web.watch.displayName = "web:watch";
+web.packageWeb.displayName = "web:package";
+
+export const { watch : webWatch, packageWeb : webPackage } = web;
 
 // Generic Tasks...
 common.clean.displayName = "clean";

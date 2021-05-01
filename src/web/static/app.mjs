@@ -9,13 +9,15 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-import { SieveSessions } from "./libs/libManageSieve/SieveSessions.mjs";
-import { SieveLogger } from "./libs/managesieve.ui/utils/SieveLogger.js";
-import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.js";
-import { SieveIpcClient } from "./libs/managesieve.ui/utils/SieveIpcClient.js";
+import { SieveLogger } from "./libs/managesieve.ui/utils/SieveLogger.mjs";
+import { SieveIpcClient } from "./libs/managesieve.ui/utils/SieveIpcClient.mjs";
 
+import { SieveSessions } from "./libs/libManageSieve/SieveSessions.mjs";
 import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccounts.mjs";
-import { SieveTabUI } from "./libs/managesieve.ui/tabs/SieveTabsUI.js";
+
+import { SieveTabUI } from "./libs/managesieve.ui/tabs/SieveTabsUI.mjs";
+
+import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
 
 (async function () {
 
@@ -306,8 +308,7 @@ import { SieveTabUI } from "./libs/managesieve.ui/tabs/SieveTabsUI.js";
       return value;
     },
 
-    "get-default-preference": async(msg) => {
-
+    "get-default-preference": async (msg) => {
       const name = msg.payload.data;
 
       logger.logAction(`Get default value for ${name}`);
@@ -325,7 +326,7 @@ import { SieveTabUI } from "./libs/managesieve.ui/tabs/SieveTabsUI.js";
       await accounts.getAccountById(account).getEditor().setValue(name, value);
     },
 
-    "set-default-preference": async(msg) => {
+    "set-default-preference": async (msg) => {
       const name = msg.payload.key;
       const value = msg.payload.value;
 

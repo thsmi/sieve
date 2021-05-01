@@ -4,166 +4,7 @@ import select
 
 from base64 import b64encode
 
-class Parser:
-
-  def __init__(self, data):
-    self.__data = data
-
-  def is_line_break(self):
-    return self.__data.startswith(b'\r\n')
-
-  def extract_line_break(self):
-    if not self.is_line_break():
-      raise Exception("No Linebreak found")
-
-    self.__data = self.__data[2:]
-
-  def is_space(self):
-    return self.__data.startswith(b' ')
-
-  def extract_space(self):
-    if not self.is_space():
-      raise Exception("No Space found")
-
-    self.__data = self.__data[1:]
-
-  def is_string(self):
-    return self.__data.startswith(b'"')
-
-  def startswith(self, token):
-    return self.__data.startswith(token)
-
-  def extract(self, token):
-    for item in token:
-      if not self.__data.startswith(item):
-        continue
-
-      result = self.__data[:len(item)]
-      self.__data = self.__data[len(item):]
-      return result
-
-    raise Exception("Failed to extract token")
-
-  def extract_string(self):
-
-    if not self.is_string():
-      raise Exception("Expected Quote")
-
-    pos = 1
-
-    while True:
-      pos = self.__data.find(b'"', pos)
-
-      if pos == -1:
-        raise Exception("Expected Quote")
-
-      pos += 1
-
-      # Handle Escape Characters
-      if self.__data[pos-2] != b"\\":
-        break
-
-      cnt = 0
-      for char in self.__data[pos-2:1:-1]:
-        if char != b"\\":
-          break
-
-        cnt += 1
-
-      # Odd number of backslashes the quote is not escaped
-      if (cnt % 2) != 0:
-        break
-
-    result = self.__data[:pos]
-    self.__data = self.__data[pos:]
-
-    return result
-
-  def get_data(self):
-    return self.__data
-
-
-class Response:
-
-  def __init__(self):
-    self.__status = None
-
-  def decode(self, data):
-
-    parser = Parser(data)
-
-    self.__status = parser.extract([b"OK", b"NO", b"BYE"])
-
-    if parser.is_space():
-      parser.extract_space()
-      parser.extract(b"(")
-
-      while not parser.startswith(")"):
-        parser.extract_space()
-        parser.extract_string()
-
-    if parser.is_space():
-      parser.extract_space()
-      parser.extract_string()
-
-    parser.extract_line_break()
-
-class Capabilities(Response):
-
-  def __init__(self):
-    super().__init__()
-    self._capabilities = {}
-
-  def get_capabilities(self):
-    return self._capabilities
-
-  def decode(self, data):
-
-    parser = Parser(data)
-
-    self._capabilities = {}
-
-    while parser.is_string():
-      key = parser.extract_string()
-
-      value = ""
-      if not parser.is_line_break():
-        parser.extract_space()
-        value = parser.extract_string()
-
-      parser.extract_line_break()
-
-      self._capabilities[key.upper()] = value
-
-    if b'"IMPLEMENTATION"' not in self._capabilities:
-      raise Exception("Implementation expected")
-
-    super().decode(parser.get_data())
-
-  def encode(self):
-
-    result = b""
-
-    for key, value in self._capabilities.items():
-
-      # We do not support starttls as the websocket is always secure.
-      if key is b'"STARTTLS"':
-        continue
-
-      # And as we are authenticated no need for any sasl mechanism.
-      if key is b'"SASL"':
-        result += b'"SASL" ""\r\n'
-        continue
-
-      result += key
-      if len(value):
-        result += b" "+value
-
-      result += b"\r\n"
-
-    result += b"OK\r\n"
-
-    return result
+from .sieve.request import Capabilities
 
 
 class SieveSocket:
@@ -218,7 +59,16 @@ class SieveSocket:
 
   def upgrade(self):
     #self.__oldSocket =  self.__socket
-    self.__socket = ssl.wrap_socket(self.__socket)
+
+    ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+
+    self.__socket = ssl_context.wrap_socket(
+      self.__oldSocket,
+      server_hostname=self.__hostname,
+      do_handshake_on_connect=False,
+      suppress_ragged_eofs=True)
+
+    self.__socket.do_handshake()
 
   def wait(self):
     while True:

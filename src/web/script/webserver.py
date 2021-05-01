@@ -59,11 +59,13 @@ class WebServer:
     except Exception as ex:
       print(ex)
     finally:
+      context.socket.shutdown(socket.SHUT_RDWR)
       context.socket.close()
 
   def listen(self):
 
-    #sslContext = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    ssl_context.load_cert_chain("d:\\python.cert", "d:\\python.key")
 
     self.__executor = ThreadPoolExecutor(max_workers=3)
 
@@ -75,27 +77,24 @@ class WebServer:
 
       while True:
         # accept connections from outside
-        (clientsocket, address) = sock.accept()
+        clientsocket, address = sock.accept()
 
-        sslclientsocket = ssl.wrap_socket(
+
+        connstream = ssl_context.wrap_socket(
           clientsocket,
           server_side=True,
-          certfile="d:\\python.cert",
-          keyfile="d:\\python.key",
-          cert_reqs=ssl.CERT_NONE,
-          do_handshake_on_connect=False, )
+          do_handshake_on_connect=False)
 
         try:
-          sslclientsocket.do_handshake()
+          connstream.do_handshake()
         except ConnectionAbortedError:
           continue
         except OSError:
           continue
-
         except ssl.SSLError as err:
           if err.args[1].find("sslv3 alert") == -1:
             raise
 
         self.__executor.submit(
           self.handle_message,
-          HttpContext(sslclientsocket, self.__handlers))
+          HttpContext(connstream, self.__handlers))

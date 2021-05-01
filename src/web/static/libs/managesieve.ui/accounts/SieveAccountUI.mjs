@@ -10,7 +10,7 @@
  */
 
 
-import { SieveAbstractAccountUI } from "./SieveAbstractAccountUI.js";
+import { SieveAbstractAccountUI } from "./SieveAbstractAccountUI.mjs";
 
 /**
  * A UI renderer for a sieve account

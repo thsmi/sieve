@@ -13,8 +13,8 @@
 const AUTHORIZATION_TYPE_USERNAME = 1;
 const CONFIG_AUTHORIZATION_TYPE = "authorization.type";
 
-import { SieveAbstractMechanism } from "./SieveAbstractMechanism.js";
-import { SieveDefaultAuthorization } from "./SieveAbstractAuthorization.js";
+import { SieveAbstractMechanism } from "./SieveAbstractMechanism.mjs";
+import { SieveDefaultAuthorization } from "./SieveAbstractAuthorization.mjs";
 
 /**
  * Manages the authorization settings.

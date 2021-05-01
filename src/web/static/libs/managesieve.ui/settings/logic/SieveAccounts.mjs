@@ -10,7 +10,7 @@
  */
 
 import { SieveAccount } from "./SieveAccount.mjs";
-import { SieveAbstractAccounts } from "./SieveAbstractAccounts.js";
+import { SieveAbstractAccounts } from "./SieveAbstractAccounts.mjs";
 
 /**
  * Manages the configuration for sieve accounts.

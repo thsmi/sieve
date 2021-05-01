@@ -11,10 +11,7 @@
 
 // Handle all imports..
 import { SieveAbstractClient } from "./SieveAbstractClient.mjs";
-import { SieveResponseParser } from "./SieveResponseParser.mjs";
-import { SieveRequestBuilder } from "./SieveRequestBuilder.mjs";
 
-import { SieveTimer } from "./SieveTimer.mjs";
 
 /**
  * Implements a websocket based transport.
@@ -27,15 +24,12 @@ class SieveWebSocketClient extends SieveAbstractClient {
 
   /**
    * Creates a new instance
-   * @param {SieveAbstractLogger} logger
+   * @param {SieveLogger} logger
    *   the logger which should be used.
    */
   constructor(logger) {
 
     super();
-
-    this.timeoutTimer = new SieveTimer();
-    this.idleTimer = new SieveTimer();
 
     this.socket = null;
     this._logger = logger;
@@ -54,36 +48,8 @@ class SieveWebSocketClient extends SieveAbstractClient {
   /**
    * @inheritdoc
    */
-  createParser(data) {
-    return new SieveResponseParser(data);
-  }
-
-  /**
-   *  @inheritdoc
-   */
-  createRequestBuilder() {
-    return new SieveRequestBuilder();
-  }
-
-  /**
-   * @inheritdoc
-   */
   getLogger() {
     return this._logger;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  getTimeoutTimer() {
-    return this.timeoutTimer;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  getIdleTimer() {
-    return this.idleTimer;
   }
 
   /**
@@ -150,26 +116,25 @@ class SieveWebSocketClient extends SieveAbstractClient {
   /**
    * @inheritdoc
    */
-  disconnect() {
-    super.disconnect();
+  async disconnect(reason) {
 
-    if (!this.socket)
+    this.getLogger().logState(`[SieveClient:disconnect] Disconnecting ${this.host}:${this.port}...`);
+
+    await super.disconnect(reason);
+
+    if (!this.socket) {
+      this.getLogger().logState(`[SieveClient:disconnect()] ... no valid socket`);
       return;
+    }
 
+    this.getLogger().logState(`[SieveClient:disconnect()] ... destroying socket...`);
     this.socket.close();
     this.socket = null;
 
-    if (this.idleTimer) {
-      window.clearTimeout(this.idleTimer);
-      this.idleTimer = null;
-    }
+    if ((this.listener) && (this.listener.onDisconnected))
+      await this.listener.onDisconnected();
 
-    if (this.timeoutTimer) {
-      window.clearTimeout(this.timeoutTimer);
-      this.timeoutTimer = null;
-    }
-
-    this.getLogger().logState("Disconnected ...");
+    this.getLogger().logState("[SieveClient:disconnect()] ... disconnected.");
   }
 
 
@@ -192,7 +157,7 @@ class SieveWebSocketClient extends SieveAbstractClient {
     if (this.getLogger().isLevelStream()) {
       // Convert string into an UTF-8 array...
       const output = Array.prototype.slice.call(
-        new Uint8Array(new TextEncoder("UTF-8").encode(data)));
+        (new TextEncoder()).encode(data));
 
       this.getLogger().logStream(`Client -> Server [Byte Array]:\n${output}`);
     }

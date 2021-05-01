@@ -11,7 +11,7 @@
 
 import { SieveAbstractAuthentication } from "./SieveAbstractAuthentication.mjs";
 
-import { SieveIpcClient } from "./../../utils/SieveIpcClient.js";
+import { SieveIpcClient } from "./../../utils/SieveIpcClient.mjs";
 
 /**
  * Uses the IMAP accounts credentials.

@@ -6,7 +6,7 @@ The electron app, the thunderbird addon as well as the thunderbird webextension 
 
 You find all app specific code in `src/app`, the WebExtension code is in `src/wx` and all the shared code can be found in `src/common`.
 
-# Getting started
+## Getting started
 
 To get started clone the project for github.
 
@@ -15,7 +15,7 @@ This will download gulp as well as codemirror, bootstrap, electron and everythin
 
 As editor I suggest [Visual Studio Code](https://code.visualstudio.com/)
 
-# Developing the App
+## Developing the App
 
 The app is based upon electron. It is a JavaScript runtime which ships a Browser as UI. This makes developing is very straight forward and easy compared to a thunderbird addon.
 
@@ -33,7 +33,7 @@ To finally package the electron app just run `gulp app:package-win32` or `gulp a
 
 In case you need to inspect the UI's HTML debug the JavaScript, just select `View->Toggle Developer Tools`.
 
-# Developing the WebExtension
+## Developing the WebExtension
 
 WebExtensions are the new addon api for Thunderbird.
 

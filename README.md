@@ -40,6 +40,7 @@ A big thank you to everyone who has [contributed and supported](CONTRIBUTORS.md)
 If you want to support the project consider donating
 
 * code, patches or localizations
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/92d0cd5e840e476f80f1e24dcd2537d5)](https://app.codacy.com/gh/thsmi/sieve?utm_source=github.com&utm_medium=referral&utm_content=thsmi/sieve&utm_campaign=Badge_Grade_Settings)
 * via Paypal [![PayPayl donate button](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://paypal.me/thsmi "Donate to this project using Paypal")
 * via Bitcoin [1GEnrRVobFYuqYj2opdvRQNtG3Z8znvfKw](bitcoin:1GEnrRVobFYuqYj2opdvRQNtG3Z8znvfKw?label=Donation%20for%20Sieve%20Addon)
 

@@ -24,8 +24,6 @@ throw new SieveClientException("No compatible SASL Mechanism (error.sasl)");
 
 ## Connection timeouts not working
 
-
-
-// TODO add scram unit test for escaped username/authorization
+## Add scram unit test for escaped username/authorization
 // ;; UTF8-char except NUL, "=", and ","
 // "=" is escaped by =2C and "," by =3D

@@ -4,12 +4,12 @@ import select
 
 from base64 import b64encode
 
-from .sieve.request import Capabilities
+from . request import Capabilities, Response
 
 
 class SieveSocket:
 
-  def __init__(self, hostname, port):
+  def __init__(self, hostname : str, port : int):
     self.__socket = None
     self.__old_socket = None
     self.__capabilities = None
@@ -18,12 +18,10 @@ class SieveSocket:
     self.__port = port
 
   def __enter__(self):
-    print("On Enter")
     self.connect()
     return self
 
-  def __exit__(self, exc_type, exc_val, exc_tb):
-    print("On Exit")
+  def __exit__(self, exc_type, exc_val, exc_tb) -> None:
     print(exc_type)
     print(exc_val)
     print(exc_tb)
@@ -44,31 +42,28 @@ class SieveSocket:
 
     self.__capabilities = capabilities
 
-  def __del__(self):
+  def __del__(self) -> None:
     self.disconnect()
 
   def fileno(self):
     return self.__socket.fileno()
 
-  def disconnect(self):
+  def disconnect(self) -> None:
     if self.__socket:
       self.__socket.close()
 
     self.__socket = None
     self.__old_socket = None
 
-  def upgrade(self):
-    #self.__oldSocket =  self.__socket
+  def upgrade(self) -> None:
+    self.__old_socket =  self.__socket
 
     ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+    ssl_context.check_hostname = False
+    #ssl_context.verify_mode = ssl.CERT_OPTIONAL
+    ssl_context.load_default_certs()
 
-    self.__socket = ssl_context.wrap_socket(
-      self.__oldSocket,
-      server_hostname=self.__hostname,
-      do_handshake_on_connect=False,
-      suppress_ragged_eofs=True)
-
-    self.__socket.do_handshake()
+    self.__socket = ssl_context.wrap_socket(self.__old_socket)
 
   def wait(self):
     while True:
@@ -89,30 +84,36 @@ class SieveSocket:
 
     return chunk
 
-  def send(self, data):
+  def send(self, data: str) -> None:
     self.__socket.send(data)
 
-  def start_tls(self):
+  def start_tls(self) -> None:
     if b'"STARTTLS"' not in self.__capabilities.get_capabilities():
       raise Exception("Starttls not supported")
 
     self.send(b"STARTTLS\r\n")
 
-    # TODO we should ensure that we got an ok
-    print(self.recv())
+    if Response().decode(self.recv()).status != "OK" :
+      raise Exception("Starting tls failed")
+
     self.upgrade()
 
     #update the capabilities
     self.__capabilities.decode(self.recv())
 
 
-  def authenticate(self, authentication, password, authorization):
+  def authenticate(self, authentication: str, password: str, authorization:str ) -> None:
+
+    self.__capabilities.disable_authentication()
 
     self.send(
-      b'AUTHENTICATE "PLAIN" "'+b64encode(authorization+b"\0"+authentication+b"\0"+password)+b'"\r\n')
+      b'AUTHENTICATE "PLAIN" "'+b64encode(
+        authorization.encode()+b"\0"
+        + authentication.encode()+b"\0"
+        + password.encode())+b'"\r\n')
 
-    ## TODO parse response...
-    print(self.recv())
+    if Response().decode(self.recv()).status != "OK" :
+      raise Exception("Authentication failed")
 
   @property
   def capabilities(self):

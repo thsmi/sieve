@@ -1,11 +1,11 @@
-from .parser import Parser
+from . parser import Parser
 
 class Response:
 
   def __init__(self):
     self.__status = None
 
-  def decode(self, data):
+  def decode(self, data) -> 'Response':
 
     parser = Parser(data)
 
@@ -25,16 +25,26 @@ class Response:
 
     parser.extract_line_break()
 
+    return self
+
+  @property
+  def status(self) -> str:
+    return self.__status.decode()
+
 class Capabilities(Response):
 
   def __init__(self):
     super().__init__()
     self._capabilities = {}
+    self.__can_authenticate = True
 
   def get_capabilities(self):
     return self._capabilities
 
-  def decode(self, data):
+  def disable_authentication(self):
+    self.__can_authenticate = False
+
+  def decode(self, data) -> 'Response':
 
     parser = Parser(data)
 
@@ -57,7 +67,9 @@ class Capabilities(Response):
 
     super().decode(parser.get_data())
 
-  def encode(self):
+    return self
+
+  def encode(self) -> bytes:
 
     result = b""
 
@@ -67,9 +79,14 @@ class Capabilities(Response):
       if key == b'"STARTTLS"':
         continue
 
-      # And as we are authenticated no need for any sasl mechanism.
+      # Clear the sasl mechanism in case we are already authenticated
+      # or return PLAIN in case we are not authenticated.
       if key == b'"SASL"':
-        result += b'"SASL" ""\r\n'
+        if not self.__can_authenticate:
+          result += b'"SASL" ""\r\n'
+        else:
+          result += b'"SASL" "PLAIN"\r\n'
+
         continue
 
       result += key

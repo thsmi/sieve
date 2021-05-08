@@ -50,10 +50,8 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
       const account = msg.payload.account;
       logger.logAction(`Get display name for ${account}`);
 
-      // TODO return real display name
-      // const host = await accounts.getAccountById(account).getHost();
-      // return await host.getDisplayName();
-      return "me@example.com";
+      const host = await accounts.getAccountById(account).getHost();
+      return await host.getDisplayName();
     },
 
     "account-get-settings": async function (msg) {

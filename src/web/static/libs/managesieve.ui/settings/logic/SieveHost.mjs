@@ -26,8 +26,7 @@ class SieveWebSocketHost extends SieveAbstractHost {
    * @inheritdoc
    */
   async getDisplayName() {
-    return "Some thing";
-    // return await browser.sieve.accounts.getPrettyName(this.account.getId());
+    return this.account.getServerConfig().displayname;
   }
 
   /**
@@ -35,7 +34,6 @@ class SieveWebSocketHost extends SieveAbstractHost {
    */
   async getHostname() {
     return window.location.hostname;
-    // return await browser.sieve.accounts.getHostname(this.account.getId());
   }
 
   /**
@@ -50,6 +48,23 @@ class SieveWebSocketHost extends SieveAbstractHost {
    */
   async getKeepAlive() {
     return FIVE_MINUTES;
+  }
+
+  /**
+   * Returns the endpoint or path for the given hostname.
+   *
+   * @returns {string}
+   *   the endpoint as string.
+   */
+  async getEndpoint() {
+    return this.account.getServerConfig().endpoint;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  async getUrl() {
+    return `sieve://${await this.getHostname()}:${await this.getPort()}/${await this.getEndpoint()}`;
   }
 }
 

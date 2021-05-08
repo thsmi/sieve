@@ -3,31 +3,31 @@ class Parser:
   def __init__(self, data):
     self.__data = data
 
-  def is_line_break(self):
+  def is_line_break(self) -> bool:
     return self.__data.startswith(b'\r\n')
 
-  def extract_line_break(self):
+  def extract_line_break(self) -> None:
     if not self.is_line_break():
       raise Exception("No Linebreak found")
 
     self.__data = self.__data[2:]
 
-  def is_space(self):
+  def is_space(self) -> bool:
     return self.__data.startswith(b' ')
 
-  def extract_space(self):
+  def extract_space(self) -> None:
     if not self.is_space():
       raise Exception("No Space found")
 
     self.__data = self.__data[1:]
 
-  def is_string(self):
+  def is_string(self) -> bool:
     return self.__data.startswith(b'"')
 
-  def startswith(self, token):
+  def startswith(self, token: str) -> bool:
     return self.__data.startswith(token)
 
-  def extract(self, token):
+  def extract(self, token) -> str:
     for item in token:
       if not self.__data.startswith(item):
         continue
@@ -38,7 +38,7 @@ class Parser:
 
     raise Exception("Failed to extract token")
 
-  def extract_string(self):
+  def extract_string(self) -> str:
 
     if not self.is_string():
       raise Exception("Expected Quote")

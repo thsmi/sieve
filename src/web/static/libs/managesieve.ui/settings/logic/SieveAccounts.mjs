@@ -25,16 +25,13 @@ class SieveAccounts extends SieveAbstractAccounts {
    */
   async load() {
 
-    // const items = await (browser.accounts.list());
-    const items = [{ id: "1" }];
+    const items = await (await fetch("./config.json")).json();
 
     const accounts = {};
 
-    if (!items)
-      return this;
-
-    for (const item of items)
-      accounts[item.id] = new SieveAccount(item.id);
+    for (const key of Object.keys(items)) {
+      accounts[key] = new SieveAccount(key, items[key]);
+    }
 
     this.accounts = accounts;
     return this;

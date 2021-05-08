@@ -16,6 +16,28 @@ import { SieveAbstractAccount } from "./SieveAbstractAccount.mjs";
  */
 class SieveWebAccount extends SieveAbstractAccount {
 
+  /**
+   * Creates a new instance.
+   *
+   * @param {string} id
+   *   the account's unique id.
+   * @param {object} serverConfig
+   *   the server's configuration as json object.
+   */
+  constructor(id, serverConfig) {
+    super(id);
+    this.serverConfig = serverConfig;
+  }
+
+  /**
+   * Returns the configuration retrieved from the server.
+   * @returns {object}
+   *   the current configuration.
+   */
+  getServerConfig() {
+    return this.serverConfig;
+  }
+
 
 }
 

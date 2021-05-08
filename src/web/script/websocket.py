@@ -4,33 +4,33 @@ from base64 import b64encode
 from .http import HttpException, HttpResponse
 
 
-class SocketMock:
+# class SocketMock:
 
-  def __init__(self, data):
-    self.__data = data
+#   def __init__(self, data):
+#     self.__data = data
 
-  @property
-  def data(self):
-    return self.__data
+#   @property
+#   def data(self):
+#     return self.__data
 
-  def recv(self, length):
-    result = self.__data[:length]
-    del self.__data[:length]
+#   def recv(self, length):
+#     result = self.__data[:length]
+#     del self.__data[:length]
 
-    return result
+#     return result
 
-  def send(self, payload):
-    for data in payload:
-      self.__data.append(data)
+#   def send(self, payload) -> None:
+#     for data in payload:
+#       self.__data.append(data)
 
-class ContextMock:
+# class ContextMock:
 
-  def __init__(self, data):
-    self.__socket = SocketMock(data)
+#   def __init__(self, data):
+#     self.__socket = SocketMock(data)
 
-  @property
-  def socket(self):
-    return self.__socket
+#   @property
+#   def socket(self):
+#     return self.__socket
 
 class WebSocket:
 
@@ -73,26 +73,26 @@ class WebSocket:
 
     return self
 
-  def __exit__(self, exc_type, exc_val, exc_tb):
+  def __exit__(self, exc_type, exc_val, exc_tb) -> None:
     print("On Exit")
     #TODO send a websocket disconnect message...
     #self.disconnect()
 
-  def extract_masked_data(self, length):
+  def extract_masked_data(self, length : int) -> bytearray:
     payload = bytearray()
 
     mask = self.__context.socket.recv(4)
     payload += self.__context.socket.recv(length)
 
-    for i in enumerate(payload):
-      payload[i] = mask[i % 4] ^ payload[i]
+    for idx, value in enumerate(payload):
+      payload[idx] = mask[idx % 4] ^ value #payload[i]
 
     return payload
 
-  def handle_pong(self, data):
+  def handle_pong(self, data) -> None:
     raise Exception("Implement me")
 
-  def extract_length(self, data):
+  def extract_length(self, data) -> int:
     length = data[1] & 0b01111111
 
     if length == 126:
@@ -107,7 +107,7 @@ class WebSocket:
 
     return length
 
-  def recv(self):
+  def recv(self) -> bytearray:
 
     fin = False
     payload = bytearray()
@@ -150,7 +150,7 @@ class WebSocket:
 
     return payload
 
-  def send(self, payload):
+  def send(self, payload) -> None:
 
     data = bytearray()
     data.append(0b10000001)

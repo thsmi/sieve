@@ -49,7 +49,7 @@ class SieveAuthorization extends SieveAbstractMechanism {
   }
 
   /**
-   *
+   * @inheritdoc
    */
   async getMechanism() {
     return new SieveDefaultAuthorization(AUTHORIZATION_TYPE_USERNAME, this.account);

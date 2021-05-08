@@ -1,5 +1,7 @@
 import ssl
 import socket
+import traceback
+import sys
 
 from concurrent.futures import ThreadPoolExecutor
 
@@ -22,11 +24,16 @@ class HttpContext:
 
 class WebServer:
 
-  def __init__(self, port=8765):
+  def __init__(self, port : int = 8765,
+    keyfile : str = "default.key", certfile : str = "default.cert"):
+
     self.__port = port
     self.__hostname = "127.0.0.1"
     self.__handlers = []
     self.__executor = None
+
+    self.__certfile = certfile
+    self.__keyfile = keyfile
 
   def add_handler(self, handler):
     self.__handlers.append(handler)
@@ -34,7 +41,7 @@ class WebServer:
   def get_handlers(self):
     return self.__handlers
 
-  def handle_message(self, context):
+  def handle_message(self, context) -> None:
 
     try:
       request = HttpRequest()
@@ -57,15 +64,24 @@ class WebServer:
       response.send(context)
 
     except Exception as ex:
-      print(ex)
+      response = HttpResponse()
+      response.set_status(500, "Internal Server Error")
+      response.add_headers({'Connection': 'close'})
+
+      exc_type, exc_value, exc_tb = sys.exc_info()
+      response.send(context,"Internal Server error\r\n\r\n"
+        + "\r\n".join(traceback.format_exception(exc_type, exc_value, exc_tb)))
+
+      print(str(ex))
+
     finally:
       context.socket.shutdown(socket.SHUT_RDWR)
       context.socket.close()
 
-  def listen(self):
+  def listen(self) -> None:
 
     ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-    ssl_context.load_cert_chain("d:\\python.cert", "d:\\python.key")
+    ssl_context.load_cert_chain(self.__certfile, self.__keyfile)
 
     self.__executor = ThreadPoolExecutor(max_workers=3)
 

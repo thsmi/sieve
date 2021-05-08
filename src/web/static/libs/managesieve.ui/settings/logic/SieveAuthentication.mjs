@@ -22,6 +22,7 @@ class SieveWebSocketAuthentication extends SieveAbstractAuthentication {
    * @inheritdoc
    */
   async getPassword() {
+
     const request = {
       "username": await this.getUsername(),
       "displayname": await (await this.account.getHost()).getDisplayName(),
@@ -37,9 +38,15 @@ class SieveWebSocketAuthentication extends SieveAbstractAuthentication {
   /**
    * @inheritdoc
    */
+  hasPassword() {
+    return this.account.getServerConfig().authenticate;
+  }
+
+  /**
+   * @inheritdoc
+   */
   async getUsername() {
-    // TODO read username from server defaults...
-    return "gmx@tschmid.net";
+    return this.account.getServerConfig().username;
   }
 }
 

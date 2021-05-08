@@ -17,20 +17,20 @@ class HttpRequest:
     self.__payload = None
 
   @property
-  def url(self):
+  def url(self) -> str:
     return self.__request[1]
 
   @property
-  def path(self):
+  def path(self) -> str:
     return self.__request[1].split("?", 1)[0]
 
   @property
-  def query(self):
+  def query(self) -> str:
     print(self.__request[1].split("?", 1))
     return self.__request[1].split("?", 1)[1]
 
   @property
-  def method(self):
+  def method(self) -> str:
     return self.__request[0]
 
   def get_header(self, name):
@@ -39,7 +39,7 @@ class HttpRequest:
 
     return self.__headers[name]
 
-  def wait(self, context):
+  def wait(self, context) -> None:
 
     while True:
       ready_to_read, ready_to_write, in_error = select.select(
@@ -53,7 +53,7 @@ class HttpRequest:
 
 
 
-  def recv(self, context, blocking=True):
+  def recv(self, context, blocking : bool = True) -> None:
 
     if blocking:
       self.wait(context)
@@ -94,7 +94,7 @@ class HttpResponse:
     self.__reason = reason
 
 
-  def send(self, context, data=None):
+  def send(self, context, data : bytes = None):
 
     time_now = time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())
 
@@ -107,8 +107,13 @@ class HttpResponse:
       response += key+": "+value+"\r\n"
 
     response += "\r\n"
+    response = response.encode()
 
     if data is not None:
+
+      if type(data) == str :
+        data = data.encode()
+
       response += data
 
-    context.socket.send(response.encode())
+    context.socket.send(response)

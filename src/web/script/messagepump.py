@@ -16,7 +16,7 @@ class MessagePump:
 
     return ready_to_read
 
-  def run(self, server, client):
+  def run(self, server, client) -> None:
 
     while True:
       sockets = self.wait(server, client)

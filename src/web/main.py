@@ -1,4 +1,3 @@
-import os
 import pathlib
 
 from script.webserver import WebServer
@@ -20,7 +19,7 @@ config = Config().load(configfile)
 
 webServer = WebServer(
   keyfile = config.get_keyfile(), certfile = config.get_certfile())
-#webServer = WebServer(keyfile = "d:\\python.key", certfile = "d:\\python.cert")
+
 webServer.add_handler(ConfigHandler(config))
 webServer.add_handler(FileHandler("D:\\projekte\\sieve\\core\\build\\web\\static"))
 

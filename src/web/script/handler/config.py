@@ -1,6 +1,6 @@
 import json
 
-from ..http import HttpException, HttpResponse
+from ..http import HttpResponse
 
 class ConfigHandler:
 

@@ -3,9 +3,7 @@ html,
 body {
   height: 100%;
   overflow: hidden;
-  height: 100%;
 }
-
 
 #ctx {
   display: inline-flex;
@@ -14,7 +12,7 @@ body {
   flex-direction: column;
 }
 
-#tabs-content>* {
+#tabs-content > * {
   height: 100%;
   width: 100%;
   border: 0;
@@ -28,36 +26,36 @@ body {
 
 #tabs-container {
   height: 50px;
-  padding: 0px;
+  padding: 0;
 }
 
 #tabs-scroll-left {
   position: absolute;
-  bottom: 0px;
-  left: 0px;
+  bottom: 0;
+  left: 0;
   width: 20px;
-  padding-top: .5rem;
-  padding-bottom: .5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 
   cursor: pointer;
 }
 
 #tabs-scroll-right {
   position: absolute;
-  bottom:0px;
-  right: 0px;
+  bottom: 0;
+  right: 0;
   width: 20px;
-  padding-top: .5rem;
-  padding-bottom: .5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 
   cursor: pointer;
 }
 
 #tabs-scroll-box {
   position: absolute;
-  bottom: 0px;
-  left:20px;
-  right:20px;
+  bottom: 0;
+  left: 20px;
+  right: 20px;
 
   overflow: hidden;
   white-space: nowrap;
@@ -70,5 +68,5 @@ body {
 }
 
 #tabs-items > li {
-  display:inline-block;
+  display: inline-block;
 }

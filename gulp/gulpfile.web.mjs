@@ -72,6 +72,21 @@ function packageSrc() {
 }
 
 /**
+ * Copies the favicon into the web root folder.
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
+ */
+function packageIcons() {
+
+  return gulp.src(
+    [path.join(common.BASE_DIR_COMMON, "icons") + "/*.ico"],
+    { base: common.BASE_DIR_COMMON })
+    .pipe(gulp.dest(path.join(BUILD_DIR_WEB, 'static')));
+}
+
+
+/**
  * Copies the libManageSieve files into the app's lib folder.
  * It merges files from common, webextension, the app and the web app.
  *
@@ -164,7 +179,8 @@ export default {
       packageLibManageSieve,
       packageLibSieve,
       packageManageSieveUi,
-      packageManageSieveUiApp
+      packageManageSieveUiApp,
+      packageIcons
     ),
     packageSrc
   )

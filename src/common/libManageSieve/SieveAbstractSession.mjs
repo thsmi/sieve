@@ -374,7 +374,12 @@ class SieveAbstractSession {
    */
   async startTLS(options) {
 
+    // Check if the socket can be upgraded.
     if (!this.getSieve().isSecure())
+      return;
+
+    // Check if the socket was already upgraded.
+    if (this.getSieve().isSecured())
       return;
 
     if (!this.getSieve().capabilities.tls)

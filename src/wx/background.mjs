@@ -249,11 +249,8 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
       sessions.get(id).on("authorize",
         async () => { return await onAuthorize(); });
 
-      const hostname = await host.getHostname();
-      const port = await host.getPort();
-
       try {
-        await sessions.get(id).connect(hostname, `${port}`);
+        await sessions.get(id).connect(await host.getUrl());
       } catch (ex) {
 
         await (actions["account-disconnect"](msg));

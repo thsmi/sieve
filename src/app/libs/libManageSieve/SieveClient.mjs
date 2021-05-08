@@ -35,6 +35,7 @@ class SieveNodeClient extends SieveAbstractClient {
     this.tlsSocket = null;
     this._logger = logger;
     this.secure = true;
+    this.secured = false;
   }
 
   /**
@@ -42,6 +43,13 @@ class SieveNodeClient extends SieveAbstractClient {
    */
   isSecure() {
     return this.secure;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  isSecured() {
+    return this.secured;
   }
 
   /**
@@ -72,6 +80,7 @@ class SieveNodeClient extends SieveAbstractClient {
       this.port = SIEVE_PORT;
 
     this.secure = secure;
+    this.secured = false;
 
     this.socket = net.connect(this.port, this.host);
 
@@ -128,6 +137,7 @@ class SieveNodeClient extends SieveAbstractClient {
 
           // in case the fingerprint is not pinned we can skip right here.
           if (!options.fingerprints.length) {
+            this.secured = true;
             resolve();
             this.getLogger().logState('Socket upgraded! (Chain of Trust)');
             return;
@@ -135,6 +145,7 @@ class SieveNodeClient extends SieveAbstractClient {
 
           // so let's check the if the server's sha1 fingerprint matches the pinned one.
           if (options.fingerprints.includes(cert.fingerprint)) {
+            this.secured = true;
             resolve();
             this.getLogger().logState('Socket upgraded! (Chain of Trust and pinned SHA1 fingerprint)');
             return;
@@ -142,6 +153,7 @@ class SieveNodeClient extends SieveAbstractClient {
 
           // then check the sha256 fingerprint.
           if (options.fingerprints.includes(cert.fingerprint256)) {
+            this.secured = true;
             resolve();
             this.getLogger().logState('Socket upgraded! (Chain of Trust and pinned SHA256 fingerprint)');
             return;
@@ -169,6 +181,7 @@ class SieveNodeClient extends SieveAbstractClient {
 
           // Check if the fingerprint is well known...
           if (options.fingerprints.includes(cert.fingerprint)) {
+            this.secured = true;
             resolve();
 
             this.getLogger().logState('Socket upgraded! (Trusted SHA1 Finger Print)');
@@ -177,6 +190,7 @@ class SieveNodeClient extends SieveAbstractClient {
 
           // Check if the fingerprint is well known...
           if (options.fingerprints.includes(cert.fingerprint256)) {
+            this.secured = true;
             resolve();
 
             this.getLogger().logState('Socket upgraded! (Trusted SHA256 Finger Print)');

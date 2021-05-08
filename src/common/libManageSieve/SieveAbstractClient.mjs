@@ -525,6 +525,17 @@ class SieveAbstractClient {
   }
 
   /**
+   * Check if the socket was upgraded to a secure connection.
+   * @abstract
+   *
+   * @returns {boolean}
+   *   true in case the socket communicates secured otherwise false.
+   */
+  isSecured() {
+    throw new Error("Implement isSecured()");
+  }
+
+  /**
    * This method secures the connection to the sieve server. By activating
    * Transport Layer Security all Data exchanged is encrypted.
    *
@@ -537,7 +548,7 @@ class SieveAbstractClient {
    **/
   startTLS() {
     if (!this.isSecure())
-      throw new Error("TLS can't be started no secure socket");
+      throw new Error("TLS can't be started not a secure socket");
 
     if (!this.socket)
       throw new Error(`Can't start TLS, your are not connected to ${this.host}`);

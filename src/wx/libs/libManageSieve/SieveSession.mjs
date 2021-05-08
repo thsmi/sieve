@@ -45,7 +45,7 @@ class SieveMozSession extends SieveAbstractSession {
   /**
    * @inheritdoc
    */
-  async connect(host, port) {
+  async connect(uri) {
 
     // eslint-disable-next-line no-async-promise-executor
     await new Promise(async (resolve, reject) => {
@@ -61,7 +61,7 @@ class SieveMozSession extends SieveAbstractSession {
           // reject(new Error(`Server disconnected`));
         });
 
-        await super.connect(host, port);
+        await super.connect(uri);
         resolve();
       }
       catch (ex) {

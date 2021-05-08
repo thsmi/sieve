@@ -14,12 +14,13 @@
 // Handle all imports..
 import { SieveAbstractClient } from "./SieveAbstractClient.mjs";
 
-
 import {
   SieveCertValidationException,
   SieveClientException,
   SieveException
 } from "./SieveExceptions.mjs";
+
+const SIEVE_PORT = 4190;
 
 /**
  *  This realizes the abstract sieve implementation by using
@@ -39,6 +40,7 @@ class SieveMozClient extends SieveAbstractClient {
 
     this._logger = logger;
     this.secure = true;
+    this.secured = false;
   }
 
   /**
@@ -66,6 +68,8 @@ class SieveMozClient extends SieveAbstractClient {
     this.getLogger().logState("[SieveClient:startTLS()] Upgrading to secure socket");
 
     await browser.sieve.socket.startTLS(this.socket);
+
+    this.secured = true;
   }
 
   /**
@@ -79,22 +83,39 @@ class SieveMozClient extends SieveAbstractClient {
    * @inheritdoc
    */
   isSecure() {
-    return true;
+    return this.secure;
   }
 
   /**
    * @inheritdoc
    */
-  async connect(host, port) {
+  isSecured() {
+    return this.secured;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  async connect(url) {
     if (this.socket)
       return this;
 
-    this.host = host;
-    this.port = port;
+    const regex = /^sieve:\/\/(?<host>[^:]+)(:(?<port>\d+))?$/gs;
+    const match = regex.exec(url);
+
+    if (!match)
+      throw new Error(`Not a valid sieve url ${url}`);
+
+    this.host = match.groups["host"];
+    this.port = match.groups["port"];
+
+    if ((this.port === null) || (typeof(this.port) === "undefined"))
+      this.port = SIEVE_PORT;
 
     this.getLogger().logState(`Connecting to ${this.host}:${this.port} ...`);
 
-    this.socket = await (browser.sieve.socket.create(host, port, this.getLogger().level()));
+    this.socket = await (browser.sieve.socket.create(
+      this.host, this.port, this.getLogger().level()));
 
     await (browser.sieve.socket.onData.addListener(async (bytes) => {
       await super.onReceive(bytes);

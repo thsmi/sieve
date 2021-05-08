@@ -32,6 +32,7 @@ class SieveWebSocketClient extends SieveAbstractClient {
     this.socket = null;
     this._logger = logger;
     this.secure = true;
+    this.secured = false;
   }
 
 
@@ -61,7 +62,7 @@ class SieveWebSocketClient extends SieveAbstractClient {
    * @inheritdoc
    */
   isSecured() {
-    return this.isSecure();
+    return this.secured;
   }
 
   /**
@@ -85,6 +86,7 @@ class SieveWebSocketClient extends SieveAbstractClient {
     this.getLogger().logState(`Connecting to ${this.host}:${this.port} ...`);
 
     this.secure = secure;
+    this.secured = false;
 
     // Create the socket...
     if (this.secure)
@@ -152,6 +154,9 @@ class SieveWebSocketClient extends SieveAbstractClient {
    */
   onOpen(ev) {
     this.getLogger().logState(`Connected to ${this.host}:${this.port} ...`);
+
+    if (this.secure)
+      this.secured = true;
   }
 
 

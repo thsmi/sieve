@@ -126,7 +126,7 @@ function packageBootstrap(destination) {
 function src2(dir, files) {
 
   if (!files)
-    files = [`./**`, `!./doc/**`];
+    files = [`./**`, `!./doc/**`, `!./tests/**`];
 
   if (!Array.isArray(files))
     files = [files];

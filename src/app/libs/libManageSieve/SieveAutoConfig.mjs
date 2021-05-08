@@ -98,7 +98,7 @@ class SieveAutoConfig {
 
       sieve.addListener(listener);
 
-      sieve.connect(this.hostname, port, false);
+      sieve.connect(`sieve://${this.hostname}:${port}`, false);
     });
   }
 }

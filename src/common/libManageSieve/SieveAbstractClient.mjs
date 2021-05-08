@@ -744,10 +744,8 @@ class SieveAbstractClient {
    * Connects to a ManageSieve server.
    * @abstract
    *
-   * @param {string} host
-   *   The target hostname or IP address as String
-   * @param {int} port
-   *   The target port as Integer
+   * @param {string} url
+   *   the url with hostname and port
    * @param {boolean} secure
    *   If true, a secure socket will be created. This allows switching to a secure
    *   connection.
@@ -755,9 +753,8 @@ class SieveAbstractClient {
    * @returns {SieveAbstractClient}
    *   a self reference
    */
-  // eslint-disable-next-line no-unused-vars
-  connect(host, port, secure) {
-    throw new Error("Implement me SieveAbstractClient ");
+  connect(url, secure) {
+    throw new Error(`Implement SieveAbstractClient::connect(${url} ${secure})`);
   }
 
   /**

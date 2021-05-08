@@ -9,9 +9,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-// Handle all imports..
 import { SieveAbstractClient } from "./SieveAbstractClient.mjs";
-
 
 /**
  * Implements a websocket based transport.
@@ -69,22 +67,30 @@ class SieveWebSocketClient extends SieveAbstractClient {
   /**
    * @inheritdoc
    */
-  connect(host, port, secure) {
+  connect(url, secure) {
 
     if (this.socket)
       return this;
 
-    this.host = host;
-    this.port = port;
-    this.secure = secure;
+    const regex = /^sieve:\/\/(?<host>[^:]+):(?<port>\d+)(\/(?<endpoint>.*))?$/gs;
+    const match = regex.exec(url);
+
+    if (!match)
+      throw new Error(`Not a valid sieve url ${url}`);
+
+    this.host = match.groups["host"];
+    this.port = match.groups["port"];
+    this.endpoint = match.groups["endpoint"];
 
     this.getLogger().logState(`Connecting to ${this.host}:${this.port} ...`);
 
+    this.secure = secure;
+
     // Create the socket...
-    if (secure)
-      this.socket = new WebSocket(`wss://${host}:${port}/websocket`);
+    if (this.secure)
+      this.socket = new WebSocket(`wss://${this.host}:${this.port}/${this.endpoint}`);
     else
-      this.socket = new WebSocket(`ws://${host}:${port}/websocket`);
+      this.socket = new WebSocket(`ws://${this.host}:${this.port}/${this.endpoint}`);
 
     // ... connect the event listeners.
     this.socket.onopen = (ev) => {

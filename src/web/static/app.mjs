@@ -118,7 +118,7 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
       try {
         const host = await accounts.getAccountById(account).getHost();
 
-        await (sessions.get(account).connect(await host.getHostname(), await host.getPort()));
+        await (sessions.get(account).connect(await host.getUrl()));
 
       } catch (e) {
         // connecting failed for some reason, which means we

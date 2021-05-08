@@ -41,9 +41,6 @@ import {
   SieveTimeOutException
 } from "./SieveExceptions.mjs";
 
-const SIEVE_PORT = 4190;
-
-
 /**
  * This class realizes a manage sieve connection to a remote server.
  * It provides the logic for login, logout, heartbeats, watchdogs and
@@ -475,7 +472,8 @@ class SieveAbstractSession {
     await this.disconnect(true);
 
     this.getLogger().logSession(`SieveAbstractSession: Connecting to referred Server: ${host}:${port}`);
-    return await this.connect(host, port);
+
+    return await this.connect(`sieve://${host}:${port}`);
   }
 
   /**
@@ -546,20 +544,12 @@ class SieveAbstractSession {
   /**
    * An internal method creating a server connection.
    *
-   * @param {string} hostname
-   *   the sieve server's hostname.
-   * @param {string} [port]
-   *   the sieve server's port. If omitted the default port 4190 is used.
+   * @param {string} url
+   *   the sieve url with hostname and port.
    * @returns {SieveSession}
    *   a self reference
    */
-  async connect(hostname, port) {
-
-    if (typeof (hostname) === "undefined" || hostname === null)
-      throw new SieveClientException("No Hostname specified");
-
-    if (typeof (port) === "undefined" || port === null)
-      port = SIEVE_PORT;
+  async connect(url) {
 
     this.createSieve();
 
@@ -575,11 +565,7 @@ class SieveAbstractSession {
     try {
 
       const init = () => {
-        this.getSieve().connect(
-          hostname, port,
-          this.getOption("secure", true),
-          this,
-          null);
+        this.getSieve().connect(url, this.getOption("secure", true));
       };
 
       this.setCapabilities(

@@ -21,6 +21,25 @@ const CONFIG_HOST_PORT = "port";
 class SieveAbstractHost {
 
   /**
+   * Creates a new instance.
+   *
+   * @param {SieveAccount} account
+   *   the account with is associated with this account.
+   */
+  constructor(account) {
+    this.account = account;
+  }
+
+  /**
+   * Returns the sieve url for this account
+   * @returns {string}
+   *   the sieve url as string.
+   */
+  async getUrl() {
+    return `sieve://${await this.getHostname()}:${await this.getPort()}`;
+  }
+
+  /**
    * Gets the hostname for this account
    * @abstract
    *
@@ -60,18 +79,6 @@ class SieveAbstractHost {
  * are identified by URIs.
  */
 class SieveCustomHost extends SieveAbstractHost {
-
-  /**
-   * Creates a new instance.
-   *
-   * @param {SieveAccount} account
-   *   a reference to the parent sieve account.
-   */
-  constructor(account) {
-    super();
-    this.account = account;
-  }
-
 
   /**
    * @inheritdoc

@@ -16,6 +16,8 @@ import { SieveCertValidationException } from "./SieveExceptions.mjs";
 const net = require('net');
 const tls = require('tls');
 
+const SIEVE_PORT = 4190;
+
 /**
  * Uses Node networking to realize a sieve client.
  */
@@ -50,25 +52,25 @@ class SieveNodeClient extends SieveAbstractClient {
   }
 
   /**
-   * Connects to a ManageSieve server.
-   * @param {string} host
-   *   The target hostname or IP address as String
-   * @param {int} port
-   *   The target port as integer
-   * @param {boolean} secure
-   *   If true, a secure socket will be created. This allows switching to a secure
-   *   connection.
-   *
-   * @returns {SieveAbstractClient}
-   *   a self reference
+   * @inheritdoc
    */
-  connect(host, port, secure) {
+  connect(url, secure) {
 
-    if (this.socket !== null)
+    if (this.socket)
       return this;
 
-    this.host = host;
-    this.port = port;
+    const regex = /^sieve:\/\/(?<host>[^:]+)(:(?<port>\d+))?$/gs;
+    const match = regex.exec(url);
+
+    if (!match)
+      throw new Error(`Not a valid sieve url ${url}`);
+
+    this.host = match.groups["host"];
+    this.port = match.groups["port"];
+
+    if ((this.port === null) || (typeof(this.port) === "undefined"))
+      this.port = SIEVE_PORT;
+
     this.secure = secure;
 
     this.socket = net.connect(this.port, this.host);

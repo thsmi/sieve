@@ -43,6 +43,7 @@ Reused from app:
 
 * The proxy creates a secure connection to the sieve server via the manage sieve protocol.
   * As first step the connection to sieve server is secured by calling starttls.
+
   * In case of a successful handshake the proxy sends the initial message to
     the client. It returns the server's capabilities. The STARTTLS message is
     skipped, because the connection is already secured. The SASL mechanisms are

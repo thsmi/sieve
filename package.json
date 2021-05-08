@@ -8,12 +8,12 @@
     "test": "tests"
   },
   "devDependencies": {
-    "bootstrap": "^5.0.0-alpha2",
+    "bootstrap": "^5.0.0",
     "codemirror": "^5.58.3",
-    "electron": "^12.0.2",
+    "electron": "^12.0.6",
     "electron-packager": "^15.2.0",
     "eslint": "^7.15.0",
-    "eslint-plugin-jsdoc": "^33.0.0",
+    "eslint-plugin-jsdoc": "^33.1.0",
     "eslint-plugin-unicorn": "^31.0.0",
     "gulp": "^4.0.0",
     "node-abi": "^2.21.0",

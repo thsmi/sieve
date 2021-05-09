@@ -24,8 +24,6 @@ class ConfigHandler:
 
       data[account.get_id()] = {
         'displayname' : account.get_name(),
-        'host' : account.get_client_host(),
-        'port' : account.get_client_port(),
         'username' : account.get_auth_username(request),
         'authenticate' : account.can_authenticate(),
         'authorize' : account.can_authorize(),

@@ -34,8 +34,8 @@ class WebSocketHandler:
         if not account.can_authenticate():
           print(f"Do Proxy authentication for {account.get_name()}")
           sievesocket.authenticate(
-            account.get_sieve_user(),
-            account.get_sieve_password(),
+            account.get_sieve_user(request),
+            account.get_sieve_password(request),
             account.get_auth_username(request))
 
         # Publish capabilities to client...

@@ -9,8 +9,11 @@ class SieveAccount:
     self._config = config
     self._section = section
 
+  def _has_property(self, name):
+    return name in self._config[self._section]
+
   def _get_property(self, name):
-    if name in self._config[self._section]:
+    if self._has_property(name):
       return self._config[self._section][name]
 
     raise NoSuchPropertyException("Unknown Property "+name)
@@ -25,17 +28,14 @@ class SieveAccount:
   def get_name(self):
     return self._section
 
-  def get_client_host(self):
-    try:
-      return self._get_property("ClientHost")
-    except NoSuchPropertyException:
-      return self.get_sieve_host()
+  def get_sieve_user(self, _request):
+    raise Exception("No user name configured")
 
-  def get_client_port(self):
-    try:
-      return self._get_property("ClientPort")
-    except NoSuchPropertyException:
-      return self.get_sieve_port()
+  def get_sieve_password(self, _request):
+    raise Exception("No password configured")
+
+  def get_auth_username(self, _request):
+    raise Exception("No authorization configured")
 
   def get_sieve_host(self):
     return self._get_property("SieveHost")
@@ -54,16 +54,18 @@ class SieveClientAccount(SieveAccount):
 
   def get_auth_username(self, request):
 
-    if "AuthUser" in self._config[self._section] :
+    if self._has_property("AuthUser"):
       return self._config[self._section]["AuthUser"]
 
-    if request.get_header("REMOTE_USER") is None:
-      return request.get_header("REMOTE_USER")
+    header = self._get_property("AuthUserHeader")
 
-    raise NoSuchPropertyException("Invalid username")
+    if request.get_header(header) is None:
+      raise NoSuchPropertyException(f"No header {header} in request.")
+
+    return request.get_header(header)
 
   def can_authorize(self):
-    return self._config[self._section].getboolean("AuthClientAuthorization", fallback=False )
+    return self._config[self._section].getboolean("AuthClientAuthorization", fallback=False)
 
   def can_authenticate(self):
     if self._config[self._section]["AuthType"].lower() == "client":
@@ -71,24 +73,53 @@ class SieveClientAccount(SieveAccount):
 
     return False
 
-class SieveServerAccount(SieveAccount):
+class SieveTokenAccount(SieveAccount):
 
   def get_auth_username(self, request):
+    return self.get_sieve_user(request)
 
+  def get_sieve_user(self, request):
 
-    if request.get_header("REMOTE_USER") is not None:
-      return request.get_header("REMOTE_USER")
+    header = self._get_property("AuthUserHeader")
+
+    if request.get_header(header) is None:
+      raise NoSuchPropertyException(f"No header {header} in request.")
+
+    return request.get_header(header)
+
+  def get_sieve_password(self, request):
+
+    header = self._get_property("AuthPasswordHeader")
+
+    if request.get_header(header) is None:
+      raise NoSuchPropertyException(f"No header {header} in request.")
+
+    return request.get_header(header)
+
+class SieveAuthorizationAccount(SieveAccount):
+
+  def get_sieve_user(self, _request):
+    return self._get_property("SieveUser")
+
+  def get_sieve_password(self, _request):
+    return self._get_property("SievePassword")
+
+  def get_auth_username(self, request):
+    """
+    Returns the request authorization if existing and if not the sections
+    AuthUser settings.
+    """
+
+    if self._has_property("AuthUserHeader"):
+      header = self._get_property("AuthUserHeader")
+
+      if request.get_header(header) is not None:
+        return request.get_header(header)
 
     ## FIXME only temporarily disabled
     #raise NoSuchPropertyException("Invalid username")
-
     return self._config[self._section]["AuthUser"]
 
-  def get_sieve_user(self):
-    return self._get_property("SieveUser")
-
-  def get_sieve_password(self):
-    return self._get_property("SievePassword")
 
 class Config:
   def __init__(self):
@@ -121,8 +152,14 @@ class Config:
     if authtype == "client":
       return SieveClientAccount(section, self._config)
 
-    if authtype == "server":
-      return SieveServerAccount(section, self._config)
+    if authtype == "token":
+      return SieveTokenAccount(section, self._config)
+
+    if authtype == "authorization":
+      return SieveAuthorizationAccount(section, self._config)
+
+    #if authtype == "server":
+    #  return SieveServerAccount(section, self._config)
 
     raise NoSuchPropertyException(f"Invalid account type {authtype}")
 

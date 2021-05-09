@@ -42,7 +42,7 @@ class HttpRequest:
   def wait(self, context) -> None:
 
     while True:
-      ready_to_read, ready_to_write, in_error = select.select(
+      ready_to_read, _ready_to_write, in_error = select.select(
         [context.socket], [], [context.socket])
 
       if context.socket in in_error:

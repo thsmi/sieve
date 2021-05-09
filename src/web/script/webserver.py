@@ -93,7 +93,7 @@ class WebServer:
 
       while True:
         # accept connections from outside
-        clientsocket, address = sock.accept()
+        clientsocket, _address = sock.accept()
 
 
         connstream = ssl_context.wrap_socket(

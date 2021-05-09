@@ -67,7 +67,7 @@ class SieveSocket:
 
   def wait(self):
     while True:
-      ready_to_read, ready_to_write, in_error = select.select(
+      ready_to_read, _ready_to_write, in_error = select.select(
         [self.__socket], [], [self.__socket])
 
       if self.__socket in in_error:

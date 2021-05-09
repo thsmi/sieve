@@ -27,7 +27,7 @@ backend with a reverse proxy.
   No external python packages are required, a raw python is sufficient.
 
 * Optional, create I python virtual env.
-  A (venv or virtual environment)[https://docs.python.org/3/tutorial/venv.html]
+  A [venv or virtual environment](https://docs.python.org/3/tutorial/venv.html)
   is a sandboxed python runtime environment which will isolate the local environment
   from the global  python installation. It is shipped by default no external
   packages needed.
@@ -54,7 +54,6 @@ backend with a reverse proxy.
 
 * Start the application
   All you need to do is calling ```python main.py```
-
 
 ## Configuration
 
@@ -95,7 +94,6 @@ Keep in mind as the proxy acts like a man in the middle, thus only unencrypted
 SASL PLAIN can be used for authentication. Which means passwords are transferred
 in plain text. Therefore you should ensure the connection is secured via HTTPs.
 
-
 #### Server Side Reverse Proxy Authentication
 
 The reverse proxy injects a username and a session token/password into the
@@ -110,7 +108,6 @@ The headers which contain the password and the username can be configured via
 ```AuthUserHeader``` and ```AuthPasswordHeader```.
 
 You activate this by setting ```AuthType``` to ```token```.
-
 
 #### Server Side Authorization
 

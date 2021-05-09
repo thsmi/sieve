@@ -5,7 +5,7 @@ class MessagePump:
 
   def wait(self, server, client):
 
-    ready_to_read, ready_to_write, in_error \
+    ready_to_read, _ready_to_write, in_error \
       = select.select([server, client], [], [server, client])
 
     if server in in_error:

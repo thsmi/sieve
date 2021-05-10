@@ -230,6 +230,7 @@
         "unicorn/no-null": "off",
         "unicorn/no-for-loop":"off",
         "unicorn/consistent-destructuring" : "off",
+        "unicorn/numeric-separators-style" : "off",
 
         // Rules which ae broken or design flaws which cannot work.
         "unicorn/prefer-array-some" : "off",
@@ -241,7 +242,8 @@
         "unicorn/prefer-module" : "off",
 
         // Currently off requires a newer node version
-        "unicorn/prefer-node-protocol" : "off"
+        "unicorn/prefer-node-protocol" : "off",
+        "unicorn/prefer-array-flat" : "off"
 
    }
 }

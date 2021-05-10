@@ -95,28 +95,28 @@ class SieveWebSocketClient extends SieveAbstractClient {
       this.socket = new WebSocket(`ws://${this.host}:${this.port}/${this.endpoint}`);
 
     // ... connect the event listeners.
-    this.socket.onopen = (ev) => {
+    this.socket.addEventListener('open', (ev) => {
       this.onOpen(ev);
-    };
+    });
 
-    this.socket.onmessage = (ev) => {
+    this.socket.addEventListener('message', (ev) => {
       const data = Array.prototype.slice.call(
         new Uint8Array(new TextEncoder("UTF-8").encode(ev.data)));
 
       this.onReceive(data);
-    };
+    });
 
-    this.socket.onerror = async (ev) => {
+    this.socket.addEventListener('error', async (ev) => {
       if ((this.listener) && (this.listener.onError))
         await this.listener.onError(ev.message);
-    };
+    });
 
-    this.socket.onclose = async () => {
+    this.socket.addEventListener('close', async () => {
       this.disconnect();
 
       if ((this.listener) && (this.listener.onDisconnect))
         await this.listener.onDisconnect();
-    };
+    });
 
     return this;
   }

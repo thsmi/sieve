@@ -137,6 +137,7 @@ function packageManageSieveUiApp() {
   const base = path.join(BASE_DIR_APP, "libs/managesieve.ui");
 
   return gulp.src([
+    `${BASE_DIR_APP}/css/navbar-top-fixed.css`,
     path.join(base, "/tabs/*.mjs"),
     path.join(base, "/tabs/*.html"),
     path.join(base, "/utils/SieveIpcClient.mjs")

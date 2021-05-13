@@ -10,6 +10,8 @@
 const RESPONSE_CODE_NAME = 0;
 const RESPONSE_CODE_EXTENSION = 1;
 
+import { SieveUrl } from "./SieveUrl.mjs";
+
 /**
  * The response codes is a string with optional additional arguments
  */
@@ -91,47 +93,17 @@ class SieveResponseCodeReferral extends SieveResponseCode {
     if (this.code[RESPONSE_CODE_NAME].toUpperCase() !== "REFERRAL")
       throw new Error("Malformed REFERRAL Response Code");
 
-    // We should have received something similar to
-    //   REFERRAL "sieve://c3.mail.example.com"
-
-    // the quoted text contains the authority
-    // authority = [ userinfo "@" ] host [ ":" port ]
-    const uri = this.code[RESPONSE_CODE_EXTENSION];
-
-    // remove the sieve:// scheme
-    this.hostname = uri.slice("sieve://".length);
-
-    // cleanup any script urls.
-    if (this.hostname.includes("/"))
-      this.hostname = this.hostname.slice(0, this.hostname.indexOf("/"));
-
-    if (!this.hostname.includes(":"))
-      return;
-
-    // extract the port
-    this.port = this.hostname.slice(this.hostname.indexOf(":") + ":".length);
-    this.hostname = this.hostname.slice(0, this.hostname.indexOf(":"));
+    this.url = new SieveUrl(this.code[RESPONSE_CODE_EXTENSION]);
   }
 
   /**
-   * Returns the hostname of the referred server.
+   * Gets the sieve url to which the server referred the client.
    *
-   * @returns {string}
-   *   the hostname as string.
+   * @returns {SieveUrl}
+   *   the url to which the connection was referred.
    */
-  getHostname() {
-    return this.hostname;
-  }
-
-  /**
-   * Returns the port of the referred server. If the server did not specify
-   * any Port null is returned.
-   *
-   * @returns {int}
-   *   the port number or null
-   */
-  getPort() {
-    return this.port;
+  getUrl() {
+    return this.url;
   }
 }
 

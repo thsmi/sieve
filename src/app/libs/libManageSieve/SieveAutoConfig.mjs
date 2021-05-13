@@ -18,6 +18,7 @@ const LOG_LEVEL = 255;
 import { SieveLogger } from "./SieveLogger.mjs";
 import { Sieve } from "./SieveClient.mjs";
 import { SieveInitRequest } from "./SieveRequest.mjs";
+import { SieveUrl } from "./SieveUrl.mjs";
 
 /**
  * Tries to detect the correct sieve port.
@@ -98,7 +99,7 @@ class SieveAutoConfig {
 
       sieve.addListener(listener);
 
-      sieve.connect(`sieve://${this.hostname}:${port}`, false);
+      sieve.connect(new SieveUrl(`sieve://${this.hostname}:${port}`), false);
     });
   }
 }

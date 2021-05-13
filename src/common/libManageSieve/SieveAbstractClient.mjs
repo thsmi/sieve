@@ -755,7 +755,7 @@ class SieveAbstractClient {
    * Connects to a ManageSieve server.
    * @abstract
    *
-   * @param {string} url
+   * @param {string|SieveUrl} url
    *   the url with hostname and port
    * @param {boolean} secure
    *   If true, a secure socket will be created. This allows switching to a secure

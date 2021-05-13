@@ -9,14 +9,13 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+import { SieveUrl } from "./SieveUrl.mjs";
 import { SieveAbstractClient } from "./SieveAbstractClient.mjs";
 
 import { SieveCertValidationException } from "./SieveExceptions.mjs";
 
 const net = require('net');
 const tls = require('tls');
-
-const SIEVE_PORT = 4190;
 
 /**
  * Uses Node networking to realize a sieve client.
@@ -67,17 +66,11 @@ class SieveNodeClient extends SieveAbstractClient {
     if (this.socket)
       return this;
 
-    const regex = /^sieve:\/\/(?<host>[^:]+)(:(?<port>\d+))?$/gs;
-    const match = regex.exec(url);
+    if (typeof url === 'string' || url instanceof String)
+      url = new SieveUrl(url);
 
-    if (!match)
-      throw new Error(`Not a valid sieve url ${url}`);
-
-    this.host = match.groups["host"];
-    this.port = match.groups["port"];
-
-    if ((this.port === null) || (typeof(this.port) === "undefined"))
-      this.port = SIEVE_PORT;
+    this.host = url.getHost();
+    this.port = url.getPort();
 
     this.secure = secure;
     this.secured = false;

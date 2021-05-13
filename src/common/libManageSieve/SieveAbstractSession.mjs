@@ -464,21 +464,20 @@ class SieveAbstractSession {
    * The client's job is to disconnects and reconnect to the referred
    * server's hostname and port.
    *
-   * @param {string} host
-   *   the new hostname
-   * @param {int} port
-   *   the new hostname's port
+   * @param {SieveUrl} url
+   *   the new server's connection url.
    *
    * @returns {SieveAbstractSession}
    *   the response for the first request or an exception in case of an error.
    */
-  async refer(host, port) {
+  async refer(url) {
     this.getLogger().logSession(`SieveAbstractSession: Disconnecting old connection`);
     await this.disconnect(true);
 
-    this.getLogger().logSession(`SieveAbstractSession: Connecting to referred Server: ${host}:${port}`);
+    this.getLogger().logSession(
+      `SieveAbstractSession: Connecting to referred Server: ${url.getHost()}:${url.getPort()}`);
 
-    return await this.connect(`sieve://${host}:${port}`);
+    return await this.connect(url);
   }
 
   /**
@@ -505,8 +504,10 @@ class SieveAbstractSession {
 
       if ((ex instanceof SieveReferralException) && (this.canRefer)) {
         this.getLogger().logSession(`Referral received`);
-        this.getLogger().logSession(`Switching to ${ex.getHostname()}:${ex.getPort()}`);
-        await this.refer(ex.getHostname(), ex.getPort());
+        this.getLogger().logSession(
+          `Switching to ${ex.getUrl().getHost()}:${ex.getUrl().getPort()}`);
+
+        await this.refer(ex.getUrl());
         return await this.promisify(request, init);
       }
 
@@ -586,9 +587,10 @@ class SieveAbstractSession {
 
       // In case we got a referral we renegotiate the whole authentication
       this.getLogger().logSession(`Referral received during authentication`);
-      this.getLogger().logSession(`Switching to ${ex.getHostname()}:${ex.getPort()}`);
+      this.getLogger().logSession(
+        `Switching to ${ex.getUrl().getHost()}:${ex.getUrl().getPort()}`);
 
-      await this.refer(ex.getHostname(), ex.getPort());
+      await this.refer(ex.getUrl());
     } finally {
       this.enableReferrals(true);
     }

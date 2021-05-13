@@ -10,6 +10,7 @@
  */
 
 import { SieveAbstractClient } from "./SieveAbstractClient.mjs";
+import { SieveWebSocketUrl } from "./SieveWebSocketUrl.mjs";
 
 /**
  * Implements a websocket based transport.
@@ -73,15 +74,12 @@ class SieveWebSocketClient extends SieveAbstractClient {
     if (this.socket)
       return this;
 
-    const regex = /^sieve:\/\/(?<host>[^:]+):(?<port>\d+)(\/(?<endpoint>.*))?$/gs;
-    const match = regex.exec(url);
+    if (typeof url === 'string' || url instanceof String)
+      url = new SieveWebSocketUrl(url);
 
-    if (!match)
-      throw new Error(`Not a valid sieve url ${url}`);
-
-    this.host = match.groups["host"];
-    this.port = match.groups["port"];
-    this.endpoint = match.groups["endpoint"];
+    this.host = url.getHost();
+    this.port = url.getPort();
+    this.endpoint = url.getEndpoint();
 
     this.getLogger().logState(`Connecting to ${this.host}:${this.port} ...`);
 

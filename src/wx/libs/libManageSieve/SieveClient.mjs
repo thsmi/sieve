@@ -27,21 +27,6 @@ import { SieveUrl } from "./SieveUrl.mjs";
  */
 class SieveMozClient extends SieveAbstractClient {
 
-
-  /**
-   * Creates a new instance
-   * @param {SieveLogger} logger
-   *   the logger which should be used.
-   */
-  constructor(logger) {
-
-    super();
-
-    this._logger = logger;
-    this.secure = true;
-    this.secured = false;
-  }
-
   /**
    * @inheritdoc
    */
@@ -69,27 +54,6 @@ class SieveMozClient extends SieveAbstractClient {
     await browser.sieve.socket.startTLS(this.socket);
 
     this.secured = true;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  getLogger() {
-    return this._logger;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  isSecure() {
-    return this.secure;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  isSecured() {
-    return this.secured;
   }
 
   /**

@@ -28,12 +28,9 @@ class SieveWebSocketClient extends SieveAbstractClient {
    */
   constructor(logger) {
 
-    super();
+    super(logger);
 
     this.socket = null;
-    this._logger = logger;
-    this.secure = true;
-    this.secured = false;
   }
 
 
@@ -43,27 +40,6 @@ class SieveWebSocketClient extends SieveAbstractClient {
    **/
   async startTLS() {
     throw new Error("WebSockets do not support starttls");
-  }
-
-  /**
-   * @inheritdoc
-   */
-  getLogger() {
-    return this._logger;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  isSecure() {
-    return this.secure;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  isSecured() {
-    return this.secured;
   }
 
   /**

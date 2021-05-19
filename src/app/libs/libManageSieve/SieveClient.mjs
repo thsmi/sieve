@@ -22,40 +22,33 @@ const tls = require('tls');
  */
 class SieveNodeClient extends SieveAbstractClient {
 
-
   /**
-   * Creates a new instance
-   * @param {AbstractLogger} logger
-   *   the logger instance to use
-   **/
+   * @inheritdoc
+   */
   constructor(logger) {
-    super();
+
+    super(logger);
 
     this.tlsSocket = null;
-    this._logger = logger;
-    this.secure = true;
-    this.secured = false;
   }
 
   /**
    * @inheritdoc
    */
-  isSecure() {
-    return this.secure;
-  }
+  isAlive() {
+    if (this.isSecured() && !this.tlsSocket)
+      return false;
 
-  /**
-   * @inheritdoc
-   */
-  isSecured() {
-    return this.secured;
-  }
+    if (this.isSecured() && this.tlsSocket.destroyed)
+      return false;
 
-  /**
-   * @inheritdoc
-   */
-  getLogger() {
-    return this._logger;
+    if (!this.socket)
+      return false;
+
+    if (this.socket.destroyed)
+      return false;
+
+    return true;
   }
 
   /**

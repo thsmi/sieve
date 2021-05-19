@@ -143,11 +143,16 @@ class MessageQueue {
 
   /**
    * Creates a new message queue instance.
+   *
+   * @param {SieveAbstractLogger} logger
+   *   the component's logger instance.
    */
-  constructor() {
+  constructor(logger) {
     this.queued = [];
     this.locked = null;
     this.canceled = false;
+
+    this.logger = logger;
   }
 
   /**
@@ -295,10 +300,13 @@ class DoubleBuffer {
 
   /**
    * Creates a new instance.
+   * @param {SieveAbstractLogger} logger
+   *   the component's logger instance.
    */
-  constructor() {
+  constructor(logger) {
     this.writer = [];
     this.reader = [];
+    this.logger = logger;
   }
 
   /**
@@ -407,14 +415,22 @@ class SieveAbstractClient {
 
   /**
    * Creates a new instance
-   */
-  constructor() {
+   *
+   * @param {AbstractLogger} logger
+   *   the logger instance to use
+   **/
+  constructor(logger) {
+    this.logger = logger;
+
+    this.secure = true;
+    this.secured = false;
+
     this.host = null;
     this.port = null;
 
     this.socket = null;
-    this.buffer = new DoubleBuffer();
-    this.queue = new MessageQueue();
+    this.buffer = new DoubleBuffer(logger);
+    this.queue = new MessageQueue(logger);
 
     this.requests = [];
 
@@ -428,11 +444,9 @@ class SieveAbstractClient {
    * Gets a reference to the current logger
    * @returns {SieveLogger}
    *   the current logger
-   *
-   * @abstract
    */
   getLogger() {
-    throw new Error("Implement getLogger()");
+    return this.logger;
   }
 
   /**
@@ -452,24 +466,21 @@ class SieveAbstractClient {
    * Check is the connection supports any connection security.
    * It could be either disabled by the client or the server.
    *
-   * @abstract
-   *
    * @returns {boolean}
    *   true in case the connection can be or is secure otherwise false
    */
   isSecure() {
-    throw new Error("Implement isSecure()");
+    return this.secure;
   }
 
   /**
    * Check if the socket was upgraded to a secure connection.
-   * @abstract
    *
    * @returns {boolean}
    *   true in case the socket communicates secured otherwise false.
    */
   isSecured() {
-    throw new Error("Implement isSecured()");
+    return this.secured;
   }
 
   /**

@@ -422,70 +422,7 @@ class SieveAbstractClient {
 
     this.timeoutTimer = new SieveTimer();
     this.idleTimer = new SieveTimer();
-
-    // out of the box we support the following manage sieve commands...
-    // ... the server might advertise additional commands they are added ...
-    // ... or removed by the set compatibility method
-    this.compatibility = {
-      authenticate: true,
-      starttls: true,
-      logout: true,
-      capability: true,
-      // until now we do not support havespace...
-      // havespace  : false,
-      putscript: true,
-      listscripts: true,
-      setactive: true,
-      getscript: true,
-      deletescript: true
-    };
   }
-
-  /**
-   * Gives this socket a hint, whether a sieve commands is supported or not.
-   *
-   * Setting the corresponding attribute to false, indicates, that a sieve command
-   * should not be used. As this is only an advice, such command will still be
-   * processed by this sieve socket.
-   *
-   * By default the socket seek maximal compatibility.
-   *
-   * @param {object} capabilities commands
-   *   the supported sieve commands as an associative array. Attribute names have
-   *   to be in lower case, the values can be either null, undefined, true or false.
-   *
-   * @example
-   * sieve.setCompatibility({checkscript:true, rename:true, starttls:false});
-   */
-  setCompatibility(capabilities) {
-    for (const capability in capabilities)
-      this.compatibility[capability] = capabilities[capability];
-  }
-
-  /**
-   * Returns a list of supported sieve commands. As the socket seeks
-   * maximal compatibility, it always suggest the absolute minimal sieve
-   * command set defined in the rfc. This value is only a hint, and does
-   * not represent the server's capabilities!
-   *
-   * A command is most likely unsupported if the corresponding attribute is null and
-   * disabled if the the attribute is false
-   *
-   * You should override these defaults as soon as possible.
-   *
-   * @returns {Struct}
-   *   an associative array structure indicating supported sieve command.
-   *   Unsupported commands are indicated by a null, disabled by false value...
-   *
-   * @example
-   * if (sieve.getCompatibility().putscript) {
-   *   // put script command supported...
-   * }
-   */
-  getCompatibility() {
-    return this.compatibility;
-  }
-
 
   /**
    * Gets a reference to the current logger

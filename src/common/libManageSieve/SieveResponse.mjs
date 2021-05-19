@@ -333,7 +333,11 @@ class SieveCapabilitiesResponse extends SieveSimpleResponse {
       notify: {},
       language: "i-default",
 
-      compatibility: {}
+      compatibility: {
+        renamescript : false,
+        noop : false,
+        checkscript : false
+      }
     };
   }
 
@@ -547,18 +551,37 @@ class SieveCapabilitiesResponse extends SieveSimpleResponse {
   getLanguage() { return this.details.language; }
 
   /**
-   * Returns a list with sieve commands which are supported by this implementation
-   * and are not part of the absolute minimal ManageSieve support.
+   * Checks if the "checkscript" command is supported. It checks a script for
+   * syntax errors in an atomic operation.
    *
-   * The server advertises such additional commands either by explicitly
-   * naming the command or by using the compatibility level capability.
-   *
-   * Examples are RENAME, NOOP and CHECKSCRIPT.
-   *
-   * @returns {object}
-   *   an associative array containing additional sieve commands
+   * @returns {boolean}
+   *   true in case the server is capable of running checkscript.
    */
-  getCompatibility() { return this.details.compatibility; }
+  canCheckScript() {
+    return this.details.compatibility.checkscript;
+  }
+
+  /**
+   * Checks if the "renamescript" command is supported. It renames a script
+   * in an atomic operation.
+   *
+   * @returns {boolean}
+   *   true in case the server is capable of running rename script.
+   */
+  canRenameScript() {
+    return this.details.compatibility.renamescript;
+  }
+
+  /**
+   * Checks if the "noop" command is supported. It is used as keep alive
+   * ping.
+   *
+   * @returns {boolean}
+   *   true in case the server is capable of running rename script.
+   */
+  canNoop() {
+    return this.details.compatibility.noop;
+  }
 
   /**
    * Gets the name of the logged in user.

@@ -41,6 +41,10 @@ import {
   SieveTimeOutException
 } from "./SieveExceptions.mjs";
 
+import {
+  SieveCompatibility
+} from "./SieveCompatibility.mjs";
+
 /**
  * This class realizes a manage sieve connection to a remote server.
  * It provides the logic for login, logout, heartbeats, watchdogs and
@@ -68,6 +72,8 @@ class SieveAbstractSession {
     this.options = options;
     this.listeners = {};
     this.sieve = null;
+
+    this.compatibility = new SieveCompatibility();
   }
 
   /**
@@ -105,6 +111,20 @@ class SieveAbstractSession {
   }
 
   /**
+   * The server announces capabilities after the initial connect as well as
+   * after a successful upgrade to a secure connection.
+   *
+   * This capabilities are used to determine the a compatibility layer between
+   * the server and the client.
+   *
+   * @returns {SieveCompatibility}
+   *   the object storing the compatibility information.
+   */
+  getCompatibility() {
+    return this.compatibility;
+  }
+
+  /**
    * The server may close our connection after being idle for too long.
    * This can be prevented by sending regular keep alive packets.
    *
@@ -138,26 +158,6 @@ class SieveAbstractSession {
 
     // TODO Do we really need this?
     await this.disconnect(true);
-  }
-
-  /**
-   * Binds the capabilities to the sieve object.
-   *
-   * @param {object} capabilities
-   *   a struct containing the capabilities.
-   */
-  setCapabilities(capabilities) {
-
-    this.getSieve().setCompatibility(capabilities.getCompatibility());
-
-    // FIXME we should use a getter and setter...
-    this.getSieve().capabilities = {
-      tls: capabilities.getTLS(),
-      extensions: capabilities.getExtensions(),
-      sasl: capabilities.getSasl(),
-      implementation: capabilities.getImplementation(),
-      version: capabilities.getVersion()
-    };
   }
 
   /**
@@ -205,7 +205,7 @@ class SieveAbstractSession {
       mechanism = "default";
 
     if (mechanism === "default")
-      mechanism = [...this.getSieve().capabilities.sasl];
+      mechanism = this.getCompatibility().getSaslMechanisms();
     else
       mechanism = [mechanism];
 
@@ -382,7 +382,7 @@ class SieveAbstractSession {
     if (this.getSieve().isSecured())
       return;
 
-    if (!this.getSieve().capabilities.tls)
+    if (!this.getCompatibility().canStartTLS())
       throw new SieveClientException("Server does not support a secure connection.");
 
     await this.sendRequest(new SieveStartTLSRequest());
@@ -398,7 +398,7 @@ class SieveAbstractSession {
     const capabilities = await this.sendRequest(new SieveCapabilitiesRequest());
     this.sendRequest(new SieveInitRequest().makeOptional());
 
-    this.setCapabilities(capabilities);
+    this.getCompatibility().update(capabilities);
   }
 
   /**
@@ -574,7 +574,7 @@ class SieveAbstractSession {
         this.getSieve().connect(url, this.getOption("secure", true));
       };
 
-      this.setCapabilities(
+      this.getCompatibility().update(
         await this.sendRequest(new SieveInitRequest(), init));
 
       await this.startTLS();
@@ -661,7 +661,7 @@ class SieveAbstractSession {
    */
   async renameScript(oldName, newName) {
 
-    if (this.getSieve().getCompatibility().renamescript) {
+    if (this.getCompatibility().canRenameScript()) {
       await this.sendRequest(new SieveRenameScriptRequest(oldName, newName));
       return;
     }
@@ -767,7 +767,7 @@ class SieveAbstractSession {
 
     // Use the CHECKSCRIPT command when possible, otherwise we need to ...
     // ... fallback to the PUTSCRIPT/DELETESCRIPT Hack...
-    if (this.getSieve().getCompatibility().checkscript) {
+    if (this.getCompatibility().canCheckScript()) {
       await this.sendRequest(new SieveCheckScriptRequest(script));
       return;
     }
@@ -799,7 +799,7 @@ class SieveAbstractSession {
 
     // In case th server does not support noop we fallback
     // to a capability request as suggested in the rfc.
-    if (!this.getSieve().getCompatibility().noop) {
+    if (!this.getCompatibility().canNoop()) {
       await this.capabilities();
     }
 

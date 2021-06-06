@@ -75,11 +75,12 @@ class SieveMozClient extends SieveAbstractClient {
     this.socket = await (browser.sieve.socket.create(
       this.host, this.port, this.getLogger().level()));
 
-    await (browser.sieve.socket.onData.addListener(async (bytes) => {
-      await super.onReceive(bytes);
+    await (browser.sieve.socket.onData.addListener((bytes) => {
+      this.onData(bytes);
     }, this.socket));
 
-    await (browser.sieve.socket.onError.addListener((error) => {
+    await (browser.sieve.socket.onError.addListener(async (error) => {
+      this.getLogger().logState(`SieveClient: OnError (Connection ${this.host}:${this.port})`);
 
       // Exceptions can't be transferred between experiments and background pages
       // This means we need to convert the error object into an exception.
@@ -91,11 +92,13 @@ class SieveMozClient extends SieveAbstractClient {
         error = new SieveException(`Socket failed without providing an error code.`);
 
       if ((this.listener) && (this.listener.onError))
-        (async () => { await this.listener.onError(error); })();
+        await this.listener.onError(error);
     }, this.socket));
 
-    await (browser.sieve.socket.onClose.addListener(() => {
-      this.disconnect();
+    await (browser.sieve.socket.onClose.addListener(async () => {
+      this.getLogger().logState(`SieveClient: OnClose (Connection ${this.host}:${this.port})`);
+
+      await this.disconnect(new Error("Server closed connection unexpectedly"));
     }, this.socket));
 
     await (browser.sieve.socket.connect(this.socket));

@@ -125,7 +125,7 @@ class LockedMessageQueue {
    * @param {object} reason
    *   the reason why the message queue was abandoned. Typically an exception.
    */
-  shutdown(reason) {
+  drain(reason) {
     for (const item of this.items)
       item.abandon(reason);
   }
@@ -227,13 +227,13 @@ class MessageQueue {
    * @returns {MessageQueue}
    *   a self reference.
    */
-  shutdown(reason) {
+  drain(reason) {
 
     if (this.isLocked())
-      this.getLock().shutdown(reason);
+      this.getLock().drain(reason);
 
-    while (this.queued.length)
-      this.queued.shift().abandon(reason);
+    for (const item of this.queued)
+      item.abandon(reason);
 
     return this;
   }
@@ -249,6 +249,18 @@ class MessageQueue {
       return false;
 
     return (this.queued.length === 0);
+  }
+
+  /**
+   * Calculates the current overall queue length.
+   * @returns {int}
+   *   the number of elements inside the locked and unlocked queue.
+   */
+  length() {
+    if (this.isLocked())
+      return this.locked.length() + this.queued.length;
+
+    return this.queued.length;
   }
 
   /**
@@ -574,8 +586,7 @@ class SieveAbstractClient {
 
     // then restart the timeout timer.
     this.getTimeoutTimer().start(
-      () => { this.onTimeout(); },
-      this.getTimeoutWait());
+      () => { this.onTimeout(); }, this.getTimeoutWait());
   }
 
   /**
@@ -773,16 +784,47 @@ class SieveAbstractClient {
    * @param {Error} [reason]
    *   the optional reason why the request was canceled.
    */
-  cancel(reason) {
+  async drain(reason) {
 
-    this.getLogger().logState(`[SieveAbstractClient:cancel()] Shutting down message queue ${reason}`);
+    this.getLogger().logState(
+      `[SieveAbstractClient:cancel()] Draining message queue ${reason}`);
 
-    // Mark the queue as canceled...
-    this.queue.shutdown(reason);
+    if (this.queue.isEmpty()) {
+      this.getLogger().logState(
+        `[SieveAbstractClient:cancel()] Skipping, request queue is empty`);
+      return;
+    }
 
-    // ... and then retrigger the queue with an empty message.
-    // does not hurt...
-    this.onReceive([]);
+    // Flush and process the remaining buffer before draining.
+    if (this.buffer.length()) {
+      this.getLogger().logState(
+        `[SieveAbstractClient:cancel()] Flushing receive buffer.`);
+
+      await this.receive();
+    }
+
+    // Shutdown all pending requests...
+    this.getLogger().logState(
+      `[SieveAbstractClient:cancel()] Start, draining the request queue...`);
+    this.queue.drain(reason);
+
+
+    this.getLogger().logState(
+      `[SieveAbstractClient:cancel()] ... ${this.queue.length()} requests pending.`);
+
+    // Then drain the messages, by calling repeatedly empty messages until the
+    // message queue is empty.
+    await this.receive();
+
+    if (this.queue.isEmpty()) {
+      this.getLogger().logState(
+        `[SieveAbstractClient:cancel()] Message queue drained.`);
+      return;
+    }
+
+    this.getLogger().logState(
+      `[SieveAbstractClient:cancel()] Retrying still ${this.queue.length()} requests pending.`);
+    await this.drain(reason);
   }
 
   /**
@@ -804,7 +846,7 @@ class SieveAbstractClient {
       this.shutdownLock.acquire();
       this.getLogger().logState("[SieveAbstract:disconnect()] Acquired lock");
 
-    this.cancel(reason);
+      await this.drain(reason);
 
       if (!this.socket) {
         this.getLogger().logState(`[SieveAbstract:disconnect()] ... no valid socket`);
@@ -858,7 +900,7 @@ class SieveAbstractClient {
 
     this.onStopTimeout();
 
-    this.queue.shutdown(new Error("Timeout"));
+    this.queue.drain(new Error("Timeout"));
 
     return;
   }
@@ -887,12 +929,13 @@ class SieveAbstractClient {
 
   /**
    * Called when data was received on the socket.
+   * It queues the data into the buffer and asynchronously calls receive.
+   * So that it can be processed of the main loop.
    *
    * @param {byte[]} data
    *   the data received.
    */
-  async onReceive(data) {
-
+  onData(data) {
     this.getLogger().logState("[SieveAbstractClient:onReceive] Starting processing received data...");
 
     if (this.getLogger().isLevelStream())
@@ -905,12 +948,22 @@ class SieveAbstractClient {
     this.getLogger().logState("[SieveAbstractClient:onReceive] ... add data to buffer...");
     this.buffer.write(data);
 
-    // is a request handler waiting?
+    // Schedule processing the received data.
+    (async () => { await this.receive(); })();
+  }
+
+  /**
+   * Called whenever received data should be processed.
+   */
+  async receive() {
+
+    // we can skip in case no request are waiting.
     if (this.queue.isEmpty()) {
       this.getLogger().logState("[SieveAbstractClient:onReceive] ... skipping, no request handler ready.");
       return;
     }
 
+    // Same applies if the message queue is busy.
     if (this.queue.isLocked()) {
       this.getLogger().logState("[SieveAbstractClient:onReceive] ... skipping queue is locked.");
       return;
@@ -931,16 +984,20 @@ class SieveAbstractClient {
 
         const request = lock.getNext();
 
-        if (request.isAbandoned()) {
-          this.getLogger().logState("[SieveAbstractClient:onReceive] ... skipping abandoned request ...");
-          await request.onAbandoned();
-          this.buffer.clear();
-          lock.trunc();
-          continue;
-        }
-
-        // We can bail out in case we ran out of data
+        // We take a shortcut in case we ran out of data.
         if (!this.buffer.length()) {
+
+          // In case the request is abandoned we lost the connection and are
+          // draining the message queue which makes it unlikely that new data
+          // arrives.
+          if (request.isAbandoned()) {
+            this.getLogger().logState("[SieveAbstractClient:onReceive] ... skipping abandoned request ...");
+            await request.onAbandon();
+            lock.trunc();
+            continue;
+          }
+
+          // In any other case we just bail out and wait for more data.
           this.getLogger().logState("[SieveAbstractClient:onReceive] ... ran out of data, waiting for more");
           this.onStartTimeout();
           return;

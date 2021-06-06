@@ -238,6 +238,9 @@ class SieveAbstractRequest {
    *   the optional reason why the request was abandoned.
    */
   abandon(reason) {
+    if (this.isAbandoned())
+      return;
+
     this.abandoned = true;
     this.reason = reason;
   }
@@ -249,7 +252,7 @@ class SieveAbstractRequest {
    *   true in case the request is abandoned otherwise false.
    */
   isAbandoned() {
-    return this.aborted;
+    return this.abandoned;
   }
 
   /**

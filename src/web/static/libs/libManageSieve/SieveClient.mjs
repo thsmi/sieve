@@ -77,12 +77,13 @@ class SieveWebSocketClient extends SieveAbstractClient {
       const data = Array.prototype.slice.call(
         new Uint8Array(new TextEncoder("UTF-8").encode(ev.data)));
 
-      this.onReceive(data);
+      this.onData(data);
     });
 
-    this.socket.addEventListener('error', async (ev) => {
+    this.socket.addEventListener('error', async () => {
+      // The error event does not contain any useful information.
       if ((this.listener) && (this.listener.onError))
-        await this.listener.onError(ev.message);
+        await this.listener.onError(new Error("Websocket connection threw an error"));
     });
 
     this.socket.addEventListener('close', async () => {

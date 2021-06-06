@@ -70,16 +70,22 @@ class SieveNodeClient extends SieveAbstractClient {
 
     this.socket = net.connect(this.port, this.host);
 
-    this.socket.on('data', async (data) => { await this.onReceive(data); });
-    this.socket.on('error', (error) => {
+    this.socket.on('data', async (data) => {
+      this.onData(data);
+    });
+
+    this.socket.on('error', async(error) => {
       this.getLogger().logState(`SieveClient: OnError (Connection ${this.host}:${this.port})`);
       // Node guarantees that close is called after error.
       if ((this.listener) && (this.listener.onError))
-        (async () => { await this.listener.onError(error); })();
+        await this.listener.onError(error);
     });
+
     this.socket.on('close', async () => {
       this.getLogger().logState(`SieveClient: OnClose (Connection ${this.host}:${this.port})`);
-      await this.disconnect();
+
+      // The sever closed the connection, so no time to gracefully disconnect.
+      await this.disconnect(new Error("Server closed connection unexpectedly"));
     });
 
     return this;
@@ -200,7 +206,7 @@ class SieveNodeClient extends SieveAbstractClient {
         this.tlsSocket.destroy();
       });
 
-      this.tlsSocket.on('data', async (data) => { await this.onReceive(data); });
+      this.tlsSocket.on('data', (data) => { this.onData(data); });
     });
   }
 
@@ -229,7 +235,7 @@ class SieveNodeClient extends SieveAbstractClient {
    * @param {object} buffer
    *   the received data.
    */
-  async onReceive(buffer) {
+  onData(buffer) {
 
     this.getLogger().logState(`onDataRead (${buffer.length})`);
 
@@ -239,7 +245,7 @@ class SieveNodeClient extends SieveAbstractClient {
       data[i] = buffer.readUInt8(i);
     }
 
-    await (super.onReceive(data));
+    super.onData(data);
   }
 
   /**

@@ -16,6 +16,12 @@ const ONE_MINUTE = 60 * 1000;
 // eslint-disable-next-line no-magic-numbers
 const FIVE_MINUTES = 5 * ONE_MINUTE;
 
+const HTTP_PROTOCOL = "http:";
+const HTTP_PORT = 80;
+
+const HTTPS_PROTOCOL = "https:";
+const HTTPS_PORT = 443;
+
 /**
  * This class loads the hostname from an IMAP account. The hostname is not
  * cached it. This ensures that always the most recent settings are used.
@@ -37,10 +43,27 @@ class SieveWebSocketHost extends SieveAbstractHost {
   }
 
   /**
-   * @inheritdoc
+   * Returns the host's port which should be used for the websocket connection.
+   *
+   * It is assumed that the sieve endpoints runs from the very same endpoint
+   * as underlying html page and thus is derived from the window.location.
+   *
+   * @returns {string}
+   *   the port as string
    */
   async getPort() {
-    return window.location.port;
+
+    const port = window.location.port;
+    if (port !== "")
+      return port;
+
+    if (window.location.protocol === HTTP_PROTOCOL)
+      return HTTP_PORT;
+
+    if (window.location.protocol === HTTPS_PROTOCOL)
+      return HTTPS_PORT;
+
+    throw new Error("Failed to retrieve server port");
   }
 
   /**
@@ -57,14 +80,14 @@ class SieveWebSocketHost extends SieveAbstractHost {
    *   the endpoint as string.
    */
   async getEndpoint() {
-    return this.account.getServerConfig().endpoint;
+    return window.location.pathname + this.account.getServerConfig().endpoint;
   }
 
   /**
    * @inheritdoc
    */
   async getUrl() {
-    return `sieve://${await this.getHostname()}:${await this.getPort()}/${await this.getEndpoint()}`;
+    return `sieve://${await this.getHostname()}:${await this.getPort()}${await this.getEndpoint()}`;
   }
 }
 

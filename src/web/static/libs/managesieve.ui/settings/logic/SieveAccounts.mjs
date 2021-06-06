@@ -37,13 +37,6 @@ class SieveAccounts extends SieveAbstractAccounts {
     return this;
   }
 
-  /**
-   * @inheritdoc
-   */
-  async getLogLevel() {
-    return 0xFF;
-  }
-
 }
 
 export { SieveAccounts };

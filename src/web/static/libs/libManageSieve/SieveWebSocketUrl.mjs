@@ -54,10 +54,6 @@ class SieveWebSocketUrl {
    *   the remote port
    */
   getPort() {
-    // FIXME: We should set a default port
-    // if ((this.port === null) || (typeof(this.port) === "undefined"))
-    //  this.port = `${SIEVE_PORT}`;
-
     return this.port;
   }
 

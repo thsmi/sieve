@@ -173,6 +173,9 @@ async function main() {
   SieveIpcClient.setRequestHandler("accounts", "account-show-authorization",
     async (msg) => { return await onAuthorize(msg.payload.displayname); });
 
+  SieveIpcClient.setRequestHandler("accounts", "account-disconnected",
+    async (msg) => { return await accounts.render(msg.payload); });
+
   accounts.render();
   (new SieveUpdaterUI()).check();
 }

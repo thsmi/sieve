@@ -118,7 +118,13 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
       try {
         const host = await accounts.getAccountById(account).getHost();
 
-        await (sessions.get(account).connect(await host.getUrl()));
+        const session = sessions.get(account);
+
+        session.on("disconnected", async () => {
+          await SieveIpcClient.sendMessage("accounts", "account-disconnected", account);
+        });
+
+        await (session.connect(await host.getUrl()));
 
       } catch (e) {
         // connecting failed for some reason, which means we
@@ -145,6 +151,14 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
       await actions["account-connecting"](msg);
     },
 
+    "account-is-connecting": function(msg) {
+      logger.logAction(`Is connecting ${msg.payload.account}`);
+
+      if (!sessions.has(msg.payload.account))
+        return false;
+
+      return sessions.get(msg.payload.account).isConnecting();
+    },
 
     "account-connected": function (msg) {
       logger.logAction(`Is connected ${msg.payload.account}`);

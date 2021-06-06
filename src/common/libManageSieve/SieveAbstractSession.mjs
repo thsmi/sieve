@@ -106,6 +106,8 @@ class SieveAbstractSession {
    * Creates a new sieve client for this session.
    */
   createSieve() {
+    this.getLogger().logSession("Creating new sieve connection");
+
     if (typeof(this.sieve) !== "undefined" && this.sieve !== null)
       throw new SieveClientException("Sieve Connection Active");
 
@@ -135,7 +137,11 @@ class SieveAbstractSession {
    */
   async onIdle() {
     this.getLogger().logSession("Sending keep alive packet...");
-    await this.noop();
+    try {
+      await this.noop();
+    } catch (ex) {
+      await this.onError(ex);
+    }
   }
 
   /**
@@ -149,17 +155,19 @@ class SieveAbstractSession {
    */
   async onError(error) {
     this.getLogger().logSession(`SieveAbstractSession OnError: ${error.message}`);
-    await this.disconnect(true);
+    await this.disconnect(true, error);
   }
 
   /**
    * Called when the connection gets disconnected by the server.
    */
   async onDisconnected() {
-    this.getLogger().logSession(`SieveAbstractSession: onDisconnected`);
 
-    // TODO Do we really need this?
-    await this.disconnect(true);
+    if (!this.listeners.onDisconnected)
+      return;
+
+    this.getLogger().logSession(`SieveAbstractSession: onDisconnected`);
+    this.listeners.onDisconnected(this);
   }
 
   /**
@@ -277,27 +285,25 @@ class SieveAbstractSession {
    *   the callback event name.
    * @param {Function} [callback]
    *   the callback function, if omitted the handler will be removed.
+   *
+   * @returns {SieveAbstractSession}
+   *   a self reference
    */
   on(name, callback) {
 
     if (name === "authenticate") {
       this.listeners.onAuthenticate = callback;
-      return;
+      return this;
     }
 
     if (name === "authorize") {
       this.listeners.onAuthorize = callback;
-      return;
-    }
-
-    if (name === "error") {
-      this.listeners.onError = callback;
-      return;
+      return this;
     }
 
     if (name === "disconnected") {
       this.listeners.onDisconnected = callback;
-      return;
+      return this;
     }
 
     throw new SieveClientException(`Unknown callback handler ${name}`);
@@ -316,24 +322,30 @@ class SieveAbstractSession {
    */
   async authenticate() {
 
+    this.getLogger().logSession(`Authenticating session...`);
+
     const mechanism = this.getOption("sasl", "default");
 
-    if (mechanism === "none")
+    if (mechanism === "none") {
+      this.getLogger().logSession(`... authentication is deactivated in config`);
       return;
+    }
 
+    this.getLogger().logSession(`... using SASL ${mechanism} ...`);
     const request = this.getSaslMechanism(mechanism);
 
     if (!this.listeners.onAuthenticate)
-      throw new SieveClientException("No Authentication handler registered");
+      throw new SieveClientException("No compatible authentication handler");
 
     const authentication = await this.listeners.onAuthenticate(request.hasPassword());
 
     // SASL External has no password it relies completely on SSL...
     if (request.hasPassword()) {
+      this.getLogger().logSession(`... requesting password ...`);
       const password = authentication.password;
 
       if (typeof (password) === "undefined" || password === null)
-        throw new SieveClientException("error.authentication");
+        throw new SieveClientException("No password provided");
 
       request.setPassword(password);
     }
@@ -342,6 +354,7 @@ class SieveAbstractSession {
 
     // check if the authentication method supports proxy authorization...
     if (request.isAuthorizable()) {
+      this.getLogger().logSession(`... requesting authorization ...`);
 
       if (!this.listeners.onAuthorize)
         throw new SieveClientException("No Authorization handler registered");
@@ -356,7 +369,10 @@ class SieveAbstractSession {
         request.setAuthorization(authorization);
     }
 
+    this.getLogger().logSession(`... authenticating ...`);
     await this.sendRequest(request);
+
+    this.getLogger().logSession(`... authentication completed.`);
   }
 
   /**
@@ -376,17 +392,29 @@ class SieveAbstractSession {
    */
   async startTLS(options) {
 
+    this.getLogger().logSession(`Securing session...`);
+
+    if (!this.getSieve()) {
+      this.getLogger().logSession(`... no sieve object.`);
+      throw new SieveClientException("No or invalid sieve object");
+    }
+
     // Check if the socket can be upgraded.
-    if (!this.getSieve().isSecure())
+    if (!this.getSieve().isSecure()) {
+      this.getLogger().logSession(`... secure upgrade deactivated in config.`);
       return;
+    }
 
     // Check if the socket was already upgraded.
-    if (this.getSieve().isSecured())
+    if (this.getSieve().isSecured()) {
+      this.getLogger().logSession(`... connection already updated.`);
       return;
+    }
 
     if (!this.getCompatibility().canStartTLS())
       throw new SieveClientException("Server does not support a secure connection.");
 
+    this.getLogger().logSession(`... requesting starttls ...`);
     await this.sendRequest(new SieveStartTLSRequest());
 
     await this.getSieve().startTLS(options);
@@ -397,10 +425,13 @@ class SieveAbstractSession {
     // Old Cyrus implementation fail to advertise the capabilities.
     // So that we actively request them as optional. This does not
     // hurt bug free implementations and makes cyrus happy.
+    this.getLogger().logSession(`... requesting capabilities ...`);
     const capabilities = await this.sendRequest(new SieveCapabilitiesRequest());
     this.sendRequest(new SieveInitRequest().makeOptional());
 
     this.getCompatibility().update(capabilities);
+
+    this.getLogger().logSession(`... secure upgrade completed.`);
   }
 
   /**
@@ -608,10 +639,12 @@ class SieveAbstractSession {
    * @param {boolean} [force]
    *   if set to true the disconnect will be forced and not graceful.
    *   This means the connection will be just disconnected.
+   * @param {Error} [reason]
+   *   the optional reason why the session was disconnected.
    * @returns {SieveSession}
    *   a self reference.
    */
-  async disconnect(force) {
+  async disconnect(force, reason) {
 
     if (this.getSieve() === null)
       return this;
@@ -629,8 +662,11 @@ class SieveAbstractSession {
     // ... in case it failed for we do it the hard way
     if (this.getSieve()) {
       this.getLogger().logSession(`SieveAbstractSession: Forcing Disconnect`);
-      await this.getSieve().disconnect();
+
+      const sieve = this.sieve;
       this.sieve = null;
+
+      await sieve.disconnect(reason);
     }
 
     return this;

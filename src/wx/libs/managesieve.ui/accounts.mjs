@@ -132,6 +132,10 @@ async function main() {
       async (msg) => { return await onCertError(msg.payload); });
     SieveIpcClient.setRequestHandler("accounts", "account-show-error",
       async (msg) => { return await onError(msg.payload); });
+
+    SieveIpcClient.setRequestHandler("accounts", "account-disconnected",
+      async (msg) => { return await accounts.render(msg.payload); });
+
   } catch (ex) {
     console.error(ex);
   }

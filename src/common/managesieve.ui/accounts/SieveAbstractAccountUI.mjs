@@ -76,6 +76,15 @@ class SieveAbstractAccountUI {
   }
 
   /**
+   * Checks if the account is currently in the connecting phase.
+   * @returns {boolean}
+   *   true in case the connection handshake is performed.
+   */
+  async isConnecting() {
+    return await this.send("account-is-connecting");
+  }
+
+  /**
    * Checks if the current account has an active connection to the server
    *
    * @returns {boolean} true in case tha account is connected otherwise false
@@ -89,13 +98,7 @@ class SieveAbstractAccountUI {
    */
   async connect() {
 
-    const item = await (new SieveTemplate()).load(`./accounts/account.connecting.html`);
-
-    const scripts = document.querySelector(`#siv-account-${this.id} .siv-tpl-scripts`);
-    while (scripts.firstChild)
-      scripts.firstChild.remove();
-
-    scripts.append(item);
+    this.onRenderConnecting();
 
     await this.send("account-connect");
     await this.render();
@@ -105,14 +108,8 @@ class SieveAbstractAccountUI {
    * Disconnects the account from the server.
    */
   async disconnect() {
-    const item = await (new SieveTemplate()).load(`./accounts/account.disconnecting.html`);
 
-    const scripts = document.querySelector(`#siv-account-${this.id} .siv-tpl-scripts`);
-    while (scripts.firstChild)
-      scripts.firstChild.remove();
-
-    scripts.append(item);
-
+    this.onRenderDisconnecting();
     await this.send("account-disconnect");
     await this.render();
   }
@@ -181,7 +178,9 @@ class SieveAbstractAccountUI {
 
     elm.querySelector(".sieve-settings-content").id = `sieve-settings-content-${this.id}`;
     elm.querySelector(".sieve-settings-tab").href = `#sieve-settings-content-${this.id}`;
-    elm.querySelector(".sieve-settings-tab").addEventListener('shown.bs.tab', () => { this.renderSettings(); });
+    elm
+      .querySelector(".sieve-settings-tab")
+      .addEventListener('shown.bs.tab', () => { this.renderSettings(); });
 
     elm.querySelector(".siv-account-name").textContent
       = await this.send("account-get-displayname");
@@ -206,7 +205,8 @@ class SieveAbstractAccountUI {
   }
 
   /**
-   * Renders the account ui's script pane
+   * Called when the account's connected view should be rendered.
+   * It displays the a list with sieve scripts as well as the account settings.
    */
   async onRenderConnected() {
     const data = await this.send("account-list");
@@ -223,6 +223,8 @@ class SieveAbstractAccountUI {
       elm
         .querySelector(".sieve-script-empty-create")
         .addEventListener("click", () => { this.createScript(); });
+
+      return;
     }
 
     // Sort the script names by their name...
@@ -239,15 +241,40 @@ class SieveAbstractAccountUI {
       return IS_EQUAL;
     });
 
-    data.forEach(async (item) => {
+    for (const item of data) {
       this.getLogger().logWidget(`Rendering ${this.id}/${item.script}`);
       await ((new SieveScriptUI(this, item.script, item.active)).render());
-    });
-
+    }
   }
 
   /**
-   * Called when the account should be rendered because of a disconnect.
+   * Called when the account's connecting view should be rendered.
+   */
+  async onRenderConnecting() {
+    const item = await (new SieveTemplate()).load(`./accounts/account.connecting.html`);
+
+    const scripts = document.querySelector(`#siv-account-${this.id} .siv-tpl-scripts`);
+    while (scripts.firstChild)
+      scripts.firstChild.remove();
+
+    scripts.append(item);
+  }
+
+  /**
+   * Called when the account's disconnecting view should be rendered.
+   */
+  async onRenderDisconnecting() {
+    const item = await (new SieveTemplate()).load(`./accounts/account.disconnecting.html`);
+
+    const scripts = document.querySelector(`#siv-account-${this.id} .siv-tpl-scripts`);
+    while (scripts.firstChild)
+      scripts.firstChild.remove();
+
+    scripts.append(item);
+  }
+
+  /**
+   * Called when the account's disconnected view should be rendered.
    */
   async onRenderDisconnected() {
 
@@ -273,6 +300,11 @@ class SieveAbstractAccountUI {
     if (!document.querySelector(`#siv-account-${this.id}`)) {
       await this.renderAccount();
       this.renderSettings();
+    }
+
+    if (await this.isConnecting()) {
+      await this.onRenderConnecting();
+      return;
     }
 
     if (await this.isConnected()) {

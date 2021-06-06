@@ -30,8 +30,18 @@ class SieveAbstractAccounts {
 
   /**
    * Renders the UI for this component.
+   *
+   * @param {string} [account]
+   *   the optional account id which should be rendered. If omitted all
+   *   account will be updated.
    */
-  async render() {
+  async render(account) {
+
+    if ((typeof(account) !== "undefined") && (account !== null)) {
+      this.getLogger().logWidget(` + Rendering Accounts ${account}`);
+      await ((new SieveAccountUI(this, account)).render());
+      return;
+    }
 
     this.getLogger().logWidget("Rendering Accounts...");
 
@@ -41,9 +51,8 @@ class SieveAbstractAccounts {
 
     const accounts = await SieveIpcClient.sendMessage("core", "accounts-list");
 
-    for (const account of accounts) {
-      this.getLogger().logWidget(` + Accounts ${account}`);
-      await ((new SieveAccountUI(this, account)).render());
+    for (const item of accounts) {
+      await this.render(item);
     }
   }
 }

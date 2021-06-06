@@ -11,18 +11,26 @@ class Response:
 
     self.__status = parser.extract([b"OK", b"NO", b"BYE"])
 
-    if parser.is_space():
-      parser.extract_space()
+    if parser.is_line_break():
+      parser.extract_line_break()
+      return self
+
+    parser.extract_space()
+    if parser.startswith(b"("):
+
       parser.extract(b"(")
 
-      while not parser.startswith(")"):
+      while not parser.startswith(b")"):
         parser.extract_space()
         parser.extract_string()
 
-    if parser.is_space():
-      parser.extract_space()
-      parser.extract_string()
+      if parser.is_line_break():
+        parser.extract_line_break()
+        return self
 
+      parser.extract_space()
+
+    parser.extract_string()
     parser.extract_line_break()
 
     return self

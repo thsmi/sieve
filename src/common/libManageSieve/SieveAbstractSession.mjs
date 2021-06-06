@@ -73,6 +73,8 @@ class SieveAbstractSession {
     this.listeners = {};
     this.sieve = null;
 
+    this.connecting = false;
+
     this.compatibility = new SieveCompatibility();
   }
 
@@ -502,12 +504,17 @@ class SieveAbstractSession {
     }
     catch (ex) {
 
-      if ((ex instanceof SieveReferralException) && (this.canRefer)) {
+      if ((ex instanceof SieveReferralException) && (!this.isConnecting())) {
         this.getLogger().logSession(`Referral received`);
         this.getLogger().logSession(
           `Switching to ${ex.getUrl().getHost()}:${ex.getUrl().getPort()}`);
+        try {
+          this.connecting = true;
+          await this.refer(ex.getUrl());
+        } finally {
+          this.connecting = false;
+        }
 
-        await this.refer(ex.getUrl());
         return await this.promisify(request, init);
       }
 
@@ -533,19 +540,13 @@ class SieveAbstractSession {
    * host and connect to the new host. Then it would try to continue
    * with the authentication step on a non secure connection. The startTLS
    * step simply got lost.
-   */
-  disableReferrals() {
-    this.canRefer = false;
-  }
-  /**
-   * Enables automatic referral following.
    *
-   * see the disableReferrals method for more details.
+   * @returns {boolean}
+   *   true in case  the connection handshake is currently being established.
    */
-  enableReferrals() {
-    this.canRefer = true;
+  isConnecting() {
+    return this.connecting;
   }
-
 
   /**
    * An internal method creating a server connection.
@@ -566,7 +567,7 @@ class SieveAbstractSession {
 
     // A referral during connection means we need to connect to the new
     // server and start the whole handshake process again.
-    this.disableReferrals();
+    this.connecting = true;
 
     try {
 
@@ -592,7 +593,7 @@ class SieveAbstractSession {
 
       await this.refer(ex.getUrl());
     } finally {
-      this.enableReferrals(true);
+      this.connecting = false;
     }
 
     return this;
@@ -617,7 +618,7 @@ class SieveAbstractSession {
 
     this.getLogger().logSession(`SieveAbstractSession: Disconnecting Session ${force}`);
     // We try to exit with a graceful Logout request...
-    if (!force && this.getSieve().isAlive()) {
+    if (!force && this.isConnected()) {
       try {
         await this.logout();
       } catch (ex) {

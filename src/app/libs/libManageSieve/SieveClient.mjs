@@ -207,22 +207,14 @@ class SieveNodeClient extends SieveAbstractClient {
   /**
    * @inheritdoc
    */
-  async disconnect() {
+  async destroy() {
+    this.getLogger().logState(`[SieveClient:destroy()] ... destroying socket...`);
 
-    this.getLogger().logState(`SieveClient: Disconnecting ${this.host}:${this.port}...`);
+    this.socket.destroy();
 
-    // Just a precaution ensures all timers are stopped.
-    await super.disconnect();
-
-    // In case the socket is gone we can skip right here
-    if (!this.socket)
-      return;
-    if (this.socket) {
-      this.socket.destroy();
-      if (this.socket && this.socket.unref)
-        this.socket.unref();
-      this.socket = null;
-    }
+    if (this.socket && this.socket.unref)
+      this.socket.unref();
+    this.socket = null;
 
     if (this.tlsSocket) {
       this.tlsSocket.destroy();
@@ -230,11 +222,6 @@ class SieveNodeClient extends SieveAbstractClient {
         this.tlsSocket.unref();
       this.tlsSocket = null;
     }
-
-    if ((this.listener) && (this.listener.onDisconnected))
-      await this.listener.onDisconnected();
-
-    this.getLogger().logState("SieveClient: ... client disconnected.");
   }
 
   /**

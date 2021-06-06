@@ -21,6 +21,7 @@ import {
 } from "./SieveExceptions.mjs";
 
 import { SieveUrl } from "./SieveUrl.mjs";
+
 /**
  *  This realizes the abstract sieve implementation by using
  *  the mozilla specific network implementation.
@@ -105,27 +106,11 @@ class SieveMozClient extends SieveAbstractClient {
   /**
    * @inheritdoc
    */
-  async disconnect(reason) {
-
-    this.getLogger().logState(`[SieveClient:disconnect] Disconnecting ${this.host}:${this.port}...`);
-
-    await super.disconnect(reason);
-
-    if (!this.socket) {
-      this.getLogger().logState(`[SieveClient:disconnect()] ... no valid socket`);
-      return;
-    }
-
-    this.getLogger().logState(`[SieveClient:disconnect()] ... destroying socket...`);
+  async destroy() {
+    this.getLogger().logState(`[SieveClient:destroy()] ... destroying socket...`);
     await browser.sieve.socket.destroy(this.socket);
     this.socket = null;
-
-    if ((this.listener) && (this.listener.onDisconnected))
-      await this.listener.onDisconnected();
-
-    this.getLogger().logState("[SieveClient:disconnect()] ... disconnected.");
   }
-
 
   /**
    * @inheritdoc

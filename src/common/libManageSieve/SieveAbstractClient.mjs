@@ -35,6 +35,55 @@ const NO_IDLE = 0;
 const NOT_STARTED = -1;
 
 /**
+ * Creates a blocking semaphore
+ *
+ * Wrap this in a try finally block to ensure the semaphore gets always released
+ * in the finally call.
+ */
+class SieveSemaphore {
+
+  /**
+   * Creates a new instance
+   */
+  constructor() {
+    this.queue = [];
+    this.locked = false;
+  }
+
+  /**
+   * Tries to lock the semaphore in case it is locked enqueue a listener
+   * and wait until the semaphore gets unlocked and then tries to obtain a
+   * lock again.
+   */
+  async acquire() {
+
+    if (!this.locked) {
+      this.locked = true;
+      return;
+    }
+
+    await new Promise((resolve) => {
+      this.queue.push(async () => {
+        await resolve();
+      });
+    });
+
+    await this.acquire();
+  }
+
+  /**
+   * Unlocks the semaphore and calls all waiting listeners.
+   */
+  async release() {
+    this.locked = false;
+
+    while (this.queue.length)
+      (this.queue.shift())();
+  }
+}
+
+
+/**
  * Implements a locked message queue.
  */
 class LockedMessageQueue {
@@ -438,6 +487,8 @@ class SieveAbstractClient {
 
     this.timeoutTimer = new SieveTimer();
     this.idleTimer = new SieveTimer();
+
+    this.shutdownLock = new SieveSemaphore();
   }
 
   /**
@@ -744,13 +795,42 @@ class SieveAbstractClient {
    *   the optional reason why the client was disconnected.
    */
   async disconnect(reason) {
-
-    this.getLogger().logState(`SieveAbstractClient: Disconnecting ${this.host}:${this.port}...`);
+    this.getLogger().logState(`[SieveAbstractClient:disconnect()] Disconnecting ${this.host}:${this.port}...`);
 
     this.getIdleTimer().cancel();
     this.getTimeoutTimer().cancel();
 
+    try {
+      this.shutdownLock.acquire();
+      this.getLogger().logState("[SieveAbstract:disconnect()] Acquired lock");
+
     this.cancel(reason);
+
+      if (!this.socket) {
+        this.getLogger().logState(`[SieveAbstract:disconnect()] ... no valid socket`);
+        return;
+      }
+
+      await this.destroy();
+
+      if ((this.listener) && (this.listener.onDisconnected))
+        await this.listener.onDisconnected();
+
+    } finally {
+      this.getLogger().logState("[SieveAbstract:disconnect()] Releasing lock");
+      this.shutdownLock.release();
+    }
+
+    this.getLogger().logState(`[SieveAbstract:disconnect()] ... disconnected`);
+  }
+
+  /**
+   * Shutdowns and releases the socket used to communicate to the server.
+   * Should not be called directly instead call disconnect to cleanup
+   * dependent resources.
+   */
+  async destroy() {
+    throw new Error("Implement SieveAbstractClient:destroy");
   }
 
   /**
@@ -984,4 +1064,6 @@ class SieveAbstractClient {
   }
 }
 
-export { SieveAbstractClient };
+export {
+  SieveAbstractClient
+};

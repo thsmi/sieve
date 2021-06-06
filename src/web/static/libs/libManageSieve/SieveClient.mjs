@@ -98,35 +98,16 @@ class SieveWebSocketClient extends SieveAbstractClient {
   /**
    * @inheritdoc
    */
-  async disconnect(reason) {
-
-    this.getLogger().logState(`[SieveClient:disconnect] Disconnecting ${this.host}:${this.port}...`);
-
-    await super.disconnect(reason);
-
-    if (!this.socket) {
-      this.getLogger().logState(`[SieveClient:disconnect()] ... no valid socket`);
-      return;
-    }
-
-    this.getLogger().logState(`[SieveClient:disconnect()] ... destroying socket...`);
+  async destroy() {
+    this.getLogger().logState(`[SieveClient:destroy()] ... destroying socket...`);
     this.socket.close();
     this.socket = null;
-
-    if ((this.listener) && (this.listener.onDisconnected))
-      await this.listener.onDisconnected();
-
-    this.getLogger().logState("[SieveClient:disconnect()] ... disconnected.");
   }
-
 
   /**
    * Called when the websocket connection is open.
-   *
-   * @param {Event} ev
-   *  the event handler with details about the open event.
    */
-  onOpen(ev) {
+  onOpen() {
     this.getLogger().logState(`Connected to ${this.host}:${this.port} ...`);
 
     if (this.secure)

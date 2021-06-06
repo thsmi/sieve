@@ -11,14 +11,14 @@ sieve sockets over websockets.
 This enables the frontend to be run of the same javascript code base used for
 the webextension and application.
 
-The communication almost identically to the standard manage sieve protocol.
+The communication is almost identically to the standard manage sieve protocol.
 The exception is there is no startTLS as the websocket connection is always
 secure and cannot be upgraded after connecting.
 
-The websocket connection tunnel is not standardized by an rfc or something similar.
+Running Sieve via websockets is not standardized by an rfc or something similar.
 
 Please keep in mind the proxy is technically similar to a man in middle attack.
-And does not provide any end to end security. So you should alway protect the
+And does not provide any end to end security. So you should always protect the
 backend with a reverse proxy.
 
 ## Installation
@@ -43,10 +43,35 @@ backend with a reverse proxy.
 * Secure the endpoint.
   More and more browsers require websocket connection to be secured by encryption.
 
-  The application supports https, which is great for testing in an isolated network.
-  But for a real world scenario I strongly suggest to secure the endpoint via reverse
-  proxy. The application is definitely not designed to be directly accessible from
-  the internet without a save guard.
+  The application supports direct access via https, which is great for testing in
+  an isolated network. But for a real world scenario I strongly suggest to secure
+  the endpoint via reverse proxy.
+
+  The application is definitely not designed to be directly accessible from
+  the internet without any save guards.
+
+  An nginx configuration example is shown below. Keep in mind it should be an
+  https endpoint.
+
+		location /sieve/ {
+       # Forwards all request to the sieve proxy, in this example
+       # it runs at 127.0.0.1:8765
+       proxy_pass https://127.0.0.1:8765/;
+
+       # You need this only if the sieve proxy uses a self signed certificate.
+       proxy_ssl_verify off;
+
+       # If you authenticate against the proxy, this line will inject here the
+       # authentication header and allow a single sign on.
+		   proxy_set_header X-Forwarded-User me@example.com;
+
+       # The following lines enable websocket support for you nginx proxy.
+		   proxy_http_version 1.1;
+		   proxy_set_header Upgrade $http_upgrade;
+		   proxy_set_header Connection "Upgrade";
+		   proxy_set_header Host $host;
+    }
+
 
 * Configure the endpoints.
   Copy the ```config.template.ini``` to ```config.ini``` and adjust it to your needs.

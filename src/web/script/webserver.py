@@ -24,11 +24,21 @@ class HttpContext:
 
 class WebServer:
 
-  def __init__(self, port : int = 8765,
-    keyfile : str = "default.key", certfile : str = "default.cert"):
+  def __init__(self,
+    port : int = 8765, address: str = None,
+    keyfile : str = None, certfile : str = None):
 
-    self.__port = port
-    self.__hostname = "127.0.0.1"
+    if keyfile is None:
+      keyfile = "default.key"
+
+    if certfile is None:
+      certfile = "default.cert"
+
+    if address is None:
+      address = "127.0.0.1"
+
+    self.__port = int(port)
+    self.__address = address
     self.__handlers = []
     self.__executor = None
 
@@ -79,6 +89,9 @@ class WebServer:
       context.socket.close()
 
   def listen(self) -> None:
+    """
+    Starts listening for incoming requests
+    """
 
     ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
     ssl_context.load_cert_chain(self.__certfile, self.__keyfile)
@@ -86,10 +99,10 @@ class WebServer:
     self.__executor = ThreadPoolExecutor(max_workers=3)
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-      sock.bind((self.__hostname, self.__port))
+      sock.bind((self.__address, self.__port))
       sock.listen(5)
 
-      print("Listening on https://"+self.__hostname+":"+str(self.__port))
+      print("Listening on https://"+self.__address+":"+str(self.__port))
 
       while True:
         # accept connections from outside

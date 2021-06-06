@@ -18,7 +18,10 @@ if not configfile.exists():
 config = Config().load(configfile)
 
 webServer = WebServer(
-  keyfile = config.get_keyfile(), certfile = config.get_certfile())
+  address = config.get_address(),
+  port = config.get_port(),
+  keyfile = config.get_keyfile(),
+  certfile = config.get_certfile())
 
 webServer.add_handler(ConfigHandler(config))
 webServer.add_handler(FileHandler("D:\\projekte\\sieve\\core\\build\\web\\static"))

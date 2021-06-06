@@ -129,10 +129,28 @@ class Config:
     self._config.read(name)
     return self
 
+  def get_port(self):
+    """
+    Returns the port on which the sieve proxy should be started.
+    """
+    return self._config["DEFAULT"]["ServerPort"]
+
+  def get_address(self):
+    """
+    Returns the server address to which the connection should be bound.
+    """
+    return self._config["DEFAULT"]["ServerAddress"]
+
   def get_keyfile(self):
+    """
+    The keyfile used for securing the server.
+    """
     return self._config["DEFAULT"]["ServerKeyFile"]
 
   def get_certfile(self):
+    """
+    The certificate file used for securing the server.
+    """
     return self._config["DEFAULT"]["ServerCertFile"]
 
   def get_auth_type(self, section : str):

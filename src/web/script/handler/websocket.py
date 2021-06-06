@@ -19,6 +19,8 @@ class WebSocketHandler:
 
   def handle_request(self, context, request) -> None:
 
+    print(f"Websocket Request for {request.path}")
+
     account = self.__config.get_account_by_id(
       request.path[len("/websocket/"):])
 

@@ -107,6 +107,9 @@
      *   the script name
      * @param {AbstractTestReport} report
      *   a reference to a report.
+     *
+     * @returns {object}
+     *   the actions return value
      */
     async run(name, report) {
 

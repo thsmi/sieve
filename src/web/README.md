@@ -53,7 +53,8 @@ backend with a reverse proxy.
   An nginx configuration example is shown below. Keep in mind it should be an
   https endpoint.
 
-		location /sieve/ {
+````
+    location /sieve/ {
        # Forwards all request to the sieve proxy, in this example
        # it runs at 127.0.0.1:8765
        proxy_pass https://127.0.0.1:8765/;
@@ -63,15 +64,15 @@ backend with a reverse proxy.
 
        # If you authenticate against the proxy, this line will inject here the
        # authentication header and allow a single sign on.
-		   proxy_set_header X-Forwarded-User me@example.com;
+       proxy_set_header X-Forwarded-User me@example.com;
 
        # The following lines enable websocket support for you nginx proxy.
-		   proxy_http_version 1.1;
-		   proxy_set_header Upgrade $http_upgrade;
-		   proxy_set_header Connection "Upgrade";
-		   proxy_set_header Host $host;
+       proxy_http_version 1.1;
+       proxy_set_header Upgrade $http_upgrade;
+       proxy_set_header Connection "Upgrade";
+       proxy_set_header Host $host;
     }
-
+````
 
 * Configure the endpoints.
   Copy the ```config.template.ini``` to ```config.ini``` and adjust it to your needs.

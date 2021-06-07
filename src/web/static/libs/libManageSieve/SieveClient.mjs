@@ -88,9 +88,6 @@ class SieveWebSocketClient extends SieveAbstractClient {
 
     this.socket.addEventListener('close', async () => {
       this.disconnect();
-
-      if ((this.listener) && (this.listener.onDisconnect))
-        await this.listener.onDisconnect();
     });
 
     return this;

@@ -726,8 +726,11 @@ class SieveAbstractClient {
   }
 
   /**
-   * Sets the callback listener.
-   * @param {*} listener
+   * Sets the callback listener which is implements one or more of the following
+   * event handlers onByeResponse(), onDisconnected(), onIdle(), onError()
+   *
+   * @param {Function} listener
+   *   the listener to be called.
    */
   addListener(listener) {
     this.listener = listener;

@@ -220,6 +220,7 @@
         "unicorn/no-useless-undefined" : "off",
         "unicorn/prefer-optional-catch-binding" : "warn",
         "unicorn/prefer-add-event-listener": "warn",
+        "unicorn/prefer-prototype-methods" : "warn",
 
         // Rules which make no sense
         "unicorn/prevent-abbreviations" : "off",

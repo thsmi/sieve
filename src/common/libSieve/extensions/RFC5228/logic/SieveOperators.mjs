@@ -203,7 +203,6 @@ SieveAnyOfAllOfTest.prototype.test
     this.append(item, old);
 
     if (typeof (old) !== "undefined") {
-      // eslint-disable-next-line unicorn/prefer-node-remove
       this.removeChild(old.id());
     }
     /* if (this._test)

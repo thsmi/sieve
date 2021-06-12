@@ -9,6 +9,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+import { SieveUrl } from "./SieveUrl.mjs";
 import { SieveAbstractClient } from "./SieveAbstractClient.mjs";
 
 import { SieveCertValidationException } from "./SieveExceptions.mjs";
@@ -21,68 +22,70 @@ const tls = require('tls');
  */
 class SieveNodeClient extends SieveAbstractClient {
 
-
   /**
-   * Creates a new instance
-   * @param {AbstractLogger} logger
-   *   the logger instance to use
-   **/
+   * @inheritdoc
+   */
   constructor(logger) {
-    super();
+
+    super(logger);
 
     this.tlsSocket = null;
-    this._logger = logger;
-    this.secure = true;
   }
 
   /**
    * @inheritdoc
    */
-  isSecure() {
-    return this.secure;
+  isAlive() {
+    if (this.isSecured() && !this.tlsSocket)
+      return false;
+
+    if (this.isSecured() && this.tlsSocket.destroyed)
+      return false;
+
+    if (!this.socket)
+      return false;
+
+    if (this.socket.destroyed)
+      return false;
+
+    return true;
   }
 
   /**
    * @inheritdoc
    */
-  getLogger() {
-    return this._logger;
-  }
+  connect(url, secure) {
 
-  /**
-   * Connects to a ManageSieve server.
-   * @param {string} host
-   *   The target hostname or IP address as String
-   * @param {int} port
-   *   The target port as integer
-   * @param {boolean} secure
-   *   If true, a secure socket will be created. This allows switching to a secure
-   *   connection.
-   *
-   * @returns {SieveAbstractClient}
-   *   a self reference
-   */
-  connect(host, port, secure) {
-
-    if (this.socket !== null)
+    if (this.socket)
       return this;
 
-    this.host = host;
-    this.port = port;
+    if (typeof url === 'string' || url instanceof String)
+      url = new SieveUrl(url);
+
+    this.host = url.getHost();
+    this.port = url.getPort();
+
     this.secure = secure;
+    this.secured = false;
 
     this.socket = net.connect(this.port, this.host);
 
-    this.socket.on('data', async (data) => { await this.onReceive(data); });
-    this.socket.on('error', (error) => {
+    this.socket.on('data', async (data) => {
+      this.onData(data);
+    });
+
+    this.socket.on('error', async(error) => {
       this.getLogger().logState(`SieveClient: OnError (Connection ${this.host}:${this.port})`);
       // Node guarantees that close is called after error.
       if ((this.listener) && (this.listener.onError))
-        (async () => { await this.listener.onError(error); })();
+        await this.listener.onError(error);
     });
+
     this.socket.on('close', async () => {
       this.getLogger().logState(`SieveClient: OnClose (Connection ${this.host}:${this.port})`);
-      await this.disconnect();
+
+      // The sever closed the connection, so no time to gracefully disconnect.
+      await this.disconnect(new Error("Server closed connection unexpectedly"));
     });
 
     return this;
@@ -126,6 +129,7 @@ class SieveNodeClient extends SieveAbstractClient {
 
           // in case the fingerprint is not pinned we can skip right here.
           if (!options.fingerprints.length) {
+            this.secured = true;
             resolve();
             this.getLogger().logState('Socket upgraded! (Chain of Trust)');
             return;
@@ -133,6 +137,7 @@ class SieveNodeClient extends SieveAbstractClient {
 
           // so let's check the if the server's sha1 fingerprint matches the pinned one.
           if (options.fingerprints.includes(cert.fingerprint)) {
+            this.secured = true;
             resolve();
             this.getLogger().logState('Socket upgraded! (Chain of Trust and pinned SHA1 fingerprint)');
             return;
@@ -140,6 +145,7 @@ class SieveNodeClient extends SieveAbstractClient {
 
           // then check the sha256 fingerprint.
           if (options.fingerprints.includes(cert.fingerprint256)) {
+            this.secured = true;
             resolve();
             this.getLogger().logState('Socket upgraded! (Chain of Trust and pinned SHA256 fingerprint)');
             return;
@@ -167,6 +173,7 @@ class SieveNodeClient extends SieveAbstractClient {
 
           // Check if the fingerprint is well known...
           if (options.fingerprints.includes(cert.fingerprint)) {
+            this.secured = true;
             resolve();
 
             this.getLogger().logState('Socket upgraded! (Trusted SHA1 Finger Print)');
@@ -175,6 +182,7 @@ class SieveNodeClient extends SieveAbstractClient {
 
           // Check if the fingerprint is well known...
           if (options.fingerprints.includes(cert.fingerprint256)) {
+            this.secured = true;
             resolve();
 
             this.getLogger().logState('Socket upgraded! (Trusted SHA256 Finger Print)');
@@ -198,30 +206,21 @@ class SieveNodeClient extends SieveAbstractClient {
         this.tlsSocket.destroy();
       });
 
-      this.tlsSocket.on('data', async (data) => { await this.onReceive(data); });
+      this.tlsSocket.on('data', (data) => { this.onData(data); });
     });
   }
 
   /**
    * @inheritdoc
    */
-  async disconnect() {
+  async destroy() {
+    this.getLogger().logState(`[SieveClient:destroy()] ... destroying socket...`);
 
-    this.getLogger().logState(`SieveClient: Disconnecting ${this.host}:${this.port}...`);
+    this.socket.destroy();
 
-    // Just a precaution ensures all timers are stopped.
-    await super.disconnect();
-
-    // In case the socket is gone we can skip right here
-    if (!this.socket)
-      return;
-
-    if (this.socket) {
-      this.socket.destroy();
-      if (this.socket && this.socket.unref)
-        this.socket.unref();
-      this.socket = null;
-    }
+    if (this.socket && this.socket.unref)
+      this.socket.unref();
+    this.socket = null;
 
     if (this.tlsSocket) {
       this.tlsSocket.destroy();
@@ -229,11 +228,6 @@ class SieveNodeClient extends SieveAbstractClient {
         this.tlsSocket.unref();
       this.tlsSocket = null;
     }
-
-    if ((this.listener) && (this.listener.onDisconnected))
-      await this.listener.onDisconnected();
-
-    this.getLogger().logState("SieveClient: ... client disconnected.");
   }
 
   /**
@@ -241,7 +235,7 @@ class SieveNodeClient extends SieveAbstractClient {
    * @param {object} buffer
    *   the received data.
    */
-  async onReceive(buffer) {
+  onData(buffer) {
 
     this.getLogger().logState(`onDataRead (${buffer.length})`);
 
@@ -251,7 +245,7 @@ class SieveNodeClient extends SieveAbstractClient {
       data[i] = buffer.readUInt8(i);
     }
 
-    await (super.onReceive(data));
+    super.onData(data);
   }
 
   /**

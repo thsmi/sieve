@@ -194,7 +194,6 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
           sasl: await account.getSecurity().getMechanism()
         },
         "authentication": {
-
           username: await (await account.getAuthentication()).getUsername(),
           stored: await (await account.getAuthentication()).hasStoredPassword()
         },
@@ -313,7 +312,15 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
       try {
         const host = await accounts.getAccountById(account).getHost();
 
-        await (sessions.get(account).connect(await host.getHostname(), await host.getPort()));
+        const session = sessions.get(account);
+
+        await (session.connect(await host.getUrl()));
+
+        // Connection established, this means we need to listen for any
+        // unplanned disconnects.
+        session.on("disconnected", async () => {
+          await SieveIpcClient.sendMessage("accounts", "account-disconnected", account);
+        });
 
       } catch (e) {
 
@@ -368,6 +375,14 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
       await actions["account-connecting"](msg);
     },
 
+    "account-is-connecting": function(msg) {
+      logger.logAction(`Is connecting ${msg.payload.account}`);
+
+      if (!sessions.has(msg.payload.account))
+        return false;
+
+      return sessions.get(msg.payload.account).isConnecting();
+    },
 
     "account-connected": function (msg) {
       logger.logAction(`Is connected ${msg.payload.account}`);
@@ -639,6 +654,7 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
    */
   function main() {
     (new SieveTabUI()).init();
+
   }
 
   if (document.readyState !== 'loading')

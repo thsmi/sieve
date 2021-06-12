@@ -15,6 +15,7 @@ const MIN_ITERATION_COUNT = 0;
 const MAX_CHAR_CODE = 255;
 
 const HEX_STRING = 16;
+const HEX_PREFIX = -2;
 
 const HASH_SHA1 = "SHA-1";
 const HASH_SHA256 = "SHA-256";
@@ -65,7 +66,7 @@ class SieveAbstractCrypto {
   byteArrayToHexString(tmp) {
     let str = "";
     for (let i = 0; i < tmp.length; i++)
-      str += ("0" + tmp[i].toString(HEX_STRING)).slice(-2);
+      str += ("0" + tmp[i].toString(HEX_STRING)).slice(HEX_PREFIX);
 
     return str;
   }

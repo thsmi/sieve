@@ -6,7 +6,6 @@
     "**/node_modules": true,
     "build/**": true
   },
-  "eslint.enable": true,
   "files.eol": "\n",
   "editor.tabSize": 2,
   "editor.useTabStops": false,
@@ -15,5 +14,8 @@
   ],
   "[json]": {
     "editor.wordWrap": "on"
-  }
+  },
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": true,
+  "python.pythonPath": ".venv\\Scripts\\python.exe"
 }

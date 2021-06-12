@@ -297,6 +297,14 @@
     ]
   });
 
+  tests.set("managesieve-url", {
+    script: "${workspace}/libManageSieve/tests/SieveUrl.mjs",
+    require: [
+      "${workspace}/libManageSieve/SieveUrl.mjs"
+    ]
+  });
+
+
   exports.tests = tests;
 
 })(this);

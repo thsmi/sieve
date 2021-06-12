@@ -35,6 +35,55 @@ const NO_IDLE = 0;
 const NOT_STARTED = -1;
 
 /**
+ * Creates a blocking semaphore
+ *
+ * Wrap this in a try finally block to ensure the semaphore gets always released
+ * in the finally call.
+ */
+class SieveSemaphore {
+
+  /**
+   * Creates a new instance
+   */
+  constructor() {
+    this.queue = [];
+    this.locked = false;
+  }
+
+  /**
+   * Tries to lock the semaphore in case it is locked enqueue a listener
+   * and wait until the semaphore gets unlocked and then tries to obtain a
+   * lock again.
+   */
+  async acquire() {
+
+    if (!this.locked) {
+      this.locked = true;
+      return;
+    }
+
+    await new Promise((resolve) => {
+      this.queue.push(async () => {
+        await resolve();
+      });
+    });
+
+    await this.acquire();
+  }
+
+  /**
+   * Unlocks the semaphore and calls all waiting listeners.
+   */
+  async release() {
+    this.locked = false;
+
+    while (this.queue.length)
+      (this.queue.shift())();
+  }
+}
+
+
+/**
  * Implements a locked message queue.
  */
 class LockedMessageQueue {
@@ -76,7 +125,7 @@ class LockedMessageQueue {
    * @param {object} reason
    *   the reason why the message queue was abandoned. Typically an exception.
    */
-  shutdown(reason) {
+  drain(reason) {
     for (const item of this.items)
       item.abandon(reason);
   }
@@ -143,11 +192,16 @@ class MessageQueue {
 
   /**
    * Creates a new message queue instance.
+   *
+   * @param {SieveAbstractLogger} logger
+   *   the component's logger instance.
    */
-  constructor() {
+  constructor(logger) {
     this.queued = [];
     this.locked = null;
     this.canceled = false;
+
+    this.logger = logger;
   }
 
   /**
@@ -173,13 +227,13 @@ class MessageQueue {
    * @returns {MessageQueue}
    *   a self reference.
    */
-  shutdown(reason) {
+  drain(reason) {
 
     if (this.isLocked())
-      this.getLock().shutdown(reason);
+      this.getLock().drain(reason);
 
-    while (this.queued.length)
-      this.queued.shift().abandon(reason);
+    for (const item of this.queued)
+      item.abandon(reason);
 
     return this;
   }
@@ -195,6 +249,18 @@ class MessageQueue {
       return false;
 
     return (this.queued.length === 0);
+  }
+
+  /**
+   * Calculates the current overall queue length.
+   * @returns {int}
+   *   the number of elements inside the locked and unlocked queue.
+   */
+  length() {
+    if (this.isLocked())
+      return this.locked.length() + this.queued.length;
+
+    return this.queued.length;
   }
 
   /**
@@ -295,10 +361,13 @@ class DoubleBuffer {
 
   /**
    * Creates a new instance.
+   * @param {SieveAbstractLogger} logger
+   *   the component's logger instance.
    */
-  constructor() {
+  constructor(logger) {
     this.writer = [];
     this.reader = [];
+    this.logger = logger;
   }
 
   /**
@@ -407,14 +476,22 @@ class SieveAbstractClient {
 
   /**
    * Creates a new instance
-   */
-  constructor() {
+   *
+   * @param {AbstractLogger} logger
+   *   the logger instance to use
+   **/
+  constructor(logger) {
+    this.logger = logger;
+
+    this.secure = true;
+    this.secured = false;
+
     this.host = null;
     this.port = null;
 
     this.socket = null;
-    this.buffer = new DoubleBuffer();
-    this.queue = new MessageQueue();
+    this.buffer = new DoubleBuffer(logger);
+    this.queue = new MessageQueue(logger);
 
     this.requests = [];
 
@@ -423,80 +500,16 @@ class SieveAbstractClient {
     this.timeoutTimer = new SieveTimer();
     this.idleTimer = new SieveTimer();
 
-
-    // out of the box we support the following manage sieve commands...
-    // ... the server might advertise additional commands they are added ...
-    // ... or removed by the set compatibility method
-    this.compatibility = {
-      authenticate: true,
-      starttls: true,
-      logout: true,
-      capability: true,
-      // until now we do not support havespace...
-      // havespace  : false,
-      putscript: true,
-      listscripts: true,
-      setactive: true,
-      getscript: true,
-      deletescript: true
-    };
+    this.shutdownLock = new SieveSemaphore();
   }
-
-  /**
-   * Gives this socket a hint, whether a sieve commands is supported or not.
-   *
-   * Setting the corresponding attribute to false, indicates, that a sieve command
-   * should not be used. As this is only an advice, such command will still be
-   * processed by this sieve socket.
-   *
-   * By default the socket seek maximal compatibility.
-   *
-   * @param {object} capabilities commands
-   *   the supported sieve commands as an associative array. Attribute names have
-   *   to be in lower case, the values can be either null, undefined, true or false.
-   *
-   * @example
-   * sieve.setCompatibility({checkscript:true, rename:true, starttls:false});
-   */
-  setCompatibility(capabilities) {
-    for (const capability in capabilities)
-      this.compatibility[capability] = capabilities[capability];
-  }
-
-  /**
-   * Returns a list of supported sieve commands. As the socket seeks
-   * maximal compatibility, it always suggest the absolute minimal sieve
-   * command set defined in the rfc. This value is only a hint, and does
-   * not represent the server's capabilities!
-   *
-   * A command is most likely unsupported if the corresponding attribute is null and
-   * disabled if the the attribute is false
-   *
-   * You should override these defaults as soon as possible.
-   *
-   * @returns {Struct}
-   *   an associative array structure indicating supported sieve command.
-   *   Unsupported commands are indicated by a null, disabled by false value...
-   *
-   * @example
-   * if (sieve.getCompatibility().putscript) {
-   *   // put script command supported...
-   * }
-   */
-  getCompatibility() {
-    return this.compatibility;
-  }
-
 
   /**
    * Gets a reference to the current logger
    * @returns {SieveLogger}
    *   the current logger
-   *
-   * @abstract
    */
   getLogger() {
-    throw new Error("Implement getLogger()");
+    return this.logger;
   }
 
   /**
@@ -516,13 +529,21 @@ class SieveAbstractClient {
    * Check is the connection supports any connection security.
    * It could be either disabled by the client or the server.
    *
-   * @abstract
-   *
    * @returns {boolean}
    *   true in case the connection can be or is secure otherwise false
    */
   isSecure() {
-    throw new Error("Implement isSecure()");
+    return this.secure;
+  }
+
+  /**
+   * Check if the socket was upgraded to a secure connection.
+   *
+   * @returns {boolean}
+   *   true in case the socket communicates secured otherwise false.
+   */
+  isSecured() {
+    return this.secured;
   }
 
   /**
@@ -538,7 +559,7 @@ class SieveAbstractClient {
    **/
   startTLS() {
     if (!this.isSecure())
-      throw new Error("TLS can't be started no secure socket");
+      throw new Error("TLS can't be started not a secure socket");
 
     if (!this.socket)
       throw new Error(`Can't start TLS, your are not connected to ${this.host}`);
@@ -565,8 +586,7 @@ class SieveAbstractClient {
 
     // then restart the timeout timer.
     this.getTimeoutTimer().start(
-      () => { this.onTimeout(); },
-      this.getTimeoutWait());
+      () => { this.onTimeout(); }, this.getTimeoutWait());
   }
 
   /**
@@ -706,8 +726,11 @@ class SieveAbstractClient {
   }
 
   /**
-   * Sets the callback listener.
-   * @param {*} listener
+   * Sets the callback listener which is implements one or more of the following
+   * event handlers onByeResponse(), onDisconnected(), onIdle(), onError()
+   *
+   * @param {Function} listener
+   *   the listener to be called.
    */
   addListener(listener) {
     this.listener = listener;
@@ -745,10 +768,8 @@ class SieveAbstractClient {
    * Connects to a ManageSieve server.
    * @abstract
    *
-   * @param {string} host
-   *   The target hostname or IP address as String
-   * @param {int} port
-   *   The target port as Integer
+   * @param {string|SieveUrl} url
+   *   the url with hostname and port
    * @param {boolean} secure
    *   If true, a secure socket will be created. This allows switching to a secure
    *   connection.
@@ -756,9 +777,8 @@ class SieveAbstractClient {
    * @returns {SieveAbstractClient}
    *   a self reference
    */
-  // eslint-disable-next-line no-unused-vars
-  connect(host, port, secure) {
-    throw new Error("Implement me SieveAbstractClient ");
+  connect(url, secure) {
+    throw new Error(`Implement SieveAbstractClient::connect(${url} ${secure})`);
   }
 
   /**
@@ -767,16 +787,47 @@ class SieveAbstractClient {
    * @param {Error} [reason]
    *   the optional reason why the request was canceled.
    */
-  cancel(reason) {
+  async drain(reason) {
 
-    this.getLogger().logState(`[SieveAbstractClient:cancel()] Shutting down message queue ${reason}`);
+    this.getLogger().logState(
+      `[SieveAbstractClient:cancel()] Draining message queue ${reason}`);
 
-    // Mark the queue as canceled...
-    this.queue.shutdown(reason);
+    if (this.queue.isEmpty()) {
+      this.getLogger().logState(
+        `[SieveAbstractClient:cancel()] Skipping, request queue is empty`);
+      return;
+    }
 
-    // ... and then retrigger the queue with an empty message.
-    // does not hurt...
-    this.onReceive([]);
+    // Flush and process the remaining buffer before draining.
+    if (this.buffer.length()) {
+      this.getLogger().logState(
+        `[SieveAbstractClient:cancel()] Flushing receive buffer.`);
+
+      await this.receive();
+    }
+
+    // Shutdown all pending requests...
+    this.getLogger().logState(
+      `[SieveAbstractClient:cancel()] Start, draining the request queue...`);
+    this.queue.drain(reason);
+
+
+    this.getLogger().logState(
+      `[SieveAbstractClient:cancel()] ... ${this.queue.length()} requests pending.`);
+
+    // Then drain the messages, by calling repeatedly empty messages until the
+    // message queue is empty.
+    await this.receive();
+
+    if (this.queue.isEmpty()) {
+      this.getLogger().logState(
+        `[SieveAbstractClient:cancel()] Message queue drained.`);
+      return;
+    }
+
+    this.getLogger().logState(
+      `[SieveAbstractClient:cancel()] Retrying still ${this.queue.length()} requests pending.`);
+    await this.drain(reason);
   }
 
   /**
@@ -789,13 +840,42 @@ class SieveAbstractClient {
    *   the optional reason why the client was disconnected.
    */
   async disconnect(reason) {
-
-    this.getLogger().logState(`SieveAbstractClient: Disconnecting ${this.host}:${this.port}...`);
+    this.getLogger().logState(`[SieveAbstractClient:disconnect()] Disconnecting ${this.host}:${this.port}...`);
 
     this.getIdleTimer().cancel();
     this.getTimeoutTimer().cancel();
 
-    this.cancel(reason);
+    try {
+      this.shutdownLock.acquire();
+      this.getLogger().logState("[SieveAbstract:disconnect()] Acquired lock");
+
+      await this.drain(reason);
+
+      if (!this.socket) {
+        this.getLogger().logState(`[SieveAbstract:disconnect()] ... no valid socket`);
+        return;
+      }
+
+      await this.destroy();
+
+      if ((this.listener) && (this.listener.onDisconnected))
+        await this.listener.onDisconnected();
+
+    } finally {
+      this.getLogger().logState("[SieveAbstract:disconnect()] Releasing lock");
+      this.shutdownLock.release();
+    }
+
+    this.getLogger().logState(`[SieveAbstract:disconnect()] ... disconnected`);
+  }
+
+  /**
+   * Shutdowns and releases the socket used to communicate to the server.
+   * Should not be called directly instead call disconnect to cleanup
+   * dependent resources.
+   */
+  async destroy() {
+    throw new Error("Implement SieveAbstractClient:destroy");
   }
 
   /**
@@ -823,7 +903,7 @@ class SieveAbstractClient {
 
     this.onStopTimeout();
 
-    this.queue.shutdown(new Error("Timeout"));
+    this.queue.drain(new Error("Timeout"));
 
     return;
   }
@@ -850,15 +930,15 @@ class SieveAbstractClient {
     return new SieveRequestBuilder();
   }
 
-
   /**
    * Called when data was received on the socket.
+   * It queues the data into the buffer and asynchronously calls receive.
+   * So that it can be processed of the main loop.
    *
    * @param {byte[]} data
    *   the data received.
    */
-  async onReceive(data) {
-
+  onData(data) {
     this.getLogger().logState("[SieveAbstractClient:onReceive] Starting processing received data...");
 
     if (this.getLogger().isLevelStream())
@@ -871,12 +951,22 @@ class SieveAbstractClient {
     this.getLogger().logState("[SieveAbstractClient:onReceive] ... add data to buffer...");
     this.buffer.write(data);
 
-    // is a request handler waiting?
+    // Schedule processing the received data.
+    (async () => { await this.receive(); })();
+  }
+
+  /**
+   * Called whenever received data should be processed.
+   */
+  async receive() {
+
+    // we can skip in case no request are waiting.
     if (this.queue.isEmpty()) {
       this.getLogger().logState("[SieveAbstractClient:onReceive] ... skipping, no request handler ready.");
       return;
     }
 
+    // Same applies if the message queue is busy.
     if (this.queue.isLocked()) {
       this.getLogger().logState("[SieveAbstractClient:onReceive] ... skipping queue is locked.");
       return;
@@ -897,16 +987,20 @@ class SieveAbstractClient {
 
         const request = lock.getNext();
 
-        if (request.isAbandoned()) {
-          this.getLogger().logState("[SieveAbstractClient:onReceive] ... skipping abandoned request ...");
-          await request.onAbandoned();
-          this.buffer.clear();
-          lock.trunc();
-          continue;
-        }
-
-        // We can bail out in case we ran out of data
+        // We take a shortcut in case we ran out of data.
         if (!this.buffer.length()) {
+
+          // In case the request is abandoned we lost the connection and are
+          // draining the message queue which makes it unlikely that new data
+          // arrives.
+          if (request.isAbandoned()) {
+            this.getLogger().logState("[SieveAbstractClient:onReceive] ... skipping abandoned request ...");
+            await request.onAbandon();
+            lock.trunc();
+            continue;
+          }
+
+          // In any other case we just bail out and wait for more data.
           this.getLogger().logState("[SieveAbstractClient:onReceive] ... ran out of data, waiting for more");
           this.onStartTimeout();
           return;
@@ -942,7 +1036,6 @@ class SieveAbstractClient {
           //
           // So in either way the next packet or the timeout will resolve this
           // situation for us.
-
           if (this.getLogger().isLevelState()) {
             this.getLogger().logState(`Parsing Warning in libManageSieve/Sieve.js:\\n${ex.toString()}`);
             this.getLogger().logState(ex.stack);
@@ -1031,4 +1124,6 @@ class SieveAbstractClient {
   }
 }
 
-export { SieveAbstractClient };
+export {
+  SieveAbstractClient
+};

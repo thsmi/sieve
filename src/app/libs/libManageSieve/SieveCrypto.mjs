@@ -109,7 +109,6 @@ class SieveNodeCrypto extends SieveAbstractCrypto {
 
     return this.strToByteArray(rv);
   }
-
 }
 
 export { SieveNodeCrypto as SieveCrypto };

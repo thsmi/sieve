@@ -9,7 +9,6 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-
 /**
  * A generic base class for Sieve Exceptions.
  */
@@ -105,21 +104,12 @@ class SieveServerException extends SieveException {
 class SieveReferralException extends SieveServerException {
 
   /**
-   * The new remote hostname to which the server referred the connection.
-   * @returns {string}
-   *   the hostname
+   * The sieve url to which the server referred the connection.
+   * @returns {SieveUrl}
+   *   the new server's connection url
    */
-  getHostname() {
-    return this.getResponse().getResponseCode().getHostname();
-  }
-
-  /**
-   * The new remote port to which the server referred the connection.
-   * @returns {string}
-   *   the port
-   */
-  getPort() {
-    return this.getResponse().getResponseCode().getPort();
+  getUrl() {
+    return this.getResponse().getResponseCode().getUrl();
   }
 }
 

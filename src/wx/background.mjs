@@ -10,14 +10,12 @@
  */
 
 /* global browser */
-
 import { SieveSession } from "./libs/libManageSieve/SieveSession.mjs";
 import { SieveCertValidationException } from "./libs/libManageSieve/SieveExceptions.mjs";
 
 import { SieveLogger } from "./libs/managesieve.ui/utils/SieveLogger.mjs";
 import { SieveIpcClient } from "./libs/managesieve.ui/utils/SieveIpcClient.mjs";
 import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccounts.mjs";
-
 
 (async function () {
 
@@ -32,7 +30,6 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
   const accounts = await (new SieveAccounts().load());
 
   const sessions = new Map();
-
   // TODO Extract into separate class..
   /**
    * Gets a tab by its script and account name.
@@ -190,15 +187,22 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
       return await host.getDisplayName();
     },
 
+    "account-is-connecting": function(msg) {
+      logger.logAction(`Is connecting ${msg.payload.account}`);
+
+      if (!sessions.has(msg.payload.account))
+        return false;
+
+      return sessions.get(msg.payload.account).isConnecting();
+    },
+
     "account-connected": function (msg) {
       logger.logAction(`Is connected ${msg.payload.account}`);
 
-      const id = msg.payload.account;
-
-      if (!sessions.has(id))
+      if (!sessions.has(msg.payload.account))
         return false;
 
-      return sessions.get(id).isConnected();
+      return sessions.get(msg.payload.account).isConnected();
     },
 
     "account-connect": async function (msg) {
@@ -253,11 +257,15 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
       sessions.get(id).on("authorize",
         async () => { return await onAuthorize(); });
 
-      const hostname = await host.getHostname();
-      const port = await host.getPort();
-
       try {
-        await sessions.get(id).connect(hostname, `${port}`);
+        await sessions.get(id).connect(await host.getUrl());
+
+        // Connection established, this means we need to listen for any
+        // unplanned disconnects.
+        sessions.get(id).on("disconnected", async () => {
+          await SieveIpcClient.sendMessage("accounts", "account-disconnected", id);
+        });
+
       } catch (ex) {
 
         await (actions["account-disconnect"](msg));
@@ -300,7 +308,6 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
 
     "account-disconnect": async function (msg) {
       logger.logAction(`Disconnect ${msg.payload.account}`);
-
       const id = msg.payload.account;
       if (!sessions.has(id))
         return;

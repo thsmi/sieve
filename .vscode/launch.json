@@ -4,13 +4,37 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
+
+    {
+      "name": "Python: Debug Sources",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/web/main.py",
+      "args": ["--config=D:\\projekte\\sieve\\core\\src\\web\\config.ini"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Python: Debug Build ",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/web/main.py",
+      "args": ["--config=D:\\projekte\\sieve\\core\\src\\web\\config.ini"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Python: Current File",
+      "type": "python",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal"
+    },
     {
       "type": "node",
       "request": "launch",
       "name": "Run Unit Tests",
       "program": "${workspaceFolder}/tests/index.js",
       "skipFiles": [
-        //"<node_internals>/**"
+        "<node_internals>/**"
       ]
     },
     {

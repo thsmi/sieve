@@ -144,12 +144,24 @@ class AbstractSandboxedTestFixture {
   }
 
   /**
-   * Checks if the actual value is a equals to true.
+   * Checks if the actual value is equal to null
+   *
+   * @param {*} actual
+   *   the actual value which should be tested.
+   * @param {string} [message]
+   *   the optional message to display in case of a failure.
+   */
+  assertNull(actual, message) {
+    this.assertEquals(null, actual, message);
+  }
+
+  /**
+   * Checks if the actual value is equal to true.
    *
    * @param {boolean} actual
    *   the actual value which should be tested
    * @param {string} [message]
-   *   the message to display in case of a failure.
+   *   the optional message to display in case of a failure.
    *
    */
   assertTrue(actual, message) {
@@ -162,7 +174,7 @@ class AbstractSandboxedTestFixture {
    * @param {boolean} actual
    *   the actual value which should be tested
    * @param {string} [message]
-   *   the message to display in case of a failure.
+   *   the optional message to display in case of a failure.
    *
    */
   assertFalse(actual, message) {
@@ -178,7 +190,7 @@ class AbstractSandboxedTestFixture {
    * @param {Uint8Array|string} actual
    *   the array which should be tested. In case of a string it will be encoded.
    * @param {string} [message]
-   *   the message to display in case of a failure
+   *   the optional message to display in case of a failure
    */
   assertArrayEquals(expected, actual, message) {
     if (!(expected instanceof Uint8Array))
@@ -210,8 +222,15 @@ class AbstractSandboxedTestFixture {
       return;
     }
 
-    if (typeof (message) === 'undefined' || message === null)
-      message = `Assert failed\nExpected (${expected.length} Bytes): \n${expected}\n\nBut got (${actual.length} Bytes)\n${actual}`;
+    if (typeof (message) === 'undefined' || message === null) {
+
+      if (expected === null)
+        message = `Assert failed\nExpected null`;
+      else
+        message = `Assert failed\nExpected (${expected.length} Bytes): \n${expected}\n\n`;
+
+      message += `But got (${actual.length} Bytes)\n${actual}`;
+    }
 
     throw new Error(`${message}`);
   }
@@ -233,8 +252,6 @@ class AbstractSandboxedTestFixture {
       const result = await handler();
       this.response(type, result);
     } catch (ex) {
-
-      console.log("Exception :" + ex);
       this.error(type, { message: ex.message, stack: ex.stack} );
     }
   }

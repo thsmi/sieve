@@ -126,7 +126,7 @@ function packageBootstrap(destination) {
 function src2(dir, files) {
 
   if (!files)
-    files = [`./**`, `!./doc/**`];
+    files = [`./**`, `!./doc/**`, `!./tests/**`];
 
   if (!Array.isArray(files))
     files = [files];
@@ -407,7 +407,6 @@ async function compressDirectory(zip, dir, options) {
 
       if (options.permissions["*"])
         fileOptions = { mode: options.permissions["*"] };
-
       if (options.permissions[metaPath])
         fileOptions = { mode: options.permissions[metaPath] };
     }

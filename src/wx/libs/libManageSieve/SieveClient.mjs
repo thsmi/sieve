@@ -14,32 +14,19 @@
 // Handle all imports..
 import { SieveAbstractClient } from "./SieveAbstractClient.mjs";
 
-
 import {
   SieveCertValidationException,
   SieveClientException,
   SieveException
 } from "./SieveExceptions.mjs";
 
+import { SieveUrl } from "./SieveUrl.mjs";
+
 /**
  *  This realizes the abstract sieve implementation by using
  *  the mozilla specific network implementation.
  */
 class SieveMozClient extends SieveAbstractClient {
-
-
-  /**
-   * Creates a new instance
-   * @param {SieveLogger} logger
-   *   the logger which should be used.
-   */
-  constructor(logger) {
-
-    super();
-
-    this._logger = logger;
-    this.secure = true;
-  }
 
   /**
    * @inheritdoc
@@ -50,7 +37,6 @@ class SieveMozClient extends SieveAbstractClient {
 
     return browser.sieve.socket.isAlive(this.socket);
   }
-
 
   /**
    * This method secures the connection to the sieve server. By activating
@@ -67,41 +53,34 @@ class SieveMozClient extends SieveAbstractClient {
     this.getLogger().logState("[SieveClient:startTLS()] Upgrading to secure socket");
 
     await browser.sieve.socket.startTLS(this.socket);
+
+    this.secured = true;
   }
 
   /**
    * @inheritdoc
    */
-  getLogger() {
-    return this._logger;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  isSecure() {
-    return true;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  async connect(host, port) {
+  async connect(url) {
     if (this.socket)
       return this;
 
-    this.host = host;
-    this.port = port;
+    if (typeof url === 'string' || url instanceof String)
+      url = new SieveUrl(url);
+
+    this.host = url.getHost();
+    this.port = url.getPort();
 
     this.getLogger().logState(`Connecting to ${this.host}:${this.port} ...`);
 
-    this.socket = await (browser.sieve.socket.create(host, port, this.getLogger().level()));
+    this.socket = await (browser.sieve.socket.create(
+      this.host, this.port, this.getLogger().level()));
 
-    await (browser.sieve.socket.onData.addListener(async (bytes) => {
-      await super.onReceive(bytes);
+    await (browser.sieve.socket.onData.addListener((bytes) => {
+      this.onData(bytes);
     }, this.socket));
 
-    await (browser.sieve.socket.onError.addListener((error) => {
+    await (browser.sieve.socket.onError.addListener(async (error) => {
+      this.getLogger().logState(`SieveClient: OnError (Connection ${this.host}:${this.port})`);
 
       // Exceptions can't be transferred between experiments and background pages
       // This means we need to convert the error object into an exception.
@@ -113,11 +92,13 @@ class SieveMozClient extends SieveAbstractClient {
         error = new SieveException(`Socket failed without providing an error code.`);
 
       if ((this.listener) && (this.listener.onError))
-        (async () => { await this.listener.onError(error); })();
+        await this.listener.onError(error);
     }, this.socket));
 
-    await (browser.sieve.socket.onClose.addListener(() => {
-      this.disconnect();
+    await (browser.sieve.socket.onClose.addListener(async () => {
+      this.getLogger().logState(`SieveClient: OnClose (Connection ${this.host}:${this.port})`);
+
+      await this.disconnect(new Error("Server closed connection unexpectedly"));
     }, this.socket));
 
     await (browser.sieve.socket.connect(this.socket));
@@ -128,27 +109,11 @@ class SieveMozClient extends SieveAbstractClient {
   /**
    * @inheritdoc
    */
-  async disconnect(reason) {
-
-    this.getLogger().logState(`[SieveClient:disconnect] Disconnecting ${this.host}:${this.port}...`);
-
-    await super.disconnect(reason);
-
-    if (!this.socket) {
-      this.getLogger().logState(`[SieveClient:disconnect()] ... no valid socket`);
-      return;
-    }
-
-    this.getLogger().logState(`[SieveClient:disconnect()] ... destroying socket...`);
+  async destroy() {
+    this.getLogger().logState(`[SieveClient:destroy()] ... destroying socket...`);
     await browser.sieve.socket.destroy(this.socket);
     this.socket = null;
-
-    if ((this.listener) && (this.listener.onDisconnected))
-      await this.listener.onDisconnected();
-
-    this.getLogger().logState("[SieveClient:disconnect()] ... disconnected.");
   }
-
 
   /**
    * @inheritdoc
@@ -163,8 +128,6 @@ class SieveMozClient extends SieveAbstractClient {
       this.getLogger().logStream(`Client -> Server [Byte Array]:\n${output}`);
 
     browser.sieve.socket.send(this.socket, output);
-
-    return;
   }
 }
 

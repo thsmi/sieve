@@ -219,6 +219,9 @@
      *   true in case the socket is alive otherwise false.
      */
     isAlive() {
+      if (!this.socket)
+        return false;
+
       return this.socket.isAlive();
     }
 

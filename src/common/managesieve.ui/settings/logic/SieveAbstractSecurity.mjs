@@ -46,7 +46,6 @@ class SieveAbstractSecurity {
   async getMechanism() {
     return await "default";
   }
-
 }
 
 export { SieveAbstractSecurity };

@@ -177,4 +177,3 @@ suite.add("Mime Example 3", () => {
 
   suite.expectValidScript(script, ["mime", "variables", "extracttext"]);
 });
-

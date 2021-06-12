@@ -1,4 +1,5 @@
 node_modules/
 build/
-venv/
 __pycache__/
+.venv/
+src/web/config.ini

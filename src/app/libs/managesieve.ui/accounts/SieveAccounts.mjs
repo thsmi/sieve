@@ -24,7 +24,7 @@ class SieveNodeAccounts extends SieveAbstractAccounts {
   /**
    * @inheritdoc
    */
-  async render() {
+  async render(account) {
 
     if (!document.querySelector(".siv-accounts-items")) {
 
@@ -50,7 +50,7 @@ class SieveNodeAccounts extends SieveAbstractAccounts {
         });
     }
 
-    super.render();
+    super.render(account);
   }
 
   /**

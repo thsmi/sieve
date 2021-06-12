@@ -238,6 +238,9 @@ class SieveAbstractRequest {
    *   the optional reason why the request was abandoned.
    */
   abandon(reason) {
+    if (this.isAbandoned())
+      return;
+
     this.abandoned = true;
     this.reason = reason;
   }
@@ -249,7 +252,7 @@ class SieveAbstractRequest {
    *   true in case the request is abandoned otherwise false.
    */
   isAbandoned() {
-    return this.aborted;
+    return this.abandoned;
   }
 
   /**
@@ -1252,7 +1255,6 @@ class SieveAbstractSaslScramRequest extends SieveAbstractSaslRequest {
 
     // ... and convert it into a byte array.
     this._authMessage = crypto.strToByteArray(this._authMessage);
-
 
     // As next Step sign out message, this is done by applying the client...
     // ... key through a pseudorandom function to the message. It is defined...

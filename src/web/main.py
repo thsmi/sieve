@@ -1,5 +1,7 @@
 import pathlib
 
+from argparse import ArgumentParser
+
 from script.webserver import WebServer
 
 from script.handler.config import ConfigHandler
@@ -8,7 +10,6 @@ from script.handler.websocket import WebSocketHandler
 
 from script.config.config import Config
 
-from argparse import ArgumentParser
 
 parser = ArgumentParser(description='Starts the websocket to sieve proxy.')
 parser.add_argument("--config", help="The configuration file if omitted it will fallback to ./config.ini")

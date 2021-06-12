@@ -53,7 +53,7 @@ backend with a reverse proxy.
   An nginx configuration example is shown below. Keep in mind it should be an
   https endpoint.
 
-````
+````nginx
     location /sieve/ {
        # Forwards all request to the sieve proxy, in this example
        # it runs at 127.0.0.1:8765

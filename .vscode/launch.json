@@ -6,10 +6,19 @@
   "configurations": [
 
     {
-      "name": "Python: Debug main ",
+      "name": "Python: Debug Sources",
       "type": "python",
       "request": "launch",
       "program": "${workspaceFolder}/src/web/main.py",
+      "args": ["--config=D:\\projekte\\sieve\\core\\src\\web\\config.ini"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Python: Debug Build ",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/web/main.py",
+      "args": ["--config=D:\\projekte\\sieve\\core\\src\\web\\config.ini"],
       "console": "integratedTerminal"
     },
     {

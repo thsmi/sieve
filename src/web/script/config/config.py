@@ -1,4 +1,5 @@
 import configparser
+import pathlib
 import hashlib
 
 class NoSuchPropertyException(Exception):
@@ -128,6 +129,15 @@ class Config:
   def load(self, name):
     self._config.read(name)
     return self
+
+  def get_http_root(self):
+    """
+    Retruns the path to the http root containing the static files.
+    """
+    if "HttpRoot" in self._config["DEFAULT"]:
+      return self._config["DEFAULT"]["HttpRoot"]
+
+    return pathlib.Path(pathlib.Path(__file__).parent.absolute(), "static")
 
   def get_port(self):
     """

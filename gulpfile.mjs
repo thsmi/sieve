@@ -101,10 +101,23 @@ testing.packageTests.displayName = "test:package";
 
 export const { watchTests : testWatch, packageTests : testPackage } = testing;
 
+// Web application relates Tasks
 web.watch.displayName = "web:watch";
 web.packageWeb.displayName = "web:package";
 
 export const { watch : webWatch, packageWeb : webPackage } = web;
+
+const webPackageZip = gulp.series(
+  web.packageWeb,
+  web.packageZip
+);
+
+webPackageZip.displayName = "web:package-zip";
+
+export {
+  webPackageZip
+};
+
 
 // Generic Tasks...
 common.clean.displayName = "clean";

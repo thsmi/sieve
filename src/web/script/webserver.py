@@ -83,6 +83,7 @@ class WebServer:
         + "\r\n".join(traceback.format_exception(exc_type, exc_value, exc_tb)))
 
       print(str(ex))
+      print("".join(traceback.format_exception(exc_type, exc_value, exc_tb)))
 
     finally:
       context.socket.shutdown(socket.SHUT_RDWR)

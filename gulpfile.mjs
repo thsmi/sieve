@@ -127,7 +127,8 @@ const commonBumpMajor = gulp.series(
   common.bumpMajorVersion,
   gulp.parallel(
     app.updateVersion,
-    wx.updateVersion
+    wx.updateVersion,
+    common.updateVersion
   )
 );
 commonBumpMajor.displayName = "bump-major";
@@ -136,7 +137,8 @@ const commonBumpMinor = gulp.series(
   common.bumpMinorVersion,
   gulp.parallel(
     app.updateVersion,
-    wx.updateVersion
+    wx.updateVersion,
+    common.updateVersion
   )
 );
 commonBumpMinor.displayName = "bump-minor";

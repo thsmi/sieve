@@ -69,6 +69,7 @@ function packageSrc() {
     BASE_DIR_WEB + "/**",
     `!${BASE_DIR_WEB}/doc/**`,
     `!${BASE_DIR_WEB}/config.ini`,
+    `!**/__pycache__/**`,
     `!${BASE_DIR_WEB}/static/libs/libManageSieve/**`
   ]).pipe(gulp.dest(BUILD_DIR_WEB));
 }
@@ -153,7 +154,7 @@ async function packageZip() {
 
   const version = (await common.getPackageVersion()).join(".");
 
-  const destination = path.resolve(common.BASE_DIR_BUILD, `sieve-${version}-webserver.zip`);
+  const destination = path.resolve(common.BASE_DIR_BUILD, `sieve-${version}-web.zip`);
   const source = path.resolve(`./${BUILD_DIR_WEB}/`);
 
   await common.compress(source, destination);

@@ -17,7 +17,7 @@
     "eslint-plugin-unicorn": "^35.0.0",
     "gulp": "^4.0.0",
     "node-abi": "^2.30.0",
-    "tar": "^6.1.2",
+    "tar": "^6.1.10",
     "yazl": "^2.5.1"
   },
   "scripts": {

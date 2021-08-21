@@ -304,6 +304,13 @@
     ]
   });
 
+  tests.set("app-updater", {
+    script: "${workspace}/managesieve.ui/updater/tests/SieveUpdaterTest.mjs",
+    require: [
+      "${workspace}/managesieve.ui/updater/SieveUpdater.mjs"
+    ]
+  });
+
 
   exports.tests = tests;
 

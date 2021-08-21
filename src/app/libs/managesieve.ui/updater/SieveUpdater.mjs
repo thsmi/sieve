@@ -58,7 +58,7 @@ class SieveUpdater {
     const currentValue = this.getInt(currentVersion);
 
     // in case conversion failed we use string comparison
-    if (newValue === Number.NaN || currentValue === Number.NaN)
+    if (isNaN(newValue) || isNaN(currentValue))
       return (newVersion < currentVersion);
 
     return newValue < currentValue;
@@ -84,7 +84,7 @@ class SieveUpdater {
     const currentValue = this.getInt(currentVersion);
 
     // in case conversion failed we use string comparison
-    if (newValue === Number.NaN || currentValue === Number.NaN)
+    if (isNaN(newValue) || isNaN(currentValue))
       return (newVersion > currentVersion);
 
     return newValue > currentValue;

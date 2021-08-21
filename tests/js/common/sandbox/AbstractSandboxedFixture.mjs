@@ -144,6 +144,18 @@ class AbstractSandboxedTestFixture {
   }
 
   /**
+   * Checks if the actual value is NaN
+   *
+   * @param {*} actual
+   *   the value which should be tested.
+   * @param {string} [message]
+   *   the optimal message in case of a failure
+   */
+  assertNaN(actual, message) {
+    this.assertTrue(isNaN(actual), message);
+  }
+
+  /**
    * Checks if the actual value is equal to null
    *
    * @param {*} actual
@@ -234,6 +246,8 @@ class AbstractSandboxedTestFixture {
 
     throw new Error(`${message}`);
   }
+
+
 
   /**
    * Dispatches the incoming ipc message to the handler and

@@ -15,6 +15,7 @@ import { SieveAbstractAuthentication } from "./SieveAbstractAuthentication.mjs";
 import { SieveIpcClient } from "./../../utils/SieveIpcClient.mjs";
 
 const KEY_USERNAME = "authentication.username";
+const KEY_PASSWORD = "authentication.password";
 
 /**
  * Prompts for a password.
@@ -54,7 +55,8 @@ class SieveElectronAuthentication extends SieveAbstractAuthentication {
   }
 
   /**
-   * Checks if the system key store can be accessed from this app.
+   * Checks electron can encrypt and decrypt passwords.
+   *
    * It could be unavailable due to missing libraries or because
    * it has been disabled by the IT administrator.
    *
@@ -62,11 +64,7 @@ class SieveElectronAuthentication extends SieveAbstractAuthentication {
    *   true in case a password can be stored otherwise false.
    */
   async canStorePassword() {
-    if (typeof (this.canStore) === "undefined" || this.canStore === null) {
-      this.canStore = await SieveIpcClient.sendMessage("core", "keystore-ready", "", window);
-    }
-
-    return (this.canStore === true);
+    return await SieveIpcClient.sendMessage("core", "has-encryption", "", window);
   }
 
   /**
@@ -74,85 +72,60 @@ class SieveElectronAuthentication extends SieveAbstractAuthentication {
    * It will fail silently.
    */
   async forget() {
-    try {
-      if (!await this.canStorePassword())
-        return;
-
-      const username = await this.getUsername();
-
-      await SieveIpcClient.sendMessage(
-        "core", "keystore-forget", { "username": username }, window);
-
-    } catch (ex) {
-      this.account.getLogger().logAction("Forgetting password failed " + ex);
-    }
+    await (this.account.getConfig().removeKey(KEY_PASSWORD));
   }
 
   /**
-   * Stores a password in the system wide key store.
+   * Stores a password in the account settings.
    * It will fail silently in case storing the password failed.
    *
    * @param {string} password
    *   the password to be stored.
    */
   async setStoredPassword(password) {
-    try {
-      if (! await this.canStorePassword())
-        return;
 
-      const username = await this.getUsername();
+    if (! await this.canStorePassword())
+      return;
 
-      await SieveIpcClient.sendMessage(
-        "core", "keystore-store", { "username": username, "password": password }, window);
+    password = await SieveIpcClient.sendMessage(
+      "core", "encrypt-string", password, window);
 
-    } catch (ex) {
-      this.account.getLogger().logAction("Storing password failed " + ex);
-    }
+    await (this.account.getConfig().setValue(KEY_PASSWORD, password));
   }
 
   /**
-   * Gets the stored password
+   * Gets and decrypts the stored password from the account settings
    *
    * @returns {string}
    *  the password or null in case it does not exist.
    */
   async getStoredPassword() {
-    try {
-      if (!await this.canStorePassword())
-        return null;
+    if (!await this.canStorePassword())
+      return null;
 
-      const username = await this.getUsername();
+    const password = await (this.account.getConfig().getValue(KEY_PASSWORD));
+    if (password === undefined || password === null)
+      return null;
 
-      return await SieveIpcClient.sendMessage(
-        "core", "keystore-get", { "username": username }, window);
-
-    } catch (ex) {
-      this.account.getLogger().logAction("Getting password failed " + ex);
-    }
-
-    return null;
+    return await SieveIpcClient.sendMessage(
+      "core", "decrypt-string", password, window);
   }
 
   /**
-   * Checks if the password is stored in the cert store.
+   * Checks if a password is stored in the account settings.
    *
    * @returns {boolean}
    *   true in case a password is stored.
    */
   async hasStoredPassword() {
-    try {
-      if (!await this.canStorePassword())
-        return false;
+    if (!await this.canStorePassword())
+      return false;
 
-      if (await this.getStoredPassword() === null)
-        return false;
+    const password = await (this.account.getConfig().getValue(KEY_PASSWORD));
+    if (password === undefined || password === null)
+      return false;
 
-      return true;
-    } catch (ex) {
-      this.account.getLogger().logAction("Checking for stored password failed " + ex);
-    }
-
-    return false;
+    return true;
   }
 
   /**

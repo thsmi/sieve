@@ -50,13 +50,6 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
   const accounts = await (new SieveAccounts().load());
   const sessions = new SieveSessions();
 
-  let keytar = null;
-  try {
-    keytar = require("./libs/keytar");
-  } catch (ex) {
-    logger.log("Could not initialize keytar " + ex);
-  }
-
   const actions = {
 
     "update-check": async () => {
@@ -626,20 +619,16 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
       await ipcRenderer.invoke("reload-ui");
     },
 
-    "keystore-ready" : async() => {
-      return ((typeof(keytar) !== undefined) && (keytar !== null));
+    "has-encryption" : async() => {
+      return await ipcRenderer.invoke("has-encryption");
     },
 
-    "keystore-forget" : async(msg) => {
-      await keytar.deletePassword("Sieve Editor", msg.payload.username);
+    "encrypt-string" : async(msg) => {
+      return await ipcRenderer.invoke("encrypt-string", msg.payload);
     },
 
-    "keystore-store" : async(msg) => {
-      await keytar.setPassword("Sieve Editor", msg.payload.username, msg.payload.password);
-    },
-
-    "keystore-get" : async(msg) => {
-      return await keytar.getPassword("Sieve Editor", msg.payload.username);
+    "decrypt-string" : async(msg) => {
+      return await ipcRenderer.invoke("decrypt-string", msg.payload);
     }
   };
 

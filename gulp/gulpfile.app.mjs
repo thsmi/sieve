@@ -13,7 +13,7 @@ import gulp from 'gulp';
 import logger from 'gulplog';
 
 import { existsSync } from 'fs';
-import { readFile, chmod, unlink, mkdir } from 'fs/promises';
+import { chmod, unlink } from 'fs/promises';
 
 import { promisify } from 'util';
 import { exec } from 'child_process';
@@ -22,8 +22,7 @@ import common from "./gulpfile.common.mjs";
 import https from "./gulpfile.common.https.mjs";
 
 import path from 'path';
-import tar from 'tar';
-import { getAbi } from 'node-abi';
+
 
 import packager from 'electron-packager';
 
@@ -35,19 +34,12 @@ const BASE_DIR_APP = "./src/app/";
 
 const BUILD_DIR_APP_LIBS = path.join(BUILD_DIR_APP, '/libs');
 
-
-const KEYTAR_NAME = "keytar";
-const KEYTAR_OUTPUT_DIR = `/libs/${KEYTAR_NAME}`;
-const KEYTAR_RELEASE_URL = "https://api.github.com/repos/atom/node-keytar/releases";
-
 const WIN_ARCH = "x64";
 const WIN_PLATFORM = "win32";
 const LINUX_ARCH = "x64";
 const LINUX_PLATFORM = "linux";
 const MAC_ARCH = "x64";
 const MAC_PLATFORM = "mas";
-
-const RUNTIME_ELECTRON = "electron";
 
 const APP_IMAGE_RELEASE_URL = "https://api.github.com/repos/AppImage/AppImageKit/releases";
 const APP_IMAGE_TOOL_NAME = "appimagetool-x86_64.AppImage";
@@ -59,61 +51,6 @@ const OUTPUT_DIR_APP_MACOS = path.join(OUTPUT_DIR_APP, `sieve-${MAC_PLATFORM}-${
 
 const PERMISSIONS_EXECUTABLE = 0o100770;
 const PERMISSIONS_NORMAL = 0o100660;
-
-const STRIP_ONE_LEVEL = 1;
-
-/**
- * Extracts a tar or tar.gz file to the given destination.
- *
- * @param {string} filename
- *   the path to the tar file
- * @param {string} destination
- *   the destination folder into which the tar should be extracted.
- * @param {Function} filter
- *   a filter method which will be called for each entry. If it returns
- *   true the element will be extracted otherwise false.
- * @param {number} strip
- *   the number of leading path elements to be stripped.
- */
-async function untar(filename, destination, filter, strip) {
-
-  logger.debug(`Extracting ${filename} to ${destination}`);
-
-  await tar.x({
-    file: filename,
-    cwd: destination,
-    filter: filter,
-    strip : strip,
-    strict: true
-  });
-
-  return;
-}
-
-/**
- * Gets electron's release as well as the abi version.
- * Throws in case the electron runtime could not be found.
- *
- * @param {string} dir
- *   the path to the electron runtime.
- * @returns {{ version : string, abi : string}}
- *   electrons release as well as the abi version.
- */
-async function getElectronVersion(dir) {
-
-  const versionFile = path.join(dir + '/version');
-
-  if (!existsSync(versionFile))
-    throw new Error(`Failed to detect version, no electron runtime in ${dir}`);
-
-  const version = (await readFile(versionFile)).toString();
-  const abi = await getAbi(version, RUNTIME_ELECTRON);
-
-  return {
-    "version": version,
-    "abi": abi
-  };
-}
 
 
 /**
@@ -231,140 +168,6 @@ function packageLibSieve() {
  */
 function packageManageSieveUi() {
   return common.packageManageSieveUi(BUILD_DIR_APP_LIBS);
-}
-
-/**
- * It checks all assets from a github release for a compatible artifact.
- * In case no compatible artifact was found an exception will be thrown.
- *
- * @param {string} url
- *   the github repository url.
- * @param {string} abi
- *   the electron abi compatibility
- * @param {string} platform
- *   the platform (e.g. win32, linux, darwin)
- * @param {string} arch
- *   the architecture either x86 or x64
- *
- * @returns {object}
- *   the asset url and the source url wrapped into an object.
- */
-async function getLatestCompatibleRelease(url, abi, platform, arch) {
-
-  const releases = await https.fetch(url);
-
-  // Find the latest compatible version.
-  for (const release of releases) {
-    for (const asset of release.assets) {
-      if (!asset.name.endsWith(`-${RUNTIME_ELECTRON}-v${abi}-${platform}-${arch}.tar.gz`))
-        continue;
-
-      return {
-        "tag_name" : release.tag_name,
-        "asset" : asset.browser_download_url,
-        "tarball" : release.tarball_url
-      };
-    }
-  }
-
-  throw new Error("No Compatible keytar release found.");
-}
-
-
-/**
- * Deploys the native prebuilt node modules into an electron application.
- * Typically you first package the module without any prebuilt files.
- * Then invoke electron packager with the target operating system and
- * architecture. Then call this method to deploy the matching prebuilt modules
- * to the electron packager output.
- *
- * Keep in mind a prebuilt is a binary. It needs to be binary
- * compatible and the abi has to match. An Windows Electron requires
- * a windows prebuilt, a Linux electron a linux prebuilt, etc
- *
- * @param {string} electronDest
- *   the location of the electron framework which should be repackaged
- * @param {string} prebuiltDest
- *   the location (inside the electron application) where the prebuilt
- *   binaries should be stored.
- * @param {string} pkgName
- *   the the package name
- * @param {string} platform
- *   the platform for which the prebuilt packages
- * @param {string} arch
- *   the architecture for the prebuilt packages
- */
-async function deployPrebuilt(electronDest, prebuiltDest, pkgName, platform, arch) {
-
-  logger.debug(`Packaging Prebuilt ${pkgName} for ${platform}-${arch}`);
-
-  // Step one, extract the electron version
-  electronDest = path.resolve(path.join(electronDest, `/sieve-${platform}-${arch}`));
-
-  if (!existsSync(electronDest))
-    throw new Error(`Could not find a compatible electron release in ${electronDest}`);
-
-  const abi = (await getElectronVersion(electronDest)).abi;
-
-  // Step two, extract the package version
-
-  // Prebuilt and electron packager use a different naming for mac.
-  if (platform.toLowerCase() === "mas")
-    platform = "darwin";
-
-  if (platform === "darwin")
-    prebuiltDest = path.join(electronDest, "sieve.app/Contents/Resources/app", prebuiltDest);
-  else
-    prebuiltDest = path.join(electronDest, "/resources/app/", prebuiltDest);
-
-  // Now we need to find a compatible keytar releases.
-  // We just browse all available assets and check if their abi, platform and
-  // architecture is compatible
-  const latest = await getLatestCompatibleRelease(
-    KEYTAR_RELEASE_URL, abi, platform, arch);
-
-  const prebuiltSrc = path.join(CACHE_DIR_APP,
-    `keytar-${latest.tag_name}-${RUNTIME_ELECTRON}-v${abi}-${platform}-${arch}.tar.gz`);
-  const tarballSrc = path.join(CACHE_DIR_APP,
-    `keytar-${latest.tag_name}-tarball.tar.gz`);
-
-  // Then download the artifacts and tarball if needed.
-  if (!existsSync(prebuiltSrc))
-    await https.download(latest.asset, prebuiltSrc);
-
-  if (!existsSync(tarballSrc))
-    await https.download(latest.tarball, tarballSrc);
-
-  await mkdir(prebuiltDest, { recursive: true });
-
-  // Untar the prebuilt module...
-  await untar(prebuiltSrc, prebuiltDest);
-
-  // ... then the tarball containing the library.
-  await untar(tarballSrc, prebuiltDest,
-    (entry) => { return (/^.*\/((lib\/.*)|license.md|package.json)$/gi.test(entry)); },
-    STRIP_ONE_LEVEL);
-}
-
-/**
- * Packages the Keytar prebuilt modules into the win32 build output
- */
-async function packageKeytarWin32() {
-  await deployPrebuilt(OUTPUT_DIR_APP, KEYTAR_OUTPUT_DIR, KEYTAR_NAME, WIN_PLATFORM, WIN_ARCH);
-}
-
-/**
- * Packages the Keytar prebuilt modules into the linux build output
- */
-async function packageKeytarLinux() {
-  await deployPrebuilt(OUTPUT_DIR_APP, KEYTAR_OUTPUT_DIR, KEYTAR_NAME, LINUX_PLATFORM, LINUX_ARCH);
-}
-
-/**
- * Packages the Keytar prebuilt modules into the macOS build output
- */
-async function packageKeytarMacOS() {
-  await deployPrebuilt(OUTPUT_DIR_APP, KEYTAR_OUTPUT_DIR, KEYTAR_NAME, MAC_PLATFORM, MAC_ARCH);
 }
 
 /**
@@ -614,20 +417,9 @@ export default {
   packageLibSieve: packageLibSieve,
   packageManageSieveUi: packageManageSieveUi,
 
-  packageWin32: gulp.series(
-    packageWin32,
-    packageKeytarWin32
-  ),
-
-  packageLinux: gulp.series(
-    packageLinux,
-    packageKeytarLinux
-  ),
-
-  packageMacOS: gulp.series(
-    packageMacOS,
-    packageKeytarMacOS
-  ),
+  packageWin32: packageWin32,
+  packageLinux: packageLinux,
+  packageMacOS: packageMacOS,
 
   zipWin32: zipWin32,
   zipLinux: zipLinux,

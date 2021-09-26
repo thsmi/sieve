@@ -148,6 +148,18 @@ async function main(electron) {
     win.webContents.reloadIgnoringCache();
   });
 
+  electron.ipcMain.handle("has-encryption", () => {
+    return electron.safeStorage.isEncryptionAvailable();
+  });
+
+  electron.ipcMain.handle("encrypt-string", (event, plainText) => {
+    return electron.safeStorage.encryptString(plainText).toString('hex');
+  });
+
+  electron.ipcMain.handle("decrypt-string", (event, encrypted) => {
+    return electron.safeStorage.decryptString(Buffer.from(encrypted, "hex"));
+  });
+
 
   await electron.app.whenReady();
 

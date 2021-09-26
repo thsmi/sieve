@@ -74,6 +74,19 @@ class SieveElectronPrefManager extends SieveAbstractPrefManager {
     await localStorage.setItem(`${this.getNamespace()}.${key}`, value);
     return this;
   }
+
+  /**
+   * Deletes the given key from the settings.
+   *
+   * @param {string} key
+   *   the preference key which should be removed.
+   * @returns {SievePrefManager}
+   *   a self reference.
+   */
+  async removeKey(key) {
+    await localStorage.removeItem(`${this.getNamespace()}.${key}`);
+    return this;
+  }
 }
 
 export { SieveElectronPrefManager as SievePrefManager };

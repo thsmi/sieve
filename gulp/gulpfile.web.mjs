@@ -103,7 +103,7 @@ function packageLibManageSieve() {
   const BASE_COMMON = path.join(common.BASE_DIR_COMMON, "libManageSieve");
 
   return common.src2(BASE_WEB)
-    .pipe(common.src2(BASE_WX, ["SieveTimer.mjs", "SieveCrypto.mjs", "SieveBase64.mjs"]))
+    .pipe(common.src2(BASE_WX, ["SieveTimer.mjs", "SieveBase64.mjs"]))
     .pipe(common.src2(BASE_COMMON))
     .pipe(gulp.dest(path.join(BUILD_DIR_WEB, 'static/libs/libManageSieve')));
 }

@@ -75,6 +75,8 @@
   // eslint-disable-next-line no-magic-numbers
   const LOG_TRACE = (1 << 5);
 
+  const OLD_CERT_API = 5;
+
   /**
    * A simple TCP socket implementation.
    */
@@ -950,8 +952,17 @@
                 cert = certDB.constructX509(cert);
               }
 
-              overrideService.rememberValidityOverride(
-                host, port, cert, flags, false);
+              // The API got changed in Thunderbird 91 it has now six
+              // instead of five arguments.
+              if (overrideService.rememberValidityOverride.length === OLD_CERT_API) {
+                // Five arguments means fallback to the old api
+                overrideService.rememberValidityOverride(
+                  host, port, cert, flags, false);
+              } else {
+                // Not equal to five arguments it is the new api
+                overrideService.rememberValidityOverride(
+                  host, port, {}, cert, flags, false);
+              }
             },
 
             // Event handlers...

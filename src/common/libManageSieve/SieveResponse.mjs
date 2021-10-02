@@ -326,11 +326,11 @@ class SieveCapabilitiesResponse extends SieveSimpleResponse {
 
       extensions: {},
       tls: false,
-      sasl: {},
+      sasl: [],
 
       maxredirects: MAX_REDIRECTS_UNLIMITED,
       owner: "",
-      notify: {},
+      notify: [],
       language: "i-default",
 
       compatibility: {
@@ -459,7 +459,7 @@ class SieveCapabilitiesResponse extends SieveSimpleResponse {
    * Returns the list of supported sasl mechanisms.
    *
    * They may change after a secure channel was established.
-   * @returns {string}
+   * @returns {string[]}
    *   the sasl mechanism
    */
   getSasl() {

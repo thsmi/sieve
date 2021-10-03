@@ -30,7 +30,36 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
   const accounts = await (new SieveAccounts().load());
 
   const sessions = new Map();
+
   // TODO Extract into separate class..
+
+  /**
+   * Gets all tabs with the given url.
+   *
+   * @param {string} url
+   *   the intended tabs url
+   * @returns {Tabs[]}
+   *   all tabs which match the url
+   */
+  async function queryTabs(url) {
+    try {
+      return await browser.tabs.query({ url: url });
+    } catch (ex) {
+
+      // The webextension API in Thunderbird 91 is broken.
+      // So we need a workaround.
+
+      const tabs = [];
+
+      for (const tab of await browser.tabs.query({})) {
+        if (tab.url === url)
+          tabs.push(tab);
+      }
+
+      return tabs;
+    }
+  }
+
   /**
    * Gets a tab by its script and account name.
    *
@@ -39,8 +68,8 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
    * @param {string} name
    *   the script name
    *
-   * @returns {*}
-   *   the webextension tab object.
+   * @returns {Tabs[]}
+   *   an array containing all webextension tab object which match.
    */
   async function getTabs(account, name) {
     const url = new URL("./libs/managesieve.ui/editor.html", window.location);
@@ -48,12 +77,15 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
     url.searchParams.append("account", account);
     url.searchParams.append("script", name);
 
-    return await browser.tabs.query({ url: url.toString() });
+    return await queryTabs(url.toString());
   }
 
+
   /**
+   * Ensures the given tab is visible and has focus.
    *
-   * @param {*} tab
+   * @param {Tab} tab
+   *   the tab which should be made visible and put into focus.
    */
   async function showTab(tab) {
 
@@ -71,7 +103,7 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
   browser.tabs.onRemoved.addListener(async () => {
 
     const url = new URL("./libs/managesieve.ui/*", window.location);
-    const tabs = await browser.tabs.query({ url: url.toString() });
+    const tabs = await queryTabs(url.toString());
 
     if (tabs.length)
       return;
@@ -150,7 +182,7 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
     async () => {
       const url = new URL("./libs/managesieve.ui/accounts.html", window.location);
 
-      const tabs = await browser.tabs.query({ url: url.toString() });
+      const tabs = await queryTabs(url.toString());
 
       if (tabs.length) {
         await showTab(tabs[FIRST_ENTRY]);

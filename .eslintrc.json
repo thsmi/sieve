@@ -206,8 +206,8 @@
         "jsdoc/require-example": 0,
         "jsdoc/require-hyphen-before-param-description": 0,
 
-        "jsdoc/check-alignment": 1,
-        "jsdoc/check-examples": ["warn", {"paddedIndent": 4 }]
+        //"jsdoc/check-examples": ["warn", {"paddedIndent": 4 }],
+        "jsdoc/check-alignment": 1
         //,
 
         //"unicorn/prefer-type-error" : "off",

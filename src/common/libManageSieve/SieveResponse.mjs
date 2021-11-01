@@ -381,7 +381,7 @@ class SieveCapabilitiesResponse extends SieveSimpleResponse {
           this.details.implementation = value;
           break;
         case "SASL":
-          this.details.sasl = value.split(" ");
+          this.details.sasl = value.toUpperCase().split(" ");
           break;
         case "SIEVE":
           this.details.extensions = this.parseSieveExtensions(value);

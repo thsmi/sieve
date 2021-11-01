@@ -1329,10 +1329,13 @@ class SieveAbstractSaslScramRequest extends SieveAbstractSaslRequest {
       this._authMessage
     ));
 
-    if (response.getVerifier() !== crypto.byteArrayToStr(serverSignature)) {
+    const verified = response.getVerifier().every(
+      (v, i) => { return (v === serverSignature[i]); });
+
+    if (!verified) {
 
       response.setResponse(RESPONSE_NO);
-      response.setMessage("Server Signature not invalid");
+      response.setMessage("Server Signature is invalid");
 
       await this.onNo(response);
       return;

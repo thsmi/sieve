@@ -43,7 +43,9 @@ If you want to support the project consider donating
 * via Paypal [![PayPayl donate button](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://paypal.me/thsmi "Donate to this project using Paypal")
 * via Bitcoin [1GEnrRVobFYuqYj2opdvRQNtG3Z8znvfKw](bitcoin:1GEnrRVobFYuqYj2opdvRQNtG3Z8znvfKw?label=Donation%20for%20Sieve%20Addon)
 
-## Bugs and Contributing
+## FAQ, Bugs and Contributing
+
+Answers for [frequently asked question](https://github.com/thsmi/sieve/wiki) can be found in the [Wiki section](https://github.com/thsmi/sieve/wiki). Please make sure you read those pages before raising a bug report.
 
 For more details on contributing refer to the
 [Contributing Guidelines](https://github.com/thsmi/sieve/blob/master/CONTRIBUTING.md).

@@ -244,9 +244,18 @@ class AbstractSandboxedTestFixture {
       message += `But got (${actual.length} Bytes)\n${actual}`;
     }
 
-    throw new Error(`${message}`);
+    this.fail(`${message}`);
   }
 
+  /**
+   * Makes the test fail.
+   *
+   * @param {string} message
+   *   the message which is shown to the user. It should describe the error.
+   */
+  fail(message) {
+    throw new Error(`${message}`);
+  }
 
 
   /**

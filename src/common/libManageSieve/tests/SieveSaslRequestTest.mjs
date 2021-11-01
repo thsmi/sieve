@@ -64,11 +64,30 @@ async function expectRequest(request, completed, expectation) {
  *   the requests expected response.
  */
 async function expectResponse(request, expectation) {
-  expectation = Array.from(expectation, (x) => { return x.charCodeAt(0);} );
+  expectation = Array.from(expectation, (x) => { return x.charCodeAt(0); });
   await request.onResponse(new SieveResponseParser(expectation));
 }
 
-suite.add("SASL Plain", async function() {
+/**
+ * Simulates a response failing, e.g. because of a parsing or verification error.
+ *
+ * @param {SieveAbstractRequest} request
+ *   the request which expects the response.
+ * @param {string} data
+ *   the requests response.
+ */
+async function expectFailingResponse(request, data) {
+  try {
+    data = Array.from(data, (x) => { return x.charCodeAt(0); });
+    await request.onResponse(new SieveResponseParser(data));
+  } catch (ex) {
+    return;
+  }
+
+  suite.fail("Assert failed\nExpected call to fail with an exception but it succeeded");
+}
+
+suite.add("SASL Plain", async function () {
   const request = new SieveSaslPlainRequest();
 
   suite.assertTrue(request.isAuthorizable());
@@ -86,7 +105,7 @@ suite.add("SASL Plain", async function() {
   suite.assertFalse(request.hasNextRequest());
 });
 
-suite.add("SASL Plain with special Characters", async function() {
+suite.add("SASL Plain with special Characters", async function () {
   const request = new SieveSaslPlainRequest();
 
   suite.assertTrue(request.isAuthorizable());
@@ -104,7 +123,7 @@ suite.add("SASL Plain with special Characters", async function() {
   suite.assertFalse(request.hasNextRequest());
 });
 
-suite.add("SASL Plain with many Characters", async function() {
+suite.add("SASL Plain with many Characters", async function () {
   const request = new SieveSaslPlainRequest();
 
   suite.assertTrue(request.isAuthorizable());
@@ -132,6 +151,7 @@ suite.add("SASL Scram SHA1 - Short", async function () {
 
   request.setUsername("user");
   request.setPassword(SIMPLE_PASSWORD);
+  request.addErrorListener(() => { throw new Error("Test failed"); });
 
   request.generateNonce = async () => { return "fyko+d2lbbFgONRv9qkxdawL"; };
 
@@ -163,6 +183,7 @@ suite.add("SASL Scram SHA1 - Long", async function () {
 
   request.setUsername("user");
   request.setPassword(SIMPLE_PASSWORD);
+  request.addErrorListener(() => { throw new Error("Test failed"); });
 
   request.generateNonce = async () => { return "fyko+d2lbbFgONRv9qkxdawL"; };
 
@@ -200,6 +221,7 @@ suite.add("SASL Scram SHA1 with Special Characters - Long", async function () {
 
   request.setUsername("user2");
   request.setPassword(COMPLEX_PASSWORD);
+  request.addErrorListener(() => { throw new Error("Test failed"); });
 
   request.generateNonce = async () => { return "4Gn+oXMVuHyu9RVYooRFMw+x"; };
 
@@ -239,6 +261,7 @@ suite.add("SASL Scram SHA1 with many special characters - Long", async function 
 
   request.setUsername("user3");
   request.setPassword(INSANE_PASSWORD);
+  request.addErrorListener(() => { throw new Error("Test failed"); });
 
   request.generateNonce = async () => { return "c96a5d9a095401657971d4ad44c51e0147bf52e3"; };
 
@@ -264,6 +287,73 @@ suite.add("SASL Scram SHA1 with many special characters - Long", async function 
   suite.assertFalse(request.hasNextRequest());
 });
 
+suite.add("SASL Scram SHA1 - Short - Invalid Verification", async function () {
+  const request = new SieveSaslScramSha1Request();
+
+  suite.assertEquals(request.getSaslName(), "SCRAM-SHA-1");
+  suite.assertTrue(request.isAuthorizable());
+  suite.assertTrue(request.hasPassword());
+
+  request.setUsername("user");
+  request.setPassword(SIMPLE_PASSWORD);
+  request.addErrorListener(() => { throw new Error("Test failed"); });
+
+  request.generateNonce = async () => { return "fyko+d2lbbFgONRv9qkxdawL"; };
+
+  // C: n,,n=user,r=fyko+d2lbbFgONRv9qkxdawL
+  await expectRequest(request, false,
+    `AUTHENTICATE "SCRAM-SHA-1" "biwsbj11c2VyLHI9ZnlrbytkMmxiYkZnT05Sdjlxa3hkYXdM"\r\n`);
+
+  // S: r=fyko+d2lbbFgONRv9qkxdawL3rfcNHYJY1ZVvWVs7j,s=QSXCR+Q6sek8bf92,i=4096
+  await expectResponse(request,
+    `"cj1meWtvK2QybGJiRmdPTlJ2OXFreGRhd0wzcmZjTkhZSlkxWlZ2V1ZzN2oscz1RU1hDUitRNnNlazhiZjkyLGk9NDA5Ng=="\r\n`);
+
+  // C: c=biws,r=fyko+d2lbbFgONRv9qkxdawL3rfcNHYJY1ZVvWVs7j,p=v0X8v3Bz2T0CJGbJQyF0X+HI4Ts=
+  await expectRequest(request, false,
+    `"Yz1iaXdzLHI9ZnlrbytkMmxiYkZnT05Sdjlxa3hkYXdMM3JmY05IWUpZMVpWdldWczdqLHA9djBYOHYzQnoyVDBDSkdiSlF5RjBYK0hJNFRzPQ=="\r\n`);
+
+  // S: Some invalid verification
+  await expectFailingResponse(request,
+    `OK (SASL "dj02cnJpVFJCaTIzV3BSUi93dHVwK21NaFVaVW4vZEI1bkxUSlJzamw5NUc0PQ==")\r\n`);
+});
+
+suite.add("SASL Scram SHA1 - Long - Invalid Verification", async function () {
+  const request = new SieveSaslScramSha1Request();
+
+  suite.assertEquals(request.getSaslName(), "SCRAM-SHA-1");
+  suite.assertTrue(request.isAuthorizable());
+  suite.assertTrue(request.hasPassword());
+
+  request.setUsername("user");
+  request.setPassword(SIMPLE_PASSWORD);
+  request.addErrorListener(() => { throw new Error("Test failed"); });
+
+  request.generateNonce = async () => { return "fyko+d2lbbFgONRv9qkxdawL"; };
+
+  // C: n,,n=user,r=fyko+d2lbbFgONRv9qkxdawL
+  await expectRequest(request, false,
+    `AUTHENTICATE "SCRAM-SHA-1" "biwsbj11c2VyLHI9ZnlrbytkMmxiYkZnT05Sdjlxa3hkYXdM"\r\n`);
+
+  // S: r=fyko+d2lbbFgONRv9qkxdawL3rfcNHYJY1ZVvWVs7j,s=QSXCR+Q6sek8bf92,i=4096
+  await expectResponse(request,
+    `"cj1meWtvK2QybGJiRmdPTlJ2OXFreGRhd0wzcmZjTkhZSlkxWlZ2V1ZzN2oscz1RU1hDUitRNnNlazhiZjkyLGk9NDA5Ng=="\r\n`);
+
+  // C: c=biws,r=fyko+d2lbbFgONRv9qkxdawL3rfcNHYJY1ZVvWVs7j,p=v0X8v3Bz2T0CJGbJQyF0X+HI4Ts=
+  await expectRequest(request, false,
+    `"Yz1iaXdzLHI9ZnlrbytkMmxiYkZnT05Sdjlxa3hkYXdMM3JmY05IWUpZMVpWdldWczdqLHA9djBYOHYzQnoyVDBDSkdiSlF5RjBYK0hJNFRzPQ=="\r\n`);
+
+  // S: A wrong response.
+  await expectResponse(request,
+    `"dj02cnJpVFJCaTIzV3BSUi93dHVwK21NaFVaVW4vZEI1bkxUSlJzamw5NUc0PQ=="\r\n`);
+
+  await expectRequest(request, false,
+    `""\r\n`);
+
+  // The verification has to fail because the response was invalid.
+  await expectFailingResponse(request,
+    `OK\r\n`);
+});
+
 suite.add("SASL Scram SHA256 - Short", async function () {
   const request = new SieveSaslScramSha256Request();
 
@@ -273,6 +363,7 @@ suite.add("SASL Scram SHA256 - Short", async function () {
 
   request.setUsername("user");
   request.setPassword(SIMPLE_PASSWORD);
+  request.addErrorListener(() => { throw new Error("Test failed"); });
 
   request.generateNonce = async () => { return "rOprNGfwEbeRWgbNEkqO"; };
 
@@ -305,6 +396,7 @@ suite.add("SASL Scram SHA256 - Long", async function () {
 
   request.setUsername("user");
   request.setPassword(SIMPLE_PASSWORD);
+  request.addErrorListener(() => { throw new Error("Test failed"); });
 
   request.generateNonce = async () => { return "rOprNGfwEbeRWgbNEkqO"; };
 
@@ -342,6 +434,7 @@ suite.add("SASL Scram SHA256 with Special Characters - Long", async function () 
 
   request.setUsername("user2");
   request.setPassword(COMPLEX_PASSWORD);
+  request.addErrorListener(() => { throw new Error("Test failed"); });
 
   request.generateNonce = async () => { return "uGzHUcuMpP47rPcnmk3+WiMU"; };
 
@@ -379,6 +472,7 @@ suite.add("SASL Scram SHA256 with many special characters - Long", async functio
 
   request.setUsername("user3");
   request.setPassword(INSANE_PASSWORD);
+  request.addErrorListener(() => { throw new Error("Test failed"); });
 
   request.generateNonce = async () => { return "fc88adb75eb0151cfbc116b6cca317343b08b68a1411a889c77d60df9180cf95"; };
 
@@ -404,7 +498,76 @@ suite.add("SASL Scram SHA256 with many special characters - Long", async functio
   suite.assertFalse(request.hasNextRequest());
 });
 
-suite.add("SASL External", async function() {
+suite.add("SASL Scram SHA256 - Short  - Invalid Verification", async function () {
+  const request = new SieveSaslScramSha256Request();
+
+  suite.assertEquals(request.getSaslName(), "SCRAM-SHA-256");
+  suite.assertTrue(request.isAuthorizable());
+  suite.assertTrue(request.hasPassword());
+
+  request.setUsername("user");
+  request.setPassword(SIMPLE_PASSWORD);
+  request.addErrorListener(() => { throw new Error("Test failed"); });
+
+  request.generateNonce = async () => { return "rOprNGfwEbeRWgbNEkqO"; };
+
+  // C: n,,n=user,r=fyko+d2lbbFgONRv9qkxdawL
+  await expectRequest(request, false,
+    `AUTHENTICATE "SCRAM-SHA-256" "biwsbj11c2VyLHI9ck9wck5HZndFYmVSV2diTkVrcU8="\r\n`);
+
+  // S: r=fyko+d2lbbFgONRv9qkxdawL3rfcNHYJY1ZVvWVs7j,s=QSXCR+Q6sek8bf92,i=4096
+  await expectResponse(request,
+    `"cj1yT3ByTkdmd0ViZVJXZ2JORWtxTyVodllEcFdVYTJSYVRDQWZ1eEZJbGopaE5sRiRrMCxzPVcyMlphSjBTTlk3c29Fc1VFamI2Z1E9PSxpPTQwOTY="\r\n`);
+
+  // C: c=biws,r=fyko+d2lbbFgONRv9qkxdawL3rfcNHYJY1ZVvWVs7j,p=v0X8v3Bz2T0CJGbJQyF0X+HI4Ts=
+  await expectRequest(request, false,
+    `"Yz1iaXdzLHI9ck9wck5HZndFYmVSV2diTkVrcU8laHZZRHBXVWEyUmFUQ0FmdXhGSWxqKWhObEYkazAscD1kSHpiWmFwV0lrNGpVaE4rVXRlOXl0YWc5empmTUhnc3FtbWl6N0FuZFZRPQ=="\r\n`);
+
+  // S: An invalid verification.
+  await expectFailingResponse(request,
+    `OK (SASL "dj1ybUY5cHFWOFM3c3VBb1pXamE0ZEpSa0ZzS1E9")\r\n`);
+
+  suite.assertFalse(request.hasNextRequest());
+});
+
+
+suite.add("SASL Scram SHA256 - Long - Invalid Verification", async function () {
+  const request = new SieveSaslScramSha256Request();
+
+  suite.assertEquals(request.getSaslName(), "SCRAM-SHA-256");
+  suite.assertTrue(request.isAuthorizable());
+  suite.assertTrue(request.hasPassword());
+
+  request.setUsername("user");
+  request.setPassword(SIMPLE_PASSWORD);
+  request.addErrorListener(() => { throw new Error("Test failed"); });
+
+  request.generateNonce = async () => { return "rOprNGfwEbeRWgbNEkqO"; };
+
+  // C: n,,n=user,r=fyko+d2lbbFgONRv9qkxdawL
+  await expectRequest(request, false,
+    `AUTHENTICATE "SCRAM-SHA-256" "biwsbj11c2VyLHI9ck9wck5HZndFYmVSV2diTkVrcU8="\r\n`);
+
+  // S: r=fyko+d2lbbFgONRv9qkxdawL3rfcNHYJY1ZVvWVs7j,s=QSXCR+Q6sek8bf92,i=4096
+  await expectResponse(request,
+    `"cj1yT3ByTkdmd0ViZVJXZ2JORWtxTyVodllEcFdVYTJSYVRDQWZ1eEZJbGopaE5sRiRrMCxzPVcyMlphSjBTTlk3c29Fc1VFamI2Z1E9PSxpPTQwOTY="\r\n`);
+
+  // C: c=biws,r=fyko+d2lbbFgONRv9qkxdawL3rfcNHYJY1ZVvWVs7j,p=v0X8v3Bz2T0CJGbJQyF0X+HI4Ts=
+  await expectRequest(request, false,
+    `"Yz1iaXdzLHI9ck9wck5HZndFYmVSV2diTkVrcU8laHZZRHBXVWEyUmFUQ0FmdXhGSWxqKWhObEYkazAscD1kSHpiWmFwV0lrNGpVaE4rVXRlOXl0YWc5empmTUhnc3FtbWl6N0FuZFZRPQ=="\r\n`);
+
+  // S: An invalid verification
+  await expectResponse(request,
+    `"dj1ybUY5cHFWOFM3c3VBb1pXamE0ZEpSa0ZzS1E9"\r\n`);
+
+  await expectRequest(request, false,
+    `""\r\n`);
+
+  await expectFailingResponse(request,
+    `OK\r\n`);
+});
+
+suite.add("SASL External", async function () {
   const request = new SieveSaslExternalRequest();
 
   suite.assertTrue(request.isAuthorizable());
@@ -420,7 +583,7 @@ suite.add("SASL External", async function() {
 
 });
 
-suite.add("SASL Login", async function() {
+suite.add("SASL Login", async function () {
   const request = new SieveSaslLoginRequest();
 
   suite.assertFalse(request.isAuthorizable());

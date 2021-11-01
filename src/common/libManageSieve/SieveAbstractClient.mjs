@@ -1007,7 +1007,7 @@ class SieveAbstractClient {
         }
 
         this.getLogger().logState(`[SieveAbstractClient:onReceive] `
-          + `Start parsing ${this.buffer.length()}`);
+          + `Start parsing ${request.constructor.name} ${this.buffer.length()}`);
 
         try {
           const parser = this.createParser(this.buffer.read());
@@ -1023,7 +1023,7 @@ class SieveAbstractClient {
         } catch (ex) {
 
           if (request.isOptional()) {
-            this.getLogger().logState(`[SieveAbstractClient:onReceive] `
+            this.getLogger().logState(`[SieveAbstractClient:onReceive] ${ex}`
               + `... failed but is optional, skipping to next request`);
 
             continue;
@@ -1041,13 +1041,13 @@ class SieveAbstractClient {
             this.getLogger().logState(ex.stack);
           }
 
+          lock.reset();
+
           // In case the buffer is dirty new data arrived while we were parsing
           // and we are ready to try it again.
           if (this.buffer.isDirty()) {
             this.getLogger().logState(`[SieveAbstractClient:onReceive] `
               + `... buffers are dirty, restarting parsing.`);
-
-            lock.reset();
             continue;
           }
 
@@ -1071,7 +1071,7 @@ class SieveAbstractClient {
         lock.trunc();
 
         this.getLogger().logState(`[SieveAbstractClient:onReceive] `
-          + `Removing request from queue ${lock.length()}, ${this.buffer.length()}`);
+          + `Removing request from queue (Queue Length: ${lock.length()}, Buffer Size: ${this.buffer.length()})`);
       }
     } finally {
       this.getLogger().logState("[SieveAbstractClient:onReceive] ... unlocking Message Queue ...");

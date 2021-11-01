@@ -214,15 +214,19 @@ class SieveAbstractSession {
     if (mechanism === undefined || mechanism === null)
       mechanism = "default";
 
-    if (mechanism === "default")
-      mechanism = this.getCompatibility().getSaslMechanisms();
-    else
-      mechanism = [mechanism];
+    let mechanisms = this.getCompatibility().getSaslMechanisms();
+
+    if (mechanism !== "default") {
+      if (!mechanisms.includes(mechanism))
+        throw new SieveClientException("Forced SASL Mechanism is not supported by the server (error.sasl)");
+
+      mechanisms = [mechanism];
+    }
 
     // ... translate the SASL Mechanism into an SieveSaslLogin Object ...
-    while (mechanism.length > 0) {
+    while (mechanisms.length > 0) {
       // remove and test the first element...
-      switch (mechanism.shift().toUpperCase()) {
+      switch (mechanisms.shift()) {
         case "PLAIN":
           return new SieveSaslPlainRequest();
 
@@ -243,12 +247,12 @@ class SieveAbstractSession {
 
           // this means in case it is the only mechanism
           // we have no options
-          if (!mechanism.length)
+          if (!mechanisms.length)
             return new SieveSaslLoginRequest();
 
           // otherwise be move it to the end of the
           // mechanism list.
-          mechanism.push("LOGIN");
+          mechanisms.push("LOGIN");
           break;
       }
     }

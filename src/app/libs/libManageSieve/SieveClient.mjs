@@ -123,92 +123,124 @@ class SieveNodeClient extends SieveAbstractClient {
 
       this.tlsSocket.on('secureConnect', () => {
 
-        const cert = this.tlsSocket.getPeerCertificate(true);
+        try {
 
-        if (this.tlsSocket.authorized === true) {
+          const cert = this.tlsSocket.getPeerCertificate(true);
 
-          // in case the fingerprint is not pinned we can skip right here.
-          if (!options.fingerprints.length) {
-            this.secured = true;
-            resolve();
-            this.getLogger().logState('Socket upgraded! (Chain of Trust)');
-            return;
+          if (this.tlsSocket.authorized === true) {
+
+            // The connection is trusted, so we are good to go.
+            // But a user still might deicide to pin the fingerprint for
+            // additional security.
+            if (!options.fingerprints.length) {
+              this.secured = true;
+              resolve();
+              this.getLogger().logState('Socket upgraded! (Chain of Trust)');
+              return;
+            }
+
+            if (this.isPinned(cert, options.fingerprints)) {
+              this.secured = true;
+              resolve();
+              return;
+            }
+
+            // If not we need to fail right here...
+            throw new SieveCertValidationException({
+              host: this.host,
+              port: this.port,
+
+              fingerprint: cert.fingerprint,
+              fingerprint256: cert.fingerprint256,
+
+              message: "Server fingerprint does not match pinned fingerprint"
+            });
           }
 
-          // so let's check the if the server's sha1 fingerprint matches the pinned one.
-          if (options.fingerprints.includes(cert.fingerprint)) {
-            this.secured = true;
-            resolve();
-            this.getLogger().logState('Socket upgraded! (Chain of Trust and pinned SHA1 fingerprint)');
-            return;
+          // Authorized is false which means we have an ssl error.
+          // So let's check if it is an verification error.
+          //
+          // It will be non null e.g. for self signed certificates.
+          const error = this.tlsSocket.ssl.verifyError();
+
+          if ((error !== null ) && (options.ignoreCertErrors.includes(error.code))) {
+
+            if (this.isPinned(cert, options.fingerprints)) {
+              this.secured = true;
+              resolve();
+              return;
+            }
+
+            throw new SieveCertValidationException({
+              host: this.host,
+              port: this.port,
+
+              fingerprint: cert.fingerprint,
+              fingerprint256: cert.fingerprint256,
+
+              code: error.code,
+              message: error.message
+            });
           }
 
-          // then check the sha256 fingerprint.
-          if (options.fingerprints.includes(cert.fingerprint256)) {
-            this.secured = true;
-            resolve();
-            this.getLogger().logState('Socket upgraded! (Chain of Trust and pinned SHA256 fingerprint)');
-            return;
+          if (this.tlsSocket.authorizationError === "ERR_TLS_CERT_ALTNAME_INVALID") {
+            if (this.isPinned(cert, options.fingerprints)) {
+              this.secured = true;
+              resolve();
+              return;
+            }
           }
 
-          const secInfo = {
+          throw new SieveCertValidationException({
             host: this.host,
             port: this.port,
 
             fingerprint: cert.fingerprint,
             fingerprint256: cert.fingerprint256,
 
-            message: "Server fingerprint does not match pinned fingerprint"
-          };
+            message: `Error upgrading (${this.tlsSocket.authorizationError})`
+          });
 
-          // If not we need to fail right here...
-          reject(new SieveCertValidationException(secInfo));
-          return;
+        } catch (ex) {
+          reject(ex);
+          this.tlsSocket.destroy();
         }
-
-        const error = this.tlsSocket.ssl.verifyError();
-
-        // dealing with self signed certificates
-        if (options.ignoreCertErrors.includes(error.code)) {
-
-          // Check if the fingerprint is well known...
-          if (options.fingerprints.includes(cert.fingerprint)) {
-            this.secured = true;
-            resolve();
-
-            this.getLogger().logState('Socket upgraded! (Trusted SHA1 Finger Print)');
-            return;
-          }
-
-          // Check if the fingerprint is well known...
-          if (options.fingerprints.includes(cert.fingerprint256)) {
-            this.secured = true;
-            resolve();
-
-            this.getLogger().logState('Socket upgraded! (Trusted SHA256 Finger Print)');
-            return;
-          }
-        }
-
-        const secInfo = {
-          host: this.host,
-          port: this.port,
-
-          fingerprint: cert.fingerprint,
-          fingerprint256: cert.fingerprint256,
-
-          code: error.code,
-          message: error.message
-        };
-
-        reject(new SieveCertValidationException(secInfo));
-
-        this.tlsSocket.destroy();
       });
 
       this.tlsSocket.on('data', (data) => { this.onData(data); });
     });
   }
+
+  /**
+   * Checks if the cert's finger print was pinned down and is trusted.
+   *
+   * @param {object} cert
+   *    the peer certificate where the fingerprints should be checked.
+   * @param {string[]} fingerprints
+   *    an array of fingerprints
+   *
+   * @returns {boolean}
+   *   true in case the fingerprint was pinned and the certificate is
+   *   trustworthy otherwise false.
+   */
+  isPinnedCert(cert, fingerprints) {
+
+    // so let's check the if the server's sha1 fingerprint matches the pinned one.
+    if (fingerprints.includes(cert.fingerprint)) {
+      this.getLogger().logState('Socket upgraded! (Pinned SHA1 fingerprint)');
+      return true;
+    }
+
+    // then check the sha256 fingerprint.
+    if (fingerprints.includes(cert.fingerprint256)) {
+      this.getLogger().logState('Socket upgraded! (Pinned SHA256 fingerprint)');
+      return true;
+    }
+
+    return false;
+  }
+
+
 
   /**
    * @inheritdoc

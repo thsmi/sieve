@@ -242,8 +242,8 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
 
         logger.logAction(`onAuthorize`);
 
-        const authorization = await account.getAuthorization();
-        return await authorization.getAuthorization();
+        // We do not support authorization in the web extension
+        return "";
       };
 
       if (sessions.has(id))

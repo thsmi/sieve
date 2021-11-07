@@ -8,7 +8,8 @@ RUN adduser vmail -D
 COPY local.conf /etc/dovecot/local.conf
 COPY dovecot-openssl.conf /etc/dovecot/dovecot-openssl.conf
 
-RUN echo "user:{plain}pencil::::::" > /etc/dovecot/users
+RUN echo "user:{plain}pencil::::::" > /etc/dovecot/users && \
+    echo "user2:{plain}€äöü§²³::::::" >> /etc/dovecot/users
 
 RUN openssl req -new -x509 -nodes -days 365 \
     -config "/etc/dovecot/dovecot-openssl.conf" \

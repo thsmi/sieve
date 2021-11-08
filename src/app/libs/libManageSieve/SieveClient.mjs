@@ -139,7 +139,7 @@ class SieveNodeClient extends SieveAbstractClient {
               return;
             }
 
-            if (this.isPinned(cert, options.fingerprints)) {
+            if (this.isPinnedCert(cert, options.fingerprints)) {
               this.secured = true;
               resolve();
               return;
@@ -165,7 +165,7 @@ class SieveNodeClient extends SieveAbstractClient {
 
           if ((error !== null ) && (options.ignoreCertErrors.includes(error.code))) {
 
-            if (this.isPinned(cert, options.fingerprints)) {
+            if (this.isPinnedCert(cert, options.fingerprints)) {
               this.secured = true;
               resolve();
               return;
@@ -184,7 +184,7 @@ class SieveNodeClient extends SieveAbstractClient {
           }
 
           if (this.tlsSocket.authorizationError === "ERR_TLS_CERT_ALTNAME_INVALID") {
-            if (this.isPinned(cert, options.fingerprints)) {
+            if (this.isPinnedCert(cert, options.fingerprints)) {
               this.secured = true;
               resolve();
               return;

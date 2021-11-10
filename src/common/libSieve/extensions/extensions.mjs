@@ -56,3 +56,6 @@ import "./notify/widgets/SieveNotifyUI.mjs";
 
 // vnd.dovecot.pipe - pipe
 import "./pipe/widgets/SievePipeUI.mjs";
+
+// vnd.dovecot.pgp-encrypt - pgp_encrypt
+import "./pgpencrypt/widgets/SievePgpEncryptUI.mjs";

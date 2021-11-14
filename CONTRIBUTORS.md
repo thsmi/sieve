@@ -36,7 +36,6 @@ Knuth Posern, Tim Van Den Eynde, Marcel Lamm, Lucy Archer
 
 [mozilla.org](https://www.mozilla.org),
 [thunderbird.net](https://www.thunderbird.net),
-[mozdev](http://www.mozdev.org),
 [SourceForge](http://sf.net),
 [github](https://www.github.com),
 [crowdin](https://crowdin.net),
@@ -46,5 +45,4 @@ Knuth Posern, Tim Van Den Eynde, Marcel Lamm, Lucy Archer
 [gulp](https://gulpjs.com/),
 [electron](https://electronjs.org/),
 [npm](https://www.npmjs.com/),
-[yarn](https://yarnpkg.com/),
 [Visual Studio Code](https://code.visualstudio.com/)

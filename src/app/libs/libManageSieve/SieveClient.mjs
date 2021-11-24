@@ -99,13 +99,15 @@ class SieveNodeClient extends SieveAbstractClient {
     if (options === undefined || options === null)
       options = {};
 
-    if (options.fingerprints === undefined || options.fingerprints === null || options.fingerprints === "")
+    if (options.fingerprints === undefined || options.fingerprints === null
+      || options.fingerprints === "" || options.fingerprints === "undefined")
       options.fingerprints = [];
 
     if (Array.isArray(options.fingerprints) === false)
       options.fingerprints = [options.fingerprints];
 
-    if (options.ignoreCertErrors === undefined || options.ignoreCertErrors === null || options.ignoreCertErrors === "")
+    if (options.ignoreCertErrors === undefined || options.ignoreCertErrors === null
+      || options.ignoreCertErrors === "" || options.ignoreCertErrors === "undefined")
       options.ignoreCertErrors = [];
 
     if (Array.isArray(options.ignoreCertErrors) === false)
@@ -163,9 +165,12 @@ class SieveNodeClient extends SieveAbstractClient {
           // It will be non null e.g. for self signed certificates.
           const error = this.tlsSocket.ssl.verifyError();
 
-          if ((error !== null ) && (options.ignoreCertErrors.includes(error.code))) {
+          if (error !== null ) {
 
-            if (this.isPinnedCert(cert, options.fingerprints)) {
+            // Check if certificate is white listed...
+            if ((options.ignoreCertErrors.includes(error.code)) &&
+              (this.isPinnedCert(cert, options.fingerprints))) {
+
               this.secured = true;
               resolve();
               return;

@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-RUN apk add dovecot
+RUN apk add dovecot dovecot-pigeonhole-plugin
 #RUN apk add bash mc
 
 RUN adduser vmail -D
@@ -11,10 +11,11 @@ COPY dovecot-openssl.conf /etc/dovecot/dovecot-openssl.conf
 RUN echo "user:{plain}pencil::::::" > /etc/dovecot/users && \
     echo "user2:{plain}€äöü§²³::::::" >> /etc/dovecot/users
 
-RUN openssl req -new -x509 -nodes -days 365 \
-    -config "/etc/dovecot/dovecot-openssl.conf" \
-    -out "/etc/ssl/certs/dovecot.pem" \
-    -keyout "/etc/ssl/private/dovecot.pem" && \
+RUN mkdir -p /etc/ssl/private && \
+    openssl req -new -x509 -nodes -days 365 \
+        -config "/etc/dovecot/dovecot-openssl.conf" \
+        -out "/etc/ssl/certs/dovecot.pem" \
+        -keyout "/etc/ssl/private/dovecot.pem" && \
     chmod 0600 "/etc/ssl/private/dovecot.pem"
 
 EXPOSE 143 993 4190

@@ -31,8 +31,11 @@ import { SieveRequestBuilder } from "./SieveRequestBuilder.mjs";
 const DEFAULT_TIMEOUT = 20000;
 const NO_IDLE = 0;
 
-
 const NOT_STARTED = -1;
+
+const TLS_SECURITY_NONE = 0;
+const TLS_SECURITY_EXPLICIT = 1;
+const TLS_SECURITY_IMPLICIT = 2;
 
 /**
  * Creates a blocking semaphore
@@ -483,7 +486,7 @@ class SieveAbstractClient {
   constructor(logger) {
     this.logger = logger;
 
-    this.secure = true;
+    this.security = TLS_SECURITY_EXPLICIT;
     this.secured = false;
 
     this.host = null;
@@ -532,8 +535,8 @@ class SieveAbstractClient {
    * @returns {boolean}
    *   true in case the connection can be or is secure otherwise false
    */
-  isSecure() {
-    return this.secure;
+  isSecurable() {
+    return (this.security !== TLS_SECURITY_NONE);
   }
 
   /**
@@ -558,7 +561,7 @@ class SieveAbstractClient {
    *   a self reference
    **/
   startTLS() {
-    if (!this.isSecure())
+    if (!this.isSecurable())
       throw new Error("TLS can't be started not a secure socket");
 
     if (!this.socket)
@@ -770,15 +773,14 @@ class SieveAbstractClient {
    *
    * @param {string|SieveUrl} url
    *   the url with hostname and port
-   * @param {boolean} secure
-   *   If true, a secure socket will be created. This allows switching to a secure
-   *   connection.
+   * @param {object.<string, object>} [options]
+   *   the connection options as hash map.
    *
    * @returns {SieveAbstractClient}
    *   a self reference
    */
-  connect(url, secure) {
-    throw new Error(`Implement SieveAbstractClient::connect(${url} ${secure})`);
+  connect(url, options) {
+    throw new Error(`Implement SieveAbstractClient::connect(${url} ${options})`);
   }
 
   /**
@@ -1125,5 +1127,8 @@ class SieveAbstractClient {
 }
 
 export {
-  SieveAbstractClient
+  SieveAbstractClient,
+  TLS_SECURITY_NONE,
+  TLS_SECURITY_IMPLICIT,
+  TLS_SECURITY_EXPLICIT
 };

@@ -13,6 +13,10 @@
 
 import { SieveTemplate } from "./../../utils/SieveTemplate.mjs";
 
+const SECURITY_NONE = 0;
+const SECURITY_EXPLICIT = 1;
+const SECURITY_IMPLICIT = 2;
+
 /**
  * A UI renderer for the sieve settings dialog
  */
@@ -166,36 +170,49 @@ class SieveCredentialsSettingsUI {
   }
 
   /**
-   * Gets the current dialogs encryption settings.
+   * Gets the current dialogs connection security settings.
    *
-   * @returns {boolean}
-   *   true in case an encrypted connection should be used otherwise false.
+   * @returns {int}
+   *   the connection security strategy to be used.
    */
-  isEncrypted() {
+  getConnectionSecurity() {
 
     if (this.getDialog().querySelector("#sieve-settings-encryption-off").checked)
-      return false;
+      return SECURITY_NONE;
 
-    return true;
+    if (this.getDialog().querySelector("#sieve-settings-handshake-implicit").checked)
+      return SECURITY_IMPLICIT;
+
+    return SECURITY_EXPLICIT;
   }
 
   /**
    * Sets the encryption settings in the current dialog.
    *
-   * @param {boolean} encrypted
-   *   the encryption status to set. False in case encryption is disabled
-   *   otherwise it will be enabled
+   * @param {int} security
+   *   the connection security.
+   *   Can be 0 for none, 1 for explicit tls and 2 for implicit tls
    * @returns {SieveServerSettingsUI}
    *   a self reference
    */
-  setEncrypted(encrypted) {
+  setConnectionSecurity(security) {
+
     const parent = this.getDialog();
 
-    if (encrypted === false)
+    if (security === SECURITY_NONE) {
       parent.querySelector("#sieve-settings-encryption-off").checked = true;
-    else
-      parent.querySelector("#sieve-settings-encryption-on").checked = true;
+      parent.querySelector("#sieve-settings-handshake-explicit").checked = true;
+      return this;
+    }
 
+    if (security === SECURITY_IMPLICIT) {
+      parent.querySelector("#sieve-settings-encryption-on").checked = true;
+      parent.querySelector("#sieve-settings-handshake-implicit").checked = true;
+      return this;
+    }
+
+    parent.querySelector("#sieve-settings-encryption-on").checked = true;
+    parent.querySelector("#sieve-settings-handshake-explicit").checked = true;
     return this;
   }
 
@@ -267,7 +284,7 @@ class SieveCredentialsSettingsUI {
 
     const settings = {
       general: {
-        secure: this.isEncrypted(),
+        security: this.getConnectionSecurity(),
         sasl: this.getSaslMechanism()
       },
       authentication: {
@@ -302,7 +319,7 @@ class SieveCredentialsSettingsUI {
     const credentials = await this.account.send("account-setting-get-credentials");
 
     // Authentication settings
-    this.setEncrypted(credentials.general.secure);
+    this.setConnectionSecurity(credentials.general.security);
     this.setSaslMechanism(credentials.general.sasl);
 
     this.setAuthentication(credentials.authentication.username);

@@ -142,7 +142,7 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
         port: await host.getPort(),
         fingerprint: await host.getFingerprint(),
 
-        secure: await security.isSecure(),
+        security: await security.getTLS(),
 
         mechanism: await security.getMechanism(),
         username: await authentication.getUsername()
@@ -183,7 +183,7 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
 
       return {
         "general": {
-          secure: await account.getSecurity().isSecure(),
+          security: await account.getSecurity().getTLS(),
           sasl: await account.getSecurity().getMechanism()
         },
         "authentication": {
@@ -211,7 +211,7 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
 
       const account = await accounts.getAccountById(msg.payload.account);
 
-      await account.getSecurity().setSecure(msg.payload.general.secure);
+      await account.getSecurity().setTLS(msg.payload.general.security);
       await account.getSecurity().setMechanism(msg.payload.general.sasl);
 
       await account.getAuthentication().setUsername(msg.payload.authentication.username);

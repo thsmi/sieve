@@ -131,7 +131,7 @@ class SieveAbstractAccountUI {
     elm.querySelector(".sieve-settings-port")
       .textContent = account.port;
 
-    if (!account.secure)
+    if (!account.security)
       elm.querySelector(".sieve-settings-secure").style.display = 'none';
 
     elm.querySelector(".sieve-settings-username")

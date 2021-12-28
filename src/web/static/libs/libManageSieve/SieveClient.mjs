@@ -9,7 +9,11 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-import { SieveAbstractClient } from "./SieveAbstractClient.mjs";
+import {
+  SieveAbstractClient,
+  TLS_SECURITY_IMPLICIT,
+  TLS_SECURITY_NONE
+} from "./SieveAbstractClient.mjs";
 import { SieveWebSocketUrl } from "./SieveWebSocketUrl.mjs";
 
 /**
@@ -45,7 +49,7 @@ class SieveWebSocketClient extends SieveAbstractClient {
   /**
    * @inheritdoc
    */
-  connect(url, secure) {
+  connect(url) {
 
     if (this.socket)
       return this;
@@ -59,14 +63,15 @@ class SieveWebSocketClient extends SieveAbstractClient {
 
     this.getLogger().logState(`Connecting to ${this.host}:${this.port} ...`);
 
-    this.secure = secure;
-    this.secured = false;
-
     // Create the socket...
-    if (this.secure)
+    if (location.protocol === 'https:') {
+      this.security = TLS_SECURITY_IMPLICIT;
       this.socket = new WebSocket(`wss://${this.host}:${this.port}/${this.endpoint}`);
-    else
+    }
+    else {
+      this.security = TLS_SECURITY_NONE;
       this.socket = new WebSocket(`ws://${this.host}:${this.port}/${this.endpoint}`);
+    }
 
     // ... connect the event listeners.
     this.socket.addEventListener('open', (ev) => {
@@ -108,7 +113,7 @@ class SieveWebSocketClient extends SieveAbstractClient {
   onOpen() {
     this.getLogger().logState(`Connected to ${this.host}:${this.port} ...`);
 
-    if (this.secure)
+    if (this.security !== TLS_SECURITY_NONE)
       this.secured = true;
   }
 

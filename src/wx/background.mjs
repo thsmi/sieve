@@ -217,7 +217,7 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
       const settings = await account.getSettings();
 
       const options = {
-        "secure": await security.isSecure(),
+        "security": await security.getTLS(),
         "sasl": await security.getMechanism(),
         "keepAlive": await host.getKeepAlive(),
         "logLevel": await settings.getLogLevel()
@@ -470,7 +470,7 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
         hostname: await host.getHostname(),
         port: await host.getPort(),
 
-        secure: await security.isSecure(),
+        security: await security.getTLS(),
         mechanism: await security.getMechanism(),
 
         username: await authentication.getUsername()

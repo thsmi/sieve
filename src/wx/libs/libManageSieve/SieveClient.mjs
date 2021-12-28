@@ -12,7 +12,10 @@
 /* global browser */
 
 // Handle all imports..
-import { SieveAbstractClient } from "./SieveAbstractClient.mjs";
+import {
+  SieveAbstractClient,
+  TLS_SECURITY_EXPLICIT
+} from "./SieveAbstractClient.mjs";
 
 import {
   SieveCertValidationException,
@@ -69,6 +72,8 @@ class SieveMozClient extends SieveAbstractClient {
 
     this.host = url.getHost();
     this.port = url.getPort();
+
+    this.security = TLS_SECURITY_EXPLICIT;
 
     this.getLogger().logState(`Connecting to ${this.host}:${this.port} ...`);
 

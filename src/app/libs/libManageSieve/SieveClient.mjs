@@ -10,7 +10,11 @@
  */
 
 import { SieveUrl } from "./SieveUrl.mjs";
-import { SieveAbstractClient } from "./SieveAbstractClient.mjs";
+import {
+  SieveAbstractClient,
+  TLS_SECURITY_IMPLICIT,
+  TLS_SECURITY_EXPLICIT
+} from "./SieveAbstractClient.mjs";
 
 import { SieveCertValidationException } from "./SieveExceptions.mjs";
 
@@ -54,7 +58,7 @@ class SieveNodeClient extends SieveAbstractClient {
   /**
    * @inheritdoc
    */
-  connect(url, secure) {
+  async connect(url, options) {
 
     if (this.socket)
       return this;
@@ -65,14 +69,17 @@ class SieveNodeClient extends SieveAbstractClient {
     this.host = url.getHost();
     this.port = url.getPort();
 
-    this.secure = secure;
+
+    if (typeof(options) === "undefined" || options === null)
+      options = {};
+
+    if (typeof(options.security) === "undefined" || options.security === null)
+      options.security = TLS_SECURITY_EXPLICIT;
+
+    this.security = options.security;
     this.secured = false;
 
     this.socket = net.connect(this.port, this.host);
-
-    this.socket.on('data', async (data) => {
-      this.onData(data);
-    });
 
     this.socket.on('error', async(error) => {
       this.getLogger().logState(`SieveClient: OnError (Connection ${this.host}:${this.port})`);
@@ -86,6 +93,17 @@ class SieveNodeClient extends SieveAbstractClient {
 
       // The sever closed the connection, so no time to gracefully disconnect.
       await this.disconnect(new Error("Server closed connection unexpectedly"));
+    });
+
+    // In case of implicit tls we directly upgrade the socket...
+    // ... so no need to set a data listener here ...
+    if (this.security === TLS_SECURITY_IMPLICIT) {
+      await this.startTLS(options);
+      return this;
+    }
+
+    this.socket.on('data', async (data) => {
+      this.onData(data);
     });
 
     return this;
@@ -113,7 +131,7 @@ class SieveNodeClient extends SieveAbstractClient {
 
     await super.startTLS();
 
-    return await new Promise((resolve, reject) => {
+    return await new Promise((resolve) => {
       // Upgrade the current socket.
       // this.tlsSocket = tls.TLSSocket(socket, options).connect();
       this.tlsSocket = tls.connect({
@@ -202,8 +220,14 @@ class SieveNodeClient extends SieveAbstractClient {
           });
 
         } catch (ex) {
-          reject(ex);
-          this.tlsSocket.destroy();
+          // We cannot exit here with a reject or exception. Because the server
+          // side will hang up the connection thus triggers a disconnect event.
+          // As this disconnect will cause an exception we would race against it.
+          //
+          // To avoid this race we call disconnect gracefully here, which will
+          // mark the connection as dead, thus the disconnect handler will not fire,
+          // but the disconnect call will still throw an error for us.
+          this.disconnect(ex);
         }
       });
 
@@ -301,4 +325,6 @@ class SieveNodeClient extends SieveAbstractClient {
   }
 }
 
-export { SieveNodeClient as Sieve };
+export {
+  SieveNodeClient as Sieve
+};

@@ -111,7 +111,7 @@ class SieveNodeSessions {
     const settings = await account.getSettings();
 
     const options = {
-      secure: await security.isSecure(),
+      security: await security.getTLS(),
       sasl: await security.getMechanism(),
       keepAlive: await host.getKeepAlive(),
       logLevel: await settings.getLogLevel(),

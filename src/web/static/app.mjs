@@ -69,7 +69,7 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
         hostname: await host.getHostname(),
         port: await host.getPort(),
 
-        secure: await security.isSecure(),
+        security: await security.getTLS(),
         mechanism: await security.getMechanism(),
 
         username: await authentication.getUsername()

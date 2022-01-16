@@ -10,6 +10,7 @@
  */
 
 import { SieveAbstractSession } from "./SieveAbstractSession.mjs";
+import { TLS_SECURITY_EXPLICIT } from "./SieveAbstractClient.mjs";
 
 /**
  * @inheritdoc
@@ -19,14 +20,15 @@ class SieveNodeSession extends SieveAbstractSession {
   /**
    * @inheritdoc
    */
-  async startTLS() {
+  async connect(url) {
 
     const options = {
-      fingerprints: this.getOption("certFingerprints"),
-      ignoreCertErrors: this.getOption("certIgnoreError")
+      security : this.getOption("security", TLS_SECURITY_EXPLICIT),
+      fingerprints : this.getOption("certFingerprints"),
+      ignoreCertErrors : this.getOption("certIgnoreError")
     };
 
-    await super.startTLS(options);
+    await super.connect(url, options);
   }
 
 }

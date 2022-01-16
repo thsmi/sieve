@@ -9,10 +9,15 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+import {
+  SieveAbstractSecurity,
+  SECURITY_NONE,
+  SECURITY_EXPLICIT,
+  SECURITY_IMPLICIT
+} from "./SieveAbstractSecurity.mjs";
+
 const PREF_MECHANISM = "security.mechanism";
 const PREF_TLS = "security.tls";
-
-import { SieveAbstractSecurity } from "./SieveAbstractSecurity.mjs";
 
 /**
  * Manages the account's security related settings
@@ -43,21 +48,26 @@ class SieveSecurity extends SieveAbstractSecurity {
   /**
    * @inheritdoc
    */
-  async isSecure() {
-    return await this.account.getConfig().getBoolean(PREF_TLS, true);
+  async getTLS() {
+    return await this.account.getConfig().getInteger(PREF_TLS, SECURITY_EXPLICIT);
   }
 
   /**
-   * Defines if a secure connections shall be used.
+   * Sets the connection security.
+   * Throws in case an invalid connection security was passed.
    *
-   * @param {boolean} value
-   *   set to true for a secure connection.
-   *
+   * @param {int} value
+   *   0 for no connection security
+   *   1 for implicit tls
+   *   2 for explicit tls
    * @returns {SieveSecurity}
    *   a self reference
    */
-  async setSecure(value) {
-    await this.account.getConfig().setBoolean(PREF_TLS, value);
+  async setTLS(value) {
+    if ((value !== SECURITY_NONE) && (value !== SECURITY_IMPLICIT) && (value !== SECURITY_EXPLICIT))
+      throw new Error("Invalid security setting");
+
+    await this.account.getConfig().setInteger(PREF_TLS, value);
     return this;
   }
 

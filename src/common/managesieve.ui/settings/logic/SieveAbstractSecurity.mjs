@@ -9,6 +9,9 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+const SECURITY_NONE = 0;
+const SECURITY_EXPLICIT = 1;
+const SECURITY_IMPLICIT = 2;
 
 /**
  * Defines the security related settings for an account.
@@ -27,14 +30,17 @@ class SieveAbstractSecurity {
   }
 
   /**
-   * Gets the current security settings. In case it is set to true
-   * a secure connection shall be used.
+   * Gets the connection security.
    *
-   * @returns {boolean}
-   *   true in  case a secure connection should be used.
-   **/
-  async isSecure() {
-    return await true;
+   * @returns {int}
+   *   the current connection security.
+   *
+   *   0 for no connection security
+   *   1 for implicit tls
+   *   2 for explicit tls
+   */
+  async getTLS() {
+    return await SECURITY_EXPLICIT;
   }
 
   /**
@@ -48,4 +54,9 @@ class SieveAbstractSecurity {
   }
 }
 
-export { SieveAbstractSecurity };
+export {
+  SieveAbstractSecurity,
+  SECURITY_NONE,
+  SECURITY_EXPLICIT,
+  SECURITY_IMPLICIT
+};

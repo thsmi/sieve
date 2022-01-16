@@ -73,6 +73,11 @@
   "server.idle2" : "minutes of inactivity.",
   "server.idle.description" : "Most server will disconnect a client after being inactive for a certain time span. To prevent this and keep the connection alive, idle messages are sent. To disable keep alive messages set the interval to zero.",
 
+  "connection.handshake" : "TLS Handshake",
+  "connection.handshake.description" : "The TLS handshake specified in the Manage Sieve RFC is defined as explicit. An explicit handshake is theoretically weaker than an implicit, but no vulnerabilities are known for Manage Sieve. Also no server implementation officially supports an implicit handshake, but most of them can be reconfigured to do so. Keep in mind both the client and the server have to use the same handshake type.",
+  "connection.handshake.explicit" : "Explicit (Default)",
+  "connection.handshake.implicit" : "Implicit",
+
   "credentials.title" : "Credentials",
   "credentials.security" : "Security",
   "credentials.forceEncryption" : "Encrypted Connection",
@@ -97,7 +102,7 @@
   "credentials.authorization.username" : "Explicit, use different user",
   "credentials.authorization.username2" : "Username",
 
-  "account.settings.edit" : "Edit Settings",
+  "account.settings.edit" : "Settings",
   "account.disconnect" : "Disconnect",
   "account.reconnect" : "Reconnect",
   "account.capabilities.show" : "Show Server Capabilities",

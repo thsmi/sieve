@@ -404,7 +404,7 @@ class SieveAbstractSession {
     }
 
     // Check if the socket can be upgraded.
-    if (!this.getSieve().isSecure()) {
+    if (!this.getSieve().isSecurable()) {
       this.getLogger().logSession(`... secure upgrade deactivated in config.`);
       return;
     }
@@ -420,6 +420,7 @@ class SieveAbstractSession {
 
     this.getLogger().logSession(`... requesting starttls ...`);
     await this.sendRequest(new SieveStartTLSRequest());
+
 
     await this.getSieve().startTLS(options);
 
@@ -490,7 +491,7 @@ class SieveAbstractSession {
       await (this.getSieve().addRequest(request));
 
       if (init)
-        init();
+        await init();
     });
   }
 
@@ -588,10 +589,12 @@ class SieveAbstractSession {
    *
    * @param {string} url
    *   the sieve url with hostname and port.
+   * @param {object.<string, object>} [options]
+   *   the connection options as hash map.
    * @returns {SieveSession}
    *   a self reference
    */
-  async connect(url) {
+  async connect(url, options) {
 
     this.createSieve();
 
@@ -607,13 +610,15 @@ class SieveAbstractSession {
     try {
 
       const init = () => {
-        this.getSieve().connect(url, this.getOption("secure", true));
+        this.getSieve().connect(url, options);
       };
+
 
       this.getCompatibility().update(
         await this.sendRequest(new SieveInitRequest(), init));
 
-      await this.startTLS();
+      if (this.getSieve().isSecurable() && !this.getSieve().isSecured())
+        await this.startTLS(options);
 
       await this.authenticate();
     } catch (ex) {

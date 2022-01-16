@@ -33,7 +33,7 @@ The project is actively developed. The focus shifted from a thunderbird addon to
 Status and future development plans are described in the [Roadmap](ROADMAP.md). The [Capabilities page](CAPABILITIES.md) contains a list of all supported sieve and manage sieve features.
 
 Project statistics are available at
-[Open Hub](https://www.openhub.net/p/tb-sieve).
+[Open Hub](https://www.openhub.net/p/thsmi-sieve).
 
 A big thank you to everyone who has [contributed and supported](CONTRIBUTORS.md) the project.
 

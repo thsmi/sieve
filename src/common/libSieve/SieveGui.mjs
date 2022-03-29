@@ -315,7 +315,8 @@ async function main() {
     .addEventListener("click", () => { compact(); });
 
   const url = new URL(window.location);
-  if (url.searchParams.has("debug"))
+
+  if (!url.searchParams.has("embedded"))
     document.querySelector('#boxScript').classList.remove("d-none");
 
   if (url.searchParams.get("capabilities") === "all") {

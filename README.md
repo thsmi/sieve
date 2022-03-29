@@ -18,6 +18,7 @@ delete and add Sieve scripts with a convenient interface? That is exactly what t
 
 … it provides an implementation of [A Protocol for Remotely Managing Sieve Scripts (RFC 5804)](https://wiki.tools.ietf.org/html/rfc5804) as well as a graphical editor for [Sieve: An Email Filtering Language (RFC 5228)](https://tools.ietf.org/html/rfc5228)
 
+
 ## History
 
 All started in 2006 as a very simplistic [Thunderbird addon](https://addons.thunderbird.net/addon/sieve/) implementing the manage sieve protocol. But as the years passed by the plaintext editor got more and more features and evolved into a full graphical editor.
@@ -71,6 +72,9 @@ for details about third party licenses included into this project.
 You are looking for the most recent release?
 
 [They are avilable by downloading from the Releases page (release notes can also be viewed)](https://github.com/thsmi/sieve/releases).
+
+
+You are just intrerrested how the graphical editor looks like prior installing the app or the webextension? Then head over to the demo page at https://thsmi.github.io/sieve-demo/ it features the Graphical Editor UI running inside a plain browser. But keep in mind this demo is only the graphical editor which can not connect to a sieve backend.
 
 ## Continuous Builds
 

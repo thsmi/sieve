@@ -137,7 +137,7 @@ class Config:
     if "HttpRoot" in self._config["DEFAULT"]:
       return self._config["DEFAULT"]["HttpRoot"]
 
-    return pathlib.Path(pathlib.Path(__file__).parent.absolute(), "static")
+    return pathlib.Path(pathlib.Path(__file__).parent.parent.parent.absolute(), "static")
 
   def get_port(self):
     """

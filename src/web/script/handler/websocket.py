@@ -1,3 +1,4 @@
+import logging
 
 from ..websocket import WebSocket
 from ..sieve.sievesocket import SieveSocket
@@ -19,7 +20,7 @@ class WebSocketHandler:
 
   def handle_request(self, context, request) -> None:
 
-    print(f"Websocket Request for {request.path}")
+    logging.info(f"Websocket Request for {request.path}")
 
     account = self.__config.get_account_by_id(
       request.path[len("/websocket/"):])
@@ -34,7 +35,7 @@ class WebSocketHandler:
         sievesocket.start_tls()
 
         if not account.can_authenticate():
-          print(f"Do Proxy authentication for {account.get_name()}")
+          logging.info(f"Do Proxy authentication for {account.get_name()}")
           sievesocket.authenticate(
             account.get_sieve_user(request),
             account.get_sieve_password(request),

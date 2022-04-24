@@ -2,6 +2,7 @@ import ssl
 import socket
 import traceback
 import sys
+import logging
 
 from concurrent.futures import ThreadPoolExecutor
 
@@ -64,7 +65,7 @@ class WebServer:
         handler.handle_request(context, request)
         return
 
-      print("404 File not found "+request.url)
+      logging.warning("404 File not found "+request.url)
       raise HttpException(404, "File not found "+request.url)
 
     except HttpException as ex:
@@ -82,8 +83,8 @@ class WebServer:
       response.send(context,"Internal Server error\r\n\r\n"
         + "\r\n".join(traceback.format_exception(exc_type, exc_value, exc_tb)))
 
-      print(str(ex))
-      print("".join(traceback.format_exception(exc_type, exc_value, exc_tb)))
+      logging.warning(str(ex))
+      logging.warning("".join(traceback.format_exception(exc_type, exc_value, exc_tb)))
 
     finally:
       context.socket.shutdown(socket.SHUT_RDWR)
@@ -103,7 +104,7 @@ class WebServer:
       sock.bind((self.__address, self.__port))
       sock.listen(5)
 
-      print("Listening on https://"+self.__address+":"+str(self.__port))
+      logging.info(f"Listening on https://{self.__address}:{self.__port}")
 
       while True:
         # accept connections from outside

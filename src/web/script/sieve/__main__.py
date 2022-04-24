@@ -1,3 +1,5 @@
+import logging
+
 from argparse import ArgumentParser
 from getpass import getpass
 
@@ -19,10 +21,10 @@ if args.password is None:
   args.password = getpass()
 
 with SieveSocket(args.host, args.port) as socket:
-  print(socket.capabilities)
+  logging.debug(socket.capabilities)
   socket.start_tls()
 
   socket.authenticate(args.username, args.password, "")
 
   socket.send(b"LISTSCRIPTS\r\n")
-  print(socket.recv())
+  logging.debug(socket.recv())

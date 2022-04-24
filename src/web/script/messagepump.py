@@ -1,4 +1,5 @@
 import select
+import logging
 
 class MessagePump:
 
@@ -25,18 +26,18 @@ class MessagePump:
         data = server.recv()
 
         if data == b'':
-          print("Server terminated")
+          logging.info("Server terminated")
           return
 
-        print(data)
+        logging.debug(data)
         client.send(data)
 
       if client in sockets:
         data = client.recv()
 
         if data == b'':
-          print(" Client terminated")
+          logging.info(" Client terminated")
           return
 
-        print(data)
+        logging.debug(data)
         server.send(data)

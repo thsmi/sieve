@@ -1,5 +1,6 @@
 from hashlib import sha1
 from base64 import b64encode
+import logging
 
 from .http import HttpException, HttpResponse
 
@@ -74,7 +75,7 @@ class WebSocket:
     return self
 
   def __exit__(self, exc_type, exc_val, exc_tb) -> None:
-    print("On Exit")
+    logging.debug("On Exit")
     #TODO send a websocket disconnect message...
     #self.disconnect()
 
@@ -129,7 +130,7 @@ class WebSocket:
 
         text = message[2:]
 
-        print(str(code) + " - " + text.decode())
+        logging.debug(str(code) + " - " + text.decode())
         raise Exception("Connection gracefully closed. "+str(code)+" "+text.decode())
 
 

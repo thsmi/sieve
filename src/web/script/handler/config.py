@@ -1,4 +1,5 @@
 import json
+import logging
 
 from ..http import HttpResponse
 
@@ -22,13 +23,18 @@ class ConfigHandler:
 
     for account in self.__config.get_accounts():
 
-      data[account.get_id()] = {
-        'displayname' : account.get_name(),
-        'username' : account.get_auth_username(request),
-        'authenticate' : account.can_authenticate(),
-        'authorize' : account.can_authorize(),
-        'endpoint' : f"websocket/{account.get_id()}"
-      }
+      try:
+
+        data[account.get_id()] = {
+          'displayname' : account.get_name(),
+          'username' : account.get_auth_username(request),
+          'authenticate' : account.can_authenticate(),
+          'authorize' : account.can_authorize(),
+          'endpoint' : f"websocket/{account.get_id()}"
+        }
+
+      except Exception as ex:
+        logging.warning(f"Skipping invalid account configuration {account.get_name()}, cause {ex}")
 
     # if config from request
     # Reverse proxy default header

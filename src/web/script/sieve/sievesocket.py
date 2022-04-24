@@ -1,6 +1,7 @@
 import ssl
 import socket
 import select
+import logging
 
 from base64 import b64encode
 
@@ -22,9 +23,9 @@ class SieveSocket:
     return self
 
   def __exit__(self, exc_type, exc_val, exc_tb) -> None:
-    print(exc_type)
-    print(exc_val)
-    print(exc_tb)
+    logging.debug(exc_type)
+    logging.debug(exc_val)
+    logging.debug(exc_tb)
     self.disconnect()
 
   def connect(self):

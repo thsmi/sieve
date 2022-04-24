@@ -26,7 +26,6 @@ class HttpRequest:
 
   @property
   def query(self) -> str:
-    print(self.__request[1].split("?", 1))
     return self.__request[1].split("?", 1)[1]
 
   @property

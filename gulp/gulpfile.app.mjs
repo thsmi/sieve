@@ -334,7 +334,8 @@ async function packageAppImage() {
     throw new Error("Could not load app image tool releases.");
 
   releases = releases
-    .filter((a) => { return (a.tag_name.toLowerCase() !== "continuous"); });
+    .filter((a) => { return (a.tag_name.toLowerCase() !== "continuous"); })
+    .filter((a) => { return (a.prerelease !== true); });
 
   if (!releases)
     throw new Error("Could not detect latest app image tool version.");

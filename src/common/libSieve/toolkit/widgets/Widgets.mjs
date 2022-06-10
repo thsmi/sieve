@@ -330,7 +330,8 @@ class SieveDropDownWidget {
    */
   async init(sivElement) {
 
-    const template = await (new SieveTemplate()).load("./toolkit/templates/SieveDropDownWidget.html");
+    const template = await (new SieveTemplate())
+      .load("./toolkit/templates/SieveDropDownWidget.html");
 
     const elm = document.querySelector(this.selector);
     while (elm.firstChild)
@@ -443,7 +444,8 @@ class SieveAbstractItemWidget {
    */
   async init(sivElement) {
 
-    const template = await (new SieveTemplate()).load(this.getTemplate());
+    const template = await (new SieveTemplate())
+      .load(this.getTemplate());
 
     const container = document.createElement("div");
 
@@ -967,7 +969,8 @@ class SieveNumericWidget {
     const value = sivElement.getValue();
     const unit = sivElement.getUnit();
 
-    const template = await (new SieveTemplate()).load("./toolkit/templates/SieveNumericWidget.html");
+    const template = await (new SieveTemplate())
+      .load("./toolkit/templates/SieveNumericWidget.html");
 
     const elm = document.querySelector(this._selector);
     while (elm.firstChild)

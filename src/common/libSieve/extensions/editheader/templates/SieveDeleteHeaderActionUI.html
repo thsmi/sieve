@@ -1,95 +1,103 @@
-<div>
-  <ul id="template-tabs">
-    <li class="nav-item">
-      <a data-i18n="deleteheader.tab.home" class="nav-link active" data-bs-toggle="tab" href="#sieve-widget-deleteheader"
-        role="tab"></a>
-    </li>
-    <li class="nav-item">
-      <a data-i18n="deleteheader.tab.advanced" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-advanced"
-        role="tab"></a>
-    </li>
-    <li class="nav-item">
-      <a data-i18n="deleteheader.tab.help" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-help" role="tab"></a>
-    </li>
-  </ul>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <div>
+      <ul id="template-tabs">
+        <li class="nav-item">
+          <a data-i18n="deleteheader.tab.home" class="nav-link active" data-bs-toggle="tab" href="#sieve-widget-deleteheader"
+            role="tab"></a>
+        </li>
+        <li class="nav-item">
+          <a data-i18n="deleteheader.tab.advanced" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-advanced"
+            role="tab"></a>
+        </li>
+        <li class="nav-item">
+          <a data-i18n="deleteheader.tab.help" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-help" role="tab"></a>
+        </li>
+      </ul>
 
-  <div id="template-content">
-    <div class="tab-content m-2">
-      <div class="tab-pane fade show active" id="sieve-widget-deleteheader" role="tabpanel">
+      <div id="template-content">
+        <div class="tab-content m-2">
+          <div class="tab-pane fade show active" id="sieve-widget-deleteheader" role="tabpanel">
 
-        <div class="mb-3">
-          <h5 data-i18n="deleteheader.position"></h5>
-          <div class="form-check me-sm-2">
-            <input type="radio" class="form-check-input" name="header-index" value="all" id="sieve-header-all" />
-            <label data-i18n="deleteheader.all" class="form-check-label" for="sieve-header-all"></label>
-          </div>
-
-          <div class="row align-items-center mt-2">
-            <div class="col-auto">
+            <div class="mb-3">
+              <h5 data-i18n="deleteheader.position"></h5>
               <div class="form-check me-sm-2">
-                <input type="radio" class="form-check-input" name="header-index" value="first"
-                  id="sieve-header-first" />
-                <label data-i18n="deleteheader.first" class="form-check-label" for="sieve-header-first"></label>
+                <input type="radio" class="form-check-input" name="header-index" value="all" id="sieve-header-all" />
+                <label data-i18n="deleteheader.all" class="form-check-label" for="sieve-header-all"></label>
+              </div>
+
+              <div class="row align-items-center mt-2">
+                <div class="col-auto">
+                  <div class="form-check me-sm-2">
+                    <input type="radio" class="form-check-input" name="header-index" value="first"
+                      id="sieve-header-first" />
+                    <label data-i18n="deleteheader.first" class="form-check-label" for="sieve-header-first"></label>
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <input type="number" min="1" id="sivDeleteHeaderFirstIndex" class="form-control form-control-sm col-lg-5"
+                    value="1"> </input>
+                </div>
+              </div>
+
+              <div class="row align-items-center mt-2">
+                <div class="col-auto">
+                  <div class="form-check me-sm-2">
+                    <input type="radio" class="form-check-input" name="header-index" value="last"
+                      id="sieve-header-last" />
+                    <label data-i18n="deleteheader.last" class="form-check-label" for="sieve-header-last"></label>
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <input type="number" min="1" id="sivDeleteHeaderLastIndex" class="form-control form-control-sm col-lg-5"
+                    value="1" />
+                </div>
+              </div>
+
+              <br />
+
+              <h5 data-i18n="deleteheader.name"></h5>
+              <form class="was-validated" novalidate="novalidate">
+                <input type="text" id="sivDeleteHeaderName" class="form-control form-control-sm col-lg-8" required="required" pattern="[ -~]+"/>
+                <div data-i18n="deleteheader.name.invalid" class="invalid-feedback"></div>
+              </form>
+
+              <h5 data-i18n="deleteheader.value"></h5>
+              <div class="form-check me-sm-2">
+                <input type="radio" class="form-check-input" name="header-value" value="any"
+                  id="sieve-header-value-any" />
+                <label data-i18n="deleteheader.any" class="form-check-label" for="sieve-header-value-any"></label>
+              </div>
+
+              <div class="form-check me-sm-2">
+                <input type="radio" class="form-check-input" name="header-value" value="some"
+                  id="sieve-header-value-some" />
+                <label data-i18n="deleteheader.some" class="form-check-label" for="sieve-header-value-some"></label>
+              </div>
+
+              <div id="sivSomeValues">
+                <h5 data-i18n="deleteheader.some.matchtype"></h5>
+                <div id="sivDeleteHeaderMatchTypes"> </div>
+
+                <h5 data-i18n="deleteheader.some.keywords"></h5>
+                <div id="sivValuePatternsList"></div>
+
               </div>
             </div>
-            <div class="col-auto">
-              <input type="number" min="1" id="sivDeleteHeaderFirstIndex" class="form-control form-control-sm col-lg-5"
-                value="1"> </input>
-            </div>
           </div>
-
-          <div class="row align-items-center mt-2">
-            <div class="col-auto">
-              <div class="form-check me-sm-2">
-                <input type="radio" class="form-check-input" name="header-index" value="last"
-                  id="sieve-header-last" />
-                <label data-i18n="deleteheader.last" class="form-check-label" for="sieve-header-last"></label>
-              </div>
-            </div>
-            <div class="col-auto">
-              <input type="number" min="1" id="sivDeleteHeaderLastIndex" class="form-control form-control-sm col-lg-5"
-                value="1" />
-            </div>
+          <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
+            <div id="sivDeleteHeaderComparator"> </div>
           </div>
-
-          <br />
-
-          <h5 data-i18n="deleteheader.name"></h5>
-          <form class="was-validated" novalidate="novalidate">
-            <input type="text" id="sivDeleteHeaderName" class="form-control form-control-sm col-lg-8" required="required" pattern="[ -~]+"/>
-            <div data-i18n="deleteheader.name.invalid" class="invalid-feedback"></div>
-          </form>
-
-          <h5 data-i18n="deleteheader.value"></h5>
-          <div class="form-check me-sm-2">
-            <input type="radio" class="form-check-input" name="header-value" value="any"
-              id="sieve-header-value-any" />
-            <label data-i18n="deleteheader.any" class="form-check-label" for="sieve-header-value-any"></label>
-          </div>
-
-          <div class="form-check me-sm-2">
-            <input type="radio" class="form-check-input" name="header-value" value="some"
-              id="sieve-header-value-some" />
-            <label data-i18n="deleteheader.some" class="form-check-label" for="sieve-header-value-some"></label>
-          </div>
-
-          <div id="sivSomeValues">
-            <h5 data-i18n="deleteheader.some.matchtype"></h5>
-            <div id="sivDeleteHeaderMatchTypes"> </div>
-
-            <h5 data-i18n="deleteheader.some.keywords"></h5>
-            <div id="sivValuePatternsList"></div>
-
+          <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+            <p data-i18n="deleteheader.help" style="white-space: pre-line"></p>
+            <p data-i18n="deleteheader.hint" style="white-space: pre-line" class="alert alert-info" role="alert"></p>
           </div>
         </div>
       </div>
-      <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
-        <div id="sivDeleteHeaderComparator"> </div>
-      </div>
-      <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
-        <p data-i18n="deleteheader.help" style="white-space: pre-line"></p>
-        <p data-i18n="deleteheader.hint" style="white-space: pre-line" class="alert alert-info" role="alert"></p>
-      </div>
     </div>
-  </div>
-</div>
+  </body>
+</html>

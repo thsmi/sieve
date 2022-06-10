@@ -268,7 +268,7 @@ class SieveBodyUI extends SieveTestDialogBoxUI {
       .replace("${matchtype}", '<span class="sivBodyMatchType"></span>')
       .replace("${value}", '<em class="sivBodyValue"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivBodyMatchType").textContent
       = this.matchtype().getElement().toScript();
     elm.querySelector(".sivBodyValue").textContent

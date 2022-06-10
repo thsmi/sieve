@@ -119,7 +119,7 @@ class SieveConditionUI extends SieveSourceBoxUI {
          </div>
        </div>`;
 
-    const item = (new SieveTemplate()).convert(FRAGMENT);
+    const item = (new SieveTemplate()).convertFragment(FRAGMENT);
 
     parent.classList.add("sivCondition");
     parent.id = `sivElm${this.id()}`;

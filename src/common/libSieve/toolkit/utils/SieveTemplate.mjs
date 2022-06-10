@@ -99,6 +99,25 @@ class SieveTemplate {
   }
 
   /**
+   * Loads a template form an HTML fragment.
+   *
+   * @param {string} fragment
+   *   the fragment to be transformed
+   * @returns {HTMLElement}
+   *   the html element
+   */
+  convertFragment(fragment) {
+    const html =
+      `<!DOCTYPE html>
+       <html>
+         <head><meta charset="utf-8"></head>
+         <body>${fragment}</body>
+       </html>`;
+
+    return this.convert(html);
+  }
+
+  /**
    * Loads an html fragment from file or url
    *
    * @param {string} tpl

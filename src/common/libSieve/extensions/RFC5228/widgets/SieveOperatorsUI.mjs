@@ -56,7 +56,7 @@ class SieveNotUI extends SieveSimpleBoxUI {
            <div class="sivNotTest"></div>
          </div>`;
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convertFragment(FRAGMENT);
     elm
       .querySelector(".sivNotTest")
       .append(this.getSieve().test().html());
@@ -134,7 +134,7 @@ class SieveAnyOfAllOfUI extends SieveDialogBoxUI {
            <span class="sivOperatorAnyOf d-none" data-i18n="operator.anyof.summary"></span>
          </div>`;
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convertFragment(FRAGMENT);
     if (this.getSieve().isAllOf)
       elm.querySelector(".sivOperatorAllOf").classList.remove("d-none");
     else

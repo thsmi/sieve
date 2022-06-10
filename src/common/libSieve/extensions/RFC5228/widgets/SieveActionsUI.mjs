@@ -35,7 +35,7 @@ class SieveStopUI extends SieveActionDialogBoxUI {
    */
   getSummary() {
     const msg = SieveI18n.getInstance().getString("stop.summary");
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     return elm;
   }
 }
@@ -57,7 +57,7 @@ class SieveDiscardUI extends SieveActionDialogBoxUI {
    */
   getSummary() {
     const msg = SieveI18n.getInstance().getString("discard.summary");
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     return elm;
   }
 }
@@ -79,7 +79,7 @@ class SieveKeepUI extends SieveActionDialogBoxUI {
    */
   getSummary() {
     const msg = SieveI18n.getInstance().getString("keep.summary");
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     return elm;
   }
 }
@@ -143,7 +143,7 @@ class SieveRedirectUI extends SieveActionDialogBoxUI {
     const msg = SieveI18n.getInstance().getString("redirect.summary")
       .replace("${address}", '<em class="sivRedirectAddress"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivRedirectAddress").textContent = this.address();
     return elm;
   }
@@ -207,7 +207,7 @@ class SieveFileIntoUI extends SieveActionDialogBoxUI {
     const msg = SieveI18n.getInstance().getString("fileinto.summary")
       .replace("${path}", '<em class="sivFileintoPath"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivFileintoPath").textContent = this.path();
 
     return elm;

@@ -137,6 +137,13 @@ class SieveEditorUI extends SieveEditorController {
       .querySelector('.nav-item > a[href="#sieve-content-settings"]')
       .addEventListener('shown.bs.tab', () => { this.switchToSettings(); });
 
+    document
+      .querySelector("#sieve-editor-donate")
+      .addEventListener("click", () => {
+        const url = (new SieveTemplate()).getI18n().getString("editor.donate.url");
+        this.openUrl(url);
+      });
+
     return this;
   }
 

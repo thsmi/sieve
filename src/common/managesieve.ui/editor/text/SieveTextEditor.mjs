@@ -226,6 +226,13 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
         document.querySelector("#sieve-editor-find-toolbar").classList.toggle("d-none");
       });
 
+    document
+      .querySelector("#sieve-editor-reference")
+      .addEventListener("click", () => {
+        const url = loader.getI18n().getString("texteditor.reference.url");
+        this.getController().openUrl(url);
+      });
+
     await this.renderSettings();
   }
 

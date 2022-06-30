@@ -58,6 +58,7 @@
   "account.settings" : "Settings",
   "account.newscript" : "New script",
   "account.donate" : "Donate",
+  "account.donate.url": "https://www.paypal.me/thsmi",
 
   "server.title" : "Server Settings",
   "server.displayname" : "Display name",
@@ -181,6 +182,7 @@
   "editor.settings" : "Settings",
   "editor.save" : "Save",
   "editor.donate" : "Donate",
+  "editor.donate.url" : "https://www.paypal.me/thsmi",
   "editor.error" :"Server reports script errors",
 
   "editor.menu.settings" : "Editor Settings",
@@ -223,6 +225,7 @@
   "texteditor.redo" : "Redo",
   "texteditor.findAndReplace" : "Find & replace",
   "texteditor.reference" : "Reference",
+  "texteditor.reference.url" : "https://thsmi.github.io/sieve-reference/en/index.html",
 
   "texteditor.find" : "Find",
   "texteditor.find.text" : "Search for...",
@@ -234,6 +237,7 @@
 
   "updater.title" : "New version available!",
   "updater.message" : "Click to download the update.",
+  "updater.url.latest" : "https://github.com/thsmi/sieve/releases/latest",
 
   "debug.transport.description" : "Used to log and debug the communication between this app and the server. All of the settings apply to this accounts after a reconnect.",
   "debug.transport.clientserver" : "Client to Server communication (requests)",

@@ -14,7 +14,7 @@
     "gecko": {
       "id": "sieve@mozdev.org",
       "update_url": "https://thsmi.github.io/sieve/update.json",
-      "strict_min_version": "68.0a1"
+      "strict_min_version": "78.6.0"
     }
   },
   "permissions": [

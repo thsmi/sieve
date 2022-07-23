@@ -30,13 +30,13 @@
   "return.help" : "",
 
   "stop.tab.help" : "Help",
-  "stop.help" : "",
+  "stop.help" : "Stops processing the script.\n\nIt will perform an 'implicit keep' unless it was cancelled via a 'discard'.",
 
   "discard.tab.help" : "Help",
-  "discard.help" : "",
+  "discard.help" : "Discard is used to silently throw away a message. It does so by canceling the 'implicit keep'.\n\nThe 'implicit keep' is a safe guard to prevent accidental dataloss. By default sieve delivers a message to the mailbox, except the message was written to a mailbox (e.g. fileinto), redirected to a new address (e.g. redirect), explicitly thrown out (e.g. reject) or the 'implicit keep' was canceled (e.g. discard).",
 
   "keep.tab.help" : "Help",
-  "keep.help" : "",
+  "keep.help" : "Instructs sieve to explicitly deliver the message to the user's inbox. It is a shorthand for fileinto \"INBOX\"\n\n By default sieve implements a so called 'implicit keep' which means it will automatically call a 'keep' at the end of the script, except the message was written to a mailbox (e.g. fileinto), redirected to a new address (e.g. redirect), explicitly thrown out (e.g. reject) or the 'implicit keep' was canceled (e.g. discard)",
 
   "fileinto.tab.home" : "Fileinto",
   "fileinto.tab.help" : "Help",

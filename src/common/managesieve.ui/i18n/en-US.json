@@ -249,7 +249,7 @@
   "debug.transport.states" : "Exceptions and State Machine Information",
   "debug.transport.rawdump" : "Raw Dump/Dump Byte Stream",
   "debug.transport.session" : "Session management",
-  "debug.transport.trace" : "Print full stack trace for log messages",
+  "debug.transport.trace" : "Print full stack trace for transport related log messages",
 
   "debug.global.title" : "Global",
   "debug.global.description" : "Used to log and debug the app's UI and rendering. The settings are global and apply to all accounts after restarting the app.",
@@ -257,6 +257,7 @@
   "debug.global.ipc" : "IPC Messages",
   "debug.global.widgets" : "Widgets",
   "debug.global.i18n" : "Internationalization (I18n)",
+  "debug.global.trace" : "Print full stack trace for UI related log messages",
 
   "debug.console.show" : "Show Console",
   "debug.ui.reload" : "Reload UI"

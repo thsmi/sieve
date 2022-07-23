@@ -205,7 +205,7 @@
   "editor.syntax.switch" : "Checks scripts while editing",
 
   "editor.indentation.title" : "Indentation",
-  "editor.indentation.description" : "The editor automatically indents code while typing.",
+  "editor.indentation.description" : "The editor automatically indents code while typing. The indentation policy specifies which characters (tabs or spaces) should be used. The indentation width defines how many indentation characters shall be used. The tab width defines how many spaces are used to render a tab character.",
   "editor.indentation.width" : "Indention width",
   "editor.indentation.policy" : "Indention Policy",
   "editor.indentation.tabs" : "Use Tabs",

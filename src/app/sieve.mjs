@@ -28,7 +28,7 @@ let win = null;
  * @param {Electron} electron
  *   a reference to the electron's root context object.
  */
-function createWindow(electron) {
+async function createWindow(electron) {
 
   const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
@@ -51,12 +51,7 @@ function createWindow(electron) {
   // Hide the menu bar.
   win.removeMenu();
 
-  // and load the index.html of the app.
-  win.loadURL(url.format({
-    pathname: path.join(__dirname, 'app.html'),
-    protocol: 'file:',
-    slashes: true
-  }));
+  await win.loadFile('app.html');
 
   // Open the DevTools.
   // win.webContents.openDevTools();
@@ -161,14 +156,10 @@ async function main(electron) {
   });
 
 
+  // Wait until electron is completely up, otherwise some API might not be ready.
   await electron.app.whenReady();
 
-  createWindow(electron);
-
-  // This method will be called when Electron has finished
-  // initialization and is ready to create browser windows.
-  // Some APIs can only be used after this event occurs.
-  electron.app.on('ready', createWindow);
+  await createWindow(electron);
 
   // Quit when all windows are closed.
   electron.app.on('window-all-closed', () => {

@@ -190,10 +190,6 @@ class SieveEditorUI extends SieveEditorController {
 
   /**
    * Loads the sieve script into the editor.
-   * All undo history will be flushed.
-   *
-   * @returns {boolean}
-   *   true in case the script could be loaded otherwise false.
    */
   async load() {
 
@@ -203,10 +199,7 @@ class SieveEditorUI extends SieveEditorController {
 
     this.checksum = await editor.getChecksum();
 
-    editor.clearHistory();
     editor.focus();
-
-    return true;
   }
 
   /**

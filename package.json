@@ -9,12 +9,18 @@
   },
   "devDependencies": {
     "bootstrap": "^5.1.3",
-    "codemirror": "^5.65.4",
-    "electron": "^19.0.0",
+
+    "rollup": "^2.77.0",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+
+    "codemirror": "^6.0.1",
+    "@codemirror/language": "^6.2.1",
+
     "electron-packager": "^15.5.1",
+
     "eslint": "^8.16.0",
     "eslint-plugin-jsdoc": "^39.3.2",
-    "gulp": "^4.0.0",
+
     "yazl": "^2.5.1"
   },
   "scripts": {

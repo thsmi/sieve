@@ -88,7 +88,4 @@ CodeMirror.on(window, "resize", function() {
 });
 */
 
-// hlLine = editor.addLineClass(0, "background", "activeline");
-
-// editor.on("change", function() { onChange(); });
 

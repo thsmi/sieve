@@ -227,13 +227,17 @@
   "texteditor.reference" : "Reference",
   "texteditor.reference.url" : "https://thsmi.github.io/sieve-reference/en/index.html",
 
-  "texteditor.find" : "Find",
+  "texteditor.find.next" : "Next",
+  "texteditor.find.previous" : "Previous",
   "texteditor.find.text" : "Search for...",
-  "texteditor.replace" : "Replace",
+
+  "texteditor.replace.next" : "Next",
+  "texteditor.replace.all" : "All",
   "texteditor.replace.text" : "Replace with...",
 
   "texteditor.matchCase" : "Match case",
-  "texteditor.backwards" : "Search backward",
+  "texteditor.regex" : "RegEx",
+
 
   "updater.title" : "New version available!",
   "updater.message" : "Click to download the update.",

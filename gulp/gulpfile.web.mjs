@@ -15,6 +15,7 @@ import common from "./gulpfile.common.mjs";
 import path from 'path';
 
 const BUILD_DIR_WEB = path.join(common.BASE_DIR_BUILD, "web/");
+const BUILD_DIR_WEB_LIBS = path.join(BUILD_DIR_WEB, '/static/libs');
 
 const BASE_DIR_WEB = "./src/web/";
 const BASE_DIR_WX = "./src/wx/";
@@ -42,8 +43,7 @@ function packageLicense() {
  */
 function packageCodeMirror() {
 
-  return common.packageCodeMirror(
-    path.join(BUILD_DIR_WEB, "/static/libs/CodeMirror"));
+  return common.packageCodeMirror(BUILD_DIR_WEB_LIBS);
 }
 
 /**

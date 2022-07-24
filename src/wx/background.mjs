@@ -544,6 +544,10 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
       logger.logAction(`Set default value for ${name}`);
 
       await accounts.getEditor().setValue(name, value);
+    },
+
+    "open-url": async (msg) => {
+      browser.windows.openDefaultBrowser(msg.payload.data);
     }
   };
 

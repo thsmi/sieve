@@ -81,12 +81,6 @@ class SieveAbstractEditorUI {
   }
 
   /**
-   * Clears the editors
-   */
-  clearHistory() {
-  }
-
-  /**
    * Calculate the checksum for the current context script.
    *
    *  @returns {string}

@@ -189,7 +189,7 @@ class SieveSpamtestUI extends SieveTestDialogBoxUI {
       .replace("${matchtype}", '<span class="sivSpamtestMatchtype"></span>')
       .replace("${score}", '<em class="sivSpamtestValue"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivSpamtestMatchtype").textContent
       = this.matchtype().getElement().toScript();
     elm.querySelector(".sivSpamtestValue").textContent
@@ -280,7 +280,7 @@ class SieveVirustestUI extends SieveTestDialogBoxUI {
       .replace("${matchtype}", '<span class="sivVirustestMatchtype"></span>')
       .replace("${score}", '<em class="sivVirustestValue"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivVirustestMatchtype").textContent
       = this.matchtype().getElement().toScript();
     elm.querySelector(".sivVirustestValue").textContent

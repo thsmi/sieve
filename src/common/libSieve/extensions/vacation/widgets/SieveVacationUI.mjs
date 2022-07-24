@@ -307,7 +307,7 @@ class SieveVacationUI extends SieveActionDialogBoxUI {
     const msg = SieveI18n.getInstance().getString("vacation.summary")
       .replace("${reason}", '<div><em class="sivVacationReason"></em></div>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
 
     elm.querySelector(".sivVacationReason").textContent
       = this.reason().quote(MAX_QUOTE_LEN);

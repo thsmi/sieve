@@ -343,7 +343,7 @@ class SieveDuplicateUI extends SieveTestDialogBoxUI {
    */
   getSummary() {
     const msg = SieveI18n.getInstance().getString("duplicate.summary");
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     return elm;
   }
 }

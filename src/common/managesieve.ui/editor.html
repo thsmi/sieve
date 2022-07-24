@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
   <meta charset="utf-8">
@@ -8,21 +8,22 @@
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="./../../libs/bootstrap/css/bootstrap.min.css">
 
-  <link rel="stylesheet" href="./../../libs/CodeMirror/lib/codemirror.css">
-  <link rel="stylesheet" href="./../../libs/CodeMirror/theme/eclipse.css">
-
-  <script src="./../../libs/CodeMirror/lib/codemirror.js"></script>
-  <script src="./../../libs/CodeMirror/addon/search/searchcursor.js"></script>
-  <script src="./../../libs/CodeMirror/addon/edit/matchbrackets.js"></script>
-
-  <script src="./../../libs/CodeMirror/mode/sieve/sieve.js"></script>
-
   <style>
-    .CodeMirror {
+    .cm-editor {
       border-color: #eee;
       border-width: 0px 1px 1px 1px;
       border-style: solid;
-      height: auto;
+    }
+
+    .cm-editor.cm-focused {
+      border-color: #eee;
+      border-width: 0px 1px 1px 1px;
+      border-style: solid;
+      outline: none !important;
+    }
+
+    .cm-editor .cm-panels-top {
+      border-bottom: none !important;
     }
 
     #sieve-widget-editor {
@@ -38,10 +39,6 @@
 
     html {
       overflow-y: scroll;
-    }
-
-    .activeline {
-      background: #e8f2ff !important;
     }
 
     #sieve-editor-toolbar {

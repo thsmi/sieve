@@ -9,13 +9,201 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-/* global CodeMirror */
-
 import { SieveTemplate } from "./../../utils/SieveTemplate.mjs";
 import { SieveAbstractEditorUI } from "./../SieveAbstractEditor.mjs";
 
+import {
+  EditorView, basicSetup,
+  StreamLanguage, sieve,
+  Transaction, EditorState, Compartment,
+  keymap,
+  indentWithTab, indentUnit,
+  // Search related
+  search, openSearchPanel, closeSearchPanel,
+  findNext, findPrevious,
+  replaceNext, replaceAll,
+  getSearchQuery, setSearchQuery, SearchQuery,
+  // History related
+  undo, redo, undoDepth
+} from "./../../../CodeMirror/codemirror.mjs";
+
+
 const COMPILE_DELAY = 500;
-const EDITOR_SCROLL_INTO_VIEW_OFFSET = 200;
+const DEFAULT_TAB_SIZE = 2;
+
+// FIXME.. Scroll into view offset
+// const EDITOR_SCROLL_INTO_VIEW_OFFSET = 200;
+
+/**
+ * An alternate code mirror search panel implementation.
+ */
+class SieveSearchPanel {
+
+  /**
+   * Creates a new search panel instance.
+   * @param {EditorView} view
+   *   the editor view to which the panel should ba attached
+   */
+  constructor(view) {
+    this.view = view;
+
+    // A dummy element we don't use it
+    this.dom = document.createElement("div");
+
+    this.top = true;
+  }
+
+  /**
+   * Called after the panel has been added to the editor.
+   * Will trigger an lazy async initialization.
+   */
+  mount() {
+    this.onInit();
+  }
+
+  /**
+   * Called when the panel is removed from the editor.
+   */
+  destroy() {
+    const toolbar = document.querySelector("#sieve-editor-find-toolbar");
+
+    while (toolbar.firstChild)
+      toolbar.firstChild.remove();
+  }
+
+  /**
+   * Called whenever the view was updated
+   *
+   * @param {ViewUpdate} update
+   *   the view update
+   */
+  update(update) {
+
+    for (const tr of update.transactions) {
+      for (const effect of tr.effects) {
+        if (effect.is(setSearchQuery) && !effect.value.eq(this.query)) {
+          this.query = effect.value;
+
+          document.getElementById("search-find").value = this.query.search;
+          document.getElementById("search-case-sensitive").checked = this.query.caseSensitive;
+          document.getElementById("search-regex").checked = this.query.regexp;
+          document.getElementById("search-replace").value = this.query.replace;
+        }
+      }
+    }
+  }
+
+  /**
+   * Loads the panel content asynchronously.
+   */
+  async onInit() {
+
+    const loader = new SieveTemplate();
+    const toolbar = document.querySelector("#sieve-editor-find-toolbar");
+    toolbar.append(
+      await loader.load("./editor/text/editor.plaintext.searchbar.html"));
+
+    // Setup searchbar.
+    document
+      .querySelector("#sieve-editor-find")
+      .addEventListener("change", () => { this.onSearchChanged(); });
+    document
+      .querySelector("#sieve-editor-find")
+      .addEventListener("keyup", (ev) => { this.onFindChanged(ev); });
+
+    document
+      .querySelector("#sieve-editor-find-next")
+      .addEventListener("click", () => { findNext(this.view); });
+
+    document
+      .querySelector("#sieve-editor-find-prev")
+      .addEventListener("click", () => { findPrevious(this.view); });
+
+
+    document
+      .querySelector("#sieve-editor-replace")
+      .addEventListener("change", () => { this.onSearchChanged(); });
+    document
+      .querySelector("#sieve-editor-replace")
+      .addEventListener("keyup", (ev) => { this.onReplaceChanged(ev); });
+
+    document
+      .querySelector("#sieve-editor-replace-next")
+      .addEventListener("click", () => { replaceNext(this.view); });
+
+    document
+      .querySelector("#sieve-editor-replace-all")
+      .addEventListener("click", () => { replaceAll(this.view); });
+
+
+    document
+      .querySelector("#sieve-editor-case-sensitive")
+      .addEventListener("", () => { this.onSearchChanged(); });
+
+    document
+      .querySelector("#sieve-editor-regex")
+      .addEventListener("", () => { this.onSearchChanged(); });
+
+    document
+      .querySelector("#sieve-editor-find").focus();
+  }
+
+  /**
+   * Called whenever the search ui changed.
+   *
+   * Reads the settings from the ui and updates the query object.
+   */
+  onSearchChanged() {
+    const query = new SearchQuery({
+      search : document.querySelector("#sieve-editor-find").value,
+      replace : document.querySelector("#sieve-editor-replace").value,
+      caseSensitive : document.getElementById("sieve-editor-case-sensitive").checked,
+      regexp : document.getElementById("sieve-editor-regex").checked
+    });
+
+    if (this.query && query.eq(this.query))
+      return;
+
+    this.query = query;
+    this.view.dispatch({effects: setSearchQuery.of(query)});
+  }
+
+  /**
+   * Called whenever the find text box is changed.
+   *
+   * @param {Event} ev
+   *   the dom event which caused this callback
+   */
+  onFindChanged(ev) {
+    this.onSearchChanged();
+
+    if (ev.key !== "Enter")
+      return;
+
+    ev.preventDefault();
+
+    if (ev.shiftKey)
+      findPrevious(this.view);
+    else
+      findNext(this.view);
+  }
+
+  /**
+   * Called whenever the replace text box is called
+   *
+   * @param {Event} ev
+   *   the dom event which caused this callback
+   */
+  onReplaceChanged(ev) {
+
+    if (ev.key !== "Enter")
+      return;
+
+    ev.preventDefault();
+    replaceNext(this.view);
+  }
+
+}
 
 /**
  * An text editor ui for sieve scripts.
@@ -27,32 +215,27 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
    *
    * @param {SieveEditorController} controller
    *   The controller which is assigned to this editor.
-   * @param {string} [id]
-   *   An optional id, which points to a the textbox, which will be converted
-   *   into a code mirror input. In case it is omitted the id "code" will be used.
+   * @param {string} [parent]
+   *   An optional selector which point to the parent element which should host
+   *   the editor view.  In case it is omitted the id "#code" will be used.
    */
-  constructor(controller, id) {
+  constructor(controller, parent) {
 
     super(controller);
 
-    if (typeof (id) === "undefined" || id === null)
-      this.id = "code";
+    if (typeof (parent) === "undefined" || parent === null)
+      this.parent = "#sieve-plaintext-editor";
 
     this.syntaxCheckEnabled = false;
     this.timeout = null;
 
-    this.cm = null;
-
-    this.activeLine = null;
-
-    this.changed = false;
+    this.editor = null;
   }
 
   /**
    * Renders the text editors settings
    */
   async renderSettings() {
-
 
     const loader = new SieveTemplate();
 
@@ -82,24 +265,21 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
     // Indentation width...
     document
       .querySelector("#editor-settings-indentation-width")
-      .addEventListener("change", async () => {
-        await this.setIndentWidth(
-          document.querySelector("#editor-settings-indentation-width").value);
-      });
+      .addEventListener("change", async () => { this.onIndentationChanged(); });
 
     document.querySelector("#editor-settings-indentation-width")
-      .value = this.getIndentWidth();
+      .value = this.getIndentationUnit().length;
 
     // Indentation policy...
     document
       .querySelector("#editor-settings-indentation-policy-spaces")
-      .addEventListener("change", async () => { await this.setIndentWithTabs(false); });
+      .addEventListener("change", async () => { this.onIndentationChanged(); });
 
     document
       .querySelector("#editor-settings-indentation-policy-tabs")
-      .addEventListener("change", async () => { await this.setIndentWithTabs(true); });
+      .addEventListener("change", async () => { this.onIndentationChanged(); });
 
-    if (this.getIndentWithTabs())
+    if (this.getIndentationUnit().startsWith("\t"))
       document.querySelector("#editor-settings-indentation-policy-tabs").checked = true;
     else
       document.querySelector("#editor-settings-indentation-policy-spaces").checked = true;
@@ -117,62 +297,69 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
   }
 
   /**
-   * @inheritdoc
+   * Initializes the CodeMirror instance this can be done exactly once.
+   * Subsequent calls to this method will be silently ignored.
    */
-  async render() {
+  initializeEditor() {
 
+    if (typeof(this.editor) !== "undefined" && this.editor !== null)
+      return;
+
+    this.tabSize = new Compartment();
+    this.indentUnit = new Compartment();
+
+    const state = EditorState.create({
+      extensions: [
+        basicSetup,
+        keymap.of([indentWithTab]),
+        StreamLanguage.define(sieve),
+        this.indentUnit.of(indentUnit.of("  ")),
+        this.tabSize.of(EditorState.tabSize.of(DEFAULT_TAB_SIZE)),
+        search({ createPanel: (view) => { return this.onInitSearch(view); } }),
+        EditorView.updateListener.of((v) => { this.onStateChanged(v); })
+      ]
+    });
+
+    this.editor = new EditorView({
+      state,
+      parent : document.querySelector(this.parent)
+    });
+
+    this.query = getSearchQuery(this.editor.state);
+  }
+
+  /**
+   * Called when the search window should be initialized and shown.
+   * @param {EditorView} view
+   *   the view which caused this callback
+   * @returns {SearchPanel}
+   *   a search panel instance.
+   */
+  onInitSearch(view) {
+    return new SieveSearchPanel(view);
+  }
+
+  /**
+   * Called by codemirror in case of status changes.
+   * @param {EditorView} view
+   *   the code mirror view which caused this callback.
+   */
+  onStateChanged(view) {
+    if (view.docChanged) {
+      this.onChanged();
+    }
+  }
+
+  /**
+   * Renders the toolbar items
+   */
+  async renderToolbar() {
     const loader = new SieveTemplate();
-
-    const editor = document.querySelector("#sieve-plaintext-editor");
-    while (editor.firstChild)
-      editor.firstChild.remove();
-
-    editor.append(
-      await loader.load("./editor/text/editor.plaintext.html"));
-
-    this.cm = CodeMirror.fromTextArea(document.querySelector(`#${this.id}`), {
-      lineNumbers: true,
-      lineWrapping: true,
-
-      theme: "eclipse",
-      matchBrackets: true,
-
-      inputStyle: "contenteditable"
-    });
-
-    this.cm.on("renderLine", (cm, line, elt) => { this.onRenderLine(cm, line, elt); });
-    this.cm.on("change", () => { this.onChange(); });
-    this.cm.on("cursorActivity", () => { this.onActiveLineChange(); });
-
-    this.cm.refresh();
-
-    // Configure tab handling...
-    this.cm.setOption("extraKeys", {
-      "Tab": function (cm) {
-
-        if (cm.somethingSelected()) {
-          const sel = cm.getSelection("\n");
-          // Indent only if there are multiple lines selected, or if the selection spans a full line
-          if (sel.length > 0 && (sel.includes("\n") || sel.length === cm.getLine(cm.getCursor().line).length)) {
-            cm.indentSelection("add");
-            return;
-          }
-        }
-
-        if (cm.options.indentWithTabs)
-          cm.execCommand("insertTab");
-        else
-          cm.execCommand("insertSoftTab");
-      },
-      "Shift-Tab": function (cm) {
-        cm.indentSelection("subtract");
-      }
-    });
-
     const toolbar = document.querySelector("#sieve-editor-toolbar");
     toolbar.append(
       await loader.load("./editor/text/editor.plaintext.toolbar.html"));
 
+    // Setup the toolbar
     document
       .querySelector("#sieve-editor-undo")
       .addEventListener("click", () => { this.undo(); });
@@ -194,49 +381,54 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
       .addEventListener("click", () => { this.paste(); });
 
     document
-      .querySelector("#sieve-editor-find")
+      .querySelector("#sieve-editor-reference")
       .addEventListener("click", () => {
-        const token = document.querySelector("#sieve-editor-txt-find").value;
-
-        const isReverse = document.querySelector("#sieve-editor-backward").checked;
-        const isCaseSensitive = document.querySelector("#sieve-editor-casesensitive").checked;
-
-        this.find(token, isCaseSensitive, isReverse);
+        const url = loader.getI18n().getString("texteditor.reference.url");
+        this.getController().openUrl(url);
       });
 
     document
-      .querySelector("#sieve-editor-replace")
-      .addEventListener("click", () => {
-        const oldToken = document.querySelector("#sieve-editor-txt-find").value;
-        const newToken = document.querySelector("#sieve-editor-txt-replace").value;
+      .querySelector("#sieve-editor-searchbar")
+      .addEventListener("click", () => { this.onToggleSearchbar(); });
+  }
 
-        const isReverse = document.querySelector("#sieve-editor-backward").checked;
-        const isCaseSensitive = document.querySelector("#sieve-editor-casesensitive").checked;
+  /**
+   * Toggles the search bar visibility.
+   *
+   * In case the searchbar is shown, the focus is moved into the search field.
+   * When it is close it is moved back to the editor.
+   */
+  onToggleSearchbar() {
+    if (document.querySelector("#sieve-editor-find-toolbar").childElementCount === 0) {
+      openSearchPanel(this.editor);
+      return;
+    }
 
-        if (oldToken === "")
-          return;
-
-        this.replace(oldToken, newToken, isCaseSensitive, isReverse);
-      });
+    closeSearchPanel(this.editor);
+    this.focus();
+  }
 
 
-    document
-      .querySelector("#sieve-editor-replace-replace")
-      .addEventListener("click", () => {
-        document.querySelector("#sieve-editor-find-toolbar").classList.toggle("d-none");
-      });
+  /**
+   * @inheritdoc
+   */
+  async render() {
 
+    this.initializeEditor();
+    await this.renderToolbar();
     await this.renderSettings();
   }
 
   /**
    * Returns the editor change status.
+   * It checks codemirror's undo history. In case it exists the document
+   * was changed otherwise it assumes it is unchanged.
    *
    * @returns {boolean}
    *   true in case the document was changed otherwise false.
    */
   hasChanged() {
-    return this.changed;
+    return (undoDepth(this.editor) > 0);
   }
 
   /**
@@ -246,13 +438,15 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
     // Load a new script. It will discard the current script
     // the cursor position is reset to defaults.
 
-    this.cm.setValue(script);
-    this.cm.setCursor({ line: 0, ch: 0 });
-
-    this.cm.refresh();
-
-    // ensure the active line cursor changed...
-    //    onActiveLineChange();
+    this.editor.dispatch({
+      changes: {
+        from: 0,
+        to: this.editor.state.doc.length,
+        insert: script
+      },
+      annotations : Transaction.addToHistory.of(false),
+      selection: {anchor: 0}
+    });
   }
 
   /**
@@ -262,7 +456,7 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
 
     this.focus();
 
-    const script = this.cm.getValue();
+    const script = this.editor.state.doc.toString();
 
     // ... and ensure the line endings are sanitized
     // eslint-disable-next-line no-control-regex
@@ -273,15 +467,8 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
    * @inheritdoc
    */
   focus() {
-    if (this.cm)
-      this.cm.focus();
-  }
-
-  /**
-   * @inheritdoc
-   */
-  clearHistory() {
-    this.cm.clearHistory();
+    if (this.editor)
+      this.editor.focus();
   }
 
   /**
@@ -301,16 +488,16 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
    * Undoes the last input
    */
   undo() {
-    this.cm.undo();
-    this.cm.focus();
+    undo(this.editor);
+    this.editor.focus();
   }
 
   /**
    * Redos the last input
    */
   redo() {
-    this.cm.redo();
-    this.cm.focus();
+    redo(this.editor);
+    this.editor.focus();
   }
 
   /**
@@ -318,203 +505,42 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
    */
   async cut() {
     await this.copy();
-    this.cm.replaceSelection("");
 
-    this.cm.focus();
+    this.editor.dispatch(
+      this.editor.state.replaceSelection(""));
+
+    this.editor.focus();
   }
 
   /**
    * Copies the currently selected text.
    */
   async copy() {
-    const data = this.cm.getSelection();
+    const state = this.editor.state;
 
-    await this.getController().setClipboard(data);
+    await this.getController().setClipboard(
+      state.sliceDoc(state.selection.main.from, state.selection.main.to));
 
-    this.cm.focus();
+    this.editor.focus();
   }
 
   /**
    * Pastes the clipboard content into the editor.
    */
   async paste() {
-    const data = await this.getController().getClipboard();
-    this.cm.replaceSelection(data);
 
-    this.cm.focus();
-  }
+    this.editor.dispatch(
+      this.editor.state.replaceSelection(
+        await this.getController().getClipboard()));
 
-  /**
-   * Gets the selection begin
-   *
-   * @param {boolean} isReverse
-   *   if true the selection is handled in reverse order.
-   *   which means the selection start gets the selections end and vice versa.
-   * @returns {int}
-   *   the current start position.
-   */
-  getSelectionStart(isReverse) {
-
-    const start = this.cm.getCursor(true);
-    const end = this.cm.getCursor(false);
-
-    if (isReverse) {
-      if (start.line < end.line)
-        return start;
-
-      if (start.line > end.line)
-        return end;
-
-      // start.line == end.line
-      if (start.ch > end.ch)
-        return end;
-
-      return start;
-    }
-
-
-    if (start.line > end.line)
-      return start;
-
-    if (start.line < end.line)
-      return end;
-
-    // start.line == end.line
-    if (start.ch > end.ch)
-      return start;
-
-    return end;
-
-  }
-
-  /**
-   * Finds the specified token within the editor.
-   *
-   * @param {string} token
-   *   the string to find.
-   * @param {boolean} [isCaseSensitive]
-   *   if true the search is case sensitive.
-   * @param {boolean} [isReverse]
-   *   if true the search will be in reverse direction.
-   * @returns {boolean}
-   *   true in case the the string was found otherwise false.
-   */
-  find(token, isCaseSensitive, isReverse) {
-
-    // Fix optional parameters...
-    if (typeof (isCaseSensitive) === "undefined" || isCaseSensitive === null)
-      isCaseSensitive = false;
-
-    if (typeof (isReverse) === "undefined" || isReverse === null)
-      isReverse = false;
-
-    let cursor = this.cm.getSearchCursor(
-      token,
-      this.getSelectionStart(isReverse),
-      !isCaseSensitive);
-
-    if (!cursor.find(isReverse)) {
-      // warp search at top or bottom
-      cursor = this.cm.getSearchCursor(
-        token,
-        isReverse ? { line: this.cm.lineCount() - 1 } : { line: 0, ch: 0 },
-        !isCaseSensitive);
-
-      if (!cursor.find(isReverse))
-        return false;
-    }
-
-    if (isReverse)
-      this.cm.setSelection(cursor.from(), cursor.to());
-    else
-      this.cm.setSelection(cursor.to(), cursor.from());
-
-    this.cm.scrollIntoView(cursor.to(), EDITOR_SCROLL_INTO_VIEW_OFFSET);
-
-    return true;
-  }
-
-  /**
-   * Checks if the specified token is selected.
-   *
-   * @param {string} token
-   *   the token
-   * @param {boolean} isCaseSensitive
-   *   true in case the check should be case insensitive.
-   * @returns {boolean}
-   *   true in case the token was found otherwise false.
-   */
-  isSelected(token, isCaseSensitive) {
-    let selection = this.cm.getSelection();
-
-    if (isCaseSensitive) {
-      selection = selection.toLowerCase();
-      token = token.toLocaleLowerCase();
-    }
-
-    if (selection !== token)
-      return false;
-
-    return true;
-  }
-
-  /**
-   * Replaces the old token with the new token.
-   *
-   * @param {string} oldToken
-   *   the old token which should be replaced
-   * @param {string} newToken
-   *   the new token
-   * @param {boolean} [isCaseSensitive]
-   *   if true the search is case sensitive.
-   * @param {boolean} [isReverse]
-   *   if true the search will be in reverse direction.
-   * @returns {boolean}
-   *   true if the string was replaced, otherwise false.
-   */
-  replace(oldToken, newToken, isCaseSensitive, isReverse) {
-
-    // Fix optional parameters...
-    if (typeof (isCaseSensitive) === "undefined" || isCaseSensitive === null)
-      isCaseSensitive = false;
-
-    if (typeof (isReverse) === "undefined" || isReverse === null)
-      isReverse = false;
-
-    if (this.isSelected(oldToken, isCaseSensitive) === false) {
-      if (this.find(oldToken, isCaseSensitive, isReverse) === false)
-        return false;
-    }
-
-    this.cm.replaceSelection(newToken);
-
-    return true;
-  }
-
-  /**
-   * Callback handler for code mirror. Do not invoke unless you know what you are doing.
-   *
-   * @param {CodeMirror} cm
-   *   a reference to the code mirror instance
-   * @param {LineHandle} line
-   *   the current line
-   * @param {Element} element
-   *   the dom element which represents the line
-   */
-  onRenderLine(cm, line, element) {
-    const charWidth = this.cm.defaultCharWidth();
-    const basePadding = 4;
-
-    const off = CodeMirror.countColumn(line.text, null, cm.getOption("tabSize")) * charWidth;
-    element.style.textIndent = "-" + off + "px";
-    element.style.paddingLeft = (basePadding + off) + "px";
+    this.editor.focus();
   }
 
   /**
    * On Change callback handler for codemirror
    * Do not invoke unless you know what you are doing.
    */
-  onChange() {
+  onChanged() {
 
     if (this.syntaxCheckEnabled === false)
       return;
@@ -526,22 +552,6 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
     }
 
     this.timeout = setTimeout(() => { this.checkScript(); }, COMPILE_DELAY);
-  }
-
-  /**
-   * On Active Line Change callback handler for codemirror.
-   * Do not invoke unless you know what you are doing.
-   */
-  onActiveLineChange() {
-    const currentLine = this.cm.getLineHandle(this.cm.getCursor().line);
-
-    if (currentLine === this.activeLine)
-      return;
-
-    if (this.activeLine)
-      this.cm.removeLineClass(this.activeLine, "background", "activeline");
-
-    this.activeLine = this.cm.addLineClass(currentLine, "background", "activeline");
   }
 
   /**
@@ -593,11 +603,17 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
     const msg = document.querySelector("#sieve-editor-msg");
     msg.style.display = '';
 
-    const details = msg.querySelector(".sieve-editor-msg-details");
-    while (details.firstChild)
-      details.firstChild.remove();
+    // To reduce css layout complexity we have to syntax error boxes.
+    // One floating visible to the user and one invisible sticking to tbe
+    // very bottom of the page. This ensures the floating box will never
+    // overlap with floating one.
 
-    details.textContent = errors;
+    for (const details of msg.querySelectorAll(".sieve-editor-msg-details")) {
+      while (details.firstChild)
+        details.firstChild.remove();
+
+      details.textContent = errors;
+    }
   }
 
   /**
@@ -608,103 +624,110 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
   }
 
   /**
-   * Sets the editors indentation width.
+   * Called whenever the indentation strategy is changed.
    *
-   * @param {int} width
-   *   the indentation width in characters
-   * @returns {SieveEditorUI}
-   *   a self reference
+   * It reads the current settings from the ui and applies them to the editor
    */
-  async setIndentWidth(width) {
+  onIndentationChanged() {
+    let width = document.querySelector("#editor-settings-indentation-width").value;
+
     width = Number.parseInt(width, 10);
 
     if (Number.isNaN(width))
       throw new Error("Invalid Indent width");
 
-    this.cm.setOption("indentUnit", width);
-    await this.getController().setPreference("indentation-width", width);
+    if (document.querySelector("#editor-settings-indentation-policy-tabs").checked){
+      this.setIndentationUnit("\t".repeat(width));
+      return;
+    }
+
+    this.setIndentationUnit(" ".repeat(width));
+  }
+
+  /**
+   * Sets the indent unit for the editor.
+   *
+   * The indent unit is defined as a string containing either the amount of
+   * spaces or the amount of tabs which should be used for indenting one level.
+   *
+   * @param {string} unit
+   *   a string of spaces or tabs which will be used as reference when indenting
+   * @returns {SieveTextEditorUI}
+   *   a self reference
+   */
+  async setIndentationUnit(unit) {
+
+
+    if (/(^\t*$)|(^ *$)/.test(unit) === false)
+      throw new Error(`Invalid indent unit specified, needs to be either spaces or tabs`);
+
+    this.editor.dispatch({
+      effects: this.indentUnit.reconfigure(indentUnit.of(unit))
+    });
+
+    await this.getController().setPreference("indentation-unit", unit);
 
     return this;
   }
 
   /**
-   * Returns the indentation width.
+   * Returns the string used for indentation.
    *
-   * @returns {int}
-   *   the indentation width in characters.
+   * @returns {string}
+   *   a string of spaces or tab characters used as reference when indenting
    */
-  getIndentWidth() {
-    return this.cm.getOption("indentUnit");
+  getIndentationUnit() {
+    return this.indentUnit.get(this.editor.state).value;
   }
 
   /**
-   * Sets the indent policy.
+   * A Tab is a single character with a multi character width. Before rendering
+   * their real width needs to be specified and calculated. This is done by
+   * specifying the amount of spaces which are equivalent to a tab.
    *
-   * @param {boolean} useTabs
-   *   if true tabs are used for indenting otherwise spaces are used.
+   * Changing the tab width does not change any data. It just defines how tabs
+   * are rendered.
+   *
+   * @param {int} size
+   *   the tabulator width in equivalent space characters.
    * @returns {SieveEditorUI}
    *   a self reference
    */
-  async setIndentWithTabs(useTabs) {
-    this.cm.setOption("indentWithTabs", useTabs);
+  async setTabWidth(size) {
 
-    await this.getController().setPreference("indentation-policy", useTabs);
+    size = Number.parseInt(size, 10);
 
-    return this;
-  }
+    if (Number.isNaN(size))
+      throw new Error(`Invalid Tab width ${size}`);
 
-  /**
-   * Returns the indent policy.
-   *
-   * @returns {boolean}
-   *   true in case tabs are used to indent. False if spaces are used.
-   */
-  getIndentWithTabs() {
-    return this.cm.getOption("indentWithTabs");
-  }
+    this.editor.dispatch({
+      effects: this.tabSize.reconfigure(EditorState.tabSize.of(size))
+    });
 
-  /**
-   * Sets the editor's tabulator width and persists the changed value.
-   *
-   * @param {int} tabSize
-   *   the tabulator width in characters
-   * @returns {SieveEditorUI}
-   *   a self reference
-   */
-  async setTabWidth(tabSize) {
-    tabSize = Number.parseInt(tabSize, 10);
-
-    if (Number.isNaN(tabSize))
-      throw new Error(`Invalid Tab width ${tabSize}`);
-
-    this.cm.setOption("tabSize", tabSize);
-
-    await this.getController().setPreference("tabulator-width", tabSize);
+    await this.getController().setPreference("tabulator-width", size);
 
     return this;
   }
 
   /**
-   * Gets the editor's tabulator width.
+   * Gets the current tab with in equivalent space characters.
+   *
    * @returns {int}
-   *   the tabulator width in characters.
+   *   the tabulator width in as number of characters.
    */
   getTabWidth() {
-    return this.cm.getOption("tabSize");
+    return this.editor.state.tabSize;
   }
 
   /**
    * @inheritdoc
    */
   async loadSettings() {
-    const tabWidth = await this.getController().getPreference("tabulator-width");
-    await this.setTabWidth(tabWidth);
 
-    const IndentWithTabs = await this.getController().getPreference("indentation-policy");
-    await this.setIndentWithTabs(IndentWithTabs);
-
-    const indentWidth = await this.getController().getPreference("indentation-width");
-    await this.setIndentWidth(indentWidth);
+    await this.setTabWidth(
+      await this.getController().getPreference("tabulator-width"));
+    await this.setIndentationUnit(
+      await this.getController().getPreference("indentation-unit"));
 
     const syntaxCheck = await this.getController().getPreference("syntax-check");
     if (syntaxCheck === false || syntaxCheck === "false")
@@ -717,14 +740,11 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
    * @inheritdoc
    */
   async loadDefaultSettings() {
-    const tabWidth = await this.getController().getDefaultPreference("tabulator-width");
-    await this.setTabWidth(tabWidth);
 
-    const IndentWithTabs = await this.getController().getDefaultPreference("indentation-policy");
-    await this.setIndentWithTabs(IndentWithTabs);
-
-    const indentWidth = await this.getController().getDefaultPreference("indentation-width");
-    await this.setIndentWidth(indentWidth);
+    await this.setTabWidth(
+      await this.getController().getDefaultPreference("tabulator-width"));
+    await this.setIndentationUnit(
+      await this.getController().getDefaultPreference("indentation-unit"));
 
     const syntaxCheck = await this.getController().getDefaultPreference("syntax-check");
     if (syntaxCheck === false)
@@ -740,9 +760,7 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
    */
   async saveDefaultSettings() {
     await this.getController().setDefaultPreference("tabulator-width", this.getTabWidth());
-
-    await this.getController().setDefaultPreference("indentation-policy", this.getIndentWithTabs());
-    await this.getController().setDefaultPreference("indentation-width", this.getIndentWidth());
+    await this.getController().setDefaultPreference("indentation-unit", this.getIndentationUnit());
 
     await this.getController().setDefaultPreference("syntax-check", this.isSyntaxCheckEnabled());
   }

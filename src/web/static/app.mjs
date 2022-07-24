@@ -345,6 +345,10 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
       logger.logAction(`Set default value for ${name}`);
 
       await accounts.getEditor().setValue(name, value);
+    },
+
+    "open-url": async (msg) => {
+      window.open(msg.payload.data);
     }
   };
 

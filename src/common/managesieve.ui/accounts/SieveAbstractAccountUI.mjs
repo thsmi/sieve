@@ -202,6 +202,17 @@ class SieveAbstractAccountUI {
     elm
       .querySelector(".sieve-account-disconnect-server")
       .addEventListener("click", () => { this.disconnect(); });
+    elm
+      .querySelector(".sieve-account-donate")
+      .addEventListener("click", () => { this.onDonate(); });
+  }
+
+  /**
+   * Opens the donations page in the browser
+   */
+  async onDonate() {
+    const url = (new SieveTemplate()).getI18n().getString("account.donate.url");
+    this.send("open-url", url);
   }
 
   /**

@@ -20,15 +20,19 @@ const DEFAULT_PATH = "./i18n/";
 const LANGUAGES = new Set();
 LANGUAGES.add("en-US");
 LANGUAGES.add("de-DE");
-LANGUAGES.add("hu-HU");
 LANGUAGES.add("cz-CZ");
+LANGUAGES.add("nl-NL");
+LANGUAGES.add("hu-HU");
+LANGUAGES.add("ko-KR");
 
 // Maps a language to a supported language.
 const LANGUAGE_MAPPING = new Map();
 LANGUAGE_MAPPING.set("en", "en-US");
 LANGUAGE_MAPPING.set("de", "de-DE");
-LANGUAGE_MAPPING.set("hu", "hu-HU");
 LANGUAGE_MAPPING.set("cz", "cz-CZ");
+LANGUAGE_MAPPING.set("nl", "nl-NL");
+LANGUAGE_MAPPING.set("hu", "hu-HU");
+LANGUAGE_MAPPING.set("ko", "ko-KR");
 
 let instance = null;
 

@@ -16,6 +16,11 @@ const QUOTE_LENGTH = 50;
 
 // Sieve Lexer is a static class...
 
+// TODO There should be only one probe and one create method.
+// We should use a prefix to distinguish between types and unique names.
+// this.items[name] = obj;
+// this.items["@" + type][name] = obj;
+
 const SieveLexer =
 {
   types: {},
@@ -57,11 +62,6 @@ const SieveLexer =
 
     this.names[name] = obj;
     this.types[type][name] = obj;
-
-    // TODO There should be only one probe and one create method.
-    // We should use a prefix to distinguish between types and unique names.
-    // this.items[name] = obj;
-    // this.items["@" + type][name] = obj;
   },
 
   /**

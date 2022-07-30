@@ -205,8 +205,16 @@ function stringListField(key, values = "") {
   return field(key, "stringlist", values);
 }
 
+/**
+ *
+ */
 class Identifier {
 
+  /**
+   *
+   * @param {*} node
+   * @param {*} type
+   */
   constructor(node, type) {
 
     if ((typeof(type) === "undefined") || (type === null)) {
@@ -219,8 +227,15 @@ class Identifier {
 }
 
 // FIXME this is very idential with GenericCapabilities...
+/**
+ *
+ */
 class Imports {
 
+  /**
+   *
+   * @param {*} requires
+   */
   constructor(requires) {
     this.requires = null;
 
@@ -240,6 +255,10 @@ class Imports {
     return capabilities.isCapable(this.requires);
   }
 
+  /**
+   *
+   * @returns
+   */
   getImports() {
     return this.requires;
   }
@@ -270,13 +289,19 @@ function id(node, type, requires) {
   };
 }
 
-
+/**
+ *
+ * @returns
+ */
 function tokenMatcher() {
-  //return { matcher : (scope, parser, lexer) => { return parser.startsWith(scope.properties[0].token); } };
+  // return { matcher : (scope, parser, lexer) => { return parser.startsWith(scope.properties[0].token); } };
   return { matcher : (scope, parser) => { return parser.startsWith(scope.token); } };
 }
 
-
+/**
+ *
+ * @returns
+ */
 function classMatcher() {
   return { matcher : (scope, parser, lexer) => { return lexer.probeByClass(scope.items, parser); } };
 }
@@ -301,10 +326,20 @@ function token(token, postfix) {
   };
 }
 
+/**
+ *
+ * @param  {...any} items
+ * @returns
+ */
 function any(...items) {
   return { "any" : items};
 }
 
+/**
+ *
+ * @param  {...any} items
+ * @returns
+ */
 function all(...items) {
   return { "all" : items};
 }
@@ -316,6 +351,12 @@ function all(...items) {
 //   value
 //   mandatory
 
+/**
+ *
+ * @param {*} item
+ * @param {*} value
+ * @returns
+ */
 function group(item, value) {
 
   const rv = {

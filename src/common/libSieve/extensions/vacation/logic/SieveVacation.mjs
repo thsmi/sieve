@@ -19,6 +19,8 @@ import {
 
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
+const DEFAULT_DAYS = 7;
+
 SieveGrammar.addAction(
   id("action/vacation", "action", "vacation"),
 
@@ -40,7 +42,7 @@ SieveGrammar.addTag(
 
   token(":days"),
   parameters(
-    numericField("days", 7))
+    numericField("days", DEFAULT_DAYS))
 );
 
 SieveGrammar.addGroup(

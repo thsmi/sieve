@@ -49,14 +49,18 @@ class SieveDocument {
   }
 
   /**
+   * Walks the dom tree an returns all matching elements
    *
-   * @param {*} elms
-   * @param {*} name
-   * @param {*} result
+   * @param {SieveAbstractElement[]} elms
+   *   the elements which should be walked
+   * @param {string} name
+   *   the name which should be searched.
+   * @param {SieveAbstractElement[]} result
+   *   an array to which all found elements will be added.
    */
   _walk(elms, name, result) {
 
-    elms.forEach(function (item) {
+    elms.forEach( (item) => {
 
       if (item.nodeName() === name) {
         result.push(item);
@@ -68,7 +72,7 @@ class SieveDocument {
       }
 
       this._walk(item.elms, name, result);
-    }, this);
+    });
   }
 
   /**
@@ -134,12 +138,16 @@ class SieveDocument {
   }
 
   /**
+   * Creates a new element by the class name.
    *
    * @param {string|string[]} types
    *   an list with types.
    * @param {SieveParser|string} parser
    *   a parser object or a string which holds the data that should be evaluated.
-   * @param {*} parent
+   * @param {SieveAbstractElement} [parent]
+   *   the optional parent element which owns the new element.
+   * @returns {SieveAbstractElement}
+   *   the new element.
    */
   createByClass(types, parser, parent) {
     if (typeof (parser) === "string")
@@ -188,25 +196,36 @@ class SieveDocument {
   }
 
   /**
+   * Checks if the given name is supported by the lexer.
    *
    * @param {string} name
+   *   the nodeName to be checked.
+   * @returns {boolean}
+   *   true in cse the given nodeName is supported.
    */
   supportsByName(name) {
     return this._lexer.supportsByName(name);
   }
 
   /**
+   * Checks if the given type is supported by the lexer.
    *
-   * @param {*} type
+   * @param {string|string[]} type
+   *   the type(s) to be checked.
+   * @returns {boolean}
+   *   true in case the given type is supported.
    */
   supportsByClass(type) {
     return this._lexer.supportsByClass(type);
   }
 
   /**
+   * Returns the element with the given id.
    *
    * @param {string} id
-   *   the unique id
+   *   the unique id.
+   * @returns {SieveAbstractElement}
+   *   the requested element.
    */
   id(id) {
     return this._nodes[id];
@@ -257,8 +276,12 @@ class SieveDocument {
   }
 
   /**
+   * Gets or sets the documents capabilities.
    *
-   * @param {*} capabilities
+   * @param {object} [capabilities]
+   *   the optional new capabilities
+   * @returns {object}
+   *   the currently active capabilities
    */
   capabilities(capabilities) {
     if (typeof (capabilities) === "undefined")

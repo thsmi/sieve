@@ -21,15 +21,15 @@ const AFTER_BLOCK = 1;
 const BEFORE_TEST = 2;
 
 /**
- *
+ * Implements the else block of an if else statement
  */
 class SieveElse extends SieveBlock {
 
   /**
    * @inheritdoc
    */
-  constructor(docshell, id) {
-    super(docshell, id);
+  constructor(docshell, identifier) {
+    super(docshell, identifier);
 
     this.ws = [];
 
@@ -64,15 +64,15 @@ class SieveElse extends SieveBlock {
 }
 
 /**
- *
+ * Implements a n if block from an if/else statement.
  */
 class SieveIf extends SieveBlock {
 
   /**
    * @inheritdoc
    */
-  constructor(docshell, id) {
-    super(docshell, id);
+  constructor(docshell, identifier) {
+    super(docshell, identifier);
 
     this._test = null;
 
@@ -103,6 +103,7 @@ class SieveIf extends SieveBlock {
   }
 
   /**
+   * Removes the child node from the test.
    *
    * @param {string} childId
    *   the child's unique id.
@@ -201,8 +202,8 @@ class SieveCondition extends SieveBlockBody {
   /**
    * @inheritdoc
    */
-  constructor(docshell, id) {
-    super(docshell, id);
+  constructor(docshell, identifier) {
+    super(docshell, identifier);
 
     this.elms[0] = this.createByName("condition/if", "if false {\r\n}\r\n");
   }
@@ -301,4 +302,5 @@ SieveGrammar.addGeneric(
 SieveGrammar.addGeneric(
   id("condition", "condition"),
   SieveCondition,
+  // FIXME: use a token matcher
   (parser) => {return parser.startsWith("if");});

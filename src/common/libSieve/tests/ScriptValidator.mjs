@@ -33,7 +33,7 @@ if (!suite)
  *
  * @param {string} script
  *   the script to parse
- * @param {object.<string, boolean>} [capabilities]
+ * @param {Object<string, boolean>} [capabilities]
  *   optional parameter which simulates the the server's capabilities
  *
  * @returns {SieveDocument}

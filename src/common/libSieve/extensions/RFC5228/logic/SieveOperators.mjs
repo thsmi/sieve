@@ -33,8 +33,8 @@ class SieveNotOperator extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, id) {
-    super(docshell, id);
+  constructor(docshell, identifier) {
+    super(docshell, identifier);
 
     this.whiteSpace = [];
     this.whiteSpace[BEFORE_OPERATOR] = this.createByName("whitespace", " ");
@@ -71,6 +71,13 @@ class SieveNotOperator extends SieveAbstractElement {
     return this;
   }
 
+  /**
+   *
+   * @param {string} childId
+   * @param {boolean} cascade
+   * @param {SieveAbstractElement} stop
+   * @returns {SieveAbstractElement}
+   */
   removeChild(childId, cascade, stop) {
     if (!cascade)
       throw new Error("only cascade possible");
@@ -88,6 +95,14 @@ class SieveNotOperator extends SieveAbstractElement {
     return this;
   }
 
+  /**
+   * Gets or sets the not operator's test
+   *
+   * @param {SieveAbstractElement} [item]
+   *   the element which should be set.
+   * @returns {SieveAbstractElement}
+   *   the test in case of a get or a self reference in case of a set
+   */
   test(item) {
     if (typeof (item) === "undefined")
       return this._test;
@@ -163,6 +178,12 @@ class SieveAnyOfAllOfTest extends SieveTestList {
     return this;
   }
 
+  /**
+   *
+   * @param {*} item
+   * @param {*} old
+   * @returns
+   */
   test(item, old) {
     if (typeof (item) === "undefined") {
       if (this.tests.length === 1)
@@ -218,4 +239,3 @@ SieveGrammar.addGeneric(
     return false;
   }
 );
-

@@ -51,16 +51,13 @@ class SieveAbstractGeneric {
     return this.item.matcher(this.item, parser, lexer);
   }
 
-  // FIXME: the item strucure should be mapped automatically
-  // when defining an optional we know that we need to call addOptionalItem.
-  // Same applies to dependent and mandatory. THus looping though
-  // smarter properties should simplify the  implementation dramatically.
-
   /**
+   * Creates a new instance.
    *
-   * @param {*} docshell
+   * @param {SieveDocument} docshell
+   *   a reference to the parent document which owns this element.
    * @param {string} id
-   *   the elements uniquer id.
+   *   the elements uniquer id assigned by the document.
    *
    * @returns {SieveAbstractElement}
    *   the new element.
@@ -186,9 +183,15 @@ function addAction(id, token, ...properties) {
 
 
 /**
+ * Registers a new tag specification.
  *
- * @param {*} item
- *
+ * @param {Identifier} id
+ *   the test's unique identifier containing the name, type and
+ *   the optionally required imports
+ * @param {Token} token
+ *   token which identifiers this test.
+ * @param {...Fields} properties
+ *   the optional test properties in order of their precedence.
  */
 function addTest(id, token, ...properties) {
   // Ensure the item has a valid structure...
@@ -263,11 +266,9 @@ function addGroup(id, ...options) {
 
 
 /**
- *
- * @param {*} capabilities
+ * Initializes the lexer with the grammar rules.
  */
-// eslint-disable-next-line no-unused-vars
-function createGrammar(capabilities) {
+function createGrammar() {
 
   for (const item of dictionary.values()) {
     SieveLexer.registerGeneric(
@@ -276,15 +277,12 @@ function createGrammar(capabilities) {
   }
 
   // todo we should return a lexer so that the grammar is scoped.
-  // but this is fare future
-  return null;
 }
 
 /**
  *
  * @param {*} action
  * @param {*} item
- *
  *
  */
 function extendGenericProperty(action, item) {
@@ -312,7 +310,6 @@ function extendGenericProperty(action, item) {
 
 /**
  *
- * @param {*} generics
  * @param {*} item
  *
  */
@@ -336,21 +333,42 @@ function extendGeneric(item) {
   }
 }
 
+/**
+ *
+ */
+class GenericElement{
 
-class GenericList{
+  /**
+   *
+   * @param {*} id
+   * @param {*} clazz
+   * @param {*} matcher
+   */
   constructor(id, clazz, matcher) {
     this.clazz = clazz;
     this.matcher = matcher;
     this.id = id;
   }
 
+  /**
+   *
+   * @param {*} parser
+   * @param {*} lexer
+   * @returns
+   */
   onProbe(parser, lexer) {
-    if (this.matcher == null)
+    if ((typeof(this.matcher) === "undefined") || (this.matcher === null))
       return false;
 
     return this.matcher(parser, lexer);
   }
 
+  /**
+   *
+   * @param {*} docshell
+   * @param {*} id
+   * @returns
+   */
   onNew(docshell, id) {
     const instance = new this.clazz(docshell, id);
 
@@ -361,21 +379,23 @@ class GenericList{
     return instance;
   }
 
-  onCapable(capabilities) {
+  onCapable() {
     // TODO: Read capabilities from id element....
     return true;
   }
 }
 
-
-
+/**
+ *
+ * @param {*} id
+ * @param {*} initializer
+ * @param {*} matcher
+ */
 function addGeneric(id, initializer, matcher) {
 
   SieveLexer.registerGeneric(id.id.node, id.id.type,
-    new GenericList(id.id, initializer, matcher));
-
+    new GenericElement(id.id, initializer, matcher));
 }
-
 
 const SieveGrammar = {};
 

@@ -38,11 +38,12 @@ class SieveAbstractElement {
    * A shorthand to document().createByName()
    *
    * @param {string} name
-   *   the element's name which should be created
+   *   the element's unique nodeName which should be created.
    * @param {string|SieveParser} parser
-   *   a sieve script parser or a string
+   *   a sieve script parser or a string.
+   *
    * @returns {SieveAbstractElement}
-   *   the newly generated element
+   *   the newly generated element.
    */
   createByName(name, parser) {
     return this.document().createByName(name, parser, this);
@@ -55,7 +56,8 @@ class SieveAbstractElement {
    * @param {string|string[]} types
    *   the the types which are acceptable.
    * @param {string|SieveParser} parser
-   *   the data which should be parsed
+   *   the data which should be tested.
+   *
    * @returns {SieveAbstractElement}
    *   the newly generated element.
    */
@@ -63,10 +65,32 @@ class SieveAbstractElement {
     return this.document().createByClass(types, parser, this);
   }
 
+  /**
+   * Tests if the data can be parsed by the given element.
+   *
+   * @param {string} name
+   *   the element's unique node name which should be tested.
+   * @param {string|SieveParser} parser
+   *   a sieve script parser or a string which should be tested.
+   *
+   * @returns {boolean}
+   *   true in case the data can be parsed.
+   */
   probeByName(name, parser) {
     return this.document().probeByName(name, parser);
   }
 
+  /**
+   * Tests if the data can be parsed yb the given type.
+   *
+   * @param {string|string[]} types
+   *   the types which should be tests.
+   * @param {string|SieveParser} parser
+   *   the data which should be tested.
+   *
+   * @returns {boolean}
+   *   true in case the data can be parsed.
+   */
   probeByClass(types, parser) {
     return this.document().probeByClass(types, parser);
   }
@@ -108,6 +132,7 @@ class SieveAbstractElement {
 
   /**
    * Converts the element into a sieve script
+   * @abstract
    *
    * @returns {string}
    *   the elements representation in sieve
@@ -128,6 +153,11 @@ class SieveAbstractElement {
     return this._widget;
   }
 
+  /**
+   *
+   * @param {boolean} refresh
+   * @returns
+   */
   html(refresh) {
     if (typeof (refresh) !== "undefined")
       if (refresh)
@@ -169,6 +199,14 @@ class SieveAbstractElement {
     return this._docshell.id(id);
   }
 
+  /**
+   * Gets or sets the element's parent.
+   *
+   * @param {SieveAbstractElement} [parent]
+   *   the optional new parent.
+   * @returns {SieveAbstractElement}
+   *   the parent element.
+   */
   parent(parent) {
     if (typeof (parent) === "undefined")
       return this._parent;
@@ -178,15 +216,13 @@ class SieveAbstractElement {
     return this;
   }
 
+  /**
+   *
+   * @param {*} imports
+   */
   // eslint-disable-next-line no-unused-vars
   require(imports) {
   }
-
-  // TODO only temporary, should be merged into remove...
-  /* removeChild()
-  {
-    throw "Implement SieveAbstractElement.removeChild";
-  }*/
 
   /**
    * Removes this node from the parent Node.

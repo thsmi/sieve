@@ -33,14 +33,18 @@ addGroup(
 
 /**
  *
- * @param {*} docshell
+ * @param {SieveDocument} docshell
+ *   the document which owns the block.
  * @param {string} id
  *   the blocks unique id.
  */
 class SieveBlockBody extends SieveAbstractElement {
 
-  constructor(docshell, id) {
-    super(docshell, id);
+  /**
+   * @inheritdoc
+   */
+  constructor(docshell, identifier) {
+    super(docshell, identifier);
     this.elms = [];
   }
 
@@ -67,6 +71,16 @@ class SieveBlockBody extends SieveAbstractElement {
     return str;
   }
 
+  /**
+   * Returns the blocks child elements.
+   *
+   * @param {int|string} [idx]
+   *   optional index of a child element, either as number or
+   *   ":last" to address the last element.
+   *
+   * @returns {SieveElement|SieveElement[]}
+   *   all children the selected child element if specified.
+   */
   children(idx) {
     if (typeof (idx) === "undefined")
       return this.elms;
@@ -78,7 +92,8 @@ class SieveBlockBody extends SieveAbstractElement {
   }
 
   /**
-   * Appends an Element to this Element. If the element is already existent, it will be moved
+   * Appends an Element to this Element.
+   * If the element is already existent,it will be moved.
    *
    * @param {SieveElement} elm
    *   the element that should be appended
@@ -108,16 +123,19 @@ class SieveBlockBody extends SieveAbstractElement {
   }
 
   // TODO Merge with "remove" when its working as it should
+
   /**
-  * Removes the node including all child elements.
-  *
-  * To remove just a child node pass it's id as an argument
-  *
-  * @param {int} [childId]
-  *  the child id which should be removed.
-  *
-  * @returns {}
-  */
+   * Removes the node including all child elements.
+   *
+   * To remove just a child node pass it's id as an argument
+   *
+   * @param {int} childId
+   *  the child id which should be removed.
+   * @param {boolean} [cascade]
+   * @param {} [stop]
+   *
+   * @returns {SieveAbstractElement}
+   */
   removeChild(childId, cascade, stop) {
     // should we remove the whole node
     if (typeof (childId) === "undefined")
@@ -148,6 +166,12 @@ class SieveBlockBody extends SieveAbstractElement {
     return elm;
   }
 
+  /**
+   * Checks if the block is empty
+   *
+   * @returns {boolean}
+   *   true in case the block is empty otherwise false.
+   */
   empty() {
     // The direct descendants of our root node are always considered as
     // not empty. Otherwise cascaded remove would wipe them away.
@@ -162,8 +186,8 @@ class SieveBlockBody extends SieveAbstractElement {
   }
 
   /**
-  * @inheritdoc
-  */
+   * @inheritdoc
+   */
   require(imports) {
 
     for (const elm of this.elms) {
@@ -180,10 +204,7 @@ class SieveBlockBody extends SieveAbstractElement {
 
 
 /**
- *
- * @param {*} docshell
- * @param {string} id
- *   the blocks unique id.
+ * Implements a sieve block starting with "{" and closing with "}"
  */
 class SieveBlock extends SieveBlockBody {
 
@@ -215,13 +236,13 @@ const ROOT_ELEMENT_BODY = 1;
 const UNKNOWN_ID = -1;
 
 /**
- *
+ * Implements the documents root node which consists of the import section
+ * followed by the root block.
  */
 class SieveRootNode extends SieveBlockBody {
 
   /**
-   *
-   * @param {*} docshell
+   * @inheritdoc
    */
   constructor(docshell) {
 
@@ -282,11 +303,19 @@ SieveGrammar.addGeneric(
 
   SieveBlock,
   // FIXME: use a token matcher
-  (parser) => { return parser.isChar("{"); });
+  (parser) => { return parser.isChar("{"); }
+  // token("{")
+  // any(["action", "condition", "whitespace"])
+);
 
 SieveGrammar.addGeneric(
   id("block/rootnode", "block/"),
-  SieveRootNode);
+  SieveRootNode
+  //  optional(property("import", "import")),
+  //  property("body", "block/body"))
+);
+
+
 
 export {
   SieveBlockBody,

@@ -12,7 +12,7 @@
 
 import {
   tags, tag, id, token, all, optional,
-  parameters, stringListField, stringField, optionals, fields
+  parameters, stringListField, stringField, optionals
 } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 

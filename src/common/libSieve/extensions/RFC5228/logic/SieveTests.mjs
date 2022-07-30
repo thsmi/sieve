@@ -12,15 +12,10 @@
 
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 import { SieveAbstractElement } from "./../../../toolkit/logic/AbstractElements.mjs";
-import { SieveLexer } from "./../../../toolkit/SieveLexer.mjs";
 import {
   tags, tag, id, token,
   parameters, stringListField, field
 } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
-
-const LEADING_WHITESPACE = 0;
-const TEST = 1;
-const TAILING_WHITESPACE = 2;
 
 SieveGrammar.addTest(
   id("test/envelope", "test", "envelope"),
@@ -119,7 +114,10 @@ SieveGrammar.addTest(
     field("limit", "number"))
 );
 
-// TODO Stringlist and testslist are quite similar
+
+const LEADING_WHITESPACE = 0;
+const TEST = 1;
+const TAILING_WHITESPACE = 2;
 
 /**
  * Implements a list with tests.
@@ -129,8 +127,8 @@ class SieveTestList extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, id) {
-    super(docshell, id);
+  constructor(docshell, identifier) {
+    super(docshell, identifier);
     this.tests = [];
   }
 
@@ -166,6 +164,18 @@ class SieveTestList extends SieveAbstractElement {
     return this;
   }
 
+  /**
+   * Adds a new test to the test list.
+   *
+   *  @param {SieveAbstractElement} elm
+   *   the test which should be added.
+   * @param {SieveAbstractElement} [sibling]
+   *   the after which the element should be added, if omitted it will
+   *   be added to the end.
+   *
+   * @returns {SieveTestList}
+   *   a self reference
+   */
   append(elm, sibling) {
     let element = [];
 
@@ -202,6 +212,12 @@ class SieveTestList extends SieveAbstractElement {
     return this;
   }
 
+  /**
+   * Checks if the element is empty.
+   *
+   * @returns {boolean}
+   *   if the element is empty otherwise false.
+   */
   empty() {
     // The direct descendants of our root node are always considered as
     // not empty. Otherwise cascaded remove would wipe them away.
@@ -215,6 +231,13 @@ class SieveTestList extends SieveAbstractElement {
     return true;
   }
 
+  /**
+   *
+   * @param {id} childId
+   * @param {boolean} cascade
+   * @param {SieveAbstractElement} stop
+   * @returns {SieveAbstractElement}
+   */
   removeChild(childId, cascade, stop) {
     // should we remove the whole node
     if (typeof (childId) === "undefined")

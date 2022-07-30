@@ -1303,6 +1303,8 @@ class SieveExplicitGroupElement extends SieveImplicitGroupElement {
   }
 
   /**
+   * Gets the child element with the given id.
+   *
    * @param {string} [id]
    *   an optional id of the child element to get
    * @returns {SieveAbstractElement}

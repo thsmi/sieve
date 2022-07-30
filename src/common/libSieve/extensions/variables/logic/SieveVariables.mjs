@@ -10,7 +10,7 @@
  *
  */
 
-import { group, parameters, stringField, tags, tag, stringListField, id, token } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+import { parameters, stringField, tags, tag, stringListField, id, token } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 // set [MODIFIER] <name: string> <value: string>

@@ -10,10 +10,10 @@
  *
  */
 
+import { SieveBlockBody } from "./SieveBlocks.mjs";
+
 import { parameters, stringListField, id, token } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
-import { SieveLexer } from "./../../../toolkit/SieveLexer.mjs";
-import { SieveBlockBody } from "./SieveBlocks.mjs";
 
 SieveGrammar.addAction(
   id("import/require", "import/"),
@@ -21,7 +21,6 @@ SieveGrammar.addAction(
   parameters(
     stringListField("capabilities"))
 );
-
 
 /**
  *
@@ -31,32 +30,11 @@ class SieveBlockImport extends SieveBlockBody {
   /**
    * @inheritdoc
    */
-  static isElement(parser, lexer) {
-    return lexer.probeByClass(["import/", "whitespace"], parser);
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeName() {
-    return "import";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeType() {
-    return "import";
-  }
-
-  /**
-   * @inheritdoc
-   */
   init(parser) {
     // The import section consists of require and deadcode statements...
-    while (this._probeByClass(["import/", "whitespace"], parser))
+    while (this.probeByClass(["import/", "whitespace"], parser))
       this.elms.push(
-        this._createByClass(["import/", "whitespace"], parser));
+        this.createByClass(["import/", "whitespace"], parser));
 
     // check if the imports are valid
     for (const item of this.elms) {
@@ -115,7 +93,7 @@ class SieveBlockImport extends SieveBlockBody {
       last = item;
     }
 
-    const elm = this.document().createByName("import/require");
+    const elm = this.createByName("import/require");
     elm.getElement("capabilities").values(require);
 
     this.append(elm, last);
@@ -124,5 +102,9 @@ class SieveBlockImport extends SieveBlockBody {
   }
 }
 
-SieveLexer.register(SieveBlockImport);
+SieveGrammar.addGeneric(
+  id("import", "import"),
+  SieveBlockImport,
+  // FIXME: use a calls matcher.
+  (parser, lexer) => { return lexer.probeByClass(["import/", "whitespace"], parser); });
 

@@ -122,34 +122,22 @@ SieveGrammar.addTest(
 // TODO Stringlist and testslist are quite similar
 
 /**
- *
- * @param {*} docshell
- * @param {string} id
- *   the test lists unique id.
+ * Implements a list with tests.
  */
-function SieveTestList(docshell, id) {
-  SieveAbstractElement.call(this, docshell, id);
-  this.tests = [];
-}
+class SieveTestList extends SieveAbstractElement {
 
-SieveTestList.prototype = Object.create(SieveAbstractElement.prototype);
-SieveTestList.prototype.constructor = SieveTestList;
+  /**
+   * @inheritdoc
+   */
+  constructor(docshell, id) {
+    super(docshell, id);
+    this.tests = [];
+  }
 
-// eslint-disable-next-line no-unused-vars
-SieveTestList.isElement = function (parser, lexer) {
-  return parser.isChar("(");
-};
-
-SieveTestList.nodeName = function () {
-  return "test/testlist";
-};
-
-SieveTestList.nodeType = function () {
-  return "test/";
-};
-
-SieveTestList.prototype.init
-  = function (parser) {
+  /**
+   * @inheritdoc
+   */
+  init(parser) {
     this.tests = [];
 
     parser.extractChar("(");
@@ -160,14 +148,14 @@ SieveTestList.prototype.init
 
       const element = [];
 
-      element[LEADING_WHITESPACE] = this._createByName("whitespace");
-      if (this._probeByName("whitespace", parser))
+      element[LEADING_WHITESPACE] = this.createByName("whitespace");
+      if (this.probeByName("whitespace", parser))
         element[LEADING_WHITESPACE].init(parser);
 
-      element[TEST] = this._createByClass(["test", "operator"], parser);
+      element[TEST] = this.createByClass(["test", "operator"], parser);
 
-      element[TAILING_WHITESPACE] = this._createByName("whitespace");
-      if (this._probeByName("whitespace", parser))
+      element[TAILING_WHITESPACE] = this.createByName("whitespace");
+      if (this.probeByName("whitespace", parser))
         element[TAILING_WHITESPACE].init(parser);
 
       this.tests.push(element);
@@ -176,17 +164,16 @@ SieveTestList.prototype.init
     parser.extractChar(")");
 
     return this;
-  };
+  }
 
-SieveTestList.prototype.append
-  = function (elm, sibling) {
+  append(elm, sibling) {
     let element = [];
 
     switch ([].concat(elm).length) {
       case 1:
-        element[LEADING_WHITESPACE] = this._createByName("whitespace", "\r\n");
+        element[LEADING_WHITESPACE] = this.createByName("whitespace", "\r\n");
         element[TEST] = elm;
-        element[TAILING_WHITESPACE] = this._createByName("whitespace");
+        element[TAILING_WHITESPACE] = this.createByName("whitespace");
         break;
 
       case 3:
@@ -213,10 +200,9 @@ SieveTestList.prototype.append
     elm.parent(this);
 
     return this;
-  };
+  }
 
-SieveTestList.prototype.empty
-  = function () {
+  empty() {
     // The direct descendants of our root node are always considered as
     // not empty. Otherwise cascaded remove would wipe them away.
     if (this.document().root() === this.parent())
@@ -227,14 +213,13 @@ SieveTestList.prototype.empty
         return false;
 
     return true;
-  };
+  }
 
-SieveTestList.prototype.removeChild
-  = function (childId, cascade, stop) {
+  removeChild(childId, cascade, stop) {
     // should we remove the whole node
     if (typeof (childId) === "undefined")
       throw new Error("Child ID Missing");
-    // return SieveAbstractElement.prototype.remove.call(this);
+    // return super.removet();
 
     // ... or just a child item
     let elm = null;
@@ -259,11 +244,12 @@ SieveTestList.prototype.removeChild
       return this;
 
     return elm;
-  };
+  }
 
-
-SieveTestList.prototype.toScript
-  = function () {
+  /**
+   * @inheritdoc
+   */
+  toScript() {
     let result = "(";
 
     for (let i = 0; i < this.tests.length; i++) {
@@ -277,14 +263,21 @@ SieveTestList.prototype.toScript
     result += ")";
 
     return result;
-  };
+  }
 
-SieveTestList.prototype.require
-  = function (imports) {
+  /**
+   * @inheritdoc
+   */
+  require(imports) {
     for (let i = 0; i < this.tests.length; i++)
       this.tests[i][TEST].require(imports);
-  };
+  }
+}
 
-SieveLexer.register(SieveTestList);
+
+SieveGrammar.addGeneric(
+  id("test/testlist", "test/"),
+  SieveTestList,
+  (parser) => { return parser.isChar("("); });
 
 export { SieveTestList };

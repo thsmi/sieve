@@ -68,6 +68,9 @@ class SieveAbstractGeneric {
   onNew(docshell, id) {
     const element = new SieveGenericStructure(docshell, id, this.item.id.node);
 
+    // FIXME: The token should be the first property. The properties matcher
+    // should check if the first property exists.
+
     element
       .addLiteral(this.item.token)
       .addRequirements(this.item.requires.getImports());
@@ -244,10 +247,10 @@ function addGroup(id, ...options) {
     ...SieveGrammarHelper.classMatcher()
   };
 
+  definition["items"] = [`${definition.id.node}/`];
+
   for (const option of options)
     definition = { ...definition, ...option };
-
-  definition["items"] = [`${definition.id.node}/`];
 
   if (definition.id.node === null || typeof (definition.id.node) === 'undefined')
     throw new Error("Node expected but not found");
@@ -257,7 +260,6 @@ function addGroup(id, ...options) {
     new SieveGenericGroup(definition));
 
 }
-
 
 
 /**
@@ -335,6 +337,46 @@ function extendGeneric(item) {
 }
 
 
+class GenericList{
+  constructor(id, clazz, matcher) {
+    this.clazz = clazz;
+    this.matcher = matcher;
+    this.id = id;
+  }
+
+  onProbe(parser, lexer) {
+    if (this.matcher == null)
+      return false;
+
+    return this.matcher(parser, lexer);
+  }
+
+  onNew(docshell, id) {
+    const instance = new this.clazz(docshell, id);
+
+    // Fixme remove this ugly hack.
+    instance["nodeName"] = () => { return this.id.node; };
+    instance["nodeType"] = () => { return this.id.type; };
+
+    return instance;
+  }
+
+  onCapable(capabilities) {
+    // TODO: Read capabilities from id element....
+    return true;
+  }
+}
+
+
+
+function addGeneric(id, initializer, matcher) {
+
+  SieveLexer.registerGeneric(id.id.node, id.id.type,
+    new GenericList(id.id, initializer, matcher));
+
+}
+
+
 const SieveGrammar = {};
 
 SieveGrammar.addAction = addAction;
@@ -346,5 +388,7 @@ SieveGrammar.extendAction = extendGeneric;
 SieveGrammar.extendTest = extendGeneric;
 
 SieveGrammar.create = createGrammar;
+
+SieveGrammar.addGeneric = addGeneric;
 
 export { SieveGrammar };

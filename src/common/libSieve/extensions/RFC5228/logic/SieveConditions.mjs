@@ -10,8 +10,11 @@
  *
  */
 
-import { SieveLexer } from "./../../../toolkit/SieveLexer.mjs";
 import { SieveBlock, SieveBlockBody } from "./SieveBlocks.mjs";
+
+import { SieveGrammar } from "../../../toolkit/logic/GenericElements.mjs";
+import { id } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+
 
 const BEFORE_BLOCK = 0;
 const AFTER_BLOCK = 1;
@@ -30,30 +33,8 @@ class SieveElse extends SieveBlock {
 
     this.ws = [];
 
-    this.ws[BEFORE_BLOCK] = this._createByName("whitespace", "\r\n");
-    this.ws[AFTER_BLOCK] = this._createByName("whitespace", "\r\n");
-  }
-
-  /**
-   * @inheritdoc
-   */
-  // eslint-disable-next-line no-unused-vars
-  static isElement(parser, lexer) {
-    return parser.startsWith("else");
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeName() {
-    return "condition/else";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeType() {
-    return "condition/";
+    this.ws[BEFORE_BLOCK] = this.createByName("whitespace", "\r\n");
+    this.ws[AFTER_BLOCK] = this.createByName("whitespace", "\r\n");
   }
 
   /**
@@ -82,7 +63,6 @@ class SieveElse extends SieveBlock {
   }
 }
 
-
 /**
  *
  */
@@ -97,31 +77,9 @@ class SieveIf extends SieveBlock {
     this._test = null;
 
     this.ws = [];
-    this.ws[BEFORE_TEST] = this._createByName("whitespace");
-    this.ws[BEFORE_BLOCK] = this._createByName("whitespace", "\r\n");
-    this.ws[AFTER_BLOCK] = this._createByName("whitespace", "\r\n");
-  }
-
-  /**
-   * @inheritdoc
-   */
-  // eslint-disable-next-line no-unused-vars
-  static isElement(parser, lexer) {
-    return parser.startsWith("if");
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeName() {
-    return "condition/if";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeType() {
-    return "condition/";
+    this.ws[BEFORE_TEST] = this.createByName("whitespace");
+    this.ws[BEFORE_BLOCK] = this.createByName("whitespace", "\r\n");
+    this.ws[AFTER_BLOCK] = this.createByName("whitespace", "\r\n");
   }
 
   /**
@@ -132,7 +90,7 @@ class SieveIf extends SieveBlock {
 
     this.ws[BEFORE_TEST].init(parser);
 
-    this._test = this._createByClass(["test", "operator"], parser);
+    this._test = this.createByClass(["test", "operator"], parser);
 
     this.ws[BEFORE_BLOCK].init(parser);
 
@@ -246,28 +204,7 @@ class SieveCondition extends SieveBlockBody {
   constructor(docshell, id) {
     super(docshell, id);
 
-    this.elms[0] = this._createByName("condition/if", "if false {\r\n}\r\n");
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static isElement(parser, lexer) {
-    return SieveIf.isElement(parser, lexer);
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeName() {
-    return "condition";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeType() {
-    return "condition";
+    this.elms[0] = this.createByName("condition/if", "if false {\r\n}\r\n");
   }
 
   /**
@@ -275,18 +212,18 @@ class SieveCondition extends SieveBlockBody {
    */
   init(parser) {
 
-    this.elms[0] = this._createByName("condition/if", parser);
+    this.elms[0] = this.createByName("condition/if", parser);
 
     while (parser.startsWith("elsif")) {
       parser.extract("els");
 
       this.elms.push(
-        this._createByName("condition/if", parser));
+        this.createByName("condition/if", parser));
 
     }
 
-    if (this._probeByName("condition/else", parser))
-      this.elms.push(this._createByName("condition/else", parser));
+    if (this.probeByName("condition/else", parser))
+      this.elms.push(this.createByName("condition/else", parser));
 
     return this;
   }
@@ -349,6 +286,19 @@ class SieveCondition extends SieveBlockBody {
   }
 }
 
-SieveLexer.register(SieveIf);
-SieveLexer.register(SieveElse);
-SieveLexer.register(SieveCondition);
+SieveGrammar.addGeneric(
+  id("condition/if", "condition/"),
+  SieveIf,
+  (parser) => { return parser.startsWith("if"); });
+
+SieveGrammar.addGeneric(
+  id("condition/else", "condition/"),
+
+  SieveElse,
+  // FIXME: use a token matcher
+  (parser) => { return parser.startsWith("else"); });
+
+SieveGrammar.addGeneric(
+  id("condition", "condition"),
+  SieveCondition,
+  (parser) => {return parser.startsWith("if");});

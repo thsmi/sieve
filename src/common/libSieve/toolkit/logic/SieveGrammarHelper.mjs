@@ -272,7 +272,8 @@ function id(node, type, requires) {
 
 
 function tokenMatcher() {
-  return { matcher : (scope, parser, lexer) => { return parser.startsWith(scope.token); } };
+  //return { matcher : (scope, parser, lexer) => { return parser.startsWith(scope.properties[0].token); } };
+  return { matcher : (scope, parser) => { return parser.startsWith(scope.token); } };
 }
 
 
@@ -330,6 +331,7 @@ function group(item, value) {
 export {
   any, all,
   id, token, group, optional,
-  fields, optionals, parameters, tags, classMatcher,
+  fields, optionals, parameters, tags,
+  classMatcher, tokenMatcher,
   field, numericField, stringField, stringListField, tag, Identifier, Imports
 };

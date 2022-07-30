@@ -12,7 +12,9 @@
 
 import { SieveParser } from "./../../../toolkit/SieveParser.mjs";
 import { SieveAbstractElement } from "./../../../toolkit/logic/AbstractElements.mjs";
-import { SieveLexer } from "./../../../toolkit/SieveLexer.mjs";
+
+import { SieveGrammar } from "../../../toolkit/logic/GenericElements.mjs";
+import { id } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 
 // ToDo HashComment separated by line breaks are equivalent to bracket Comments...
 
@@ -20,28 +22,6 @@ import { SieveLexer } from "./../../../toolkit/SieveLexer.mjs";
  *
  */
 class SieveLineBreak extends SieveAbstractElement {
-
-  /**
-   * @inheritdoc
-   */
-  // eslint-disable-next-line no-unused-vars
-  static isElement(parser, lexer) {
-    return parser.startsWith("\r\n");
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeName() {
-    return "whitespace/linebreak";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeType() {
-    return "whitespace/";
-  }
 
   /**
    * @inheritdoc
@@ -75,28 +55,6 @@ class SieveDeadCode extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  // eslint-disable-next-line no-unused-vars
-  static isElement(parser, lexer) {
-    return (parser.isChar([" ", "\t"]));
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeName() {
-    return "whitespace/deadcode";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeType() {
-    return "whitespace/";
-  }
-
-  /**
-   * @inheritdoc
-   */
   init(parser) {
     this.whiteSpace = parser.extractToken([" ", "\t"]);
 
@@ -124,28 +82,6 @@ class SieveBracketComment extends SieveAbstractElement {
   constructor(docshell, id) {
     super(docshell, id);
     this.text = "";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  // eslint-disable-next-line no-unused-vars
-  static isElement(parser, lexer) {
-    return parser.startsWith("/*");
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeName() {
-    return "comment/bracketcomment";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeType() {
-    return "comment";
   }
 
   /**
@@ -184,28 +120,6 @@ class SieveHashComment extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  // eslint-disable-next-line no-unused-vars
-  static isElement(parser, lexer) {
-    return parser.isChar("#");
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeName() {
-    return "comment/hashcomment";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeType() {
-    return "comment";
-  }
-
-  /**
-   * @inheritdoc
-   */
   init(parser) {
     parser.extract("#");
 
@@ -237,27 +151,6 @@ class SieveWhiteSpace extends SieveAbstractElement {
   constructor(docshell, id) {
     super(docshell, id);
     this.elements = [];
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static isElement(parser, lexer) {
-    return lexer.probeByClass(["whitespace/", "comment"], parser);
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeName() {
-    return "whitespace";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeType() {
-    return "whitespace";
   }
 
   /**
@@ -307,12 +200,12 @@ class SieveWhiteSpace extends SieveAbstractElement {
     this.elements = [];
 
     // After the import section only deadcode and actions are valid
-    while (this._probeByClass(["whitespace/", "comment"], parser)) {
+    while (this.probeByClass(["whitespace/", "comment"], parser)) {
       // Check for CRLF...
-      if (crlf && this._probeByName("whitespace/linebreak", parser))
+      if (crlf && this.probeByName("whitespace/linebreak", parser))
         isCrlf = true;
 
-      this.elements.push(this._createByClass(["whitespace/", "comment"], parser));
+      this.elements.push(this.createByClass(["whitespace/", "comment"], parser));
 
       // break if we found a CRLF
       if (isCrlf)
@@ -334,9 +227,29 @@ class SieveWhiteSpace extends SieveAbstractElement {
   }
 }
 
-SieveLexer.register(SieveLineBreak);
-SieveLexer.register(SieveDeadCode);
-SieveLexer.register(SieveBracketComment);
-SieveLexer.register(SieveHashComment);
 
-SieveLexer.register(SieveWhiteSpace);
+SieveGrammar.addGeneric(
+  id("whitespace/linebreak", "whitespace/"),
+  SieveLineBreak,
+  (parser) => { return parser.startsWith("\r\n"); });
+
+SieveGrammar.addGeneric(
+  id("whitespace/deadcode", "whitespace/"),
+  SieveDeadCode,
+  (parser) => { return (parser.isChar([" ", "\t"])); });
+
+SieveGrammar.addGeneric(
+  id("comment/bracketcomment", "comment"),
+  SieveBracketComment,
+  (parser) => { return parser.startsWith("/*"); } );
+
+SieveGrammar.addGeneric(
+  id("comment/hashcomment", "comment"),
+  SieveHashComment,
+  (parser) => { return parser.isChar("#"); });
+
+SieveGrammar.addGeneric(
+  id("whitespace", "whitespace"),
+  SieveWhiteSpace,
+  (parser, lexer) => { return lexer.probeByClass(["whitespace/", "comment"], parser); }
+);

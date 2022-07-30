@@ -64,40 +64,6 @@ const SieveLexer =
     // this.items["@" + type][name] = obj;
   },
 
-  register: function (callback) {
-    if (!callback.nodeType)
-      throw new Error("Lexer Error: Registration failed, element has no type");
-
-    const type = callback.nodeType();
-
-    if (!callback.nodeName)
-      throw new Error("Lexer Error: Registration failed, element has no name");
-
-    const name = callback.nodeName();
-
-    if (!callback.isElement)
-      throw new Error("Lexer Error: isElement function for " + name + " missing");
-
-    if (typeof (this.types[type]) === 'undefined')
-      this.types[type] = {};
-
-    const obj = {};
-    obj.name = name;
-    obj.onProbe = function (token, doc) { return callback.isElement(token, doc); };
-    obj.onNew = function (docshell, id) { return new callback(docshell, id); };
-    obj.onCapable = function (capabilities) {
-
-      // FIXME: does not work with ES5 static... needs a callback.constructor.isCapable
-      if (!callback.isCapable)
-        return true;
-
-      return callback.isCapable(capabilities);
-    };
-
-    this.names[name] = obj;
-    this.types[type][name] = obj;
-  },
-
   /**
    * Gets the constructor for the given types and probes if the token can
    * be consumed by the element.
@@ -124,10 +90,20 @@ const SieveLexer =
     for (let type in types) {
       type = types[type];
 
-      for (const key in this.types[type])
-        if (this.types[type][key].onCapable(this._capabilities))
-          if (this.types[type][key].onProbe(token, this))
-            return this.types[type][key];
+      for (const key in this.types[type]) {
+
+        if (!(this.types[type][key].onCapable(this._capabilities)))
+          continue;
+
+        const result = this.types[type][key].onProbe(token, this);
+        if (typeof(result) !== "boolean")
+          throw new Error("onProbe did not return a boolean");
+
+        if (!result)
+          continue;
+
+        return this.types[type][key];
+      }
     }
 
     return null;

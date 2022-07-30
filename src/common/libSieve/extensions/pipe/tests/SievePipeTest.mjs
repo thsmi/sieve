@@ -92,6 +92,21 @@ suite.add("Pipe Example V", () => {
   suite.expectValidScript(script, ["vnd.dovecot.filter", "fileinto"]);
 });
 
+suite.add("Pipe Example Va", () => {
+
+  const script = ''
+    + 'require [ "vnd.dovecot.filter", "fileinto" ];\r\n'
+    + '\r\n'
+    + 'if header "content-language" "nl"\r\n'
+    + '{\r\n'
+    + '  filter "translator";\r\n'
+    + '  fileinto "Translated";\r\n'
+    + '  stop;\r\n'
+    + '}\r\n';
+
+  suite.expectValidScript(script, ["vnd.dovecot.filter", "fileinto"]);
+});
+
 suite.add("Pipe Example VI", () => {
 
   const script = ''
@@ -100,6 +115,23 @@ suite.add("Pipe Example VI", () => {
     + 'if header "content-language" "nl"\r\n'
     + '{\r\n'
     + '  if filter "translator" ["nl", "en"]\r\n'
+    + '  {\r\n'
+    + '    fileinto "Translated";\r\n'
+    + '    stop;\r\n'
+    + '  }\r\n'
+    + '}\r\n';
+
+  suite.expectValidScript(script, ["vnd.dovecot.filter", "fileinto"]);
+});
+
+suite.add("Pipe Example VIa", () => {
+
+  const script = ''
+    + 'require [ "vnd.dovecot.filter", "fileinto" ];\r\n'
+    + '\r\n'
+    + 'if header "content-language" "nl"\r\n'
+    + '{\r\n'
+    + '  if filter "translator"\r\n'
     + '  {\r\n'
     + '    fileinto "Translated";\r\n'
     + '    stop;\r\n'

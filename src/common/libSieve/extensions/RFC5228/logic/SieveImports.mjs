@@ -10,25 +10,17 @@
  *
  */
 
+import { parameters, stringListField, id, token } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 import { SieveLexer } from "./../../../toolkit/SieveLexer.mjs";
 import { SieveBlockBody } from "./SieveBlocks.mjs";
 
-SieveGrammar.addAction({
-  node: "import/require",
-  type: "import/",
-  token: "require",
-
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "capabilities",
-
-      type: "stringlist"
-    }]
-  }]
-});
+SieveGrammar.addAction(
+  id("import/require", "import/"),
+  token("require"),
+  parameters(
+    stringListField("capabilities"))
+);
 
 
 /**

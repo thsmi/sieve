@@ -10,144 +10,72 @@
  *
  */
 
+import {
+  stringField, numericField, parameters,
+  tag, tags, token, id
+} from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
+
+const DEFAULT_TIMEOUT = 600;
 
 /* Usage: "duplicate" [":handle" <handle: string>]
 [":header" <header-name: string> /
     ":uniqueid" <value: string>]
 [":seconds" <timeout: number>] [":last"] */
 
-const duplicate = {
-  node: "test/duplicate",
-  type: "test",
+SieveGrammar.addTest(
+  id("test/duplicate", "test", "duplicate"),
+  token("duplicate"),
+  tags(
+    tag("handle", "test/duplicate/handle"),
+    tag("unique", "test/duplicate/unique"),
+    tag("seconds", "test/duplicate/seconds"),
+    tag("last", "test/duplicate/last")));
 
-  requires: "duplicate",
+SieveGrammar.addTag(
+  id("test/duplicate/last", "test/duplicate/", "duplicate"),
+  token(":last")
+);
 
-  token: "duplicate",
+// ":handle" <handle: string>
+SieveGrammar.addTag(
+  id("test/duplicate/handle", "test/duplicate/", "duplicate"),
 
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "handle",
-      type: "test/duplicate/handle"
-    },
-    {
-      id: "unique",
-      type: "test/duplicate/unique"
-    },
-    {
-      id: "seconds",
-      type: "test/duplicate/seconds"
-    },
-    {
-      id: "last",
-      type: "test/duplicate/last"
-    }]
-  }]
-};
-
-SieveGrammar.addTest(duplicate);
-
-SieveGrammar.addTag({
-  node: "test/duplicate/last",
-  type: "test/duplicate/",
-
-  requires: "duplicate",
-
-  token: ":last"
-});
-
-// handle
-SieveGrammar.addTag({
-  node: "test/duplicate/handle",
-  type: "test/duplicate/",
-
-  token: ":handle",
-
-  requires: "duplicate",
-
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "handle",
-      type: "string",
-
-      value: '""'
-    }]
-  }]
-});
+  token(":handle"),
+  parameters(
+    stringField("handle"))
+);
 
 
 // uniqueid/header
-SieveGrammar.addTag({
-  node: "test/duplicate/unique/header",
-  type: "test/duplicate/unique/",
+SieveGrammar.addTag(
+  id("test/duplicate/unique/header", "test/duplicate/unique/", "duplicate"),
 
-  token: ":header",
-
-  requires: "duplicate",
-
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "header",
-      type: "string",
-
-      value: '""'
-    }]
-  }]
-});
+  token(":header"),
+  parameters(
+    stringField("header"))
+);
 
 // uniqueid/id
-SieveGrammar.addTag({
-  node: "test/duplicate/unique/id",
-  type: "test/duplicate/unique/",
+SieveGrammar.addTag(
+  id("test/duplicate/unique/id", "test/duplicate/unique/", "duplicate"),
 
-  token: ":uniqueid",
-
-  requires: "duplicate",
-
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "uniqueid",
-      type: "string",
-      value: '""'
-    }]
-  }]
-});
+  token(":uniqueid"),
+  parameters(
+    stringField("uniqueid"))
+);
 
 
-
-SieveGrammar.addGroup({
-  node: "test/duplicate/unique",
-  type: "test/duplicate/unique",
-
-  items: ["test/duplicate/unique/"]
-});
-
+SieveGrammar.addGroup(
+  id("test/duplicate/unique")
+);
 
 // seconds
-SieveGrammar.addTag({
-  node: "test/duplicate/seconds",
-  type: "test/duplicate/seconds/",
+SieveGrammar.addTag(
+  id("test/duplicate/seconds", "test/duplicate/seconds/", "duplicate"),
 
-  token: ":seconds",
-
-  requires: "duplicate",
-
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "timeout",
-      type: "number",
-      value: "600"
-    }]
-  }]
-});
+  token(":seconds"),
+  parameters(
+    numericField("timeout", DEFAULT_TIMEOUT))
+);

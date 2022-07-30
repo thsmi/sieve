@@ -10,7 +10,12 @@
  *
  */
 
+import { numericField, parameters, id, token } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
+
+// A "vacation-seconds" implies "vacation", and a script with "vacation-seconds"
+// in a "require" list can omit "vacation" from that list.
+// This means we have to make the vacation action accept both "requires"
 
 const vacationSeconds = {
   extends: "action/vacation",
@@ -19,21 +24,9 @@ const vacationSeconds = {
 
 SieveGrammar.extendAction(vacationSeconds);
 
-SieveGrammar.addTag({
-  node: "action/vacation/interval/seconds",
-  type: "action/vacation/interval/",
-
-  token: ":seconds",
-
-  requires: "vacation-seconds",
-
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "seconds",
-      type: "number",
-      value: '1800'
-    }]
-  }]
-});
+SieveGrammar.addTag(
+  id("action/vacation/interval/seconds", "action/vacation/interval/", "vacation-seconds"),
+  token(":seconds"),
+  parameters(
+    numericField("seconds", 1000))
+);

@@ -10,36 +10,26 @@
  *
  */
 
+import { id, token } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
-SieveGrammar.addTag({
-  node: "address-part/domain",
-  type: "address-part/",
-
-  token: ":domain"
-});
+SieveGrammar.addTag(
+  id("address-part/domain", "address-part/"),
+  token(":domain")
+);
 
 
-SieveGrammar.addTag({
-  node: "address-part/local",
-  type: "address-part/",
+SieveGrammar.addTag(
+  id("address-part/local", "address-part/"),
+  token(":localpart")
+);
 
-  token: ":localpart"
-});
+SieveGrammar.addTag(
+  id("address-part/all", "address-part/"),
+  token(":all")
+);
 
-SieveGrammar.addTag({
-  node: "address-part/all",
-  type: "address-part/",
-
-  token: ":all"
-});
-
-
-SieveGrammar.addGroup({
-  node: "address-part",
-  type: "address-part",
-
-  value: ":all",
-
-  items: ["address-part/"]
-});
+SieveGrammar.addGroup(
+  id("address-part"),
+  { value: ":all" }
+);

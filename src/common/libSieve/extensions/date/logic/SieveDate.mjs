@@ -49,6 +49,12 @@ time-zone
 /* :orignalzone" */
 
 
+import {
+  id, token,
+  stringField, stringListField, parameters,
+  tag, tags
+} from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 /**
@@ -58,89 +64,45 @@ import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
  *   the current date as string
  */
 function getCurrentDate() {
-  return '"' + new Date().toJSON().substring(0, "yyyy-mm-dd".length) + '"';
+  return `${new Date().toJSON().substring(0, "yyyy-mm-dd".length)}`;
 }
 
-SieveGrammar.addTag({
-  node: "zone/originalzone",
-  type: "zone/",
+SieveGrammar.addTag(
+  id("zone/originalzone", "zone/", "date"),
+  token(":originalzone"));
 
-  token: ":originalzone"
-});
+SieveGrammar.addTag(
+  id("zone/zone", "zone/", "date"),
 
-SieveGrammar.addTag({
-  node: "zone/zone",
-  type: "zone/",
+  token(":zone"),
+  parameters(
+    stringField("time-zone", '+0100')
+  )
+);
 
-  token: ":zone",
-
-  requires: "date",
-
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "time-zone",
-      type: "string",
-
-      value: '"+0100"'
-    }]
-  }]
-});
-
-SieveGrammar.addGroup({
-  node: "zone",
-  type: "zone",
-
-  value: ":originalzone",
-
-  items: ["zone/"]
-});
+SieveGrammar.addGroup(
+  id("zone"),
+  { value: ":originalzone" }
+);
 
 // usage: date [<":zone" <time-zone: string>> / ":originalzone"]
 //                 [COMPARATOR] [MATCH-TYPE] <header-name: string>
 //                 <date-part: string> <key-list: string-list>
 
-SieveGrammar.addTest({
-  node: "test/date",
-  type: "test",
+SieveGrammar.addTest(
+  id("test/date", "test", "date"),
 
-  requires: "date",
-
-  token: "date",
-
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "zone",
-      type: "zone"
-    }, {
-      id: "match-type",
-      type: "match-type"
-    }, {
-      id: "comparator",
-      type: "comparator"
-    }]
-  }, {
-    id: "parameters",
-
-    elements: [{
-      id: "header",
-      type: "string",
-      value: '"date"'
-    }, {
-      id: "datepart",
-      type: "string",
-      value: '"date"'
-    }, {
-      id: "keys",
-      type: "stringlist",
-      value: getCurrentDate()
-    }]
-  }]
-});
+  token("date"),
+  tags(
+    tag("zone"),
+    tag("match-type"),
+    tag("comparator")),
+  parameters(
+    stringField("header", 'date'),
+    stringField("datepart", 'date'),
+    stringListField("keys", getCurrentDate())
+  )
+);
 
 
 /* Usage:   currentdate [":zone" <time-zone: string>]
@@ -149,42 +111,18 @@ SieveGrammar.addTest({
 <key-list: string-list>
  */
 
-SieveGrammar.addTest({
-  node: "test/currentdate",
-  type: "test",
+SieveGrammar.addTest(
+  id("test/currentdate", "test", "date"),
 
-  requires: "date",
-
-  token: "currentdate",
-
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "zone",
-      type: "zone"
-    }, {
-      id: "match-type",
-      type: "match-type"
-    }, {
-      id: "comparator",
-      type: "comparator"
-    }]
-  }, {
-    id: "parameters",
-
-    elements: [{
-      id: "datepart",
-      type: "string",
-      value: '"date"'
-    }, {
-      id: "keys",
-      type: "stringlist",
-      value: getCurrentDate()
-    }]
-  }]
-});
+  token("currentdate"),
+  tags(
+    tag("zone"),
+    tag("match-type"),
+    tag("comparator")),
+  parameters(
+    stringField("datepart", 'date'),
+    stringListField("keys", getCurrentDate()))
+);
 
 
 // TODO: extend date by index tag (requires index)

@@ -13,90 +13,50 @@
 
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
+import {
+  id, token,
+  tags, stringListField, parameters, tag
+} from "./../../../toolkit/logic/SieveGrammarHelper.mjs";
+
 // "body" [COMPARATOR] [MATCH-TYPE] [BODY-TRANSFORM] <key-list: string-list>
 
-SieveGrammar.addTest({
-  node: "test/body",
-  type: "test",
-
-  requires: "body",
-
-  token: "body",
-
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "body-transform",
-      type: "body-transform"
-    }, {
-      id: "match-type",
-      type: "match-type"
-    }, {
-      id: "comparator",
-      type: "comparator"
-
-    }]
-  }, {
-    id: "parameters",
-    elements: [{
-      id: "keys",
-      type: "stringlist",
-      value: '"Example"'
-    }]
-  }]
-});
+SieveGrammar.addTest(
+  id("test/body", "test", "body"),
+  token("body"),
+  tags(
+    tag("body-transform"),
+    tag("match-type"),
+    tag("comparator")),
+  parameters(
+    stringListField("keys", 'Example'))
+);
 
 // -------------------------------------------------------------------------//
 
-SieveGrammar.addTag({
-  node: "body-transform/raw",
-  type: "body-transform/",
+SieveGrammar.addTag(
+  id("body-transform/raw", "body-transform/", "body"),
 
-  requires: "body",
+  token(":raw")
+);
 
-  token: ":raw"
-});
+SieveGrammar.addTag(
+  id("body-transform/content", "body-transform/", "body"),
 
-SieveGrammar.addTag({
-  node: "body-transform/content",
-  type: "body-transform/",
+  token(":content"),
+  parameters(
+    stringListField("contentType"))
+);
 
-  requires: "body",
+SieveGrammar.addTag(
+  id("body-transform/text", "body-transform/", "body"),
 
-  token: ":content",
-
-
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "contentType",
-      type: "stringlist",
-      value: '""'
-    }]
-  }]
-
-});
-
-SieveGrammar.addTag({
-  node: "body-transform/text",
-  type: "body-transform/",
-
-  requires: "body",
-
-  token: ":text"
-});
+  token(":text")
+);
 
 // ----------------------------------------------------------------------------
 
-SieveGrammar.addGroup({
-  node: "body-transform",
-  type: "body-transform",
-
-  value: ":text",
-
-  items: ["body-transform/"]
-});
+SieveGrammar.addGroup(
+  id("body-transform"),
+  { value: ":text" }
+);
 

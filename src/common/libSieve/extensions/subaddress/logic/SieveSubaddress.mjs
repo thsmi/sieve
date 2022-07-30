@@ -10,30 +10,18 @@
  *
  */
 
+import { id, token } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 //   :user "+" :detail "@" :domain
 // \----:local-part----/
 
-const userpart = {
-  node: "address-part/user",
-  type: "address-part/",
+SieveGrammar.addTag(
+  id("address-part/user", "address-part/", "subaddress"),
+  token(":user")
+);
 
-  requires: "subaddress",
-
-  token: ":user"
-};
-
-SieveGrammar.addTag(userpart);
-
-
-const detailpart = {
-  node: "address-part/detail",
-  type: "address-part/",
-
-  requires: "subaddress",
-
-  token: ":detail"
-};
-
-SieveGrammar.addTag(detailpart);
+SieveGrammar.addTag(
+  id("address-part/detail", "address-part/", "subaddress"),
+  token(":detail")
+);

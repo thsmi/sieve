@@ -10,59 +10,37 @@
  *
  */
 
+import { parameters, stringField, id, token } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
-SieveGrammar.addAction({
-  node: "action/discard",
-  type: "action",
-  token: "discard"
-});
+SieveGrammar.addAction(
+  id("action/discard", "action"),
+  token("discard")
+);
 
-SieveGrammar.addAction({
-  node: "action/stop",
-  type: "action",
-  token: "stop"
-});
+SieveGrammar.addAction(
+  id("action/stop", "action"),
+  token("stop")
+);
 
-SieveGrammar.addAction({
-  node: "action/keep",
-  type: "action",
-  token: "keep"
-});
+SieveGrammar.addAction(
+  id("action/keep", "action"),
+  token("keep")
+);
 
-SieveGrammar.addAction({
-  node: "action/redirect",
-  type: "action",
-  token: "redirect",
+SieveGrammar.addAction(
+  id("action/redirect", "action"),
 
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "address",
-
-      type: "string",
-      value: "\"username@example.com\""
-    }]
-  }]
-});
+  token("redirect"),
+  parameters(
+    stringField("address", "username@example.com"))
+);
 
 // <"fileinto"> <string> <";">
-SieveGrammar.addAction({
-  node: "action/fileinto",
-  type: "action",
-  token: "fileinto",
+SieveGrammar.addAction(
+  id("action/fileinto", "action", "fileinto"),
 
-  requires: "fileinto",
-
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "path",
-
-      type: "string",
-      value: "\"INBOX\""
-    }]
-  }]
-});
+  token("fileinto"),
+  parameters(
+    stringField("path", "INBOX"))
+);

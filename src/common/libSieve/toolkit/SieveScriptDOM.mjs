@@ -12,8 +12,6 @@
 
 import { SieveParser } from "./SieveParser.mjs";
 
-const NO_ELEMENT = -1;
-
 /**
  * Creates a new document for sieve scripts it is used to parse
  * store and manipulate sieve scripts

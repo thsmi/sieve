@@ -10,213 +10,106 @@
  *
  */
 
+import {
+  tags, tag, id, token, all, optional,
+  parameters, stringListField, stringField, optionals, fields
+} from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 // Usage: "pipe" [":try"] <program-name: string> [<arguments: string-list>]
 // Usage: "pipe" [":copy"] [":try"] <program-name: string> [<arguments: string-list>]
 
-SieveGrammar.addTag({
-  node: "action/pipe/try",
-  type: "action/pipe/",
+SieveGrammar.addTag(
+  id("action/pipe/try", "action/pipe/", "vnd.dovecot.pipe"),
+  token(":try"));
 
-  token: ":try"
-});
+SieveGrammar.addTag(
+  id("action/pipe/copy", "action/pipe/", all("copy", "vnd.dovecot.pipe")),
+  token(":copy"));
 
-SieveGrammar.addTag({
-  node: "action/pipe/copy",
-  type: "action/pipe/",
+SieveGrammar.addAction(
+  id("action/pipe", "action", "vnd.dovecot.pipe"),
 
-  requires: "copy",
-
-  token: ":copy"
-});
-
-SieveGrammar.addAction({
-  node: "action/pipe",
-  type: "action",
-
-  requires: "vnd.dovecot.pipe",
-
-  token: "pipe",
-
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "copy",
-      type: "action/pipe/copy"
-    }, {
-      id: "try",
-      type: "action/pipe/try"
-    }]
-  }, {
-    id: "parameters",
-
-    elements: [{
-      id: "program",
-      type: "string",
-      value: '"example"'
-    }]
-  }, {
-    id: "arguments",
-    optional: true,
-
-    elements: [{
-      id: "arguments",
-      type: "stringlist",
-      value: '""'
-    }]
-  }]
-});
-
-const filterProperties = [{
-  id: "program",
-
-  elements: [{
-    id: "program",
-    type: "string",
-    value: '"example"'
-  }]
-}, {
-  id: "arguments",
-  optional: true,
-
-  elements: [{
-    id: "arguments",
-    type: "stringlist",
-    value: '""'
-  }]
-}];
+  token("pipe"),
+  tags(
+    tag("copy", "action/pipe/copy"),
+    tag("try", "action/pipe/try")),
+  parameters(
+    stringField("program", "example")),
+  optionals("arguments",
+    stringListField("arguments")));
 
 // Usage: "filter" <program-name: string> [<arguments: string-list>]
-SieveGrammar.addAction({
-  node: "action/filter",
-  type: "action",
+SieveGrammar.addAction(
+  id("action/filter", "action", "vnd.dovecot.filter"),
 
-  requires: "vnd.dovecot.filter",
+  token("filter"),
+  parameters(
+    stringField("program", "example"),
+    optional(stringListField("arguments")))
+);
 
-  token: "filter",
+// Usage: "filter" <program-name: string> [<arguments: string-list>]
+SieveGrammar.addTest(
+  id("test/filter", "test", "vnd.dovecot.filter"),
 
-  properties: filterProperties
-});
+  token("filter"),
+  parameters(
+    stringField("program", "example"),
+    optional(stringListField("arguments")))
+);
 
-SieveGrammar.addTest({
-  node: "test/filter",
-  type: "test",
 
-  requires: "vnd.dovecot.filter",
 
-  token: "filter",
+SieveGrammar.addTag(
+  id("execute/input/pipe", "execute/input/"),
+  token(":pipe")
+);
 
-  properties: filterProperties
-});
+SieveGrammar.addTag(
+  id("execute/input/input", "execute/input/", "vnd.dovecot.execute"),
 
+  token(":input"),
+  parameters(
+    stringField("data"))
+);
+
+SieveGrammar.addGroup(
+  id("execute/input")
+);
+
+SieveGrammar.addTag(
+  id("execute/output", "execute/", all("variables", "vnd.dovecot.execute")),
+
+  token(":output"),
+  parameters(
+    stringField("name")));
 
 // Usage: "execute"
 //  [":input" <input-data: string> / ":pipe"]
 //  [":output" <varname: string>]
 //  <program-name: string> [<arguments: string-list>]
-SieveGrammar.addTag({
-  node: "execute/input/pipe",
-  type: "execute/input/",
 
-  token: ":pipe"
-});
+SieveGrammar.addAction(
+  id("action/execute", "action", "vnd.dovecot.execute"),
 
-SieveGrammar.addTag({
-  node: "execute/input/input",
-  type: "execute/input/",
+  token("execute"),
+  tags(
+    tag("input", "execute/input"),
+    tag("output", "execute/output")),
+  parameters(
+    stringField("program", "example")),
+  optionals("arguments",
+    stringListField("arguments")));
 
-  token: ":input",
+SieveGrammar.addTest(
+  id("test/execute", "test", "vnd.dovecot.execute"),
 
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "data",
-      type: "string",
-
-      value: '""'
-    }]
-  }]
-});
-
-SieveGrammar.addGroup({
-  node: "execute/input",
-  type: "execute/input",
-
-  items: ["execute/input/"]
-});
-
-SieveGrammar.addTag({
-  node: "execute/output",
-  type: "execute/",
-
-  token: ":output",
-  requires: "variables",
-
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "name",
-      type: "string",
-
-      value: '""'
-    }]
-  }]
-});
-
-
-const executeProperties = [{
-  id: "tags",
-  optional: true,
-
-  elements: [{
-    id: "input",
-    type: "execute/input"
-  }, {
-    id: "output",
-    type: "execute/output"
-  }]
-}, {
-  id: "parameters",
-
-  elements: [{
-    id: "program",
-    type: "string",
-    value: '"example"'
-  }]
-}, {
-  id: "arguments",
-  optional: true,
-
-  elements: [{
-    id: "arguments",
-    type: "stringlist",
-    value: '""'
-  }]
-}];
-
-SieveGrammar.addAction({
-  node: "action/execute",
-  type: "action",
-
-  requires: "vnd.dovecot.execute",
-
-  token: "execute",
-
-  properties: executeProperties
-});
-
-SieveGrammar.addTest({
-  node: "test/execute",
-  type: "test",
-
-  requires: "vnd.dovecot.execute",
-
-  token: "execute",
-
-  properties: executeProperties
-});
+  token("execute"),
+  tags(
+    tag("input", "execute/input"),
+    tag("output", "execute/output")),
+  parameters(
+    stringField("program", "example")),
+  optionals("arguments",
+    stringListField("arguments")));

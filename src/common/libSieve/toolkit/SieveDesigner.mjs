@@ -12,8 +12,6 @@
 
 import { SieveLexer } from "./SieveLexer.mjs";
 
-// Sieve Layout Engine is a static class...
-
 /**
  * A static class implementing a simple Layout engine.
  *

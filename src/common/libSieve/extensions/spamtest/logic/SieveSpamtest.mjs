@@ -10,96 +10,53 @@
  *
  */
 
+import {
+  tag, tags, id, token,
+  parameters, stringField
+} from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 // spamtest [":percent"] [COMPARATOR] [MATCH-TYPE] <value: string>
-SieveGrammar.addTest({
-  node: "test/spamtest",
-  type: "test",
+SieveGrammar.addTest(
 
   // spamtestplus implies spamtest...
   // ... this means we prefer spamtestplus, but
   // if we endup with spamtest it is also ok.
 
-  requires: { any: ["spamtestplus", "spamtest"] },
+  id("test/spamtest", "test", { any: ["spamtestplus", "spamtest"] }),
 
-  token: "spamtest",
+  token("spamtest"),
+  tags(
+    tag("comparator"),
+    tag("match-type")),
+  parameters(
+    stringField("value", "1"))
+);
 
-  properties: [{
-    id: "tags",
-    optional: true,
+SieveGrammar.addTag(
+  id("test/spamtestplus/percent", "test/spamtestplus/percent", "spamtestplus"),
+  token(":percent")
+);
 
-    elements: [{
-      id: "comparator",
-      type: "comparator"
-    }, {
-      id: "match-type",
-      type: "match-type"
-    }]
-  }, {
-    id: "parameters",
-
-    elements: [{
-      id: "value",
-      type: "string",
-      value: '"1"'
-    }]
-  }]
-});
-
-SieveGrammar.addTag({
-  node: "test/spamtestplus/percent",
-  type: "test/spamtestplus/percent",
-
-  requires: "spamtestplus",
-
-  token: ":percent"
-});
-
+// TODO no need to extend this here could be done directl in add test...
 SieveGrammar.extendTest({
   extends: "test/spamtest",
 
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "percent",
-      type: "test/spamtestplus/percent",
-
-      requires: "spamtestplus"
-    }]
-  }]
+  properties: [
+    tags(
+      tag("percent", "test/spamtestplus/percent", "spamtestplus" ))
+  ]
 });
 
 // virustest [COMPARATOR] [MATCH-TYPE] <value: string>
-SieveGrammar.addTest({
-  node: "test/virustest",
-  type: "test",
+SieveGrammar.addTest(
+  id("test/virustest", "test", "virustest"),
 
-  requires: "virustest",
-
-  token: "virustest",
-
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "comparator",
-      type: "comparator"
-    }, {
-      id: "match-type",
-      type: "match-type"
-    }]
-  }, {
-    id: "parameters",
-
-    elements: [{
-      id: "value",
-      type: "string",
-      value: '"1"'
-    }]
-  }]
-});
+  token("virustest"),
+  tags(
+    tag("comparator"),
+    tag("match-type")),
+  parameters(
+    stringField("value", "1"))
+);
 

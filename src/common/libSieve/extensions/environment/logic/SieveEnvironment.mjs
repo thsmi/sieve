@@ -12,40 +12,19 @@
 
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
+import {
+  stringField, stringListField, parameters,
+  tag, tags, id, token
+} from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+
 // Usage:   environment [COMPARATOR] [MATCH-TYPE] <name: string> <key-list: string-list>
 
-const _environment = {
-  node: "test/environment",
-  type: "test",
-
-  requires: "environment",
-
-  token: "environment",
-
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "match-type",
-      type: "match-type"
-    }, {
-      id: "comparator",
-      type: "comparator"
-
-    }]
-  }, {
-    id: "parameters",
-    elements: [{
-      id: "name",
-      type: "string",
-      value: '"domain"'
-    }, {
-      id: "keys",
-      type: "stringlist",
-      value: '"imap.example.com"'
-    }]
-  }]
-};
-
-SieveGrammar.addTest(_environment);
+SieveGrammar.addTest(
+  id("test/environment", "test", "environment"),
+  token("environment"),
+  tags(
+    tag("match-type"),
+    tag("comparator")),
+  parameters(
+    stringField("name", "domain"),
+    stringListField("keys", "imap.example.com")));

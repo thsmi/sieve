@@ -13,214 +13,111 @@
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 import { SieveAbstractElement } from "./../../../toolkit/logic/AbstractElements.mjs";
 import { SieveLexer } from "./../../../toolkit/SieveLexer.mjs";
+import {
+  tags, tag, id, token,
+  parameters, stringListField, field
+} from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 
 const LEADING_WHITESPACE = 0;
 const TEST = 1;
 const TAILING_WHITESPACE = 2;
 
-SieveGrammar.addTest({
+SieveGrammar.addTest(
+  id("test/envelope", "test", "envelope"),
 
-  node: "test/envelope",
-  type: "test",
-
-  requires: "envelope",
-
-  token: "envelope",
-
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "address-part",
-      type: "address-part"
-    }, {
-      id: "match-type",
-      type: "match-type"
-    }, {
-      id: "comparator",
-      type: "comparator"
-    }]
-  }, {
-    id: "parameters",
-
-    elements: [{
-      id: "envelopes",
-      type: "stringlist",
-      value: '"To"'
-    }, {
-      id: "keys",
-      type: "stringlist",
-      value: '"me@example.com"'
-
-    }]
-  }]
-});
+  token("envelope"),
+  tags(
+    tag("address-part"),
+    tag("match-type"),
+    tag("comparator")),
+  parameters(
+    stringListField("envelopes", "To"),
+    stringListField("keys", "me@example.com"))
+);
 
 
 // address [ADDRESS-PART] [COMPARATOR] [MATCH-TYPE]
 //             <header-list: string-list> <key-list: string-list>
-SieveGrammar.addTest({
-  node: "test/address",
-  type: "test",
+SieveGrammar.addTest(
+  id("test/address", "test"),
 
-  token: "address",
-
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "address-part",
-      type: "address-part"
-    }, {
-      id: "comparator",
-      type: "comparator"
-    }, {
-      id: "match-type",
-      type: "match-type"
-
-    }]
-  }, {
-    id: "parameters",
-
-    elements: [{
-      id: "headers",
-      type: "stringlist",
-      value: '"To"'
-    }, {
-      id: "keys",
-      type: "stringlist",
-      value: '"me@example.com"'
-
-    }]
-  }]
-});
+  token("address"),
+  tags(
+    tag("address-part"),
+    tag("match-type"),
+    tag("comparator")),
+  parameters(
+    stringListField("headers", "To"),
+    stringListField("keys", "me@example.com"))
+);
 
 // <"exists"> <header-names: string-list>
-SieveGrammar.addTest({
-  node: "test/exists",
-  type: "test",
+SieveGrammar.addTest(
+  id("test/exists", "test"),
 
-  token: "exists",
-
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "headers",
-      type: "stringlist",
-      value: '"From"'
-    }]
-  }]
-});
+  token("exists"),
+  parameters(
+    stringListField("headers", "From"))
+);
 
 // <"header"> [COMPARATOR] [MATCH-TYPE] <header-names: string-list> <key-list: string-list>
-SieveGrammar.addTest({
-  node: "test/header",
-  type: "test",
+SieveGrammar.addTest(
+  id("test/header", "test"),
 
-  token: "header",
+  token("header"),
+  tags(
+    tag("comparator"),
+    tag("match-type")),
+  parameters(
+    stringListField("headers", "Subject"),
+    stringListField("keys", "Example"))
+);
 
-  properties: [{
-    id: "tags",
-    optional: true,
+SieveGrammar.addTest(
+  id("test/boolean/true", "test/boolean/"),
+  token("true")
+);
 
-    elements: [{
-      id: "comparator",
-      type: "comparator"
-    }, {
-      id: "match-type",
-      type: "match-type"
-    }]
-  }, {
-    id: "parameters",
+SieveGrammar.addTest(
+  id("test/boolean/false", "test/boolean/"),
+  token("false")
+);
 
-    elements: [{
-      id: "headers",
-      type: "stringlist",
-      value: '"Subject"'
-    }, {
-      id: "keys",
-      type: "stringlist",
-      value: '"Example"'
-    }]
-  }]
-});
-
-SieveGrammar.addTest({
-  node: "test/boolean/true",
-  type: "test/boolean/",
-
-  token: "true"
-});
-
-
-SieveGrammar.addTest({
-  node: "test/boolean/false",
-  type: "test/boolean/",
-
-  token: "false"
-});
-
-SieveGrammar.addGroup({
-  node: "test/boolean",
-  type: "test",
-
+SieveGrammar.addGroup(
+  id("test/boolean", "test"),
   // Boolean tests don't have an implicit default value
-  value: "false",
-  mandatory: true,
-
-  items: ["test/boolean/"]
-});
+  { value: "false", mandatory: true }
+);
 
 
 // size <":over" / ":under"> <limit: number>
 
-SieveGrammar.addTag({
-  node: "test/size/operator/over",
-  type: "test/size/operator/",
+SieveGrammar.addTag(
+  id("test/size/operator/over", "test/size/operator/"),
+  token(":over")
+);
 
-  token: ":over"
-});
+SieveGrammar.addTag(
+  id("test/size/operator/under", "test/size/operator/"),
+  token(":under")
+);
 
-SieveGrammar.addTag({
-  node: "test/size/operator/under",
-  type: "test/size/operator/",
-
-  token: ":under"
-});
-
-SieveGrammar.addGroup({
-  node: "test/size/operator",
-  type: "test/size/operator",
-
+SieveGrammar.addGroup(
+  id("test/size/operator"),
   // Either the :over or the :under operator has to exist
   // there is no default value in case the operator is omitted.
-  value: ":over",
-  mandatory: true,
+  { value: ":over", mandatory: true}
+);
 
-  items: ["test/size/operator/"]
-});
+SieveGrammar.addTest(
+  id("test/size", "test"),
 
-SieveGrammar.addTest({
-  node: "test/size",
-  type: "test",
+  token("size"),
 
-  token: "size",
-
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "operator",
-      type: "test/size/operator"
-    }, {
-      id: "limit",
-      type: "number"
-    }]
-  }]
-});
+  parameters(
+    field("operator", "test/size/operator"),
+    field("limit", "number"))
+);
 
 // TODO Stringlist and testslist are quite similar
 

@@ -10,6 +10,12 @@
  *
  */
 
+import {
+  parameters,
+  id, token, all,
+  tags, tag, stringField, stringListField
+} from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 // Usage:  notify
@@ -19,129 +25,57 @@ import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 //           [":message" string]
 //           <method: string>
 
-SieveGrammar.addAction({
-  node: "action/notify",
-  type: "action",
+SieveGrammar.addAction(
+  id("action/notify", "action", "enotify"),
 
-  requires: "enotify",
+  token("notify"),
+  tags(
+    tag("from", "action/notify/from"),
+    tag("importance", "action/notify/importance"),
+    tag("options", "action/notify/options"),
+    tag("message", "action/notify/message")),
+  parameters(
+    stringField("method"))
+);
 
-  token: "notify",
+SieveGrammar.addTag(
+  id("action/notify/from", "action/notify/from"),
 
-  properties: [{
-    id: "tags",
-    optional: true,
+  token(":from"),
+  parameters(
+    stringField("from")));
 
-    elements: [{
-      id: "from",
-      type: "action/notify/from"
-    }, {
-      id: "importance",
-      type: "action/notify/importance"
-    }, {
-      id: "options",
-      type: "action/notify/options"
-    }, {
-      id: "message",
-      type: "action/notify/message"
-    }]
-  }, {
-    id: "parameters",
+SieveGrammar.addTag(
+  id("action/notify/importance", "action/notify/importance"),
 
-    elements: [{
-      id: "method",
-      type: "string",
-      value: '""'
-    }]
-  }]
-});
+  token(":importance"),
+  parameters(
+    stringField("importance", "2")));
 
-SieveGrammar.addTag({
-  node: "action/notify/from",
-  type: "action/notify/from",
+SieveGrammar.addTag(
+  id("action/notify/options", "action/notify/options"),
 
-  token: ":from",
+  token(":options"),
+  parameters(
+    stringListField("options")));
 
-  properties: [{
-    id: "parameters",
+SieveGrammar.addTag(
+  id("action/notify/message", "action/notify/message"),
 
-    elements: [{
-      id: "from",
-      type: "string"
-    }]
-  }]
-});
+  token(":message"),
 
-SieveGrammar.addTag({
-  node: "action/notify/importance",
-  type: "action/notify/importance",
-
-  token: ":importance",
-
-  properties: [{
-    id: "parameters",
-
-    // TODO should be either "1", "2" or "3"
-    elements: [{
-      id: "importance",
-      type: "string",
-      value: '"2"'
-    }]
-  }]
-});
-
-SieveGrammar.addTag({
-  node: "action/notify/options",
-  type: "action/notify/options",
-
-  token: ":options",
-
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "options",
-      type: "stringlist"
-    }]
-  }]
-});
-
-SieveGrammar.addTag({
-  node: "action/notify/message",
-  type: "action/notify/message",
-
-  token: ":message",
-
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "message",
-      type: "string"
-    }]
-  }]
-});
+  parameters(
+    stringField("message")));
 
 // Test valid_notify_method
 // Usage:  valid_notify_method
 //           <notification-uris: string-list>
+SieveGrammar.addTest(
+  id("test/valid_notify_method", "test", "enotify"),
 
-SieveGrammar.addTest({
-  node: "test/valid_notify_method",
-  type: "test",
-
-  requires: "enotify",
-
-  token: "valid_notify_method",
-
-  properties: [{
-    id: "parameters",
-    elements: [{
-      id: "uris",
-      type: "stringlist",
-      value: '"Example"'
-    }]
-  }]
-});
+  token("valid_notify_method"),
+  parameters(
+    stringListField("uris", "stringlist", "Example")));
 
 // Test notify_method_capability
 // Usage:  notify_method_capability
@@ -150,43 +84,16 @@ SieveGrammar.addTest({
 //            <notification-capability: string>
 //            <key-list: string-list>
 
-SieveGrammar.addTest({
-  node: "test/notify_method_capability",
-  type: "test",
+SieveGrammar.addTest(
+  id("test/notify_method_capability", "test", "enotify"),
 
-  requires: "enotify",
-
-  token: "notify_method_capability",
-
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "match-type",
-      type: "match-type"
-    }, {
-      id: "comparator",
-      type: "comparator"
-
-    }]
-  }, {
-    id: "parameters",
-    elements: [{
-      id: "uri",
-      type: "string",
-      value: '""'
-    }, {
-      id: "capability",
-      type: "string",
-      value: '"online"'
-    }, {
-      id: "keys",
-      type: "stringlist",
-      value: '"yes"'
-    }]
-  }]
-});
+  token("notify_method_capability"),
+  tags(
+    tag("match-type", "comparator")),
+  parameters(
+    stringField("uri"),
+    stringField("capability", "online"),
+    stringListField("keys", "yes")));
 
 
 //  Usage:  ":encodeurl"
@@ -196,32 +103,20 @@ SieveGrammar.addTest({
 // requires variables and enotify and has a
 // has precedence of 15.
 
-SieveGrammar.addTag({
-  node: "modifier/15/encodeurl",
-  type: "modifier/15/",
+SieveGrammar.addTag(
+  id("modifier/15/encodeurl", "modifier/15/", all("variables", "enotify")),
+  token(":encodeurl")
+);
 
-  requires: { all: ["variables", "enotify"] },
-
-  token: ":encodeurl"
-});
-
-SieveGrammar.addGroup({
-  node: "modifier/15",
-  type: "modifier/",
-
-  items: ["modifier/15/"]
-});
+SieveGrammar.addGroup(
+  id("modifier/15", "modifier/")
+);
 
 SieveGrammar.extendAction({
   extends: "action/set",
 
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "modifier/15",
-      type: "modifier/15"
-    }]
-  }]
+  properties: [
+    tags(
+      tag("modifier/15"))
+  ]
 });

@@ -12,83 +12,49 @@
 
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
+import {
+  parameters, stringListField, stringField,
+  tags, tag, id, token
+} from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+
 // fileinto [:create] <mailbox: string>
-const create = {
-  node: "action/fileinto/create",
-  type: "action/fileinto/",
 
-  requires: "mailbox",
-
-  token: ":create"
-};
-
-SieveGrammar.addTag(create);
+SieveGrammar.addTag(
+  id("action/fileinto/create", "action/fileinto/", "mailbox"),
+  token(":create"));
 
 const fileinto = {
   extends: "action/fileinto",
 
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "create",
-      type: "action/fileinto/create",
-      requires: "mailbox"
-    }]
-  }]
+  properties: [
+    tags(
+      tag("create", "action/fileinto/create", "mailbox"))
+  ]
 };
 
 SieveGrammar.extendAction(fileinto);
 
 
 // mailboxexists <mailbox-names: string-list>
-const mailboxexists = {
-  node: "test/mailboxexists",
-  type: "test",
 
-  requires: "mailbox",
+SieveGrammar.addTest(
+  id("test/mailboxexists", "test", "mailbox"),
 
-  token: "mailboxexists",
-
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "mailboxes",
-      type: "stringlist",
-      value: '"INBOX"'
-    }]
-  }]
-};
-
-SieveGrammar.addTest(mailboxexists);
+  token("mailboxexists"),
+  parameters(
+    stringListField("mailboxes", "INBOX"))
+);
 
 // metadataexists <mailbox: string> <annotation-names: string-list>
-const metadataexists = {
-  node: "test/metadataexists",
-  type: "test",
 
-  requires: "mboxmetadata",
+SieveGrammar.addTest(
+  id("test/metadataexists", "test", "mboxmetadata"),
 
-  token: "metadataexists",
-
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "mailbox",
-      type: "string",
-      value: '"INBOX"'
-    }, {
-      id: "annotations",
-      type: "stringlist",
-      value: '""'
-    }]
-  }]
-};
-
-SieveGrammar.addTest(metadataexists);
+  token("metadataexists"),
+  parameters(
+    stringField("mailbox", "INBOX"),
+    stringListField("annotations"))
+);
 
 // metadata [MATCH-TYPE] [COMPARATOR]
 //         <mailbox: string>
@@ -104,108 +70,38 @@ SieveGrammar.addTest(metadataexists);
  * The default matchtype is :is and the default comparator is "i;ascii-casemap"
  */
 
-const metadata = {
-  node: "test/metadata",
-  type: "test",
+SieveGrammar.addTest(
+  id("test/metadata", "test", "mboxmetadata"),
 
-  requires: "mboxmetadata",
-
-  token: "metadata",
-
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "match-type",
-      type: "match-type"
-    }, {
-      id: "comparator",
-      type: "comparator"
-    }]
-  }, {
-    id: "parameters",
-
-    elements: [{
-      id: "mailbox",
-      type: "string",
-
-      value: '"INBOX"'
-    }, {
-      id: "annotation",
-      type: "string",
-
-      value: "\"\""
-    }, {
-      id: "keys",
-      type: "stringlist",
-
-      value: "\"\""
-    }]
-  }]
-
-};
-
-SieveGrammar.addTest(metadata);
+  token("metadata"),
+  tags(
+    tag("match-type"),
+    tag("comparator")),
+  parameters(
+    stringField("mailbox", "INBOX"),
+    stringField("annotation"),
+    stringListField('keys')
+  ));
 
 // servermetadataexists <annotation-names: string-list>
-const servermetadataexists = {
-  node: "test/servermetadataexists",
-  type: "test",
 
-  requires: "servermetadata",
+SieveGrammar.addTest(
+  id("test/servermetadataexists", "test", "servermetadata"),
 
-  token: "servermetadataexists",
+  token("servermetadataexists"),
+  parameters(
+    stringListField("annotations")));
 
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "annotations",
-      type: "stringlist",
-
-      value: '""'
-    }]
-  }]
-};
-
-SieveGrammar.addTest(servermetadataexists);
 
 // servermetadata [MATCH-TYPE] [COMPARATOR] <annotation-name: string> <key-list: string-list>
-const servermetadata = {
-  node: "test/servermetadata",
-  type: "test",
+SieveGrammar.addTest(
+  id("test/servermetadata", "test", "servermetadata"),
 
-  requires: "servermetadata",
-
-  token: "servermetadata",
-
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "match-type",
-      type: "match-type"
-    }, {
-      id: "comparator",
-      type: "comparator"
-    }]
-  }, {
-    id: "parameters",
-
-    elements: [{
-      id: "annotation",
-      type: "string",
-
-      value: '""'
-    }, {
-      id: "keys",
-      type: "stringlist",
-
-      value: '""'
-    }]
-  }]
-};
-
-SieveGrammar.addTest(servermetadata);
+  token("servermetadata"),
+  tags(
+    tag("match-type"),
+    tag("comparator")),
+  parameters(
+    stringField("annotation"),
+    stringListField("keys")
+  ));

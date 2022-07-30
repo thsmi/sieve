@@ -116,8 +116,9 @@ class SieveGenericLiteral extends SieveAbstractGeneric {
 
     super(parent);
 
-    if (token === null || typeof (token) === "undefined" || typeof (token) !== "string")
-      throw new Error("Token in a Literal as to be a string but is " + typeof (token));
+    if (token === null || typeof (token) === "undefined" || typeof (token) !== "string") {
+      throw new Error("Token in a Literal has to be a string but is " + typeof (token));
+    }
 
     this._token = token;
     this._literal = null;
@@ -259,6 +260,33 @@ class SieveGenericMandatoryItem extends SieveAbstractGeneric {
   }
 
   /**
+   * Enabled or disables an optional element.
+   *
+   * Note it is not possible to disable mandatory elements they are
+   * by definition always enabled.
+   *
+   * @param {string} id
+   *   the ids unique name.
+   * @param {boolean} status
+   *   the new status to be set
+   * @returns {boolean}
+   *   the element's current status after the update.
+   */
+  enable(id, status) {
+    if (!this.hasElement(id))
+      throw new Error(`No Element with id ${id}`);
+
+    const elm = this._elements.get(id);
+
+    if (!elm.isOptional)
+      throw new Error(`Not ${id} is not an optional element`);
+
+    elm.disabled = !status;
+
+    return elm.disabled;
+  }
+
+  /**
    * Returns the child element with the given id.
    *
    * In case the item has no known child element with the id an
@@ -279,8 +307,9 @@ class SieveGenericMandatoryItem extends SieveAbstractGeneric {
 
   /**
    * Initializes the given parameter.
+   *
    * @param {object} parameter
-   *  the parameter which should be set
+   *   the parameter which should be set
    */
   addParameter(parameter) {
 
@@ -290,6 +319,11 @@ class SieveGenericMandatoryItem extends SieveAbstractGeneric {
     const item = {};
     item.element = this.getParent().createByName(parameter.type, parameter.value);
     item.whitespace = this.getParent().createByName("whitespace", " ");
+
+    if (parameter.optional) {
+      item.isOptional = true;
+      item.disabled = true;
+    }
 
     this._elements.set(parameter.id, item);
   }
@@ -326,7 +360,8 @@ class SieveGenericMandatoryItem extends SieveAbstractGeneric {
   require(capabilities) {
 
     this._elements.forEach((item) => {
-      item.element.require(capabilities);
+      if (!item.element.disabled)
+        item.element.require(capabilities);
     });
 
     return this;
@@ -337,10 +372,41 @@ class SieveGenericMandatoryItem extends SieveAbstractGeneric {
    */
   parse(parser) {
 
-    this._elements.forEach((item) => {
+    const pos = parser.pos();
+
+    // First try parsing with all optionals enabled...
+    try {
+
+      for (const item of this._elements.values()) {
+
+        if (item.isOptional)
+          item.disabled = false;
+
+        item.whitespace.init(parser);
+        item.element.init(parser);
+      }
+
+      return this;
+    } catch (ex) {
+      // FIXME: we should reset the elements to their default values.
+      // Swallow the exception and reset the position as if nothing happened
+      parser.pos(pos);
+    }
+
+
+    // next try parse with all optionals disabled...
+
+    for (const item of this._elements.values()) {
+      if (item.isOptional) {
+        item.disabled = true;
+        // TODO reset to defaults.
+        continue;
+      }
+
       item.whitespace.init(parser);
       item.element.init(parser);
-    });
+    }
+
 
     return this;
   }
@@ -353,55 +419,13 @@ class SieveGenericMandatoryItem extends SieveAbstractGeneric {
     let result = "";
 
     this._elements.forEach((item) => {
-      result += item.whitespace.toScript();
-      result += item.element.toScript();
+      if (!item.disabled) {
+        result += item.whitespace.toScript();
+        result += item.element.toScript();
+      }
     });
 
     return result;
-  }
-}
-
-
-/**
- * A dependent element can only exist if an other element they depend on exists.
- * It is used e.g with variables lists in has flag.
- */
-class SieveGenericDependentItem extends SieveGenericMandatoryItem {
-
-  /**
-   * Checks if this elements is a dependent element.
-   * @returns {boolean}
-   *   true in case the element is dependent otherwise false.
-   */
-  isDependent() {
-    return true;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  parse(parser) {
-
-    try {
-      super.parse(parser);
-    } catch (ex) {
-      this.enabled = false;
-      throw ex;
-    }
-
-    this.enabled = true;
-    return this;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  toScript() {
-
-    if (!this.enabled)
-      return "";
-
-    return super.toScript();
   }
 }
 
@@ -523,15 +547,19 @@ class SieveGenericOptionalItem extends SieveAbstractGeneric {
   }
 
   /**
+   * Sets the tags, tags are by definition non positional, optional and always
+   * start with a unique token.
    *
    * @param {object} tags
+   *   the structure containing the tags definition.
    * @returns {SieveGenericOptionalItem}
    *   a self reference
    */
   setTags(tags) {
 
-    if (!tags || !tags.length)
+    if (!tags || !tags.length) {
       throw new Error("Invalid Tags");
+    }
 
     if (this._optionals.length)
       throw new Error("Tags already initialized");
@@ -734,64 +762,10 @@ class SieveGenericStructure extends SieveAbstractElement {
    */
   init(parser) {
 
-    let pos = null;
-    let prev = null;
-
     this._elements.forEach((element) => {
-
-      if (element.isDependent && element.isDependent()) {
-
-        // save the current position for a rollback
-        pos = parser.pos();
-
-        // A dependent element is optional so it is ok
-        // if we fail here
-        try {
-          element.parse(parser);
-        }
-        catch {
-          // TODO reset item
-          // Reset the position as if nothing happened
-          parser.pos(pos);
-          pos = null;
-        }
-
-        // and continue with the next element
-        prev = element;
-        return;
-      }
-
-      // This happens only if the previous element
-      // was a dependent element, and it was parsed
-      // successfully
-      if (pos !== null) {
-
-        try {
-          element.parse(parser);
-
-        } catch {
-
-          prev.enabled = false;
-
-          // parsing failed. So let's reset the position and
-          // try parsing without the dependent element.
-          // we need to reset the depended element
-          parser.pos(pos);
-          element.parse(parser);
-        }
-
-        pos = null;
-        return;
-      }
-
       element.parse(parser);
       return;
     });
-
-
-    /* this._elements.forEach( function ( element ) {
-       element.parse( parser );
-     }, this );*/
 
     return this;
   }
@@ -883,11 +857,15 @@ class SieveGenericStructure extends SieveAbstractElement {
 
 
   /**
+   * Adds a tag to the generic structure. A tag is an optional non positional
+   * parameters which starts with a unique token.
+   *
    * @param {Array.<object>|object} tags
+   *   the tags which should be added.
    * @returns {SieveGenericStructure}
    *   a self reference
    */
-  addOptionalItems(tags) {
+  addTags(tags) {
 
     // we bail silently out in case no tags are defined.
     if (typeof (tags) === "undefined" || tags === null)
@@ -898,6 +876,9 @@ class SieveGenericStructure extends SieveAbstractElement {
     if (!Array.isArray(tags))
       tags = [tags];
 
+    if (tags.length === 0)
+      return this;
+
     this._elements.push(
       new SieveGenericOptionalItem(this).setTags(tags));
 
@@ -905,59 +886,19 @@ class SieveGenericStructure extends SieveAbstractElement {
   }
 
   /**
-   * A dependent element is something between
-   * an optional and mandatory element.
+   * Add parameters to this structure. Parameters are element with a fixed
+   * position. Only very few start start with a token, as the position is
+   * typically enough information for parsing.
    *
-   * Such an element is by definition optional but can not
-   * live without the mandatory element but has a fixed position.
-   * This can occur in case of an ambiguous type definition.
-   *
-   * Let's take an example structure
-   * "action" <variables:string> [flags:string];
-   *
-   * As you can see the action has two string parameters.
-   * This allow the following two commands
-   *
-   * action "flags";
-   * action "variables" "flags"
-   *
-   * As the parser is linear the optional "variable" parameter
-   * would be greedy an consume the string so that the mandatory
-   * flags parameter would fails.
-   *
-   * A dependent element fixes this. The "variable" element is
-   * non greedy. So that in the first case the "flags".
-   *
-   * @param {Array.<object>|object} parameters
-   *   the configuration and parameters for the dependent item
-   * @returns {SieveGenericStructure}
-   *   a self reference
-   */
-  addDependentItems(parameters) {
-
-    if (typeof (parameters) === "undefined" || parameters === null)
-      return this;
-
-    if (!Array.isArray(parameters))
-      parameters = [parameters];
-
-    this._elements.push(
-      new SieveGenericDependentItem(this).setParameters(parameters));
-
-    return this;
-  }
-
-  /**
-   * A mandatory element is a required element.
-   * In case it is not at the expected position
-   * an error will be raised
+   * In case an element is not found at the expected position an an error
+   * will be raised
    *
    * @param  {Array.<object>|object} parameters
    *   the configuration and parameter for the generic items.
    * @returns {SieveGenericStructure}
    *   a self reference
    */
-  addMandatoryItems(parameters) {
+  addParameters(parameters) {
 
     if (typeof (parameters) === "undefined" || parameters === null)
       return this;

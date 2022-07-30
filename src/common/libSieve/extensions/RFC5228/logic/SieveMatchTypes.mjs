@@ -10,37 +10,28 @@
  *
  */
 
+import { id, token } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 // TODO match-type items (matchtype/) should not eat trailing whitespaces...
-// they this should be done my the match-type group
+// this should be done my the match-type group
 
-SieveGrammar.addTag({
-  node: "match-type/is",
-  type: "match-type/",
+SieveGrammar.addTag(
+  id("match-type/is", "match-type/"),
+  token(":is")
+);
 
-  token: ":is"
-});
+SieveGrammar.addTag(
+  id("match-type/matches", "match-type/"),
+  token(":matches")
+);
 
-SieveGrammar.addTag({
-  node: "match-type/matches",
-  type: "match-type/",
+SieveGrammar.addTag(
+  id("match-type/contains", "match-type/"),
+  token(":contains")
+);
 
-  token: ":matches"
-});
-
-SieveGrammar.addTag({
-  node: "match-type/contains",
-  type: "match-type/",
-
-  token: ":contains"
-});
-
-SieveGrammar.addGroup({
-  node: "match-type",
-  type: "match-type",
-
-  value: ":is",
-
-  items: ["match-type/"]
-});
+SieveGrammar.addGroup(
+  id("match-type"),
+  { value: ":is" }
+);

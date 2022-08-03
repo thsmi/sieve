@@ -52,9 +52,10 @@ class SieveBlockBody extends SieveAbstractElement {
    * @inheritdoc
    */
   init(parser) {
-    while (this.probeByClass(["action", "condition", "whitespace"], parser))
+
+    while (this.probeByClass(["@action", "@condition", "@whitespace"], parser))
       this.elms.push(
-        this.createByClass(["action", "condition", "whitespace"], parser));
+        this.createByClass(["@action", "@condition", "@whitespace"], parser));
 
     return this;
   }
@@ -65,8 +66,8 @@ class SieveBlockBody extends SieveAbstractElement {
   toScript() {
     let str = "";
 
-    for (const key in this.elms)
-      str += this.elms[key].toScript();
+    for (const elm of this.elms)
+      str += elm.toScript();
 
     return str;
   }
@@ -122,6 +123,23 @@ class SieveBlockBody extends SieveAbstractElement {
     return this;
   }
 
+  /**
+   * Checks if the block has a child with the given identifier
+   *
+   * @param {string} identifier
+   *   the childs unique id
+   * @returns {boolean}
+   *   true in case the child is known otherwise false.
+   */
+  hasChild(identifier) {
+    for (const elm of this.elms)
+      if (elm.id() === identifier)
+        return true;
+
+    return false;
+  }
+
+
   // TODO Merge with "remove" when its working as it should
 
   /**
@@ -137,14 +155,12 @@ class SieveBlockBody extends SieveAbstractElement {
    * @returns {SieveAbstractElement}
    */
   removeChild(childId, cascade, stop) {
-    // should we remove the whole node
+
     if (typeof (childId) === "undefined")
       throw new Error("Child ID Missing");
 
-
-    // ... or just a child item
+    // Let's search and remove the child...
     let elm = null;
-    // Is it a direct match?
     for (let i = 0; i < this.elms.length; i++) {
       if (this.elms[i].id() !== childId)
         continue;
@@ -155,6 +171,10 @@ class SieveBlockBody extends SieveAbstractElement {
 
       break;
     }
+
+    // ... we fail in case we have not found the child
+    if (elm === null)
+      throw new Error(`Unknown child ${childId}`);
 
     if (cascade && this.empty())
       if ((!stop) || (stop.id() !== this.id()))
@@ -273,6 +293,12 @@ class SieveRootNode extends SieveBlockBody {
    */
   toScript() {
 
+    // TODO move this logic to the document's to script
+    //
+    // hava a block with:
+    //  id "imports" which consists only of requires, whitespace and comments.
+    //  id "body" which consits of actions, whitespaces and conditions.
+
     const capabilities = this.document().capabilities();
 
     capabilities.clear();
@@ -292,14 +318,14 @@ class SieveRootNode extends SieveBlockBody {
 
 
 SieveGrammar.addGeneric(
-  id("block/body", "block/"),
+  id("block/body", "@block/"),
 
   SieveBlockBody,
   // FIXME: use a class matcher
-  (parser, lexer) => { return lexer.probeByClass(["action", "condition", "whitespace"], parser); });
+  (parser, lexer) => { return lexer.probeByClass(["@action", "@condition", "@whitespace"], parser); });
 
 SieveGrammar.addGeneric(
-  id("block/block", "block/"),
+  id("block/block", "@block/"),
 
   SieveBlock,
   // FIXME: use a token matcher
@@ -309,8 +335,9 @@ SieveGrammar.addGeneric(
 );
 
 SieveGrammar.addGeneric(
-  id("block/rootnode", "block/"),
-  SieveRootNode
+  id("block/rootnode", "@block/"),
+  SieveRootNode,
+  () => { return false; }
   //  optional(property("import", "import")),
   //  property("body", "block/body"))
 );

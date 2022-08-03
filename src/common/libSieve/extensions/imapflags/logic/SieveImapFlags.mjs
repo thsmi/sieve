@@ -23,7 +23,7 @@ import {
 // Inject :flags into  fileinto
 // :flags" <list-of-flags: string-list>
 SieveGrammar.addTag(
-  id("action/fileinto/flags", "action/fileinto/", "imap4flags"),
+  id("action/fileinto/flags", "@action/fileinto/", "imap4flags"),
 
   token(":flags"),
   parameters(
@@ -41,7 +41,7 @@ SieveGrammar.extendAction({
 
 // Inject :flags into keep
 SieveGrammar.addTag(
-  id("action/keep/flags", "action/keep/", "imap4flags"),
+  id("action/keep/flags", "@action/keep/", "imap4flags"),
 
   token(":flags"),
   parameters(
@@ -59,22 +59,22 @@ SieveGrammar.extendAction({
 
 // Usage:   setflag [<variablename: string>]  <list-of-flags: string-list>
 SieveGrammar.addAction(
-  id("action/setflag", "action", "imap4flags"),
+  id("action/setflag", "@action", "imap4flags"),
 
   token("setflag"),
   parameters(
-    optional(stringListField("variablename"), "variables"),
+    optional(stringListField("variable"), "variables"),
     stringListField("flags", ["\\\\Flagged"]))
 );
 
 //     Usage:   addflag [<variablename: string>]
 //            <list-of-flags: string-list>
 SieveGrammar.addAction(
-  id("action/addflag", "action", "imap4flags"),
+  id("action/addflag", "@action", "imap4flags"),
 
   token("addflag"),
   parameters(
-    optional(stringField("variablename"), "variables"),
+    optional(stringField("variable"), "variables"),
     stringListField("flags", ["\\\\Flagged"]))
 );
 
@@ -83,12 +83,12 @@ SieveGrammar.addAction(
 //         <list-of-flags: string-list>
 
 SieveGrammar.addAction(
-  id("action/removeflag", "action", "imap4flags"),
+  id("action/removeflag", "@action", "imap4flags"),
 
   token("removeflag"),
 
   parameters(
-    optional(stringField("variablename"), "variables"),
+    optional(stringField("variable"), "variables"),
     stringListField("flags", ["\\\\Flagged"]))
 );
 
@@ -97,7 +97,7 @@ SieveGrammar.addAction(
 //          [<variable-list: string-list>]
 //          <list-of-flags: string-list>
 SieveGrammar.addTest(
-  id("test/hasflag", "test", "imap4flags"),
+  id("test/hasflag", "@test", "imap4flags"),
 
   token("hasflag"),
   tags(

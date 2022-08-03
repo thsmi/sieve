@@ -19,13 +19,13 @@ import {
 } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 
 SieveGrammar.addTag(
-  id("action/addheader/last", "action/addheader/", "editheader"),
+  id("action/addheader/last", "@action/addheader/", "editheader"),
   token(":last")
 );
 
 // "addheader" [":last"] <field-name: string> <value: string>
 SieveGrammar.addAction(
-  id("action/addheader", "action", "editheader"),
+  id("action/addheader", "@action", "editheader"),
 
   token("addheader"),
   tags(
@@ -37,7 +37,7 @@ SieveGrammar.addAction(
 
 // ":index" <fieldno: number> [":last"]
 SieveGrammar.addTag(
-  id("action/deleteheader/index", "action/deleteheader/", "editheader"),
+  id("action/deleteheader/index", "@action/deleteheader/", "editheader"),
 
   token(":index"),
   // FIXME: should be a parameter instead of a custom field.
@@ -57,7 +57,7 @@ SieveGrammar.addTag(
 //                   [<value-patterns: string-list>]
 
 SieveGrammar.addAction(
-  id("action/deleteheader", "action", "editheader"),
+  id("action/deleteheader", "@action", "editheader"),
 
   token("deleteheader"),
   tags(

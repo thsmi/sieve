@@ -25,27 +25,27 @@ import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
  */
 
 SieveGrammar.addTag(
-  id("relational-match/gt", "relational-match/"),
+  id("relational-match/gt", "@relational-match/"),
   token('"gt"'));
 
 SieveGrammar.addTag(
-  id("relational-match/ge", "relational-match/"),
+  id("relational-match/ge", "@relational-match/"),
   token('"ge"'));
 
 SieveGrammar.addTag(
-  id("relational-match/lt", "relational-match/"),
+  id("relational-match/lt", "@relational-match/"),
   token('"lt"'));
 
 SieveGrammar.addTag(
-  id("relational-match/le", "relational-match/"),
+  id("relational-match/le", "@relational-match/"),
   token('"le"'));
 
 SieveGrammar.addTag(
-  id("relational-match/eq", "relational-match/"),
+  id("relational-match/eq", "@relational-match/"),
   token('"eq"'));
 
 SieveGrammar.addTag(
-  id("relational-match/ne", "relational-match/"),
+  id("relational-match/ne", "@relational-match/"),
   token('"ne"'));
 
 SieveGrammar.addGroup(
@@ -59,7 +59,7 @@ SieveGrammar.addGroup(
  *  VALUE = ":value" relational-match
  */
 SieveGrammar.addTag(
-  id("match-type/value", "match-type/", "relational"),
+  id("match-type/value", "@match-type/", "relational"),
 
   token(":value"),
   parameters(
@@ -73,7 +73,7 @@ SieveGrammar.addTag(
  * Count should only be used with a numeric comparator.
  */
 SieveGrammar.addTag(
-  id("match-type/count", "match-type/", "relational"),
+  id("match-type/count", "@match-type/", "relational"),
   token(":count"),
   parameters(
     field("relational-match", "relational-match", '"eq"'))

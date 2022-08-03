@@ -18,7 +18,7 @@ import {
 } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 
 SieveGrammar.addTest(
-  id("test/envelope", "test", "envelope"),
+  id("test/envelope", "@test", "envelope"),
 
   token("envelope"),
   tags(
@@ -34,7 +34,7 @@ SieveGrammar.addTest(
 // address [ADDRESS-PART] [COMPARATOR] [MATCH-TYPE]
 //             <header-list: string-list> <key-list: string-list>
 SieveGrammar.addTest(
-  id("test/address", "test"),
+  id("test/address", "@test"),
 
   token("address"),
   tags(
@@ -48,7 +48,7 @@ SieveGrammar.addTest(
 
 // <"exists"> <header-names: string-list>
 SieveGrammar.addTest(
-  id("test/exists", "test"),
+  id("test/exists", "@test"),
 
   token("exists"),
   parameters(
@@ -57,7 +57,7 @@ SieveGrammar.addTest(
 
 // <"header"> [COMPARATOR] [MATCH-TYPE] <header-names: string-list> <key-list: string-list>
 SieveGrammar.addTest(
-  id("test/header", "test"),
+  id("test/header", "@test"),
 
   token("header"),
   tags(
@@ -69,17 +69,17 @@ SieveGrammar.addTest(
 );
 
 SieveGrammar.addTest(
-  id("test/boolean/true", "test/boolean/"),
+  id("test/boolean/true", "@test/boolean/"),
   token("true")
 );
 
 SieveGrammar.addTest(
-  id("test/boolean/false", "test/boolean/"),
+  id("test/boolean/false", "@test/boolean/"),
   token("false")
 );
 
 SieveGrammar.addGroup(
-  id("test/boolean", "test"),
+  id("test/boolean", "@test"),
   // Boolean tests don't have an implicit default value
   { value: "false", mandatory: true }
 );
@@ -88,12 +88,12 @@ SieveGrammar.addGroup(
 // size <":over" / ":under"> <limit: number>
 
 SieveGrammar.addTag(
-  id("test/size/operator/over", "test/size/operator/"),
+  id("test/size/operator/over", "@test/size/operator/"),
   token(":over")
 );
 
 SieveGrammar.addTag(
-  id("test/size/operator/under", "test/size/operator/"),
+  id("test/size/operator/under", "@test/size/operator/"),
   token(":under")
 );
 
@@ -105,7 +105,7 @@ SieveGrammar.addGroup(
 );
 
 SieveGrammar.addTest(
-  id("test/size", "test"),
+  id("test/size", "@test"),
 
   token("size"),
 
@@ -150,7 +150,7 @@ class SieveTestList extends SieveAbstractElement {
       if (this.probeByName("whitespace", parser))
         element[LEADING_WHITESPACE].init(parser);
 
-      element[TEST] = this.createByClass(["test", "operator"], parser);
+      element[TEST] = this.createByClass(["@test", "@operator"], parser);
 
       element[TAILING_WHITESPACE] = this.createByName("whitespace");
       if (this.probeByName("whitespace", parser))
@@ -201,10 +201,15 @@ class SieveTestList extends SieveAbstractElement {
 
     let idx = this.tests.length;
 
-    if (sibling && (sibling.id() >= 0))
-      for (idx = 0; idx < this.tests.length; idx++)
-        if (this.tests[idx][TEST].id() === sibling.id())
-          break;
+    if (sibling) {
+      if (sibling.id)
+        sibling = sibling.id();
+
+      if (sibling >= 0)
+        for (idx = 0; idx < this.tests.length; idx++)
+          if (this.tests[idx][TEST].id() === sibling)
+            break;
+    }
 
     this.tests.splice(idx, 0, element);
     elm.parent(this);
@@ -232,8 +237,26 @@ class SieveTestList extends SieveAbstractElement {
   }
 
   /**
+   * Checks if the block has a child with the given identifier
    *
-   * @param {id} childId
+   * @param {string} identifier
+   *   the childs unique id
+   * @returns {boolean}
+   *   true in case the child is known otherwise false.
+   */
+  hasChild(identifier) {
+    for (const elm of this.tests)
+      if (elm[TEST].id() === identifier)
+        return true;
+
+    return false;
+  }
+
+  /**
+   * Removes the given child element from the test list.
+   *
+   * @param {string} childId
+   *  the child element's unique id.
    * @param {boolean} cascade
    * @param {SieveAbstractElement} stop
    * @returns {SieveAbstractElement}
@@ -299,7 +322,7 @@ class SieveTestList extends SieveAbstractElement {
 
 
 SieveGrammar.addGeneric(
-  id("test/testlist", "test/"),
+  id("test/testlist", "@test/"),
   SieveTestList,
   (parser) => { return parser.isChar("("); });
 

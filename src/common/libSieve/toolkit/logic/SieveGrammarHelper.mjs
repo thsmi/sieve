@@ -13,8 +13,6 @@
  * Implements syntactic sugar to make the AST files more readable.
  */
 
-// TODO Implement shorthands for extending classes.
-
 /**
  * Creates a container for mandatory fields.
  *
@@ -72,7 +70,7 @@ function tags(...items) {
  * @param  {...any} items
  *   the field which should be added to this parameters container.
  * @returns {object}
- *   the container.
+ *   the parameter specification.
  */
 function parameters(...items) {
   return fields("parameters", ...items);
@@ -97,7 +95,8 @@ function parameters(...items) {
  * @param {string} [imports]
  *   the optional imports needed for this tag.
  *
- * @returns
+ * @returns {object}
+ *   the tag specification.
  */
 function tag(key, type, imports) {
 
@@ -124,7 +123,7 @@ function tag(key, type, imports) {
  * @param {string|object} [requires]
  *   the imports required by this optional element.
  * @returns {object}
- *   the optional structure.
+ *   the optional structure specification.
  */
 function optional(field, requires) {
   return {
@@ -140,11 +139,17 @@ function optional(field, requires) {
  *
  * @param {string} key
  *   the fields unique name.
- * @param {*} type
- * @param {*} value
- * @returns
+ * @param {string} type
+ *   the fields type.
+ * @param {string} [value]
+ *   the fields optional default value
+ *
+ * @returns {object}
+ *   the field specification.
  */
 function field(key, type, value) {
+
+  // TODO we should use an Identifier to key and type...
 
   if ((typeof(value) === "undefined") || (value === null)) {
     return {
@@ -164,22 +169,30 @@ function field(key, type, value) {
 // TODO rename this to stringProperty, numericProperty and stringListProperty.
 
 /**
+ * Defines a numeric property.
  *
  * @param {string} key
  *   the fields unique name.
- * @param {*} value
- * @returns
+ * @param {number} value
+ *   the default value
+ *
+ * @returns {object}
+ *   the numeric field specification.
  */
 function numericField(key, value) {
   return field(key, "number", `${value}`);
 }
 
 /**
+ * Defines a string property
  *
  * @param {string} key
  *   the fields unique name.
- * @param {*} value
- * @returns
+ * @param {string} value
+ *   the default value, if omitted an empty string will be used.
+ *
+ * @returns {object}
+ *   the string field specification.
  */
 function stringField(key, value = "") {
   // TODO properly escape value
@@ -187,11 +200,15 @@ function stringField(key, value = "") {
 }
 
 /**
+ * Defines a string list property
  *
- * @param {string} keys
+ * @param {string} key
  *   the fields unique name.
- * @param {*} values
- * @returns
+ * @param {string|string[]} values
+ *   the default values, if omitted a single empty string will be used.
+ *
+ * @returns {object}
+ *   the string list specification
  */
 function stringListField(key, values = "") {
 
@@ -206,22 +223,31 @@ function stringListField(key, values = "") {
 }
 
 /**
- *
+ * Wraps an identifier with node and type information.
  */
 class Identifier {
 
   /**
+   * Creates a new instance.
    *
-   * @param {*} node
-   * @param {*} type
+   * @param {string} node
+   *   the unique node name.
+   * @param {string} [type]
+   *   the type name, if omitted it will use the node name.
    */
   constructor(node, type) {
 
-    if ((typeof(type) === "undefined") || (type === null)) {
-      type = node;
-    }
+    if (node.startsWith("@"))
+      throw Error("Invalid node name");
 
     this.node = node;
+
+    if ((typeof(type) === "undefined") || (type === null))
+      type = `@${this.node}`;
+
+    if (!type.startsWith("@"))
+      throw Error(`Invalid type ${type}`);
+
     this.type = type;
   }
 }
@@ -233,8 +259,10 @@ class Identifier {
 class Imports {
 
   /**
+   * Creates a new instance.
    *
    * @param {*} requires
+   *   the requirements needed by the element.
    */
   constructor(requires) {
     this.requires = null;
@@ -257,7 +285,7 @@ class Imports {
 
   /**
    *
-   * @returns
+   * @returns {object}
    */
   getImports() {
     return this.requires;
@@ -290,8 +318,11 @@ function id(node, type, requires) {
 }
 
 /**
+ * Creates a new token matcher specification.
+ * A token matcher tests if the the given token matches.
  *
- * @returns
+ * @returns {object}
+ *   the matcher specification
  */
 function tokenMatcher() {
   // return { matcher : (scope, parser, lexer) => { return parser.startsWith(scope.properties[0].token); } };
@@ -299,8 +330,11 @@ function tokenMatcher() {
 }
 
 /**
+ * Creates a new class matcher specification.
+ * A class matcher probes if any of the given types matches.
  *
- * @returns
+ * @returns {object}
+ *   the matcher specification
  */
 function classMatcher() {
   return { matcher : (scope, parser, lexer) => { return lexer.probeByClass(scope.items, parser); } };
@@ -329,7 +363,7 @@ function token(token, postfix) {
 /**
  *
  * @param  {...any} items
- * @returns
+ * @returns {object}
  */
 function any(...items) {
   return { "any" : items};
@@ -338,7 +372,7 @@ function any(...items) {
 /**
  *
  * @param  {...any} items
- * @returns
+ * @returns {object}
  */
 function all(...items) {
   return { "all" : items};
@@ -355,7 +389,7 @@ function all(...items) {
  *
  * @param {*} item
  * @param {*} value
- * @returns
+ * @returns {object}
  */
 function group(item, value) {
 

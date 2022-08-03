@@ -17,6 +17,6 @@ import {
 } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 
 SieveGrammar.addTag(
-  id("match-type/regex", "match-type/", "regex"),
+  id("match-type/regex", "@match-type/", "regex"),
   token(":regex")
 );

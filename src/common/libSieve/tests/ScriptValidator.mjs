@@ -11,8 +11,6 @@
  */
 
 import { SieveGrammar } from "./../toolkit/logic/GenericElements.mjs";
-import { SieveLexer } from "./../toolkit/SieveLexer.mjs";
-import { SieveDocument } from "./../toolkit/SieveScriptDOM.mjs";
 import { SieveCapabilities } from "./../toolkit/logic/GenericCapabilities.mjs";
 
 let suite = null;
@@ -41,12 +39,7 @@ if (!suite)
  */
 function parseScript(script, capabilities) {
 
-  SieveGrammar.create(capabilities);
-
-  if (capabilities)
-    SieveLexer.capabilities(capabilities);
-
-  const doc = new SieveDocument(SieveLexer, null);
+  const doc = SieveGrammar.create(capabilities);
 
   doc.script(script);
 
@@ -127,12 +120,7 @@ suite.expectValidScript = expectValidScript;
  */
 function expectInvalidScript(script, exception, capabilities) {
 
-  SieveGrammar.create(capabilities);
-
-  if (capabilities)
-    SieveLexer.capabilities(capabilities);
-
-  const doc = new SieveDocument(SieveLexer, null);
+  const doc = SieveGrammar.create(capabilities);
 
   suite.logTrace("Start Parsing Script");
   try {
@@ -166,12 +154,7 @@ suite.expectInvalidScript = expectInvalidScript;
  */
 function expectValidSnippet(type, snippet, capabilities) {
 
-  SieveGrammar.create(capabilities);
-
-  if (capabilities)
-    SieveLexer.capabilities(capabilities);
-
-  const doc = new SieveDocument(SieveLexer, null);
+  const doc = SieveGrammar.create(capabilities);
 
   // Create element with defaults and convert it to a script snippet...
   const element = doc.createByName(type);

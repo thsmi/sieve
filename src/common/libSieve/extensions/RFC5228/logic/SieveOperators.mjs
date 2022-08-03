@@ -60,10 +60,10 @@ class SieveNotOperator extends SieveAbstractElement {
 
     this.whiteSpace[BEFORE_OPERATOR].init(parser);
 
-    if (!this.probeByClass(["test", "operator"], parser))
+    if (!this.probeByClass(["@test", "@operator"], parser))
       throw new Error("Test command expected but found:\n'" + parser.bytes(MAX_QUOTE_LEN) + "'...");
 
-    this._test = this.createByClass(["test", "operator"], parser);
+    this._test = this.createByClass(["@test", "@operator"], parser);
 
     if (this.probeByName("whitespace", parser))
       this.whiteSpace[AFTER_OPERATOR].init(parser);
@@ -72,8 +72,22 @@ class SieveNotOperator extends SieveAbstractElement {
   }
 
   /**
+   * Checks if the block has a child with the given identifier
+   *
+   * @param {string} identifier
+   *   the child's unique id
+   * @returns {boolean}
+   *   true in case the child is known otherwise false.
+   */
+  hasChild(identifier) {
+    return (this.test().id() === identifier);
+  }
+
+  /**
+   * Removes the given child from this element.
    *
    * @param {string} childId
+   *   the child's unique id.
    * @param {boolean} cascade
    * @param {SieveAbstractElement} stop
    * @returns {SieveAbstractElement}
@@ -149,8 +163,8 @@ class SieveAnyOfAllOfTest extends SieveTestList {
   /**
    * @inheritdoc
    */
-  constructor(docshell, id) {
-    super(docshell, id);
+  constructor(docshell, identifier) {
+    super(docshell, identifier);
 
     this.whiteSpace = this.createByName("whitespace");
     this.isAllOf = true;
@@ -180,9 +194,10 @@ class SieveAnyOfAllOfTest extends SieveTestList {
 
   /**
    *
-   * @param {*} item
-   * @param {*} old
-   * @returns
+   * @param {SieveAbstractElement} item
+   * @param {String} old
+   * @returns {SieveAnyOfAllOfTest}
+   *   a self reference.
    */
   test(item, old) {
     if (typeof (item) === "undefined") {
@@ -199,9 +214,9 @@ class SieveAnyOfAllOfTest extends SieveTestList {
     // Release old test...
     this.append(item, old);
 
-    if (typeof (old) !== "undefined") {
-      this.removeChild(old.id());
-    }
+    if (typeof (old) !== "undefined")
+      this.removeChild(old);
+
     /* if (this._test)
       this._test.parent(null);
 
@@ -222,12 +237,12 @@ class SieveAnyOfAllOfTest extends SieveTestList {
 }
 
 SieveGrammar.addGeneric(
-  id("operator/not", "operator"),
+  id("operator/not", "@operator"),
   SieveNotOperator,
   (parser) => { return parser.startsWith("not"); });
 
 SieveGrammar.addGeneric(
-  id("operator/anyof", "operator"),
+  id("operator/anyof", "@operator"),
   SieveAnyOfAllOfTest,
   (parser) => {
     if (parser.startsWith("allof"))

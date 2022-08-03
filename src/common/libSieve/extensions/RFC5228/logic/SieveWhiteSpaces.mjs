@@ -172,7 +172,7 @@ class SieveWhiteSpace extends SieveAbstractElement {
    */
   isDeadCode() {
     for (const key in this.elements)
-      if (this.elements[key].nodeType !== "whitespace/")
+      if (this.elements[key].nodeType !== "@whitespace/")
         return false;
 
     return true;
@@ -200,12 +200,12 @@ class SieveWhiteSpace extends SieveAbstractElement {
     this.elements = [];
 
     // After the import section only deadcode and actions are valid
-    while (this.probeByClass(["whitespace/", "comment"], parser)) {
+    while (this.probeByClass(["@whitespace/", "@comment"], parser)) {
       // Check for CRLF...
       if (crlf && this.probeByName("whitespace/linebreak", parser))
         isCrlf = true;
 
-      this.elements.push(this.createByClass(["whitespace/", "comment"], parser));
+      this.elements.push(this.createByClass(["@whitespace/", "@comment"], parser));
 
       // break if we found a CRLF
       if (isCrlf)
@@ -229,27 +229,27 @@ class SieveWhiteSpace extends SieveAbstractElement {
 
 
 SieveGrammar.addGeneric(
-  id("whitespace/linebreak", "whitespace/"),
+  id("whitespace/linebreak", "@whitespace/"),
   SieveLineBreak,
   (parser) => { return parser.startsWith("\r\n"); });
 
 SieveGrammar.addGeneric(
-  id("whitespace/deadcode", "whitespace/"),
+  id("whitespace/deadcode", "@whitespace/"),
   SieveDeadCode,
   (parser) => { return (parser.isChar([" ", "\t"])); });
 
 SieveGrammar.addGeneric(
-  id("comment/bracketcomment", "comment"),
+  id("comment/bracketcomment", "@comment"),
   SieveBracketComment,
   (parser) => { return parser.startsWith("/*"); } );
 
 SieveGrammar.addGeneric(
-  id("comment/hashcomment", "comment"),
+  id("comment/hashcomment", "@comment"),
   SieveHashComment,
   (parser) => { return parser.isChar("#"); });
 
 SieveGrammar.addGeneric(
-  id("whitespace", "whitespace"),
+  id("whitespace", "@whitespace"),
   SieveWhiteSpace,
-  (parser, lexer) => { return lexer.probeByClass(["whitespace/", "comment"], parser); }
+  (parser, lexer) => { return lexer.probeByClass(["@whitespace/", "@comment"], parser); }
 );

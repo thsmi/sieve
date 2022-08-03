@@ -115,7 +115,7 @@ class SieveNumber extends SieveAbstractElement {
 }
 
 SieveGrammar.addGeneric(
-  id("number", "number/"),
+  id("number", "@number/"),
   SieveNumber,
   (parser) => { return parser.isNumber(parser);}
 );

@@ -90,7 +90,7 @@ class SieveIf extends SieveBlock {
 
     this.ws[BEFORE_TEST].init(parser);
 
-    this._test = this.createByClass(["test", "operator"], parser);
+    this._test = this.createByClass(["@test", "@operator"], parser);
 
     this.ws[BEFORE_BLOCK].init(parser);
 
@@ -288,19 +288,19 @@ class SieveCondition extends SieveBlockBody {
 }
 
 SieveGrammar.addGeneric(
-  id("condition/if", "condition/"),
+  id("condition/if", "@condition/"),
   SieveIf,
   (parser) => { return parser.startsWith("if"); });
 
 SieveGrammar.addGeneric(
-  id("condition/else", "condition/"),
+  id("condition/else", "@condition/"),
 
   SieveElse,
   // FIXME: use a token matcher
   (parser) => { return parser.startsWith("else"); });
 
 SieveGrammar.addGeneric(
-  id("condition", "condition"),
+  id("condition", "@condition"),
   SieveCondition,
   // FIXME: use a token matcher
   (parser) => {return parser.startsWith("if");});

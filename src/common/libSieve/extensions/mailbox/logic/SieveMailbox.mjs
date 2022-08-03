@@ -20,7 +20,7 @@ import {
 // fileinto [:create] <mailbox: string>
 
 SieveGrammar.addTag(
-  id("action/fileinto/create", "action/fileinto/", "mailbox"),
+  id("action/fileinto/create", "@action/fileinto/", "mailbox"),
   token(":create"));
 
 const fileinto = {
@@ -38,7 +38,7 @@ SieveGrammar.extendAction(fileinto);
 // mailboxexists <mailbox-names: string-list>
 
 SieveGrammar.addTest(
-  id("test/mailboxexists", "test", "mailbox"),
+  id("test/mailboxexists", "@test", "mailbox"),
 
   token("mailboxexists"),
   parameters(
@@ -48,7 +48,7 @@ SieveGrammar.addTest(
 // metadataexists <mailbox: string> <annotation-names: string-list>
 
 SieveGrammar.addTest(
-  id("test/metadataexists", "test", "mboxmetadata"),
+  id("test/metadataexists", "@test", "mboxmetadata"),
 
   token("metadataexists"),
   parameters(
@@ -71,7 +71,7 @@ SieveGrammar.addTest(
  */
 
 SieveGrammar.addTest(
-  id("test/metadata", "test", "mboxmetadata"),
+  id("test/metadata", "@test", "mboxmetadata"),
 
   token("metadata"),
   tags(
@@ -86,7 +86,7 @@ SieveGrammar.addTest(
 // servermetadataexists <annotation-names: string-list>
 
 SieveGrammar.addTest(
-  id("test/servermetadataexists", "test", "servermetadata"),
+  id("test/servermetadataexists", "@test", "servermetadata"),
 
   token("servermetadataexists"),
   parameters(
@@ -95,7 +95,7 @@ SieveGrammar.addTest(
 
 // servermetadata [MATCH-TYPE] [COMPARATOR] <annotation-name: string> <key-list: string-list>
 SieveGrammar.addTest(
-  id("test/servermetadata", "test", "servermetadata"),
+  id("test/servermetadata", "@test", "servermetadata"),
 
   token("servermetadata"),
   tags(

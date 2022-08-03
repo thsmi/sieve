@@ -19,13 +19,13 @@ import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 
 SieveGrammar.addAction(
-  id("action/return", "action", "include"),
+  id("action/return", "@action", "include"),
   token("return")
 );
 
 // global <value: string-list>
 SieveGrammar.addAction(
-  id("action/global", "action", { all: ["include", "variables"] }),
+  id("action/global", "@action", { all: ["include", "variables"] }),
 
   token("global"),
   parameters(
@@ -33,22 +33,22 @@ SieveGrammar.addAction(
 
 
 SieveGrammar.addTag(
-  id("action/include/once", "action/include/once", "include"),
+  id("action/include/once", "@action/include/once", "include"),
   token(":once"));
 
 
 SieveGrammar.addTag(
-  id("action/include/optional", "action/include/optional", "include"),
+  id("action/include/optional", "@action/include/optional", "include"),
   token(":optional"));
 
 
 SieveGrammar.addTag(
-  id("tag/location-type/global", "tag/location-type/", "include"),
+  id("tag/location-type/global", "@tag/location-type/", "include"),
   token(":global")
 );
 
 SieveGrammar.addTag(
-  id("tag/location-type/personal", "tag/location-type/", "include"),
+  id("tag/location-type/personal", "@tag/location-type/", "include"),
   token(":personal"));
 
 
@@ -61,7 +61,7 @@ SieveGrammar.addGroup(
 // include [LOCATION] [":once"] [":optional"] <value: string>
 
 SieveGrammar.addAction(
-  id("action/include", "action", "include"),
+  id("action/include", "@action", "include"),
 
   token("include"),
   tags(

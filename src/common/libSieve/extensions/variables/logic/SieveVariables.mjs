@@ -16,7 +16,7 @@ import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 // set [MODIFIER] <name: string> <value: string>
 
 SieveGrammar.addAction(
-  id("action/set", "action", "variables"),
+  id("action/set", "@action", "variables"),
 
   token("set"),
   tags(
@@ -30,7 +30,7 @@ SieveGrammar.addAction(
 
 // string [MATCH-TYPE] [COMPARATOR] <source: string-list> <key-list: string-list>
 SieveGrammar.addTest(
-  id("test/string", "test", "variables"),
+  id("test/string", "@test", "variables"),
 
   token("string"),
   tags(
@@ -43,54 +43,54 @@ SieveGrammar.addTest(
 
 
 SieveGrammar.addTag(
-  id("modifier/40/lower", "modifier/40/", "variables"),
+  id("modifier/40/lower", "@modifier/40/", "variables"),
   token(":lower")
 );
 
 SieveGrammar.addTag(
-  id("modifier/40/upper", "modifier/40/", "variables"),
+  id("modifier/40/upper", "@modifier/40/", "variables"),
   token(":upper")
 );
 
 SieveGrammar.addGroup(
-  id("modifier/40", "modifier/")
+  id("modifier/40", "@modifier/")
 );
 
 
 SieveGrammar.addTag(
-  id("modifier/30/lowerfirst", "modifier/30/", "variables"),
+  id("modifier/30/lowerfirst", "@modifier/30/", "variables"),
   token(":lowerfirst")
 );
 
 SieveGrammar.addTag(
-  id("modifier/30/upperfirst", "modifier/30/", "variables"),
+  id("modifier/30/upperfirst", "@modifier/30/", "variables"),
   token(":upperfirst")
 );
 
 SieveGrammar.addGroup(
-  id("modifier/30", "modifier/")
+  id("modifier/30", "@modifier/")
 );
 
 SieveGrammar.addTag(
-  id("modifier/20/quotewildcard", "modifier/20/", "variables"),
+  id("modifier/20/quotewildcard", "@modifier/20/", "variables"),
   token(":quotewildcard")
 );
 
 SieveGrammar.addGroup(
-  id("modifier/20", "modifier/")
+  id("modifier/20", "@modifier/")
 );
 
 
 SieveGrammar.addTag(
-  id("modifier/10/length", "modifier/10/", "variables"),
+  id("modifier/10/length", "@modifier/10/", "variables"),
   token(":length")
 );
 
 SieveGrammar.addGroup(
-  id("modifier/10", "modifier/")
+  id("modifier/10", "@modifier/")
 );
 
 
 SieveGrammar.addGroup(
-  id("modifier", "modifier")
+  id("modifier", "@modifier")
 );

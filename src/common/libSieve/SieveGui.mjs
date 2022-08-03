@@ -16,7 +16,6 @@ import { SieveTemplate } from "./toolkit/utils/SieveTemplate.mjs";
 
 import { SieveLexer } from "./toolkit/SieveLexer.mjs";
 import { SieveDesigner } from "./toolkit/SieveDesigner.mjs";
-import { SieveDocument } from "./toolkit/SieveScriptDOM.mjs";
 
 import { SieveSimpleBoxUI, SieveTrashBoxUI } from "./toolkit/widgets/Boxes.mjs";
 import { SieveCreateDragHandler } from "./toolkit/events/DragHandler.mjs";
@@ -70,41 +69,48 @@ function compact() {
 /**
  * Initializes the sieve rendering ui and script parser
  *
+ * @param {object} capabilities
+ *   the server's capabilities.
  **/
-function init() {
+function init(capabilities) {
+
   // Yes it's a global object
-  dom2 = new SieveDocument(SieveLexer, SieveDesigner);
+  dom2 = SieveGrammar.create(capabilities, SieveDesigner);
 
   const docShell = dom2;
-  let key;
 
   // populate the action section
   const actions = document.querySelector("#sivActions");
   while (actions.firstChild)
     actions.firstChild.remove();
 
-  for (key in SieveLexer.types["action"])
-    if (SieveLexer.types["action"][key].onCapable(SieveLexer.capabilities()))
-      actions.append(createMenuItem(key, "sieve/action", docShell));
+  const lexer = docShell.getLexer();
+
+  for (const action of lexer.getByType("@action")) {
+    if (action.onCapable(lexer.capabilities()))
+      actions.append(createMenuItem(action.item.id.node, "sieve/action", docShell));
+  }
 
   // populate the test section
   const tests = document.querySelector("#sivTests");
   while (tests.firstChild)
     tests.firstChild.remove();
 
-  for (key in SieveLexer.types["test"])
-    if (SieveLexer.types["test"][key].onCapable(SieveLexer.capabilities()))
-      if (key !== "test/boolean")
-        tests.append(createMenuItem(key, "sieve/test", docShell));
+  for (const test of lexer.getByType("@test")) {
+    if (test.onCapable(lexer.capabilities()))
+      if (test.item.id.node !== "test/boolean")
+        tests.append(createMenuItem(test.item.id.node, "sieve/test", docShell));
+  }
 
   // populate the operator section
   const operators = document.querySelector("#sivOperators");
   while (operators.firstChild)
     operators.firstChild.remove();
 
-  for (key in SieveLexer.types["operator"])
-    if (SieveLexer.types["operator"][key].onCapable(SieveLexer.capabilities()))
-      operators.append(createMenuItem(key, "sieve/operator", docShell));
+  for (const operator of lexer.getByType("@operator")) {
+    if (operator.onCapable(lexer.capabilities()))
+      operators.append(createMenuItem(operator.id.node, "sieve/operator", docShell));
+  }
 
   // create the trash bin
   const trash = document.querySelector("#sivTrash");
@@ -149,13 +155,10 @@ function setSieveScript(script, capabilities) {
 
       capabilities = tmp;
     }
-
-    SieveLexer.capabilities(capabilities);
   }
 
-  SieveGrammar.create();
   // reset environment
-  init();
+  init(capabilities);
 
   if (!script)
     script = document.querySelector('#txtScript').value;

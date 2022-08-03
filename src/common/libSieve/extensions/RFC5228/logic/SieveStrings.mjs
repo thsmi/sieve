@@ -472,7 +472,7 @@ class SieveString extends SieveAbstractElement {
    * @inheritdoc
    */
   init(parser) {
-    this.string = this.createByClass(["string/"], parser);
+    this.string = this.createByClass(["@string/"], parser);
 
     return this;
   }
@@ -556,21 +556,21 @@ class SieveString extends SieveAbstractElement {
 
 
 SieveGrammar.addGeneric(
-  id("string/multiline", "string/"),
+  id("string/multiline", "@string/"),
 
   SieveMultiLineString,
   // FIXME: use a token matcher
   (parser) => { return parser.startsWith("text:"); });
 
 SieveGrammar.addGeneric(
-  id("string/quoted", "string/"),
+  id("string/quoted", "@string/"),
 
   SieveQuotedString,
   // FIXME: use a token matcher
   (parser) => { return parser.isChar("\""); });
 
 SieveGrammar.addGeneric(
-  id("stringlist", "stringlist"),
+  id("stringlist", "@stringlist"),
   SieveStringList,
   (parser, lexer) => {
     if (parser.isChar("["))
@@ -583,7 +583,7 @@ SieveGrammar.addGeneric(
   });
 
 SieveGrammar.addGeneric(
-  id("string", "string"),
+  id("string", "@string"),
   SieveString,
-  (parser, lexer) => { return lexer.probeByClass(["string/"], parser); }
+  (parser, lexer) => { return lexer.probeByClass(["@string/"], parser); }
 );

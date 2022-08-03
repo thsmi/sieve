@@ -26,7 +26,7 @@ import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 //           <method: string>
 
 SieveGrammar.addAction(
-  id("action/notify", "action", "enotify"),
+  id("action/notify", "@action", "enotify"),
 
   token("notify"),
   tags(
@@ -39,28 +39,28 @@ SieveGrammar.addAction(
 );
 
 SieveGrammar.addTag(
-  id("action/notify/from", "action/notify/from"),
+  id("action/notify/from", "@action/notify/from"),
 
   token(":from"),
   parameters(
     stringField("from")));
 
 SieveGrammar.addTag(
-  id("action/notify/importance", "action/notify/importance"),
+  id("action/notify/importance", "@action/notify/importance"),
 
   token(":importance"),
   parameters(
     stringField("importance", "2")));
 
 SieveGrammar.addTag(
-  id("action/notify/options", "action/notify/options"),
+  id("action/notify/options", "@action/notify/options"),
 
   token(":options"),
   parameters(
     stringListField("options")));
 
 SieveGrammar.addTag(
-  id("action/notify/message", "action/notify/message"),
+  id("action/notify/message", "@action/notify/message"),
 
   token(":message"),
 
@@ -71,7 +71,7 @@ SieveGrammar.addTag(
 // Usage:  valid_notify_method
 //           <notification-uris: string-list>
 SieveGrammar.addTest(
-  id("test/valid_notify_method", "test", "enotify"),
+  id("test/valid_notify_method", "@test", "enotify"),
 
   token("valid_notify_method"),
   parameters(
@@ -85,7 +85,7 @@ SieveGrammar.addTest(
 //            <key-list: string-list>
 
 SieveGrammar.addTest(
-  id("test/notify_method_capability", "test", "enotify"),
+  id("test/notify_method_capability", "@test", "enotify"),
 
   token("notify_method_capability"),
   tags(
@@ -104,12 +104,12 @@ SieveGrammar.addTest(
 // has precedence of 15.
 
 SieveGrammar.addTag(
-  id("modifier/15/encodeurl", "modifier/15/", all("variables", "enotify")),
+  id("modifier/15/encodeurl", "@modifier/15/", all("variables", "enotify")),
   token(":encodeurl")
 );
 
 SieveGrammar.addGroup(
-  id("modifier/15", "modifier/")
+  id("modifier/15", "@modifier/")
 );
 
 SieveGrammar.extendAction({

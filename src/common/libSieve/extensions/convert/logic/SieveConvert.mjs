@@ -32,12 +32,12 @@ const properties = [
 ];
 
 SieveGrammar.addTest(
-  id("test/convert", "test", "convert"),
+  id("test/convert", "@test", "convert"),
   token("convert"),
   ...properties);
 
 SieveGrammar.addAction(
-  id("action/convert", "action", "convert"),
+  id("action/convert", "@action", "convert"),
   token("convert"),
   ...properties
 );

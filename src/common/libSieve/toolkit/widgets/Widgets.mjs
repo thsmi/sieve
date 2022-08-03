@@ -315,7 +315,8 @@ class SieveDropDownWidget {
    *
    */
   initWidgets(sivElement) {
-    const widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
+    const widgets = SieveDesigner.getWidgetsByType(
+      this.nodeType, this.selector, sivElement.document().capabilities());
 
     for (const widget of widgets)
       widget.init(sivElement);
@@ -351,7 +352,9 @@ class SieveDropDownWidget {
    */
   save(sivElement) {
 
-    const widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
+    const widgets = SieveDesigner.getWidgetsByType(
+      this.nodeType, this.selector, sivElement.document().capabilities());
+
     for (const widget of widgets)
       widget.save(sivElement);
   }
@@ -609,7 +612,8 @@ class SieveRadioGroupWidget {
    *
    */
   init(sivElement) {
-    const widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
+    const widgets = SieveDesigner.getWidgetsByType(
+      this.nodeType, this.selector, sivElement.document().capabilities());
 
     for (const widget of widgets)
       widget.init(sivElement);
@@ -623,7 +627,9 @@ class SieveRadioGroupWidget {
    */
   save(sivElement) {
 
-    const widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
+    const widgets = SieveDesigner.getWidgetsByType(
+      this.nodeType, this.selector, sivElement.document().capabilities());
+
     for (const widget of widgets)
       widget.save(sivElement);
   }
@@ -724,7 +730,8 @@ class SieveOverlayWidget {
    *   the sieve element which should be rendered.
    */
   async init(sivElement) {
-    const widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
+    const widgets = SieveDesigner.getWidgetsByType(
+      this.nodeType, this.selector, sivElement.document().capabilities());
 
     for (const widget of widgets)
       await widget.init(sivElement);
@@ -737,7 +744,8 @@ class SieveOverlayWidget {
    *
    */
   save(sivElement) {
-    const widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
+    const widgets = SieveDesigner.getWidgetsByType(
+      this.nodeType, this.selector, sivElement.document().capabilities());
 
     for (const widget of widgets)
       widget.save(sivElement);

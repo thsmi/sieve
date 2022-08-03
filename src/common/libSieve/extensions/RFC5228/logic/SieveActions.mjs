@@ -14,22 +14,22 @@ import { parameters, stringField, id, token } from "../../../toolkit/logic/Sieve
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 SieveGrammar.addAction(
-  id("action/discard", "action"),
+  id("action/discard", "@action"),
   token("discard")
 );
 
 SieveGrammar.addAction(
-  id("action/stop", "action"),
+  id("action/stop", "@action"),
   token("stop")
 );
 
 SieveGrammar.addAction(
-  id("action/keep", "action"),
+  id("action/keep", "@action"),
   token("keep")
 );
 
 SieveGrammar.addAction(
-  id("action/redirect", "action"),
+  id("action/redirect", "@action"),
 
   token("redirect"),
   parameters(
@@ -38,7 +38,7 @@ SieveGrammar.addAction(
 
 // <"fileinto"> <string> <";">
 SieveGrammar.addAction(
-  id("action/fileinto", "action", "fileinto"),
+  id("action/fileinto", "@action", "fileinto"),
 
   token("fileinto"),
   parameters(

@@ -20,7 +20,7 @@ import {
 // Usage:   environment [COMPARATOR] [MATCH-TYPE] <name: string> <key-list: string-list>
 
 SieveGrammar.addTest(
-  id("test/environment", "test", "environment"),
+  id("test/environment", "@test", "environment"),
   token("environment"),
   tags(
     tag("match-type"),

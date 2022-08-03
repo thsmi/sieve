@@ -16,7 +16,7 @@ import { parameters, stringListField, id, token } from "../../../toolkit/logic/S
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 SieveGrammar.addAction(
-  id("import/require", "import/"),
+  id("import/require", "@import/"),
   token("require"),
   parameters(
     stringListField("capabilities"))
@@ -32,9 +32,9 @@ class SieveBlockImport extends SieveBlockBody {
    */
   init(parser) {
     // The import section consists of require and deadcode statements...
-    while (this.probeByClass(["import/", "whitespace"], parser))
+    while (this.probeByClass(["@import/", "@whitespace"], parser))
       this.elms.push(
-        this.createByClass(["import/", "whitespace"], parser));
+        this.createByClass(["@import/", "@whitespace"], parser));
 
     // check if the imports are valid
     for (const item of this.elms) {
@@ -81,30 +81,36 @@ class SieveBlockImport extends SieveBlockBody {
     // We should try to insert new requires directly after the last require
     // statement otherwise it looks strange. So we just keep track of the
     // last require we found.
-    let last = null;
+    let last = -1;
 
-    for (const item of this.elms) {
+    for (const [index, item] of this.elms.entries()) {
       if (item.nodeName() !== "import/require")
         continue;
 
       if (item.getElement("capabilities").contains(require))
         return this;
 
-      last = item;
+      last = index;
     }
 
+    // We need to add an import
     const elm = this.createByName("import/require");
     elm.getElement("capabilities").values(require);
 
-    this.append(elm, last);
+    // no other import was found means just push
+    if (last === -1) {
+      this.elms.push(elm);
+      return this;
+    }
 
+    this.elms.splice(last, 0, elm);
     return this;
   }
 }
 
 SieveGrammar.addGeneric(
-  id("import", "import"),
+  id("import", "@import"),
   SieveBlockImport,
   // FIXME: use a calls matcher.
-  (parser, lexer) => { return lexer.probeByClass(["import/", "whitespace"], parser); });
+  (parser, lexer) => { return lexer.probeByClass(["@import/", "@whitespace"], parser); });
 

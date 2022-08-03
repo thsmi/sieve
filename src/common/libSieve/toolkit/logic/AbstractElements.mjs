@@ -245,6 +245,15 @@ class SieveAbstractElement {
 
     if ((stop) && (this.id() === stop.id()))
       cascade = false;
+
+    // The worst case we have a parent but our parent does not know us...
+    if (this._parent && !this._parent.hasChild(this.id())) {
+      // ... then we simply remove the parent because deleting an non
+      // existent child will create an error.
+      this.parent(null);
+      return this;
+    }
+
     // ...and remove this node
     const elm = this._parent.removeChild(this._id, cascade, stop);
 
@@ -252,8 +261,7 @@ class SieveAbstractElement {
       throw new Error("Could not remove Node");
 
     // ... finally cleanup all evidence to our parent Node;
-    this._parent = null;
-
+    this.parent(null);
     return elm;
   }
 }

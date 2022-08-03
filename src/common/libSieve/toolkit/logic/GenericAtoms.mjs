@@ -11,7 +11,6 @@
  */
 
 import { SieveAbstractElement } from "./AbstractElements.mjs";
-import { SieveLexer } from "./../SieveLexer.mjs";
 
 // TODO we need to do a cleanup, which means document caches elements by their id.
 // These elements should be also tracked by the generic elements. especially with tags.
@@ -185,7 +184,7 @@ class SieveGenericLiteral extends SieveAbstractGeneric {
    */
   parse(parser) {
 
-    if (this.getDocument().probeByClass("whitespace", parser))
+    if (this.getDocument().probeByClass("@whitespace", parser))
       this._pre.init(parser);
     else
       this._pre.init("");
@@ -526,7 +525,7 @@ class SieveGenericOptionalItem extends SieveAbstractGeneric {
       throw new Error("Tag without an id");
 
     // Skip element if it is not supported by the current system
-    if (SieveLexer.supportsByName(tag.type) === false)
+    if (this.getDocument().supportsByName(tag.type) === false)
       return;
 
     const item = {};
@@ -593,7 +592,7 @@ class SieveGenericOptionalItem extends SieveAbstractGeneric {
     // ... in any case it needs to be separated by a whitespace
     // if not we know are no tags.
     let whitespace = this.getParent().createByName("whitespace", "");
-    if (this.getDocument().probeByClass("whitespace", parser))
+    if (this.getDocument().probeByClass("@whitespace", parser))
       whitespace.init(parser);
 
     // then we clone the tags element to track duplicate elements.
@@ -622,7 +621,7 @@ class SieveGenericOptionalItem extends SieveAbstractGeneric {
         whitespace = this.getParent().createByName("whitespace", "");
 
         // In case there are no more whitespaces we can skip right here.
-        if (this.getDocument().probeByClass("whitespace", parser))
+        if (this.getDocument().probeByClass("@whitespace", parser))
           whitespace.init(parser);
 
         hasTags = true;
@@ -649,7 +648,9 @@ class SieveGenericOptionalItem extends SieveAbstractGeneric {
    */
   require(imports) {
 
-    for (const item of this._optionals.values()) {
+    for (const id of this._elements.values()) {
+
+      const item = this._optionals.get(id);
       item.element.require(imports);
     }
 

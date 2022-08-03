@@ -41,6 +41,16 @@ class SieveDocument {
   }
 
   /**
+   * Returns a reference to the document's lexer.
+   *
+   * @returns {SieveLexer}
+   *   the document's lexer instance.
+   */
+  getLexer() {
+    return this._lexer;
+  }
+
+  /**
    * Returns the root node for this document
    * @returns {SieveElement} the documents root node.
    */

@@ -14,18 +14,18 @@ import { id, token } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 SieveGrammar.addTag(
-  id("address-part/domain", "address-part/"),
+  id("address-part/domain", "@address-part/"),
   token(":domain")
 );
 
 
 SieveGrammar.addTag(
-  id("address-part/local", "address-part/"),
+  id("address-part/local", "@address-part/"),
   token(":localpart")
 );
 
 SieveGrammar.addTag(
-  id("address-part/all", "address-part/"),
+  id("address-part/all", "@address-part/"),
   token(":all")
 );
 

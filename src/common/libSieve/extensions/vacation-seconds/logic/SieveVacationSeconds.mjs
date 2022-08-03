@@ -25,7 +25,7 @@ const vacationSeconds = {
 SieveGrammar.extendAction(vacationSeconds);
 
 SieveGrammar.addTag(
-  id("action/vacation/interval/seconds", "action/vacation/interval/", "vacation-seconds"),
+  id("action/vacation/interval/seconds", "@action/vacation/interval/", "vacation-seconds"),
   token(":seconds"),
   parameters(
     numericField("seconds", 1000))

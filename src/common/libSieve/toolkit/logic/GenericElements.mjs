@@ -19,6 +19,7 @@ import {
 
 import { SieveLexer } from "./../SieveLexer.mjs";
 import * as SieveGrammarHelper from "./SieveGrammarHelper.mjs";
+import { SieveDocument } from "../SieveScriptDOM.mjs";
 
 /**
  *
@@ -28,7 +29,8 @@ class SieveAbstractGeneric {
   /**
    * Creates a new instance.
    *
-   * @param {*} item
+   * @param {object} item
+   *   the element's specification
    */
   constructor(item) {
     this.item = item;
@@ -101,7 +103,7 @@ class SieveAbstractGeneric {
 /**
  *
  */
-class SieveGenericGroup extends SieveAbstractGeneric {
+class SieveGroupSpecification extends SieveAbstractGeneric {
 
 
   /**
@@ -141,7 +143,16 @@ class SieveGenericGroup extends SieveAbstractGeneric {
 }
 
 
-const dictionary = new Map();
+// TODO the spec should contain an initlaizer call, which decides what instance to create.
+const dictionary = {
+  "structures" : new Map(),
+  "groups" : new Map(),
+  "generics" : new Map(),
+
+  has: (item) => {
+    return dictionary.structures.has(item) || dictionary.groups.has(item) || dictionary.generics.has(item);
+  }
+};
 
 
 /**
@@ -178,7 +189,7 @@ function addAction(id, token, ...properties) {
   // terminates an action here.
   definition["properties"].push(SieveGrammarHelper.token(";", "\r\n"));
 
-  dictionary.set(definition.id.node, definition);
+  dictionary.structures.set(definition.id.node, definition);
 }
 
 
@@ -203,7 +214,7 @@ function addTest(id, token, ...properties) {
 
   // ... there has to be a token ...
   if (definition.token === null || typeof (definition.token) === 'undefined') {
-    throw new Error("Token expected but not found" + id.name);
+    throw new Error(`Token expected but not found ${id.name}`);
   }
 
   if (definition.id.node === null || typeof (definition.id.node) === 'undefined')
@@ -212,7 +223,7 @@ function addTest(id, token, ...properties) {
   if (dictionary.has[definition.id.node])
     throw new Error("Test already registered");
 
-  dictionary.set(definition.id.node, definition);
+  dictionary.structures.set(definition.id.node, definition);
 }
 
 /**
@@ -234,13 +245,16 @@ function addTag(id, token, ...properties) {
     "properties": properties
   };
 
-  dictionary.set(definition.id.node, definition);
+  dictionary.structures.set(definition.id.node, definition);
 }
 
 /**
+ * Registers a new group specification.
  *
- * @param {*} group
- *
+ * @param {Identifier} id
+ *   the group's unique identifier.
+ * @param {...object} [options]
+ *   optional group specifications.
  */
 function addGroup(id, ...options) {
 
@@ -250,7 +264,8 @@ function addGroup(id, ...options) {
     ...SieveGrammarHelper.classMatcher()
   };
 
-  definition["items"] = [`${definition.id.node}/`];
+  // We assume a type with the same name exists...
+  definition["items"] = [`@${definition.id.node}/`];
 
   for (const option of options)
     definition = { ...definition, ...option };
@@ -258,26 +273,10 @@ function addGroup(id, ...options) {
   if (definition.id.node === null || typeof (definition.id.node) === 'undefined')
     throw new Error("Node expected but not found");
 
-  SieveLexer.registerGeneric(
-    definition.id.node, definition.id.type,
-    new SieveGenericGroup(definition));
+  dictionary.groups.set(definition.id.node, definition);
 
 }
 
-
-/**
- * Initializes the lexer with the grammar rules.
- */
-function createGrammar() {
-
-  for (const item of dictionary.values()) {
-    SieveLexer.registerGeneric(
-      item.id.node, item.id.type,
-      new SieveAbstractGeneric(item));
-  }
-
-  // todo we should return a lexer so that the grammar is scoped.
-}
 
 /**
  *
@@ -318,7 +317,8 @@ function extendGeneric(item) {
   if (!dictionary.has(item.extends))
     return;
 
-  const x = dictionary.get(item.extends);
+  // We currently only support extending structures....
+  const x = dictionary.structures.get(item.extends);
 
   if (item.properties) {
     item.properties.forEach(function (property) {
@@ -333,44 +333,42 @@ function extendGeneric(item) {
   }
 }
 
+
+// TODO should be merged with abstract generic and renamed to "specification".
 /**
- *
+ * Implements a wrapper for a Generic element
  */
-class GenericElement{
+class SieveGenericSpecification {
 
   /**
+   * Creates a new Instance.
    *
-   * @param {*} id
-   * @param {*} clazz
-   * @param {*} matcher
+   * @param {Identifier} id
+   *   the element's unique identifier.
+   * @param {Class} initializer
+   *   the class which should be used to create new object.
+   * @param {Function} matcher
+   *   the matcher function which checks if a document snippet is compatible
+   *   with this specification or not.
    */
-  constructor(id, clazz, matcher) {
-    this.clazz = clazz;
-    this.matcher = matcher;
+  constructor(id, initializer, matcher) {
+    this.initializer = initializer;
+    this.onProbe = matcher;
     this.id = id;
   }
 
   /**
+   * Creates a new Sieve Element for this specification.
    *
-   * @param {*} parser
-   * @param {*} lexer
-   * @returns
-   */
-  onProbe(parser, lexer) {
-    if ((typeof(this.matcher) === "undefined") || (this.matcher === null))
-      return false;
-
-    return this.matcher(parser, lexer);
-  }
-
-  /**
-   *
-   * @param {*} docshell
-   * @param {*} id
-   * @returns
+   * @param {SieveDocument} docshell
+   *   the document which owns this element's instance
+   * @param {string} id
+   *   the new element's unique id.
+   * @returns {SieveAbstractElement}
+   *   the new instance.
    */
   onNew(docshell, id) {
-    const instance = new this.clazz(docshell, id);
+    const instance = new this.initializer(docshell, id);
 
     // Fixme remove this ugly hack.
     instance["nodeName"] = () => { return this.id.node; };
@@ -379,6 +377,12 @@ class GenericElement{
     return instance;
   }
 
+  /**
+   * Checks if the element is supported by the capabilities
+   *
+   * @returns {boolean}
+   *   true in case the server supports this tag otherwise false.
+   */
   onCapable() {
     // TODO: Read capabilities from id element....
     return true;
@@ -386,16 +390,74 @@ class GenericElement{
 }
 
 /**
+ * Add a definition for a generic element.
  *
- * @param {*} id
- * @param {*} initializer
- * @param {*} matcher
+ * @param {Identifier} id
+ *   the elements unique identifier.
+ * @param {Class} initializer
+ *   the class which should be used to create new object.
+ * @param {Function} matcher
+ *   the matcher function which checks if a document snippet is compatible
+ *   with this specification or not.
  */
 function addGeneric(id, initializer, matcher) {
 
-  SieveLexer.registerGeneric(id.id.node, id.id.type,
-    new GenericElement(id.id, initializer, matcher));
+  const definition = {
+    ...id,
+    "initializer" : initializer,
+    "matcher" : matcher
+  };
+
+  dictionary.generics.set(definition.id.node, definition);
 }
+
+
+/**
+ * Initializes the lexer with the grammar rules.
+ *
+ * In case the grammar is already created is flushes and reinitializes
+ * the lexer.
+ *
+ * @param {Object<string, boolean>} [capabilities]
+ *   the capabilities, in case omitted they will be unchanged.
+ *
+ * @param {SieveDesigner} [designer]
+ *   the ui designer which should be used to render the document.
+ *   Can be null in case the document is headless and no html should be rendered.
+ *
+ * @returns {SieveDocument}
+ *   the document based on the given grammar.
+ */
+function createGrammar(capabilities, designer) {
+
+  // FIXME: Create a new lexer instance here as soon as the lexer is no more global.
+  SieveLexer.flush();
+
+  if ((typeof(capabilities) !== "undefined") && (capabilities !== null))
+    SieveLexer.capabilities(capabilities);
+
+  for (const item of dictionary.structures.values()) {
+    SieveLexer.registerGeneric(
+      item.id.node, item.id.type,
+      new SieveAbstractGeneric(item));
+  }
+
+  for (const spec of dictionary.groups.values()) {
+    SieveLexer.registerGeneric(
+      spec.id.node, spec.id.type,
+      new SieveGroupSpecification(spec));
+  }
+
+  for (const spec of dictionary.generics.values()) {
+    SieveLexer.registerGeneric(
+      spec.id.node, spec.id.type,
+      new SieveGenericSpecification(spec.id, spec.initializer, spec.matcher));
+  }
+
+  return new SieveDocument(SieveLexer, designer);
+}
+
+
 
 const SieveGrammar = {};
 

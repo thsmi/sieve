@@ -25,7 +25,7 @@ const DEFAULT_TIMEOUT = 600;
 [":seconds" <timeout: number>] [":last"] */
 
 SieveGrammar.addTest(
-  id("test/duplicate", "test", "duplicate"),
+  id("test/duplicate", "@test", "duplicate"),
   token("duplicate"),
   tags(
     tag("handle", "test/duplicate/handle"),
@@ -34,13 +34,13 @@ SieveGrammar.addTest(
     tag("last", "test/duplicate/last")));
 
 SieveGrammar.addTag(
-  id("test/duplicate/last", "test/duplicate/", "duplicate"),
+  id("test/duplicate/last", "@test/duplicate/", "duplicate"),
   token(":last")
 );
 
 // ":handle" <handle: string>
 SieveGrammar.addTag(
-  id("test/duplicate/handle", "test/duplicate/", "duplicate"),
+  id("test/duplicate/handle", "@test/duplicate/", "duplicate"),
 
   token(":handle"),
   parameters(
@@ -50,7 +50,7 @@ SieveGrammar.addTag(
 
 // uniqueid/header
 SieveGrammar.addTag(
-  id("test/duplicate/unique/header", "test/duplicate/unique/", "duplicate"),
+  id("test/duplicate/unique/header", "@test/duplicate/unique/", "duplicate"),
 
   token(":header"),
   parameters(
@@ -59,7 +59,7 @@ SieveGrammar.addTag(
 
 // uniqueid/id
 SieveGrammar.addTag(
-  id("test/duplicate/unique/id", "test/duplicate/unique/", "duplicate"),
+  id("test/duplicate/unique/id", "@test/duplicate/unique/", "duplicate"),
 
   token(":uniqueid"),
   parameters(
@@ -73,7 +73,7 @@ SieveGrammar.addGroup(
 
 // seconds
 SieveGrammar.addTag(
-  id("test/duplicate/seconds", "test/duplicate/seconds/", "duplicate"),
+  id("test/duplicate/seconds", "@test/duplicate/seconds/", "duplicate"),
 
   token(":seconds"),
   parameters(

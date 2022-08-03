@@ -68,11 +68,11 @@ function getCurrentDate() {
 }
 
 SieveGrammar.addTag(
-  id("zone/originalzone", "zone/", "date"),
+  id("zone/originalzone", "@zone/", "date"),
   token(":originalzone"));
 
 SieveGrammar.addTag(
-  id("zone/zone", "zone/", "date"),
+  id("zone/zone", "@zone/", "date"),
 
   token(":zone"),
   parameters(
@@ -90,7 +90,7 @@ SieveGrammar.addGroup(
 //                 <date-part: string> <key-list: string-list>
 
 SieveGrammar.addTest(
-  id("test/date", "test", "date"),
+  id("test/date", "@test", "date"),
 
   token("date"),
   tags(
@@ -112,7 +112,7 @@ SieveGrammar.addTest(
  */
 
 SieveGrammar.addTest(
-  id("test/currentdate", "test", "date"),
+  id("test/currentdate", "@test", "date"),
 
   token("currentdate"),
   tags(

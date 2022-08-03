@@ -21,7 +21,7 @@ import {
 // "body" [COMPARATOR] [MATCH-TYPE] [BODY-TRANSFORM] <key-list: string-list>
 
 SieveGrammar.addTest(
-  id("test/body", "test", "body"),
+  id("test/body", "@test", "body"),
   token("body"),
   tags(
     tag("body-transform"),
@@ -34,13 +34,13 @@ SieveGrammar.addTest(
 // -------------------------------------------------------------------------//
 
 SieveGrammar.addTag(
-  id("body-transform/raw", "body-transform/", "body"),
+  id("body-transform/raw", "@body-transform/", "body"),
 
   token(":raw")
 );
 
 SieveGrammar.addTag(
-  id("body-transform/content", "body-transform/", "body"),
+  id("body-transform/content", "@body-transform/", "body"),
 
   token(":content"),
   parameters(
@@ -48,7 +48,7 @@ SieveGrammar.addTag(
 );
 
 SieveGrammar.addTag(
-  id("body-transform/text", "body-transform/", "body"),
+  id("body-transform/text", "@body-transform/", "body"),
 
   token(":text")
 );

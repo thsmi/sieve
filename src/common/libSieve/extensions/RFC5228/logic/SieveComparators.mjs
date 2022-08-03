@@ -32,12 +32,12 @@ import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
  **/
 
 SieveGrammar.addTag(
-  id("comparator/i;octet", "comparator/"),
+  id("comparator/i;octet", "@comparator/"),
   token("\"i;octet\"")
 );
 
 SieveGrammar.addTag(
-  id("comparator/i;ascii-casemap", "comparator/"),
+  id("comparator/i;ascii-casemap", "@comparator/"),
   token("\"i;ascii-casemap\"")
 );
 
@@ -70,7 +70,7 @@ SieveGrammar.addTag(
  * equal. "04294967298" is less than "". "", "x", and "y" are equal.
  */
 SieveGrammar.addTag(
-  id("comparator/i;ascii-numeric", "comparator/", "comparator-i;ascii-numeric"),
+  id("comparator/i;ascii-numeric", "@comparator/", "comparator-i;ascii-numeric"),
   token("\"i;ascii-numeric\"")
 );
 

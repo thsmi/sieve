@@ -17,11 +17,11 @@ import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 // \----:local-part----/
 
 SieveGrammar.addTag(
-  id("address-part/user", "address-part/", "subaddress"),
+  id("address-part/user", "@address-part/", "subaddress"),
   token(":user")
 );
 
 SieveGrammar.addTag(
-  id("address-part/detail", "address-part/", "subaddress"),
+  id("address-part/detail", "@address-part/", "subaddress"),
   token(":detail")
 );

@@ -23,7 +23,7 @@ SieveGrammar.addTest(
   // ... this means we prefer spamtestplus, but
   // if we endup with spamtest it is also ok.
 
-  id("test/spamtest", "test", { any: ["spamtestplus", "spamtest"] }),
+  id("test/spamtest", "@test", { any: ["spamtestplus", "spamtest"] }),
 
   token("spamtest"),
   tags(
@@ -34,7 +34,7 @@ SieveGrammar.addTest(
 );
 
 SieveGrammar.addTag(
-  id("test/spamtestplus/percent", "test/spamtestplus/percent", "spamtestplus"),
+  id("test/spamtestplus/percent", "@test/spamtestplus/percent", "spamtestplus"),
   token(":percent")
 );
 
@@ -50,7 +50,7 @@ SieveGrammar.extendTest({
 
 // virustest [COMPARATOR] [MATCH-TYPE] <value: string>
 SieveGrammar.addTest(
-  id("test/virustest", "test", "virustest"),
+  id("test/virustest", "@test", "virustest"),
 
   token("virustest"),
   tags(

@@ -22,7 +22,7 @@ import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 const DEFAULT_DAYS = 7;
 
 SieveGrammar.addAction(
-  id("action/vacation", "action", "vacation"),
+  id("action/vacation", "@action", "vacation"),
 
   token("vacation"),
   tags(
@@ -38,7 +38,7 @@ SieveGrammar.addAction(
 
 
 SieveGrammar.addTag(
-  id("action/vacation/interval/days", "action/vacation/interval/" /*, "vacation" */),
+  id("action/vacation/interval/days", "@action/vacation/interval/"),
 
   token(":days"),
   parameters(
@@ -50,7 +50,7 @@ SieveGrammar.addGroup(
 );
 
 SieveGrammar.addTag(
-  id("action/vacation/subject", "action/vacation/subject"),
+  id("action/vacation/subject", "@action/vacation/subject"),
 
   token(":subject"),
   parameters(
@@ -58,7 +58,7 @@ SieveGrammar.addTag(
 );
 
 SieveGrammar.addTag(
-  id("action/vacation/from", "action/vacation/from"),
+  id("action/vacation/from", "@action/vacation/from"),
 
   token(":from"),
   parameters(
@@ -66,7 +66,7 @@ SieveGrammar.addTag(
 );
 
 SieveGrammar.addTag(
-  id("action/vacation/addresses", "action/vacation/addresses"),
+  id("action/vacation/addresses", "@action/vacation/addresses"),
 
   token(":addresses"),
   parameters(
@@ -74,12 +74,12 @@ SieveGrammar.addTag(
 );
 
 SieveGrammar.addTag(
-  id("action/vacation/mime", "action/vacation/mime"),
+  id("action/vacation/mime", "@action/vacation/mime"),
   token(":mime")
 );
 
 SieveGrammar.addTag(
-  id("action/vacation/handle", "action/vacation/handle"),
+  id("action/vacation/handle", "@action/vacation/handle"),
 
   token(":handle"),
   parameters(

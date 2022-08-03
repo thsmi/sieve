@@ -18,7 +18,7 @@ import {
 
 // "fileinto" [":copy"] <folder: string>
 SieveGrammar.addTag(
-  id("action/fileinto/copy", "action/fileinto/", "copy"),
+  id("action/fileinto/copy", "@action/fileinto/", "copy"),
   token(":copy")
 );
 
@@ -35,7 +35,7 @@ SieveGrammar.extendAction(fileinto);
 
 // "redirect" [":copy"] <address: string>
 SieveGrammar.addTag(
-  id("action/redirect/copy", "action/redirect/", "copy"),
+  id("action/redirect/copy", "@action/redirect/", "copy"),
   token(":copy")
 );
 

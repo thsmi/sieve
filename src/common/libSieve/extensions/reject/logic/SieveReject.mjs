@@ -15,7 +15,7 @@ import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 
 SieveGrammar.addAction(
-  id("action/reject", "action", "reject"),
+  id("action/reject", "@action", "reject"),
 
   token("reject"),
   parameters(
@@ -25,7 +25,7 @@ SieveGrammar.addAction(
 
 
 SieveGrammar.addAction(
-  id("action/ereject", "action", "ereject"),
+  id("action/ereject", "@action", "ereject"),
 
   token("ereject"),
   parameters(

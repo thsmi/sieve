@@ -16,17 +16,49 @@ const QUOTE_LENGTH = 50;
 
 // Sieve Lexer is a static class...
 
-// TODO There should be only one probe and one create method.
-// We should use a prefix to distinguish between types and unique names.
-// this.items[name] = obj;
-// this.items["@" + type][name] = obj;
+// TODO merge the lexer with the sieve DOM.
 
 const SieveLexer =
 {
-  types: {},
-  names: {},
+  ids: new Map(),
+
   maxId: 0,
   _capabilities: new SieveCapabilities(),
+
+  /**
+   * Clears and resets all lexer entries.
+   */
+  flush: function() {
+    this.ids.clear();
+  },
+
+  /**
+   * Returns a lexer entry by this node name.
+   * @param {string} id
+   *   the unique node name
+   * @returns {object}
+   *   the object definition.
+   */
+  getByName: function (id) {
+    if (id.startsWith("@"))
+      throw new Error(`Invalid node name ${id}.`);
+
+    return this.ids.get(id);
+  },
+
+  /**
+   * Returns a lexer entry by this type name.
+   * @param {string} id
+   *   the unique node name
+   * @returns {object[]}
+   *   all the object definition with the given type.
+   */
+  getByType : function(id) {
+    if (!id.startsWith("@"))
+      throw new Error(`Invalid type name ${id}.`);
+
+    return this.ids.get(id);
+  },
 
   /**
    * Registers a generic element
@@ -38,8 +70,6 @@ const SieveLexer =
    *  It does not have to be unique.
    * @param {object} obj
    *  the callbacks which are invoked, e.g. when probing, checking for capabilities or creating a new instance.
-   *
-   *
    */
   registerGeneric: function (name, type, obj) {
     if (!type)
@@ -48,8 +78,13 @@ const SieveLexer =
     if (!name)
       throw new Error("Lexer Error: Registration failed, element has no name");
 
-    if (typeof (this.types[type]) === 'undefined')
-      this.types[type] = {};
+
+    if (name.startsWith("@"))
+      throw new Error(`Invalid node name ${name}.`);
+
+    if (!type.startsWith("@"))
+      throw new Error(`Invalid type name ${type}.`);
+
 
     if (!obj.onProbe)
       throw new Error("Lexer Error: Registration failed, element has onProbe method");
@@ -60,8 +95,14 @@ const SieveLexer =
     if (!obj.onCapable)
       throw new Error("Lexer Error: Registration failed, element has onCapable method");
 
-    this.names[name] = obj;
-    this.types[type][name] = obj;
+    if (this.ids.has(name))
+      throw new Error(`Node name ${name} is already in use.`);
+
+    if (!this.ids.has(type))
+      this.ids.set(type, new Set());
+
+    this.ids.set(name, obj);
+    this.ids.get(type).add(obj);
   },
 
   /**
@@ -82,27 +123,29 @@ const SieveLexer =
     if (typeof (types) === "string")
       types = [types];
 
-
-    if (!Array.isArray(types)) {
+    if (!Array.isArray(types))
       throw new Error("Invalid Type list, not an array");
-    }
+
     // enumerate all selectors...
-    for (let type in types) {
-      type = types[type];
+    for (const type of types) {
 
-      for (const key in this.types[type]) {
+      // Skip in case it is an invalid type.
+      if (!type.startsWith("@"))
+        continue;
 
-        if (!(this.types[type][key].onCapable(this._capabilities)))
+      for (const value of this.ids.get(type)) {
+
+        if (!(value.onCapable(this._capabilities)))
           continue;
 
-        const result = this.types[type][key].onProbe(token, this);
+        const result = value.onProbe(token, this);
         if (typeof(result) !== "boolean")
           throw new Error("onProbe did not return a boolean");
 
         if (!result)
           continue;
 
-        return this.types[type][key];
+        return value;
       }
     }
 
@@ -180,10 +223,10 @@ const SieveLexer =
    *  the newly created element
    **/
   createByName: function (docshell, name, parser) {
-    if (!this.names[name])
+    if (!this.ids.has(name))
       throw new Error("No Constructor for >>" + name + "<< found");
 
-    return this.createInstance(docshell, this.names[name], parser);
+    return this.createInstance(docshell, this.ids.get(name), parser);
   },
 
   getMaxId: function () {
@@ -195,13 +238,13 @@ const SieveLexer =
     if ((typeof (parser) === "undefined") || parser.empty())
       return false;
 
-    if (typeof (this.names[name]) === "undefined")
+    if (!this.ids.has(name))
       throw new Error("Unknown name " + name);
 
-    if (!this.names[name].onCapable(this._capabilities))
+    if (!this.ids.get(name).onCapable(this._capabilities))
       return false;
 
-    if (!this.names[name].onProbe(parser, this))
+    if (!this.ids.get(name).onProbe(parser, this))
       return false;
 
     return true;
@@ -217,6 +260,7 @@ const SieveLexer =
    *  true in case a valid constructor was found otherwise false
    */
   probeByClass: function (types, parser) {
+
     // If there's no data then skip
     if ((typeof (parser) === "undefined") || parser.empty())
       return false;
@@ -229,10 +273,10 @@ const SieveLexer =
   },
 
   supportsByName: function (name) {
-    if (typeof (this.names[name]) === "undefined")
+    if (!this.ids.has(name))
       return false;
 
-    if (!this.names[name].onCapable(this._capabilities))
+    if (!this.ids.get(name).onCapable(this._capabilities))
       return false;
 
     return true;
@@ -247,11 +291,14 @@ const SieveLexer =
       throw new Error("Invalid Type list, not an array");
 
     // enumerate all selectors...
-    for (let selector in selectors) {
-      selector = selectors[selector];
+    for (const selector of selectors) {
 
-      for (const key in this.types[selector])
-        if (this.types[selector][key].onCapable(this._capabilities))
+      // Skip in case it is an invalid type.
+      if (!selector.startsWith("@"))
+        continue;
+
+      for (const type of this.ids.get(selector))
+        if (type.onCapable(this._capabilities))
           return true;
     }
 
@@ -264,7 +311,7 @@ const SieveLexer =
 
     this._capabilities = new SieveCapabilities(capabilities);
 
-    return this;
+    return this._capabilities;
   }
 };
 

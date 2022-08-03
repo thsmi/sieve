@@ -10,8 +10,6 @@
  *
  */
 
-import { SieveLexer } from "./SieveLexer.mjs";
-
 /**
  * A static class implementing a simple Layout engine.
  *
@@ -61,12 +59,25 @@ const SieveDesigner =
 
   },
 
-  getWidgetsByClass: function (clazz, id) {
+  /**
+   * Creates an instance for each widget definition which matches
+   * the given type name.
+   *
+   * @param {string} type
+   *   the type name for which widgets should be created
+   * @param {string} id
+   *   the new element's unique id
+   * @param {object} capabilities
+   *   the capabilities to which the widgets need to be compatible.
+   *
+   * @returns {object[]}
+   *   an array of widgets which is compatible to the given class name.
+   */
+  getWidgetsByType: function (type, id, capabilities) {
 
     const widgets = [];
 
-    const tmp = this.types[clazz];
-    const capabilities = SieveLexer.capabilities();
+    const tmp = this.types[type];
 
     for (const item in tmp) {
       if (tmp[item].onCapable(capabilities))

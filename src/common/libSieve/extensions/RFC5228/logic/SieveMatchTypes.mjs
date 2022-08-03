@@ -17,17 +17,17 @@ import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 // this should be done my the match-type group
 
 SieveGrammar.addTag(
-  id("match-type/is", "match-type/"),
+  id("match-type/is", "@match-type/"),
   token(":is")
 );
 
 SieveGrammar.addTag(
-  id("match-type/matches", "match-type/"),
+  id("match-type/matches", "@match-type/"),
   token(":matches")
 );
 
 SieveGrammar.addTag(
-  id("match-type/contains", "match-type/"),
+  id("match-type/contains", "@match-type/"),
   token(":contains")
 );
 

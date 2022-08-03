@@ -20,15 +20,15 @@ import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 // Usage: "pipe" [":copy"] [":try"] <program-name: string> [<arguments: string-list>]
 
 SieveGrammar.addTag(
-  id("action/pipe/try", "action/pipe/", "vnd.dovecot.pipe"),
+  id("action/pipe/try", "@action/pipe/", "vnd.dovecot.pipe"),
   token(":try"));
 
 SieveGrammar.addTag(
-  id("action/pipe/copy", "action/pipe/", all("copy", "vnd.dovecot.pipe")),
+  id("action/pipe/copy", "@action/pipe/", all("copy", "vnd.dovecot.pipe")),
   token(":copy"));
 
 SieveGrammar.addAction(
-  id("action/pipe", "action", "vnd.dovecot.pipe"),
+  id("action/pipe", "@action", "vnd.dovecot.pipe"),
 
   token("pipe"),
   tags(
@@ -41,7 +41,7 @@ SieveGrammar.addAction(
 
 // Usage: "filter" <program-name: string> [<arguments: string-list>]
 SieveGrammar.addAction(
-  id("action/filter", "action", "vnd.dovecot.filter"),
+  id("action/filter", "@action", "vnd.dovecot.filter"),
 
   token("filter"),
   parameters(
@@ -51,7 +51,7 @@ SieveGrammar.addAction(
 
 // Usage: "filter" <program-name: string> [<arguments: string-list>]
 SieveGrammar.addTest(
-  id("test/filter", "test", "vnd.dovecot.filter"),
+  id("test/filter", "@test", "vnd.dovecot.filter"),
 
   token("filter"),
   parameters(
@@ -62,12 +62,12 @@ SieveGrammar.addTest(
 
 
 SieveGrammar.addTag(
-  id("execute/input/pipe", "execute/input/"),
+  id("execute/input/pipe", "@execute/input/"),
   token(":pipe")
 );
 
 SieveGrammar.addTag(
-  id("execute/input/input", "execute/input/", "vnd.dovecot.execute"),
+  id("execute/input/input", "@execute/input/", "vnd.dovecot.execute"),
 
   token(":input"),
   parameters(
@@ -79,7 +79,7 @@ SieveGrammar.addGroup(
 );
 
 SieveGrammar.addTag(
-  id("execute/output", "execute/", all("variables", "vnd.dovecot.execute")),
+  id("execute/output", "@execute/", all("variables", "vnd.dovecot.execute")),
 
   token(":output"),
   parameters(
@@ -91,7 +91,7 @@ SieveGrammar.addTag(
 //  <program-name: string> [<arguments: string-list>]
 
 SieveGrammar.addAction(
-  id("action/execute", "action", "vnd.dovecot.execute"),
+  id("action/execute", "@action", "vnd.dovecot.execute"),
 
   token("execute"),
   tags(
@@ -103,7 +103,7 @@ SieveGrammar.addAction(
     stringListField("arguments")));
 
 SieveGrammar.addTest(
-  id("test/execute", "test", "vnd.dovecot.execute"),
+  id("test/execute", "@test", "vnd.dovecot.execute"),
 
   token("execute"),
   tags(

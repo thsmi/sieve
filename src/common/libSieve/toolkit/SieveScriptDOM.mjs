@@ -11,6 +11,9 @@
  */
 
 import { SieveParser } from "./SieveParser.mjs";
+import { SieveCapabilities } from "./logic/GenericCapabilities.mjs";
+
+const QUOTE_LENGTH = 50;
 
 /**
  * Creates a new document for sieve scripts it is used to parse
@@ -21,34 +24,109 @@ class SieveDocument {
   /**
    * Creates a new instance.
    *
-   * @param {SieveLexer} lexer
-   *   the lexer which should be associated with this document.
-   *   It will be used to create new objects.
+   * @param {Map} grammar
+   *   the grammar which contains the element and type specifications for this documents
    * @param {SieveDesigner} [widgets]
    *   the layout engine which should be used to render the document.
    *   Can be omitted in case the document should not be rendered.
    */
-  constructor(lexer, widgets) {
-    this._lexer = lexer;
+  constructor(grammar, widgets) {
     this._widgets = widgets;
     this._nodes = {};
 
-    // we cannot use this.createNode(). It would add a node without a parent...
+    this.grammar = grammar;
+
+    // we cannot use this.createBySpec(). It would add a node without a parent...
     // ... to this._nodes. All nodes without a valid parent and their...
     // ... descendants are removed when this.compact() is called. So that we...
     // ... would end up with an empty tree.
-    this._rootNode = this._lexer.createByName(this, "block/rootnode");
+    this.maxId = 0;
+    this._rootNode = this.getSpecByName("block/rootnode").onNew(this, this.maxId);
+    this.maxId++;
+
+    this._capabilities = new SieveCapabilities();
   }
 
   /**
-   * Returns a reference to the document's lexer.
+   * Returns the specification by his unique name.
    *
-   * @returns {SieveLexer}
-   *   the document's lexer instance.
+   * @param {string} id
+   *   the unique node name
+   * @returns {object}
+   *   the object specification or undefined.
    */
-  getLexer() {
-    return this._lexer;
+  getSpecByName(id) {
+    if (id.startsWith("@"))
+      throw new Error(`Invalid node name ${id}.`);
+
+    return this.grammar.get(id);
   }
+
+  /**
+   * Returns all specification for the  given type.
+   *
+   * @param {string} id
+   *   the unique node name
+   * @returns {object[]}
+   *   all the specifications or undefined.
+   */
+  getSpecsByType(id) {
+    if (!id.startsWith("@"))
+      throw new Error(`Invalid type name ${id}.`);
+
+    return this.grammar.get(id);
+  }
+
+  /**
+   * CHecks if one of the given type can parse the data and returns his
+   * specification.
+   *
+   * It stops as soon as an element indicates it can parse the data.
+   *
+   * @param {string|string[]} typeNames
+   *  the constructor types  which should be queried to find a matching constructor
+   * @param {SieveParser} token
+   *  the token which is to probe if the constructor is compatible
+   * @returns {object}
+   *  the specification which can parse the date or undefined.
+   *
+   * @throws
+   *  throws an exception in case querying a constructor failed or invalid type information is passed.
+   */
+  getSpecByTypes(typeNames, token) {
+    if (typeof (typeNames) === "string")
+      typeNames = [typeNames];
+
+    if (!Array.isArray(typeNames))
+      throw new Error("Invalid Type list, not an array");
+
+    // enumerate all selectors...
+    for (const typeName of typeNames) {
+
+      const specs = this.getSpecsByType(typeName);
+
+      if (!specs)
+        continue;
+
+      for (const spec of specs) {
+
+        if (!(spec.onCapable(this.capabilities())))
+          continue;
+
+        const result = spec.onProbe(token, this);
+        if (typeof (result) !== "boolean")
+          throw new Error("onProbe did not return a boolean");
+
+        if (!result)
+          continue;
+
+        return spec;
+      }
+    }
+
+    return null;
+  }
+
 
   /**
    * Returns the root node for this document
@@ -70,7 +148,7 @@ class SieveDocument {
    */
   _walk(elms, name, result) {
 
-    elms.forEach( (item) => {
+    elms.forEach((item) => {
 
       if (item.nodeName() === name) {
         result.push(item);
@@ -120,38 +198,79 @@ class SieveDocument {
     return this._widgets.widget(elm);
   }
 
+
   /**
-   * A shorthand to create children bound to this Element...
+   * Creates a new object from the given specification.
    *
-   * @param {string} name
-   *   the element name.
-   * @param {SieveParser|string} parser
-   *   a parser object or a string which holds the data that should be evaluated.
-   * @param {SieveAbstractElement} [parent]
-   *   a the elements optional parent.
-   * @returns {SieveAbstractElement}
-   *   the newly generated element.
+   * It will be automatically assigned a numeric id and added to this
+   * document's scope.
+   *
+   * @param {object} spec
+   *  the specification to be used to create the new object.
+   * @param {SieveParser} [parser]
+   *  an optional initializer for the newly created object.
+   * @param {SieveElement} [parent]
+   *  an optional parent element who owns this element.
+   *
+   * @returns {SieveElement}
+   *  the newly created sieve element.
+   *
+   * @throws in case the document could not be created.
+   * This could be caused by an invalid initializer or unsupported capabilities.
    */
-  createByName(name, parser, parent) {
-    if (typeof (parser) === "string")
-      parser = new SieveParser(parser);
+  createBySpec(spec, parser, parent) {
 
-    const item = this._lexer.createByName(this, name, parser);
+    if (!spec.onCapable(this.capabilities()))
+      throw new Error("Capability not supported");
 
-    if (typeof (parent) !== "undefined")
+    this.maxId++;
+
+    const item = spec.onNew(this, this.maxId);
+
+    if ((typeof (parser) !== "undefined") && (parser))
+      item.init(parser);
+
+    if (parent)
       item.parent(parent);
 
-    // cache nodes...
     this._nodes[item.id()] = item;
 
     return item;
   }
 
   /**
+   * Creates an element by the unique name and returns a reference.
+   *
+   * @param {string} name
+   *   the element name.
+   * @param {SieveParser|string} parser
+   *   parser object or a string which should be parsed.
+   * @param {SieveAbstractElement} [parent]
+   *   a the element's optional parent.
+   * @returns {SieveAbstractElement}
+   *   the newly generated element.
+   */
+  createByName(name, parser, parent) {
+
+    if (typeof (parser) === "string")
+      parser = new SieveParser(parser);
+
+    const spec = this.getSpecByName(name);
+    if (!spec)
+      throw new Error("No specification for >>" + name + "<< found");
+
+    return this.createBySpec(spec, parser, parent);
+  }
+
+
+  /**
    * Creates a new element by the class name.
    *
+   * It probes all registered constructors for this type,
+   * checks if the data is parsable. If so the new element will be returned.
+   *
    * @param {string|string[]} types
-   *   an list with types.
+   *   an list with types to be checked.
    * @param {SieveParser|string} parser
    *   a parser object or a string which holds the data that should be evaluated.
    * @param {SieveAbstractElement} [parent]
@@ -163,46 +282,70 @@ class SieveDocument {
     if (typeof (parser) === "string")
       parser = new SieveParser(parser);
 
-    const item = this._lexer.createByClass(this, types, parser);
+    const spec = this.getSpecByTypes(types, parser);
 
-    if (typeof (parent) !== "undefined")
-      item.parent(parent);
+    if (!spec)
+      throw new Error("Unknown or incompatible type >>" + types + "<< at >>" + parser.bytes(QUOTE_LENGTH) + "<<");
 
-    // cache nodes...
-    this._nodes[item.id()] = item;
-
-    return item;
+    return this.createBySpec(spec, parser, parent);
   }
 
   /**
+   * Checks if the data can be parsed by the given element.
    *
    * @param {string} name
+   *   the element's unique name.
    * @param {string|SieveParser} parser
    *   a parser object or a string which holds the data that should be evaluated.
+   *
+   * @returns {boolean}
+   *   true in case data can be parsed by the element otherwise false.
    */
   probeByName(name, parser) {
     if (typeof (parser) === "string")
       parser = new SieveParser(parser);
 
-    return this._lexer.probeByName(name, parser);
+    // Skip in case there's no data.
+    if ((typeof (parser) === "undefined") || parser.empty())
+      return false;
+
+    const item = this.getSpecByName(name);
+
+    if (!item)
+      throw new Error(`Unknown name ${name}`);
+
+    if (!item.onCapable(this.capabilities()))
+      return false;
+
+    if (!item.onProbe(parser, this))
+      return false;
+
+    return true;
   }
 
   /**
-   * Uses the Document's lexer to check if a parser object
-   * or a string starts with the expected types
+   * Uses the given data an check if it can be parsed by any of the given types.
    *
    * @param {string|string[]} types
-   *   an array with acceptable types.
+   *   a singley type or an array with acceptable types.
    * @param {string|SieveParser} parser
    *   a parser object or a string which holds the data that should be evaluated.
    * @returns {boolean}
-   *   true in case the parser or string is of the given type otherwise false.
+   *   true in case the data can be parsed, otherwise false.
    */
   probeByClass(types, parser) {
     if (typeof (parser) === "string")
       parser = new SieveParser(parser);
 
-    return this._lexer.probeByClass(types, parser);
+    // If there's no data then skip
+    if ((typeof (parser) === "undefined") || parser.empty())
+      return false;
+
+    // Check for an valid element constructor...
+    if (this.getSpecByTypes(types, parser))
+      return true;
+
+    return false;
   }
 
   /**
@@ -214,19 +357,46 @@ class SieveDocument {
    *   true in cse the given nodeName is supported.
    */
   supportsByName(name) {
-    return this._lexer.supportsByName(name);
+
+    const item = this.getSpecByName(name);
+
+    if (!item)
+      return false;
+
+    if (!item.onCapable(this.capabilities()))
+      return false;
+
+    return true;
   }
 
   /**
    * Checks if the given type is supported by the lexer.
    *
-   * @param {string|string[]} type
+   * @param {string|string[]} types
    *   the type(s) to be checked.
    * @returns {boolean}
    *   true in case the given type is supported.
    */
-  supportsByClass(type) {
-    return this._lexer.supportsByClass(type);
+  supportsByClass(types) {
+    if (typeof (types) === "string")
+      types = [types];
+
+    if (!Array.isArray(types))
+      throw new Error("Invalid Type list, not an array");
+
+    // enumerate all selectors...
+    for (const type of types) {
+
+      // Skip in case it is an invalid type.
+      if (!type.startsWith("@"))
+        continue;
+
+      for (const spec of this.getSpecsByType(type))
+        if (spec.onCapable(this.capabilities()))
+          return true;
+    }
+
+    return false;
   }
 
   /**
@@ -295,9 +465,11 @@ class SieveDocument {
    */
   capabilities(capabilities) {
     if (typeof (capabilities) === "undefined")
-      return this._lexer.capabilities();
+      return this._capabilities;
 
-    return this._lexer.capabilities(capabilities);
+    this._capabilities = new SieveCapabilities(capabilities);
+
+    return this._capabilities;
   }
 
   /**

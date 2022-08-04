@@ -112,5 +112,5 @@ SieveGrammar.addGeneric(
   id("import", "@import"),
   SieveBlockImport,
   // FIXME: use a calls matcher.
-  (parser, lexer) => { return lexer.probeByClass(["@import/", "@whitespace"], parser); });
+  (parser, document) => { return document.probeByClass(["@import/", "@whitespace"], parser); });
 

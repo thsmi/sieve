@@ -322,7 +322,7 @@ SieveGrammar.addGeneric(
 
   SieveBlockBody,
   // FIXME: use a class matcher
-  (parser, lexer) => { return lexer.probeByClass(["@action", "@condition", "@whitespace"], parser); });
+  (parser, document) => { return document.probeByClass(["@action", "@condition", "@whitespace"], parser); });
 
 SieveGrammar.addGeneric(
   id("block/block", "@block/"),

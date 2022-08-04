@@ -17,7 +17,6 @@ import {
   SieveImplicitGroupElement
 } from "./GenericAtoms.mjs";
 
-import { SieveLexer } from "./../SieveLexer.mjs";
 import * as SieveGrammarHelper from "./SieveGrammarHelper.mjs";
 import { SieveDocument } from "../SieveScriptDOM.mjs";
 
@@ -41,7 +40,7 @@ class SieveAbstractGeneric {
    *
    * @param {SieveParser} parser
    *   the parser which contains the current script.
-   * @param {SieveLexer} lexer
+   * @param {SieveDocument} document
    *   the lexer which contains the grammar.
    *
    * @returns {boolean}
@@ -49,8 +48,8 @@ class SieveAbstractGeneric {
    *   otherwise false.
    */
   // eslint-disable-next-line no-unused-vars
-  onProbe(parser, lexer) {
-    return this.item.matcher(this.item, parser, lexer);
+  onProbe(parser, document) {
+    return this.item.matcher(this.item, parser, document);
   }
 
   /**
@@ -413,6 +412,54 @@ function addGeneric(id, initializer, matcher) {
 
 
 /**
+ * Adds a specification to the dictionary.
+ *
+ * @param {Map} specs
+ *   a map which contains all the element and type specifications.
+ *    *
+ * @param {string} name
+ *  a unique name for this element
+ * @param {string} type
+ *  a type information for this element. It is used to create group/classes of elements.
+ *  It does not have to be unique.
+ * @param {object} obj
+ *  the callbacks which are invoked, e.g. when probing, checking for capabilities or creating a new instance.
+ */
+function addSpec(specs, name, type, obj) {
+  if (!type)
+    throw new Error("Lexer Error: Registration failed, element has no type");
+
+  if (!name)
+    throw new Error("Lexer Error: Registration failed, element has no name");
+
+
+  if (name.startsWith("@"))
+    throw new Error(`Invalid node name ${name}.`);
+
+  if (!type.startsWith("@"))
+    throw new Error(`Invalid type name ${type}.`);
+
+
+  if (!obj.onProbe)
+    throw new Error("Lexer Error: Registration failed, element has onProbe method");
+
+  if (!obj.onNew)
+    throw new Error("Lexer Error: Registration failed, element has onNew method");
+
+  if (!obj.onCapable)
+    throw new Error("Lexer Error: Registration failed, element has onCapable method");
+
+  if (specs.has(name))
+    throw new Error(`Node name ${name} is already in use.`);
+
+  if (!specs.has(type))
+    specs.set(type, new Set());
+
+  specs.set(name, obj);
+  specs.get(type).add(obj);
+}
+
+/**
  * Initializes the lexer with the grammar rules.
  *
  * In case the grammar is already created is flushes and reinitializes
@@ -430,31 +477,35 @@ function addGeneric(id, initializer, matcher) {
  */
 function createGrammar(capabilities, designer) {
 
-  // FIXME: Create a new lexer instance here as soon as the lexer is no more global.
-  SieveLexer.flush();
+  const grammar = new Map();
 
-  if ((typeof(capabilities) !== "undefined") && (capabilities !== null))
-    SieveLexer.capabilities(capabilities);
-
-  for (const item of dictionary.structures.values()) {
-    SieveLexer.registerGeneric(
-      item.id.node, item.id.type,
-      new SieveAbstractGeneric(item));
+  for (const spec of dictionary.structures.values()) {
+    addSpec(
+      grammar,
+      spec.id.node, spec.id.type,
+      new SieveAbstractGeneric(spec));
   }
 
   for (const spec of dictionary.groups.values()) {
-    SieveLexer.registerGeneric(
+    addSpec(
+      grammar,
       spec.id.node, spec.id.type,
       new SieveGroupSpecification(spec));
   }
 
   for (const spec of dictionary.generics.values()) {
-    SieveLexer.registerGeneric(
+    addSpec(
+      grammar,
       spec.id.node, spec.id.type,
       new SieveGenericSpecification(spec.id, spec.initializer, spec.matcher));
   }
 
-  return new SieveDocument(SieveLexer, designer);
+  const doc = new SieveDocument(grammar, designer);
+
+  if ((typeof(capabilities) !== "undefined") && (capabilities !== null))
+    doc.capabilities(capabilities);
+
+  return doc;
 }
 
 

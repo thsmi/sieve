@@ -337,7 +337,7 @@ function tokenMatcher() {
  *   the matcher specification
  */
 function classMatcher() {
-  return { matcher : (scope, parser, lexer) => { return lexer.probeByClass(scope.items, parser); } };
+  return { matcher : (scope, parser, document) => { return document.probeByClass(scope.items, parser); } };
 }
 
 /**

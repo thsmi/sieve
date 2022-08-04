@@ -251,5 +251,5 @@ SieveGrammar.addGeneric(
 SieveGrammar.addGeneric(
   id("whitespace", "@whitespace"),
   SieveWhiteSpace,
-  (parser, lexer) => { return lexer.probeByClass(["@whitespace/", "@comment"], parser); }
+  (parser, document) => { return document.probeByClass(["@whitespace/", "@comment"], parser); }
 );

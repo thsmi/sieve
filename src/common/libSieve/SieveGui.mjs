@@ -14,7 +14,6 @@ import { SieveI18n } from "./toolkit/utils/SieveI18n.mjs";
 import { SieveLogger } from "./toolkit/utils/SieveLogger.mjs";
 import { SieveTemplate } from "./toolkit/utils/SieveTemplate.mjs";
 
-import { SieveLexer } from "./toolkit/SieveLexer.mjs";
 import { SieveDesigner } from "./toolkit/SieveDesigner.mjs";
 
 import { SieveSimpleBoxUI, SieveTrashBoxUI } from "./toolkit/widgets/Boxes.mjs";
@@ -84,10 +83,8 @@ function init(capabilities) {
   while (actions.firstChild)
     actions.firstChild.remove();
 
-  const lexer = docShell.getLexer();
-
-  for (const action of lexer.getByType("@action")) {
-    if (action.onCapable(lexer.capabilities()))
+  for (const action of docShell.getSpecsByType("@action")) {
+    if (action.onCapable(docShell.capabilities()))
       actions.append(createMenuItem(action.item.id.node, "sieve/action", docShell));
   }
 
@@ -96,8 +93,8 @@ function init(capabilities) {
   while (tests.firstChild)
     tests.firstChild.remove();
 
-  for (const test of lexer.getByType("@test")) {
-    if (test.onCapable(lexer.capabilities()))
+  for (const test of docShell.getSpecsByType("@test")) {
+    if (test.onCapable(docShell.capabilities()))
       if (test.item.id.node !== "test/boolean")
         tests.append(createMenuItem(test.item.id.node, "sieve/test", docShell));
   }
@@ -107,8 +104,8 @@ function init(capabilities) {
   while (operators.firstChild)
     operators.firstChild.remove();
 
-  for (const operator of lexer.getByType("@operator")) {
-    if (operator.onCapable(lexer.capabilities()))
+  for (const operator of docShell.getSpecsByType("@operator")) {
+    if (operator.onCapable(docShell.capabilities()))
       operators.append(createMenuItem(operator.id.node, "sieve/operator", docShell));
   }
 
@@ -214,7 +211,7 @@ function loadCapabilities(value) {
 
   items.forEach((item) => { item.checked = false; });
 
-  const capabilities = SieveLexer.capabilities();
+  const capabilities = dom2.capabilities();
 
   items
     .forEach((item) => {

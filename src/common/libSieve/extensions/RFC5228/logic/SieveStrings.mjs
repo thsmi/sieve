@@ -585,5 +585,5 @@ SieveGrammar.addGeneric(
 SieveGrammar.addGeneric(
   id("string", "@string"),
   SieveString,
-  (parser, lexer) => { return lexer.probeByClass(["@string/"], parser); }
+  (parser, document) => { return document.probeByClass(["@string/"], parser); }
 );

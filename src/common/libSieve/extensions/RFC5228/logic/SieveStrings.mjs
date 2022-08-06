@@ -35,8 +35,8 @@ class SieveMultiLineString extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, identifier) {
-    super(docshell, identifier);
+  constructor(docshell) {
+    super(docshell);
 
     this.text = "";
 
@@ -115,9 +115,9 @@ class SieveQuotedString extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, identifier) {
+  constructor(docshell) {
 
-    super(docshell, identifier);
+    super(docshell);
     this.text = "";
   }
 
@@ -227,8 +227,8 @@ class SieveStringList extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, identifier) {
-    super(docshell, identifier);
+  constructor(docshell) {
+    super(docshell);
 
     this.elements = [];
 
@@ -463,8 +463,8 @@ class SieveString extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, identifier) {
-    super(docshell, identifier);
+  constructor(docshell) {
+    super(docshell);
     this.string = this.createByName("string/quoted");
   }
 

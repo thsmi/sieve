@@ -18,7 +18,7 @@ import {
 } from "./GenericAtoms.mjs";
 
 import * as SieveGrammarHelper from "./SieveGrammarHelper.mjs";
-import { SieveDocument } from "../SieveScriptDOM.mjs";
+import { SieveDocument } from "../SieveDocument.mjs";
 
 /**
  *
@@ -57,14 +57,12 @@ class SieveAbstractGeneric {
    *
    * @param {SieveDocument} docshell
    *   a reference to the parent document which owns this element.
-   * @param {string} id
-   *   the elements uniquer id assigned by the document.
    *
    * @returns {SieveAbstractElement}
    *   the new element.
    */
-  onNew(docshell, id) {
-    const element = new SieveGenericStructure(docshell, id, this.item.id.node);
+  onNew(docshell) {
+    const element = new SieveGenericStructure(docshell, this.item.id.node);
 
     // FIXME: The token should be the first property. The properties matcher
     // should check if the first property exists.
@@ -108,12 +106,12 @@ class SieveGroupSpecification extends SieveAbstractGeneric {
   /**
    * @inheritdoc
    */
-  onNew(docshell, id) {
+  onNew(docshell) {
 
     // The easiest case, there is no default. At least one of the items has to exist.
     // We detect this by the mandatory tag.
     if ((typeof (this.item.mandatory) !== "undefined") && (this.item.mandatory === true)) {
-      const element = new SieveGroupElement(docshell, id, this.item.id.node);
+      const element = new SieveGroupElement(docshell, this.item.id.node);
       element.setToken(this.item.token);
       element.addItems(this.item.items);
       element.setCurrentElement(this.item.value);
@@ -124,7 +122,7 @@ class SieveGroupSpecification extends SieveAbstractGeneric {
     // This is typically when a default is defined the server.
     // We detect this whenever no value is defined.
     if (this.item.value === null || typeof (this.item.value) === "undefined") {
-      const element = new SieveImplicitGroupElement(docshell, id, this.item.id.node);
+      const element = new SieveImplicitGroupElement(docshell, this.item.id.node);
       element.setToken(this.item.token);
       element.addItems(this.item.items);
       return element;
@@ -133,7 +131,7 @@ class SieveGroupSpecification extends SieveAbstractGeneric {
     // The last case is when we have an explicit default.
     // Like the match types have, it will automatically fallback to an :is
     // We detect this when the value is defined.
-    const element = new SieveExplicitGroupElement(docshell, id, this.item.id.node);
+    const element = new SieveExplicitGroupElement(docshell, this.item.id.node);
     element.setToken(this.item.token);
     element.addItems(this.item.items);
     element.setDefaultElement(this.item.value);
@@ -361,13 +359,11 @@ class SieveGenericSpecification {
    *
    * @param {SieveDocument} docshell
    *   the document which owns this element's instance
-   * @param {string} id
-   *   the new element's unique id.
    * @returns {SieveAbstractElement}
    *   the new instance.
    */
-  onNew(docshell, id) {
-    const instance = new this.initializer(docshell, id);
+  onNew(docshell) {
+    const instance = new this.initializer(docshell);
 
     // Fixme remove this ugly hack.
     instance["nodeName"] = () => { return this.id.node; };

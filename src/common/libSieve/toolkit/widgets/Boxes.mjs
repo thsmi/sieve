@@ -59,6 +59,8 @@ class SieveAbstractBoxUI {
    *   An Integer as unique identifier for the nested sieve element.
    */
   id() {
+
+    // FIXME: Can this ever be that we have an element without id?
     if (this._elm.document)
       return this._elm.id();
 
@@ -127,6 +129,7 @@ class SieveAbstractBoxUI {
 
     this._domElm = this.createHtml(document.createElement('div'));
 
+    // FIXME: Can this ever be that we have an element without id?
     if (this.id() !== UNKNOWN_ID)
       this._domElm.id = `sivElm${this.id()}`;
 

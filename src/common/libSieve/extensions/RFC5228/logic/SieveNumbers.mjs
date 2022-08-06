@@ -27,8 +27,8 @@ class SieveNumber extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, identifier) {
-    super(docshell, identifier);
+  constructor(docshell) {
+    super(docshell);
     this._number = "1";
     this._unit = "";
   }

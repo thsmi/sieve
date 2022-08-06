@@ -40,9 +40,7 @@ class SieveDocument {
     // ... to this._nodes. All nodes without a valid parent and their...
     // ... descendants are removed when this.compact() is called. So that we...
     // ... would end up with an empty tree.
-    this.maxId = 0;
-    this._rootNode = this.getSpecByName("block/rootnode").onNew(this, this.maxId);
-    this.maxId++;
+    this._rootNode = this.getSpecByName("block/rootnode").onNew(this);
 
     this._capabilities = new SieveCapabilities();
   }
@@ -74,6 +72,9 @@ class SieveDocument {
     if (!id.startsWith("@"))
       throw new Error(`Invalid type name ${id}.`);
 
+    if (!this.grammar.has(id))
+      return new Set();
+
     return this.grammar.get(id);
   }
 
@@ -85,7 +86,7 @@ class SieveDocument {
    *
    * @param {string|string[]} typeNames
    *  the constructor types  which should be queried to find a matching constructor
-   * @param {SieveParser} token
+   * @param {SieveParser} parser
    *  the token which is to probe if the constructor is compatible
    * @returns {object}
    *  the specification which can parse the date or undefined.
@@ -93,7 +94,7 @@ class SieveDocument {
    * @throws
    *  throws an exception in case querying a constructor failed or invalid type information is passed.
    */
-  getSpecByTypes(typeNames, token) {
+  getSpecByTypes(typeNames, parser) {
     if (typeof (typeNames) === "string")
       typeNames = [typeNames];
 
@@ -105,15 +106,12 @@ class SieveDocument {
 
       const specs = this.getSpecsByType(typeName);
 
-      if (!specs)
-        continue;
-
       for (const spec of specs) {
 
         if (!(spec.onCapable(this.capabilities())))
           continue;
 
-        const result = spec.onProbe(token, this);
+        const result = spec.onProbe(parser, this);
         if (typeof (result) !== "boolean")
           throw new Error("onProbe did not return a boolean");
 
@@ -198,7 +196,6 @@ class SieveDocument {
     return this._widgets.widget(elm);
   }
 
-
   /**
    * Creates a new object from the given specification.
    *
@@ -223,11 +220,9 @@ class SieveDocument {
     if (!spec.onCapable(this.capabilities()))
       throw new Error("Capability not supported");
 
-    this.maxId++;
+    const item = spec.onNew(this);
 
-    const item = spec.onNew(this, this.maxId);
-
-    if ((typeof (parser) !== "undefined") && (parser))
+    if (parser)
       item.init(parser);
 
     if (parent)
@@ -243,7 +238,7 @@ class SieveDocument {
    *
    * @param {string} name
    *   the element name.
-   * @param {SieveParser|string} parser
+   * @param {SieveParser|string} [parser]
    *   parser object or a string which should be parsed.
    * @param {SieveAbstractElement} [parent]
    *   a the element's optional parent.
@@ -257,7 +252,7 @@ class SieveDocument {
 
     const spec = this.getSpecByName(name);
     if (!spec)
-      throw new Error("No specification for >>" + name + "<< found");
+      throw new Error(`No specification for >>${name}<< found`);
 
     return this.createBySpec(spec, parser, parent);
   }
@@ -312,7 +307,7 @@ class SieveDocument {
     const item = this.getSpecByName(name);
 
     if (!item)
-      throw new Error(`Unknown name ${name}`);
+      throw new Error(`No specification for >>${name}<< found`);
 
     if (!item.onCapable(this.capabilities()))
       return false;
@@ -327,7 +322,7 @@ class SieveDocument {
    * Uses the given data an check if it can be parsed by any of the given types.
    *
    * @param {string|string[]} types
-   *   a singley type or an array with acceptable types.
+   *   a type or an array with acceptable types.
    * @param {string|SieveParser} parser
    *   a parser object or a string which holds the data that should be evaluated.
    * @returns {boolean}
@@ -386,11 +381,6 @@ class SieveDocument {
 
     // enumerate all selectors...
     for (const type of types) {
-
-      // Skip in case it is an invalid type.
-      if (!type.startsWith("@"))
-        continue;
-
       for (const spec of this.getSpecsByType(type))
         if (spec.onCapable(this.capabilities()))
           return true;
@@ -449,7 +439,7 @@ class SieveDocument {
     this._rootNode.init(parser);
 
     if (!parser.empty())
-      throw new Error("Unknown Element at: " + parser.bytes());
+      throw new Error(`Unknown Element at: ${parser.bytes()}`);
 
     // data should be empty right here...
     return parser.bytes();
@@ -489,12 +479,11 @@ class SieveDocument {
 
     const items = [];
     let cnt = 0;
-    let item;
 
     whitelist = [].concat(whitelist);
 
     // scan for null nodes..
-    for (item in this._nodes)
+    for (const item in this._nodes)
       if (!whitelist.includes(this._nodes[item]))
         if (this._nodes[item].parent() === null)
           items.push(item);
@@ -507,7 +496,7 @@ class SieveDocument {
     while (items.length) {
       const it = items.shift();
 
-      for (item in this._nodes)
+      for (const item in this._nodes)
         if (!whitelist.includes(this._nodes[item]))
           if (this._nodes[item].parent().id() === it)
             items.push(item);

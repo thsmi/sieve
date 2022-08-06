@@ -33,8 +33,8 @@ class SieveNotOperator extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, identifier) {
-    super(docshell, identifier);
+  constructor(docshell) {
+    super(docshell);
 
     this.whiteSpace = [];
     this.whiteSpace[BEFORE_OPERATOR] = this.createByName("whitespace", " ");
@@ -163,8 +163,8 @@ class SieveAnyOfAllOfTest extends SieveTestList {
   /**
    * @inheritdoc
    */
-  constructor(docshell, identifier) {
-    super(docshell, identifier);
+  constructor(docshell) {
+    super(docshell);
 
     this.whiteSpace = this.createByName("whitespace");
     this.isAllOf = true;

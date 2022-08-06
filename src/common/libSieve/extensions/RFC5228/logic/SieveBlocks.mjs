@@ -43,8 +43,8 @@ class SieveBlockBody extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, identifier) {
-    super(docshell, identifier);
+  constructor(docshell) {
+    super(docshell);
     this.elms = [];
   }
 
@@ -253,8 +253,6 @@ class SieveBlock extends SieveBlockBody {
 const ROOT_ELEMENT_IMPORT = 0;
 const ROOT_ELEMENT_BODY = 1;
 
-const UNKNOWN_ID = -1;
-
 /**
  * Implements the documents root node which consists of the import section
  * followed by the root block.
@@ -266,7 +264,7 @@ class SieveRootNode extends SieveBlockBody {
    */
   constructor(docshell) {
 
-    super(docshell, UNKNOWN_ID);
+    super(docshell);
 
     this.elms[ROOT_ELEMENT_IMPORT] = this.createByName("import");
     this.elms[ROOT_ELEMENT_BODY] = this.createByName("block/body");

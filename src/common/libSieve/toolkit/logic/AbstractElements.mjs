@@ -10,6 +10,9 @@
  *
  */
 
+const SEED_SIZE = 10000000;
+const HEX_STRING = 16;
+
 /**
  * The base element from on which each element in the sieve dom is based
  */
@@ -20,14 +23,13 @@ class SieveAbstractElement {
    *
    * @param {SieveDocument} docshell
    *  the document which owns this element
-   * @param {string} id
-   *  the elements unique id.
    */
-  constructor(docshell, id) {
-    if (!id)
-      throw new Error("Invalid id");
+  constructor(docshell) {
 
-    this._id = id;
+    // Generate a random element id.
+    this._id = Math.floor(
+      Math.random() * SEED_SIZE).toString(HEX_STRING)
+      + Date.now().toString(HEX_STRING);
 
     this._parent = null;
     this._docshell = docshell;
@@ -138,7 +140,7 @@ class SieveAbstractElement {
    *   the elements representation in sieve
    */
   toScript() {
-    throw new Error(`Implement SieveAbstractElement::toScript() for ${this._id}`);
+    throw new Error(`Implement SieveAbstractElement::toScript() for ${this.id()}`);
   }
 
   /**
@@ -182,21 +184,11 @@ class SieveAbstractElement {
   /**
    * Returns the unique identifier for this element.
    *
-   * In case the parameter "id" is passed, the default behavior
-   * is inverted. Instead of returning a unique identifier for
-   * this element, a reverse lookup is started and the SieveElement
-   * with a matching id is returned.
-   *
-   * @param {int} [id]
-   *   defines to use a reverse lookup by the Id
    * @returns {int|SieveElement}
    *   the id in case the id was omitted otherwise the element.
    */
-  id(id) {
-    if (typeof (id) === "undefined")
-      return this._id;
-
-    return this._docshell.id(id);
+  id() {
+    return this._id;
   }
 
   /**
@@ -255,9 +247,9 @@ class SieveAbstractElement {
     }
 
     // ...and remove this node
-    const elm = this._parent.removeChild(this._id, cascade, stop);
+    const elm = this._parent.removeChild(this.id(), cascade, stop);
 
-    if ((!cascade) && (elm.id() !== this._id))
+    if ((!cascade) && (elm.id() !== this.id()))
       throw new Error("Could not remove Node");
 
     // ... finally cleanup all evidence to our parent Node;

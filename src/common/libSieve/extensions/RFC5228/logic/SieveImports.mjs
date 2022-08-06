@@ -22,6 +22,8 @@ SieveGrammar.addAction(
     stringListField("capabilities"))
 );
 
+const NOT_FOUND = -1;
+
 /**
  *
  */
@@ -81,7 +83,7 @@ class SieveBlockImport extends SieveBlockBody {
     // We should try to insert new requires directly after the last require
     // statement otherwise it looks strange. So we just keep track of the
     // last require we found.
-    let last = -1;
+    let last = NOT_FOUND;
 
     for (const [index, item] of this.elms.entries()) {
       if (item.nodeName() !== "import/require")
@@ -98,7 +100,7 @@ class SieveBlockImport extends SieveBlockBody {
     elm.getElement("capabilities").values(require);
 
     // no other import was found means just push
-    if (last === -1) {
+    if (last === NOT_FOUND) {
       this.elms.push(elm);
       return this;
     }

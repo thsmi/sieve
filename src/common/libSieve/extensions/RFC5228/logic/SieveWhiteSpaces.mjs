@@ -47,8 +47,8 @@ class SieveDeadCode extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, identifier) {
-    super(docshell, identifier);
+  constructor(docshell) {
+    super(docshell);
     this.whiteSpace = "";
   }
 
@@ -79,8 +79,8 @@ class SieveBracketComment extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, identifier) {
-    super(docshell, identifier);
+  constructor(docshell) {
+    super(docshell);
     this.text = "";
   }
 
@@ -112,8 +112,8 @@ class SieveHashComment extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, identifier) {
-    super(docshell, identifier);
+  constructor(docshell) {
+    super(docshell);
     this.text = "";
   }
 
@@ -148,8 +148,8 @@ class SieveWhiteSpace extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, identifier) {
-    super(docshell, identifier);
+  constructor(docshell) {
+    super(docshell);
     this.elements = [];
   }
 

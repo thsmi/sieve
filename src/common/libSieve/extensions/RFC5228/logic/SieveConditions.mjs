@@ -28,8 +28,8 @@ class SieveElse extends SieveBlock {
   /**
    * @inheritdoc
    */
-  constructor(docshell, identifier) {
-    super(docshell, identifier);
+  constructor(docshell) {
+    super(docshell);
 
     this.ws = [];
 
@@ -71,8 +71,8 @@ class SieveIf extends SieveBlock {
   /**
    * @inheritdoc
    */
-  constructor(docshell, identifier) {
-    super(docshell, identifier);
+  constructor(docshell) {
+    super(docshell);
 
     this._test = null;
 
@@ -202,8 +202,8 @@ class SieveCondition extends SieveBlockBody {
   /**
    * @inheritdoc
    */
-  constructor(docshell, identifier) {
-    super(docshell, identifier);
+  constructor(docshell) {
+    super(docshell);
 
     this.elms[0] = this.createByName("condition/if", "if false {\r\n}\r\n");
   }

@@ -9,7 +9,7 @@
       "${workspace}/libSieve/toolkit/logic/GenericCapabilities.mjs",
       "${workspace}/libSieve/toolkit/SieveParser.mjs",
       "${workspace}/libSieve/toolkit/SieveLexer.mjs",
-      "${workspace}/libSieve/toolkit/SieveScriptDOM.mjs",
+      "${workspace}/libSieve/toolkit/SieveDocument.mjs",
       "${workspace}/libSieve/toolkit/logic/AbstractElements.mjs",
       "${workspace}/libSieve/toolkit/logic/GenericAtoms.mjs",
       "${workspace}/libSieve/toolkit/logic/GenericElements.mjs"
@@ -33,6 +33,11 @@
       "${workspace}/libSieve/tests/ScriptValidator.mjs"
     ],
     extend: "base"
+  });
+
+  tests.set("sieve-document", {
+    script: "${workspace}/libSieve/toolkit/tests/SieveDocumentTest.mjs",
+    extend: "rfc5228"
   });
 
   tests.set("sieve-scripts", {

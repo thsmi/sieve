@@ -127,8 +127,8 @@ class SieveTestList extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, identifier) {
-    super(docshell, identifier);
+  constructor(docshell) {
+    super(docshell);
     this.tests = [];
   }
 

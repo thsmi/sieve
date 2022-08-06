@@ -17,7 +17,6 @@ import { SieveAbstractElement } from "./AbstractElements.mjs";
 // So it would be good to have a method which collects all ids of elements in use.
 // all other elements can then be dropped and removed.
 
-// TODO we need a list of items to emulate blocks...
 
 /**
  * An Abstract implementation for all Generic elements
@@ -725,8 +724,8 @@ class SieveGenericStructure extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, id, type) {
-    super(docshell, id);
+  constructor(docshell, type) {
+    super(docshell);
 
     this._elements = [];
     this._requirements = null;
@@ -963,8 +962,8 @@ class SieveGroupElement extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, id, type) {
-    super(docshell, id);
+  constructor(docshell, type) {
+    super(docshell);
 
     this._items = [];
     this._prefix = null;
@@ -1270,8 +1269,8 @@ class SieveExplicitGroupElement extends SieveImplicitGroupElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, id, nodeName) {
-    super(docshell, id, nodeName);
+  constructor(docshell, nodeName) {
+    super(docshell, nodeName);
     this._default = null;
   }
 

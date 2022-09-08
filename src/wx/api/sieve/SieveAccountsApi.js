@@ -61,11 +61,17 @@
             },
 
             async getUsername(id) {
-              return await getIncomingServer(id).realUsername;
+							const retval =
+								await getIncomingServer(id).realUsername ||
+								await getIncomingServer(id).username;
+              return retval;
             },
 
             async getHostname(id) {
-              return await getIncomingServer(id).realHostName;
+							const retval =
+								await getIncomingServer(id).realHostName ||
+								await getIncomingServer(id).hostName;
+              return retval;
             }
           }
         }

@@ -13,7 +13,7 @@
     "electron": "^21.2.0",
     "electron-packager": "^17.0.0",
     "eslint": "^8.26.0",
-    "eslint-plugin-jsdoc": "^39.3.20",
+    "eslint-plugin-jsdoc": "^39.5.0",
     "gulp": "^4.0.0",
     "yazl": "^2.5.1"
   },

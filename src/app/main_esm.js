@@ -10,10 +10,8 @@
  */
 
 (async () => {
-  const electron = await require('electron');
-
   try {
-    await (await import('./sieve.mjs')).main(electron);
+    await (await import('./sieve.mjs')).main();
   } catch (ex) {
     // eslint-disable-next-line no-console
     console.log(ex);

@@ -377,7 +377,12 @@ async function packageAppImage() {
 
   logger.info(`Packaging app image`);
 
-  await (promisify(exec)(`${tool} "${source}" "${destination}"  2>&1`));
+  try {
+    await (promisify(exec)(`${tool} "${source}" "${destination}"  2>&1`));
+  } catch (ex) {
+    logger.info(ex.stdout);
+    throw ex;
+  }
 }
 
 /**

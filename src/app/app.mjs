@@ -13,7 +13,7 @@ const DEFAULT_AUTHORIZATION = 3;
 
 const FIRST_ELEMENT = 0;
 
-const { ipcRenderer } = require('electron');
+const { ipcRenderer, shell, clipboard } = require('electron');
 
 // Import the node modules into our global namespace...
 import { SieveLogger } from "./libs/managesieve.ui/utils/SieveLogger.mjs";
@@ -57,7 +57,7 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
     },
 
     "open-url": (msg) => {
-      require("electron").shell.openExternal(msg.payload.data);
+      shell.openExternal(msg.payload.data);
     },
 
     "import-thunderbird": function () {
@@ -562,11 +562,11 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
     },
 
     "copy": function (msg) {
-      require("electron").clipboard.writeText(msg.payload.data);
+      clipboard.writeText(msg.payload.data);
     },
 
     "paste": function () {
-      return require("electron").clipboard.readText();
+      return clipboard.readText();
     },
 
     "get-preference": async (msg) => {
@@ -643,7 +643,6 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
    */
   function main() {
     (new SieveTabUI()).init();
-
   }
 
   if (document.readyState !== 'loading')

@@ -8,16 +8,20 @@
     "test": "tests"
   },
   "devDependencies": {
-    "@codemirror/legacy-modes": "^6.1.0",
-    "@rollup/plugin-node-resolve": "^13.3.0",
-    "bootstrap": "^5.2.0",
+    "@codemirror/legacy-modes": "^6.1.0",    
     "codemirror": "^6.0.1",
-    "electron": "^19.0.9",
-    "electron-packager": "^15.5.1",
-    "eslint": "^8.20.0",
-    "eslint-plugin-jsdoc": "^39.3.3",
-    "gulp": "^4.0.0",
+
+    "bootstrap": "^5.2.2",    
+    "electron": "^22.0.0",
+    "electron-packager": "^17.0.0",
+
+    "eslint": "^8.29.0",
+    "eslint-plugin-jsdoc": "^39.3.20",
+
     "rollup": "^2.77.0",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+        
+    "gulp": "^4.0.0",    
     "yazl": "^2.5.1"
   },
   "scripts": {

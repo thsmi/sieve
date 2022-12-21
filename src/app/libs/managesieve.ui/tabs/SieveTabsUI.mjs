@@ -207,8 +207,9 @@ class SieveTabUI {
       .querySelector("#tabs-scroll-right")
       .addEventListener("click", () => { this.scrollRight(); });
 
-    // We need to populate the accounts iframe lazily otherwise we endup in a race
-    document.getElementById("accounts").src = "./libs/managesieve.ui/accounts.html";
+    document
+      .querySelector("#tabs-content > #accounts")
+      .src = "./libs/managesieve.ui/accounts.html";
   }
 
   /**

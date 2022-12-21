@@ -136,8 +136,11 @@ suite.add("Comparator - smaller than", function () {
 });
 
 suite.add("Int conversion", function () {
+  // eslint-disable-next-line no-magic-numbers
   suite.assertEquals((new SieveUpdater()).getInt("6"), 6);
+  // eslint-disable-next-line no-magic-numbers
   suite.assertEquals((new SieveUpdater()).getInt("6.5"), 6);
+  // eslint-disable-next-line no-magic-numbers
   suite.assertEquals((new SieveUpdater()).getInt("6,5"), 6);
   suite.assertNaN((new SieveUpdater()).getInt("A"));
 });

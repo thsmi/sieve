@@ -11,9 +11,12 @@
  */
 
 import {
-  tags, tag, id, token, all, optional,
-  parameters, stringListField, stringField, optionals
+  id, token,
+  tags, items, parameters, optionals,
+  tag, optional, stringList, string,
+  all
 } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 // Usage: "pipe" [":try"] <program-name: string> [<arguments: string-list>]
@@ -35,9 +38,9 @@ SieveGrammar.addAction(
     tag("copy", "action/pipe/copy"),
     tag("try", "action/pipe/try")),
   parameters(
-    stringField("program", "example")),
+    string("program", "example")),
   optionals("arguments",
-    stringListField("arguments")));
+    stringList("arguments")));
 
 // Usage: "filter" <program-name: string> [<arguments: string-list>]
 SieveGrammar.addAction(
@@ -45,8 +48,8 @@ SieveGrammar.addAction(
 
   token("filter"),
   parameters(
-    stringField("program", "example"),
-    optional(stringListField("arguments")))
+    string("program", "example"),
+    optional(stringList("arguments")))
 );
 
 // Usage: "filter" <program-name: string> [<arguments: string-list>]
@@ -55,8 +58,8 @@ SieveGrammar.addTest(
 
   token("filter"),
   parameters(
-    stringField("program", "example"),
-    optional(stringListField("arguments")))
+    string("program", "example"),
+    optional(stringList("arguments")))
 );
 
 
@@ -71,11 +74,12 @@ SieveGrammar.addTag(
 
   token(":input"),
   parameters(
-    stringField("data"))
+    string("data"))
 );
 
 SieveGrammar.addGroup(
-  id("execute/input")
+  id("execute/input"),
+  items("@execute/input/")
 );
 
 SieveGrammar.addTag(
@@ -83,7 +87,7 @@ SieveGrammar.addTag(
 
   token(":output"),
   parameters(
-    stringField("name")));
+    string("name")));
 
 // Usage: "execute"
 //  [":input" <input-data: string> / ":pipe"]
@@ -98,9 +102,9 @@ SieveGrammar.addAction(
     tag("input", "execute/input"),
     tag("output", "execute/output")),
   parameters(
-    stringField("program", "example")),
+    string("program", "example")),
   optionals("arguments",
-    stringListField("arguments")));
+    stringList("arguments")));
 
 SieveGrammar.addTest(
   id("test/execute", "@test", "vnd.dovecot.execute"),
@@ -110,6 +114,6 @@ SieveGrammar.addTest(
     tag("input", "execute/input"),
     tag("output", "execute/output")),
   parameters(
-    stringField("program", "example")),
+    string("program", "example")),
   optionals("arguments",
-    stringListField("arguments")));
+    stringList("arguments")));

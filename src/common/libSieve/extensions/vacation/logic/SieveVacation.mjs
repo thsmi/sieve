@@ -11,10 +11,9 @@
  */
 
 import {
-  numericField, stringListField, stringField,
-  tag, tags,
-  parameters,
-  id, token
+  id, token,
+  tags, parameters, items,
+  tag, number, stringList, string
 } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
@@ -33,7 +32,7 @@ SieveGrammar.addAction(
     tag("mime", "action/vacation/mime"),
     tag("handle", "action/vacation/handle")),
   parameters(
-    stringField("reason"))
+    string("reason"))
 );
 
 
@@ -42,11 +41,12 @@ SieveGrammar.addTag(
 
   token(":days"),
   parameters(
-    numericField("days", DEFAULT_DAYS))
+    number("days", DEFAULT_DAYS))
 );
 
 SieveGrammar.addGroup(
-  id("action/vacation/interval")
+  id("action/vacation/interval"),
+  items("@action/vacation/interval/")
 );
 
 SieveGrammar.addTag(
@@ -54,7 +54,7 @@ SieveGrammar.addTag(
 
   token(":subject"),
   parameters(
-    stringField("subject"))
+    string("subject"))
 );
 
 SieveGrammar.addTag(
@@ -62,7 +62,7 @@ SieveGrammar.addTag(
 
   token(":from"),
   parameters(
-    stringField("from"))
+    string("from"))
 );
 
 SieveGrammar.addTag(
@@ -70,7 +70,7 @@ SieveGrammar.addTag(
 
   token(":addresses"),
   parameters(
-    stringListField("addresses"))
+    stringList("addresses"))
 );
 
 SieveGrammar.addTag(
@@ -83,5 +83,5 @@ SieveGrammar.addTag(
 
   token(":handle"),
   parameters(
-    stringField("handle"))
+    string("handle"))
 );

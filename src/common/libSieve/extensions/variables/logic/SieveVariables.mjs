@@ -10,7 +10,12 @@
  *
  */
 
-import { parameters, stringField, tags, tag, stringListField, id, token } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+import {
+  id, token,
+  tags, items, parameters,
+  tag, string, stringList
+} from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 // set [MODIFIER] <name: string> <value: string>
@@ -25,8 +30,8 @@ SieveGrammar.addAction(
     tag("modifier/30"),
     tag("modifier/40")),
   parameters(
-    stringField("name", "variable"),
-    stringField("value")));
+    string("name", "variable"),
+    string("value")));
 
 // string [MATCH-TYPE] [COMPARATOR] <source: string-list> <key-list: string-list>
 SieveGrammar.addTest(
@@ -37,8 +42,8 @@ SieveGrammar.addTest(
     tag("match-type"),
     tag("comparator")),
   parameters(
-    stringListField("sources", "${somevariable}"),
-    stringListField("keys", "some value"))
+    stringList("sources", "${somevariable}"),
+    stringList("keys", "some value"))
 );
 
 
@@ -53,7 +58,8 @@ SieveGrammar.addTag(
 );
 
 SieveGrammar.addGroup(
-  id("modifier/40", "@modifier/")
+  id("modifier/40", "@modifier/"),
+  items("@modifier/40/")
 );
 
 
@@ -68,7 +74,8 @@ SieveGrammar.addTag(
 );
 
 SieveGrammar.addGroup(
-  id("modifier/30", "@modifier/")
+  id("modifier/30", "@modifier/"),
+  items("@modifier/30/")
 );
 
 SieveGrammar.addTag(
@@ -77,7 +84,8 @@ SieveGrammar.addTag(
 );
 
 SieveGrammar.addGroup(
-  id("modifier/20", "@modifier/")
+  id("modifier/20", "@modifier/"),
+  items("@modifier/20/")
 );
 
 
@@ -87,10 +95,12 @@ SieveGrammar.addTag(
 );
 
 SieveGrammar.addGroup(
-  id("modifier/10", "@modifier/")
+  id("modifier/10", "@modifier/"),
+  items("@modifier/10/")
 );
 
 
 SieveGrammar.addGroup(
-  id("modifier", "@modifier")
+  id("modifier", "@modifier"),
+  items("@modifier/")
 );

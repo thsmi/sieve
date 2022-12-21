@@ -11,10 +11,12 @@
  */
 
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
-import { SieveAbstractElement } from "./../../../toolkit/logic/AbstractElements.mjs";
+import { SieveAbstractParentElement } from "./../../../toolkit/logic/AbstractElements.mjs";
 import {
-  tags, tag, id, token,
-  parameters, stringListField, field
+  id, token,
+  parameters, tags, items,
+  value,
+  tag, number, stringList, attribute
 } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 
 SieveGrammar.addTest(
@@ -26,8 +28,8 @@ SieveGrammar.addTest(
     tag("match-type"),
     tag("comparator")),
   parameters(
-    stringListField("envelopes", "To"),
-    stringListField("keys", "me@example.com"))
+    stringList("envelopes", "To"),
+    stringList("keys", "me@example.com"))
 );
 
 
@@ -42,8 +44,8 @@ SieveGrammar.addTest(
     tag("match-type"),
     tag("comparator")),
   parameters(
-    stringListField("headers", "To"),
-    stringListField("keys", "me@example.com"))
+    stringList("headers", "To"),
+    stringList("keys", "me@example.com"))
 );
 
 // <"exists"> <header-names: string-list>
@@ -52,7 +54,7 @@ SieveGrammar.addTest(
 
   token("exists"),
   parameters(
-    stringListField("headers", "From"))
+    stringList("headers", "From"))
 );
 
 // <"header"> [COMPARATOR] [MATCH-TYPE] <header-names: string-list> <key-list: string-list>
@@ -64,8 +66,8 @@ SieveGrammar.addTest(
     tag("comparator"),
     tag("match-type")),
   parameters(
-    stringListField("headers", "Subject"),
-    stringListField("keys", "Example"))
+    stringList("headers", "Subject"),
+    stringList("keys", "Example"))
 );
 
 SieveGrammar.addTest(
@@ -80,8 +82,11 @@ SieveGrammar.addTest(
 
 SieveGrammar.addGroup(
   id("test/boolean", "@test"),
+  items("@test/boolean/"),
   // Boolean tests don't have an implicit default value
-  { value: "false", mandatory: true }
+
+  // FIXME we should wrap this into a mandatory(value("false"))
+  value("false", true)
 );
 
 
@@ -99,9 +104,11 @@ SieveGrammar.addTag(
 
 SieveGrammar.addGroup(
   id("test/size/operator"),
+  items("@test/size/operator/"),
+
   // Either the :over or the :under operator has to exist
   // there is no default value in case the operator is omitted.
-  { value: ":over", mandatory: true}
+  value(":over", true)
 );
 
 SieveGrammar.addTest(
@@ -110,8 +117,8 @@ SieveGrammar.addTest(
   token("size"),
 
   parameters(
-    field("operator", "test/size/operator"),
-    field("limit", "number"))
+    attribute("operator", "test/size/operator"),
+    number("limit", "1M"))
 );
 
 
@@ -119,29 +126,25 @@ const LEADING_WHITESPACE = 0;
 const TEST = 1;
 const TAILING_WHITESPACE = 2;
 
+
 /**
  * Implements a list with tests.
  */
-class SieveTestList extends SieveAbstractElement {
-
-  /**
-   * @inheritdoc
-   */
-  constructor(docshell) {
-    super(docshell);
-    this.tests = [];
-  }
+class SieveTestList extends SieveAbstractParentElement {
 
   /**
    * @inheritdoc
    */
   init(parser) {
-    this.tests = [];
+
+    while (this.getChildren().length)
+      this.getChildren().pop();
 
     parser.extractChar("(");
 
     while (!parser.isChar(")")) {
-      if (this.tests.length > 0)
+
+      if (this.getChildren().length)
         parser.extractChar(",");
 
       const element = [];
@@ -156,12 +159,23 @@ class SieveTestList extends SieveAbstractElement {
       if (this.probeByName("whitespace", parser))
         element[TAILING_WHITESPACE].init(parser);
 
-      this.tests.push(element);
+      this.getChildren().push(element);
     }
 
     parser.extractChar(")");
 
     return this;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  hasChild(identifier) {
+    for (const elm of this.getChildren())
+      if (elm[TEST].id() === identifier)
+        return true;
+
+    return false;
   }
 
   /**
@@ -199,22 +213,53 @@ class SieveTestList extends SieveAbstractElement {
     if (elm.parent())
       elm.remove();
 
-    let idx = this.tests.length;
+    let idx = this.getChildren().length;
 
     if (sibling) {
       if (sibling.id)
         sibling = sibling.id();
 
       if (sibling >= 0)
-        for (idx = 0; idx < this.tests.length; idx++)
-          if (this.tests[idx][TEST].id() === sibling)
+        for (idx = 0; idx < this.getChildren(); idx++)
+          if (this.getChild(idx)[TEST].id() === sibling)
             break;
     }
 
-    this.tests.splice(idx, 0, element);
+    this.getChildren().splice(idx, 0, element);
     elm.parent(this);
 
     return this;
+  }
+
+  /**
+   * Removes the given child element from the test list.
+   *
+   * @param {string} childId
+   *  the child element's unique id.
+   *
+   * @returns {SieveAbstractElement}
+   *   the removed element.
+   */
+  removeChild(childId) {
+
+    if (!childId)
+      throw new Error("Child ID Missing");
+
+    // Is it a direct match?
+    for (let i = 0; i < this.getChildren().length; i++) {
+
+      const elm = this.getChild(i);
+      if (elm[TEST].id() !== childId)
+        continue;
+
+      elm[TEST].parent(null);
+      this.getChildren().splice(i, 1);
+
+      return elm;
+    }
+
+    // ... we fail in case we have not found the child
+    throw new Error(`Unknown child ${childId}`);
   }
 
   /**
@@ -224,72 +269,20 @@ class SieveTestList extends SieveAbstractElement {
    *   if the element is empty otherwise false.
    */
   empty() {
-    // The direct descendants of our root node are always considered as
-    // not empty. Otherwise cascaded remove would wipe them away.
-    if (this.document().root() === this.parent())
-      return false;
-
-    for (let i = 0; i < this.tests.length; i++)
-      if (this.tests[i][TEST].widget())
+    for (const elm of this.getChildren())
+      if (elm[TEST].widget())
         return false;
 
     return true;
   }
 
   /**
-   * Checks if the block has a child with the given identifier
-   *
-   * @param {string} identifier
-   *   the childs unique id
-   * @returns {boolean}
-   *   true in case the child is known otherwise false.
+   * @inheritdoc
    */
-  hasChild(identifier) {
-    for (const elm of this.tests)
-      if (elm[TEST].id() === identifier)
-        return true;
+  require(imports) {
 
-    return false;
-  }
-
-  /**
-   * Removes the given child element from the test list.
-   *
-   * @param {string} childId
-   *  the child element's unique id.
-   * @param {boolean} cascade
-   * @param {SieveAbstractElement} stop
-   * @returns {SieveAbstractElement}
-   */
-  removeChild(childId, cascade, stop) {
-    // should we remove the whole node
-    if (typeof (childId) === "undefined")
-      throw new Error("Child ID Missing");
-    // return super.removet();
-
-    // ... or just a child item
-    let elm = null;
-    // Is it a direct match?
-    for (let i = 0; i < this.tests.length; i++) {
-      if (this.tests[i][TEST].id() !== childId)
-        continue;
-
-      elm = this.tests[i][TEST];
-      elm.parent(null);
-
-      this.tests.splice(i, 1);
-
-      break;
-    }
-
-    if (cascade && this.empty())
-      if ((!stop) || (stop.id() !== this.id()))
-        return this.remove(cascade, stop);
-
-    if (cascade)
-      return this;
-
-    return elm;
+    for (const elm of this.getChildren())
+      elm[TEST].require(imports);
   }
 
   /**
@@ -298,32 +291,36 @@ class SieveTestList extends SieveAbstractElement {
   toScript() {
     let result = "(";
 
-    for (let i = 0; i < this.tests.length; i++) {
+    for (let i = 0; i < this.getChildren().length; i++) {
+      const elm = this.getChild(i);
+
       result = result
         + ((i > 0) ? "," : "")
-        + this.tests[i][LEADING_WHITESPACE].toScript()
-        + this.tests[i][TEST].toScript()
-        + this.tests[i][TAILING_WHITESPACE].toScript();
+        + elm[LEADING_WHITESPACE].toScript()
+        + elm[TEST].toScript()
+        + elm[TAILING_WHITESPACE].toScript();
     }
 
     result += ")";
 
     return result;
   }
-
-  /**
-   * @inheritdoc
-   */
-  require(imports) {
-    for (let i = 0; i < this.tests.length; i++)
-      this.tests[i][TEST].require(imports);
-  }
 }
 
 
 SieveGrammar.addGeneric(
   id("test/testlist", "@test/"),
-  SieveTestList,
-  (parser) => { return parser.isChar("("); });
+
+  SieveTestList
+);
+
+// SieveGrammar.addList(
+//   id("test/testlist", "@test/"),
+
+//   token("("),
+//   parameters(
+//     items("test", ["@test", "@operator"])),
+//   token(")")
+// );
 
 export { SieveTestList };

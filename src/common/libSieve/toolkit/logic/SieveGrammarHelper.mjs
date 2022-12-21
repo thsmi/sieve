@@ -9,217 +9,49 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+import * as Matcher from "./Matcher.mjs";
+
 /**
  * Implements syntactic sugar to make the AST files more readable.
  */
 
 /**
- * Creates a container for mandatory fields.
  *
- * @param {string} identifier
- *   the container's unique id.
- * @param  {...any} items
- *   the fields which should be added to this container.
+ * @param {object} spec
+ *   the elements specification.
+ * @param {*} before
  * @returns {object}
- *   the container.
  */
-function fields(identifier, ...items) {
-  return {
-    "id" : identifier,
-    "elements" : items,
-    "initializer" : (element, spec) => { element.addParameters(spec.elements); }
-  };
+function insert(spec, before) {
+
+  return { property : (properties) => {
+    const property = properties.find((item) => {
+      return ((item.id) && (item.id === spec.id));
+    });
+
+    if (property) {
+      property.elements.push(...spec.elements);
+      return;
+    }
+
+    if (!before)
+      throw new Error("No such property");
+
+    const idx = properties.findIndex((item) => {
+      return ((item.id) && (item.id === before));
+    });
+
+    properties.splice(idx, 0, spec);
+  }};
 }
 
 /**
- * Creates a container for optional fields.
  *
- * @param {string} identifier
- *   the container's unique id.
- * @param  {...any} items
- *   the fields which should be added to this container.
- * @returns {object}
- *   the container.
+ * @param {*} item
+ * @returns
  */
-function optionals(identifier, ...items) {
-  return {
-    ...{ "optional" : true},
-    ...fields(identifier, ...items),
-    "initializer": (element, spec) => { element.addTags(spec.elements); }
-  };
-}
-
-/**
- * Creates a container for tag fields.
- *
- * Tags are by definition optional and the container is named 'tags'.
- *
- * @param  {...any} items
- *   the field which should be added to this tags container.
- * @returns {object}
- *   the container.
- */
-function tags(...items) {
-  return optionals("tags", ...items);
-}
-
-/**
- * Creates a container for parameter field.
- *
- * Parameters are by definition mandatory and the container is named 'parameters'.
- * @param  {...any} items
- *   the field which should be added to this parameters container.
- * @returns {object}
- *   the parameter specification.
- */
-function parameters(...items) {
-  return fields("parameters", ...items);
-}
-
-
-// Items which can be added to a field
-
-/**
- * References a previously defined tag.
- *
- * Tags are by definition optional and start with a colon.
- *
- * @param {string} key
- *   the tags unique key in the element tree. It is used to identify the
- *   element's children.
- *
- * @param {string} [type]
- *   the optional type of the tag, in case it is omitted the key is used.
- *   Typically type and key are identical.
- *
- * @param {string} [imports]
- *   the optional imports needed for this tag.
- *
- * @returns {object}
- *   the tag specification.
- */
-function tag(key, type, imports) {
-
-
-  if ((typeof(type) === "undefined") || type === null)
-    type = key;
-
-  // TODO we should use the identifier and imports object here
-
-  return {
-    "id": key,
-    "type": type,
-    "requires" : imports
-  };
-}
-
-
-/**
- * Wraps a field definitions and marks the field as optional.
- * Optional means that a missing element is not a parser error.
- *
- * @param {object} field
- *   the field structure which should be marked as optional
- * @param {string|object} [requires]
- *   the imports required by this optional element.
- * @returns {object}
- *   the optional structure specification.
- */
-function optional(field, requires) {
-  return {
-    ...field,
-    "requires": requires,
-    "optional" : true
-  };
-}
-
-
-/**
- * Defines a new property
- *
- * @param {string} key
- *   the fields unique name.
- * @param {string} type
- *   the fields type.
- * @param {string} [value]
- *   the fields optional default value
- *
- * @returns {object}
- *   the field specification.
- */
-function field(key, type, value) {
-
-  // TODO we should use an Identifier to key and type...
-
-  if ((typeof(value) === "undefined") || (value === null)) {
-    return {
-      "id" : key,
-      "type" : type
-    };
-  }
-
-  return {
-    "id" : key,
-    "type" : type,
-    "value" : value
-  };
-}
-
-
-// TODO rename this to stringProperty, numericProperty and stringListProperty.
-
-/**
- * Defines a numeric property.
- *
- * @param {string} key
- *   the fields unique name.
- * @param {number} value
- *   the default value
- *
- * @returns {object}
- *   the numeric field specification.
- */
-function numericField(key, value) {
-  return field(key, "number", `${value}`);
-}
-
-/**
- * Defines a string property
- *
- * @param {string} key
- *   the fields unique name.
- * @param {string} value
- *   the default value, if omitted an empty string will be used.
- *
- * @returns {object}
- *   the string field specification.
- */
-function stringField(key, value = "") {
-  // TODO properly escape value
-  return field(key, "string", `"${value}"`);
-}
-
-/**
- * Defines a string list property
- *
- * @param {string} key
- *   the fields unique name.
- * @param {string|string[]} values
- *   the default values, if omitted a single empty string will be used.
- *
- * @returns {object}
- *   the string list specification
- */
-function stringListField(key, values = "") {
-
-  // TODO properly escape values.
-
-  if (Array.isArray(values)) {
-    values = `[${values.map((value) => { return `"${value}"`; }).join(",")}]`;
-  } else
-    values = `"${values}"`;
-
-  return field(key, "stringlist", values);
+function before(item) {
+  return item.id;
 }
 
 /**
@@ -252,7 +84,7 @@ class Identifier {
   }
 }
 
-// FIXME this is very idential with GenericCapabilities...
+// FIXME this is very identical with GenericCapabilities...
 /**
  *
  */
@@ -318,32 +150,9 @@ function id(node, type, requires) {
 }
 
 /**
- * Creates a new token matcher specification.
- * A token matcher tests if the the given token matches.
- *
- * @returns {object}
- *   the matcher specification
- */
-function tokenMatcher() {
-  // return { matcher : (scope, parser, lexer) => { return parser.startsWith(scope.properties[0].token); } };
-  return { matcher : (scope, parser) => { return parser.startsWith(scope.token); } };
-}
-
-/**
- * Creates a new class matcher specification.
- * A class matcher probes if any of the given types matches.
- *
- * @returns {object}
- *   the matcher specification
- */
-function classMatcher() {
-  return { matcher : (scope, parser, document) => { return document.probeByClass(scope.items, parser); } };
-}
-
-/**
  * Defines token which need to be an exact match..
  *
- * @param {string} token
+ * @param {string} literal
  *   the unique token used for matching
  * @param {string} [postfix]
  *   the token's optional postfix used consume e.g. whitespace.
@@ -351,12 +160,16 @@ function classMatcher() {
  * @returns {object}
  *   the structure for parsing the token.
  */
-function token(token, postfix) {
+function token(literal, postfix) {
   return {
-    "token": token,
+    "token": literal,
     "postfix" : postfix,
-    ...tokenMatcher(),
-    "initializer" : (element, spec) => { element.addLiteral(spec.token, spec.postfix); }
+    ...Matcher.tokenMatcher(),
+    "initializer" : (element, spec) => {
+      // FIXME: we should throw here as soon as all elements are converted.
+      if (element.addToken)
+        element.addToken(spec.token, spec.postfix);
+    }
   };
 }
 
@@ -378,35 +191,89 @@ function all(...items) {
   return { "all" : items};
 }
 
-// Group
-//   node
-//   type
-//   token
-//   value
-//   mandatory
+/**
+ * Sets the elements default value.
+ *
+ * There are three kinds of default value.
+ *
+ * The easiest is when the value is mandatory. Omitting it results in a syntax
+ * error. But we need to know what value to use when creating a new element.
+ * You model this by setting the value which and mandatory to true.
+ *
+ * The next kind is an explicit default value. This the value is optional and
+ * a missing value means we fall back to the well specified default value.
+ * You model this by setting a value and mandatory to false.
+ *
+ * And finally there is an implicit default, in case the tag is omitted, the
+ * server just uses his default. Thus we as a client do not know what the
+ * default is. YOu model this by not setting a default value at all.
+ *
+ * @param {string} value
+ *   the default value
+ * @param {boolean} [mandatory]
+ *   if true the value is mandatory and only used a initializer.
+ *
+ * @returns {object}
+ *   the value specification.
+ */
+function value(value, mandatory) {
+
+  if ((typeof(mandatory) === "undefined") || (mandatory === null))
+    mandatory = false;
+
+  return {
+    "initializer" : function(element, elm) {
+      if (elm.mandatory)
+        element.setCurrentElement(elm.value);
+      else
+        element.setDefaultElement(elm.value);
+    },
+    "value" : value,
+    "mandatory" : mandatory
+  };
+}
 
 /**
+ * Specifies an element which is of any of the given types
  *
- * @param {*} item
- * @param {*} value
+ * @param  {...string} types
+ *   the types which are accepted by the property.
  * @returns {object}
+ *   the property definition.
  */
-function group(item, value) {
+function items(...types) {
 
-  const rv = {
-    "item" : [item]
+  if (!types.length)
+    throw new Error("One or more types expected");
+
+  for (const type of types)
+    if (!type.startsWith("@"))
+      throw new Error(`Invalid type ${type}`);
+
+  return {
+    "initializer" : function(element, elm) {
+      // FIXME: we should throw here as soon as all elements are converted.
+      if (element.addItems)
+        element.addItems(...elm.types);
+    },
+    ...Matcher.classMatcher(),
+    "types" : types
   };
-
-  if ((typeof(value) === "undefined") || value === null)
-    rv["value"] = value;
-
-  return rv;
 }
 
 export {
+  fields, optionals, tags, parameters
+} from "./Properties.mjs";
+
+export {
+  attribute, optional, tag,
+  number, string, stringList
+} from "./Attributes.mjs";
+
+export {
   any, all,
-  id, token, group, optional,
-  fields, optionals, parameters, tags,
-  classMatcher, tokenMatcher,
-  field, numericField, stringField, stringListField, tag, Identifier, Imports
+  id, token,
+  Identifier, Imports,
+  before, insert,
+  items, value
 };

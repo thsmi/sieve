@@ -13,8 +13,10 @@
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 import {
-  parameters, stringListField, stringField,
-  tags, tag, id, token
+  id, token,
+  parameters, tags,
+  tag, stringList, string,
+  insert, before
 } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 
 // fileinto [:create] <mailbox: string>
@@ -23,17 +25,12 @@ SieveGrammar.addTag(
   id("action/fileinto/create", "@action/fileinto/", "mailbox"),
   token(":create"));
 
-const fileinto = {
-  extends: "action/fileinto",
-
-  properties: [
-    tags(
-      tag("create", "action/fileinto/create", "mailbox"))
-  ]
-};
-
-SieveGrammar.extendAction(fileinto);
-
+SieveGrammar.extendAction(
+  "action/fileinto",
+  insert(
+    tags(tag("create", "action/fileinto/create", "mailbox")),
+    before(parameters()))
+);
 
 // mailboxexists <mailbox-names: string-list>
 
@@ -42,7 +39,7 @@ SieveGrammar.addTest(
 
   token("mailboxexists"),
   parameters(
-    stringListField("mailboxes", "INBOX"))
+    stringList("mailboxes", "INBOX"))
 );
 
 // metadataexists <mailbox: string> <annotation-names: string-list>
@@ -52,8 +49,8 @@ SieveGrammar.addTest(
 
   token("metadataexists"),
   parameters(
-    stringField("mailbox", "INBOX"),
-    stringListField("annotations"))
+    string("mailbox", "INBOX"),
+    stringList("annotations"))
 );
 
 // metadata [MATCH-TYPE] [COMPARATOR]
@@ -78,9 +75,9 @@ SieveGrammar.addTest(
     tag("match-type"),
     tag("comparator")),
   parameters(
-    stringField("mailbox", "INBOX"),
-    stringField("annotation"),
-    stringListField('keys')
+    string("mailbox", "INBOX"),
+    string("annotation"),
+    stringList('keys')
   ));
 
 // servermetadataexists <annotation-names: string-list>
@@ -90,7 +87,7 @@ SieveGrammar.addTest(
 
   token("servermetadataexists"),
   parameters(
-    stringListField("annotations")));
+    stringList("annotations")));
 
 
 // servermetadata [MATCH-TYPE] [COMPARATOR] <annotation-name: string> <key-list: string-list>
@@ -102,6 +99,6 @@ SieveGrammar.addTest(
     tag("match-type"),
     tag("comparator")),
   parameters(
-    stringField("annotation"),
-    stringListField("keys")
+    string("annotation"),
+    stringList("keys")
   ));

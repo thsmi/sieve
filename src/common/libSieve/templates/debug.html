@@ -45,6 +45,8 @@
         <div class="tab-pane fade" id="debugadvanced" role="tabpanel">
           <button data-i18n="debug.advanced.compact" type="button" class="btn btn-sm btn-outline-secondary"
             id="DebugCompact"></button>
+            <button data-i18n="debug.advanced.reflow" type="button" class="btn btn-sm btn-outline-secondary"
+            id="DebugReflow"></button>
         </div>
 
         <div class="tab-pane fade" id="debugcapabilities" role="tabpanel">
@@ -301,6 +303,14 @@
                 class="form-check-input" />
               <label class="form-check-label" for="sivCapabilitiesExecute">
                 vnd.dovecot.execute
+              </label>
+            </div>
+
+            <div class="col-md-4 col-lg-3 form-check form-switch">
+              <input type="checkbox" id="sivCapabilitiesDebug" name="capabilities" value="vnd.dovecot.debug"
+                class="form-check-input" />
+              <label class="form-check-label" for="sivCapabilitiesDebug">
+                vnd.dovecot.debug
               </label>
             </div>
 

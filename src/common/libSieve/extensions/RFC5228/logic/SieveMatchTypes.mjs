@@ -10,7 +10,7 @@
  *
  */
 
-import { id, token } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+import { id, items, token, value } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 // TODO match-type items (matchtype/) should not eat trailing whitespaces...
@@ -33,5 +33,6 @@ SieveGrammar.addTag(
 
 SieveGrammar.addGroup(
   id("match-type"),
-  { value: ":is" }
+  items("@match-type/"),
+  value(":is")
 );

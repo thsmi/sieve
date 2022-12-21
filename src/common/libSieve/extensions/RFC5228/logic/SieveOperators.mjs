@@ -14,7 +14,7 @@ import { SieveAbstractElement } from "./../../../toolkit/logic/AbstractElements.
 import { SieveTestList } from "./SieveTests.mjs";
 
 import { SieveGrammar } from "../../../toolkit/logic/GenericElements.mjs";
-import { id } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+import { id, token } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 
 const MAX_QUOTE_LEN = 50;
 const BEFORE_OPERATOR = 0;
@@ -22,7 +22,7 @@ const AFTER_OPERATOR = 1;
 
 /*
  * Currently we have only Unary Operators like not and Nary/Multary like anyof allof
- * Sieve does not implement binary (2) or tenary operators (3)
+ * Sieve does not implement binary (2) or ternary operators (3)
  */
 
 /**
@@ -33,14 +33,15 @@ class SieveNotOperator extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell) {
-    super(docshell);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
 
     this.whiteSpace = [];
     this.whiteSpace[BEFORE_OPERATOR] = this.createByName("whitespace", " ");
     this.whiteSpace[AFTER_OPERATOR] = this.createByName("whitespace");
 
     this._literal = null;
+    this._tests = null;
   }
 
   /**
@@ -88,13 +89,9 @@ class SieveNotOperator extends SieveAbstractElement {
    *
    * @param {string} childId
    *   the child's unique id.
-   * @param {boolean} cascade
-   * @param {SieveAbstractElement} stop
    * @returns {SieveAbstractElement}
    */
-  removeChild(childId, cascade, stop) {
-    if (!cascade)
-      throw new Error("only cascade possible");
+  removeChild(childId) {
 
     if (this.test().id() !== childId)
       throw new Error("Invalid Child id");
@@ -103,10 +100,7 @@ class SieveNotOperator extends SieveAbstractElement {
     this.test().parent(null);
     this._test = null;
 
-    if (!stop || (stop.id() !== this.id()))
-      return this.remove(cascade, stop);
-
-    return this;
+    return this.remove();
   }
 
   /**
@@ -163,13 +157,12 @@ class SieveAnyOfAllOfTest extends SieveTestList {
   /**
    * @inheritdoc
    */
-  constructor(docshell) {
-    super(docshell);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
 
     this.whiteSpace = this.createByName("whitespace");
     this.isAllOf = true;
   }
-
 
   /**
    * @inheritdoc
@@ -195,14 +188,14 @@ class SieveAnyOfAllOfTest extends SieveTestList {
   /**
    *
    * @param {SieveAbstractElement} item
-   * @param {String} old
+   * @param {string} old
    * @returns {SieveAnyOfAllOfTest}
    *   a self reference.
    */
   test(item, old) {
-    if (typeof (item) === "undefined") {
-      if (this.tests.length === 1)
-        return this.tests[0][1];
+    if (!item) {
+      if (this.getChildren().length === 1)
+        return this.getChild(0)[1];
 
       throw new Error(".test() has more than one element");
     }
@@ -238,13 +231,16 @@ class SieveAnyOfAllOfTest extends SieveTestList {
 
 SieveGrammar.addGeneric(
   id("operator/not", "@operator"),
+
   SieveNotOperator,
-  (parser) => { return parser.startsWith("not"); });
+  token("not"));
 
 SieveGrammar.addGeneric(
   id("operator/anyof", "@operator"),
+
   SieveAnyOfAllOfTest,
-  (parser) => {
+  // FIXME should be token("allof", "anyof")
+  { "matcher" : (property, spec, parser) => {
     if (parser.startsWith("allof"))
       return true;
 
@@ -252,5 +248,14 @@ SieveGrammar.addGeneric(
       return true;
 
     return false;
-  }
+  }}
 );
+
+// SieveGrammar.addList(
+//   id("operator/anyof", "@operator"),
+//
+//   token("allof", "anyof")
+//   token("(")
+//   parameters(
+//     items("test",["@test", "@operator"]))
+//   token(")");

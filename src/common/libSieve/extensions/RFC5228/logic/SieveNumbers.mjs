@@ -27,8 +27,8 @@ class SieveNumber extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell) {
-    super(docshell);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
     this._number = "1";
     this._unit = "";
   }
@@ -116,7 +116,8 @@ class SieveNumber extends SieveAbstractElement {
 
 SieveGrammar.addGeneric(
   id("number", "@number/"),
+
   SieveNumber,
-  (parser) => { return parser.isNumber(parser);}
+  { "matcher" : (property, spec, parser) => { return parser.isNumber(parser); } }
 );
 

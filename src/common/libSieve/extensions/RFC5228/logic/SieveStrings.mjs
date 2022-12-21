@@ -13,7 +13,7 @@
 import { SieveAbstractElement } from "./../../../toolkit/logic/AbstractElements.mjs";
 
 import { SieveGrammar } from "../../../toolkit/logic/GenericElements.mjs";
-import { id } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+import { id, items, token } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 
 const TOKEN_NOT_FOUND = -1;
 
@@ -35,8 +35,8 @@ class SieveMultiLineString extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell) {
-    super(docshell);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
 
     this.text = "";
 
@@ -115,9 +115,9 @@ class SieveQuotedString extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell) {
+  constructor(docshell, name, type) {
 
-    super(docshell);
+    super(docshell, name, type);
     this.text = "";
   }
 
@@ -227,8 +227,8 @@ class SieveStringList extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell) {
-    super(docshell);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
 
     this.elements = [];
 
@@ -463,8 +463,8 @@ class SieveString extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell) {
-    super(docshell);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
     this.string = this.createByName("string/quoted");
   }
 
@@ -559,31 +559,31 @@ SieveGrammar.addGeneric(
   id("string/multiline", "@string/"),
 
   SieveMultiLineString,
-  // FIXME: use a token matcher
-  (parser) => { return parser.startsWith("text:"); });
+  token("text:"));
 
 SieveGrammar.addGeneric(
   id("string/quoted", "@string/"),
 
   SieveQuotedString,
-  // FIXME: use a token matcher
-  (parser) => { return parser.isChar("\""); });
+  token('"'));
 
 SieveGrammar.addGeneric(
   id("stringlist", "@stringlist"),
+
   SieveStringList,
-  (parser, lexer) => {
+  { "matcher" : (property, spec, parser, document) => {
     if (parser.isChar("["))
       return true;
 
-    if (lexer.probeByName("string/quoted", parser))
+    if (document.probeByName("string/quoted", parser))
       return true;
 
     return false;
-  });
+  }});
 
 SieveGrammar.addGeneric(
   id("string", "@string"),
+
   SieveString,
-  (parser, document) => { return document.probeByClass(["@string/"], parser); }
+  items("@string/")
 );

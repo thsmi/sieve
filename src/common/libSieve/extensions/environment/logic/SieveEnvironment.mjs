@@ -13,8 +13,9 @@
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 import {
-  stringField, stringListField, parameters,
-  tag, tags, id, token
+  id, token,
+  string, stringList, tag,
+  parameters, tags
 } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 
 // Usage:   environment [COMPARATOR] [MATCH-TYPE] <name: string> <key-list: string-list>
@@ -26,5 +27,5 @@ SieveGrammar.addTest(
     tag("match-type"),
     tag("comparator")),
   parameters(
-    stringField("name", "domain"),
-    stringListField("keys", "imap.example.com")));
+    string("name", "domain"),
+    stringList("keys", "imap.example.com")));

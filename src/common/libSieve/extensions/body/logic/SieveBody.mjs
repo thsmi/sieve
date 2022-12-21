@@ -15,7 +15,9 @@ import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 import {
   id, token,
-  tags, stringListField, parameters, tag
+  items, value,
+  tags, parameters,
+  tag, stringList
 } from "./../../../toolkit/logic/SieveGrammarHelper.mjs";
 
 // "body" [COMPARATOR] [MATCH-TYPE] [BODY-TRANSFORM] <key-list: string-list>
@@ -28,7 +30,7 @@ SieveGrammar.addTest(
     tag("match-type"),
     tag("comparator")),
   parameters(
-    stringListField("keys", 'Example'))
+    stringList("keys", 'Example'))
 );
 
 // -------------------------------------------------------------------------//
@@ -44,7 +46,7 @@ SieveGrammar.addTag(
 
   token(":content"),
   parameters(
-    stringListField("contentType"))
+    stringList("contentType"))
 );
 
 SieveGrammar.addTag(
@@ -57,6 +59,8 @@ SieveGrammar.addTag(
 
 SieveGrammar.addGroup(
   id("body-transform"),
-  { value: ":text" }
+
+  items("@body-transform/"),
+  value(":text")
 );
 

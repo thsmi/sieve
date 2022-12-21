@@ -14,21 +14,22 @@ import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 import {
   id, token,
-  stringField, stringListField, parameters
+  string, stringList, parameters
 } from "./../../../toolkit/logic/SieveGrammarHelper.mjs";
 
 
-// Usage: convert  <quoted-from-media-type: string>
-//                 <quoted-to-media-type: string>
-//                 <transcoding-params: string-list>
+// Usage: convert
+//    <quoted-from-media-type: string>
+//    <quoted-to-media-type: string>
+//    <transcoding-params: string-list>
 //
 // can be either a test or an action...
 
 const properties = [
   parameters(
-    stringField("from", 'image/tiff'),
-    stringField("to", 'mage/jpeg'),
-    stringListField("transcoding", ["pix-x=320", "pix-y=240"]))
+    string("from", 'image/tiff'),
+    string("to", 'mage/jpeg'),
+    stringList("transcoding", ["pix-x=320", "pix-y=240"]))
 ];
 
 SieveGrammar.addTest(

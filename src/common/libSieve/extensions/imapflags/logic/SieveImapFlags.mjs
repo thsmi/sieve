@@ -13,9 +13,10 @@
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 import {
-  stringListField, stringField,
-  parameters, optional,
-  tag, tags, id, token
+  id, token,
+  tags, parameters,
+  stringList, string, optional, tag,
+  insert, before
 } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 
 // Flags and keywords are defined in http://tools.ietf.org/html/rfc5788
@@ -27,17 +28,15 @@ SieveGrammar.addTag(
 
   token(":flags"),
   parameters(
-    stringListField("flags", ["\\\\Flagged"]))
+    stringList("flags", ["\\\\Flagged"]))
 );
 
-SieveGrammar.extendAction({
-  extends: "action/fileinto",
-
-  properties: [
-    tags(
-      tag("flags", "action/fileinto/flags", "imap4flags"))
-  ]
-});
+SieveGrammar.extendAction(
+  "action/fileinto",
+  insert(
+    tags(tag("flags", "action/fileinto/flags", "imap4flags")),
+    before(parameters()))
+);
 
 // Inject :flags into keep
 SieveGrammar.addTag(
@@ -45,17 +44,15 @@ SieveGrammar.addTag(
 
   token(":flags"),
   parameters(
-    stringListField("flags", ["\\\\Flagged"]))
+    stringList("flags", ["\\\\Flagged"]))
 );
 
-SieveGrammar.extendAction({
-  extends: "action/keep",
-
-  properties: [
-    tags(
-      tag("flags", "action/keep/flags", "imap4flags"))
-  ]
-});
+SieveGrammar.extendAction(
+  "action/keep",
+  insert(
+    tags(tag("flags", "action/keep/flags", "imap4flags")),
+    before(parameters()))
+);
 
 // Usage:   setflag [<variablename: string>]  <list-of-flags: string-list>
 SieveGrammar.addAction(
@@ -63,8 +60,8 @@ SieveGrammar.addAction(
 
   token("setflag"),
   parameters(
-    optional(stringListField("variable"), "variables"),
-    stringListField("flags", ["\\\\Flagged"]))
+    optional(stringList("variable"), "variables"),
+    stringList("flags", ["\\\\Flagged"]))
 );
 
 //     Usage:   addflag [<variablename: string>]
@@ -74,8 +71,8 @@ SieveGrammar.addAction(
 
   token("addflag"),
   parameters(
-    optional(stringField("variable"), "variables"),
-    stringListField("flags", ["\\\\Flagged"]))
+    optional(string("variable"), "variables"),
+    stringList("flags", ["\\\\Flagged"]))
 );
 
 
@@ -88,8 +85,8 @@ SieveGrammar.addAction(
   token("removeflag"),
 
   parameters(
-    optional(stringField("variable"), "variables"),
-    stringListField("flags", ["\\\\Flagged"]))
+    optional(string("variable"), "variables"),
+    stringList("flags", ["\\\\Flagged"]))
 );
 
 
@@ -104,5 +101,6 @@ SieveGrammar.addTest(
     tag("match-type"),
     tag("comparator")),
   parameters(
-    optional(stringListField("variables"), "variables"),
-    stringListField("flags", ["\\\\Flagged"])));
+    optional(stringList("variables"), "variables"),
+    stringList("flags", ["\\\\Flagged"]))
+);

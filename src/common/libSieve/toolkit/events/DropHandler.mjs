@@ -12,6 +12,10 @@
 
 import { SieveDataTransfer } from "./DataTransfer.mjs";
 
+const FIRST_CHILD = 0;
+const SECOND_CHILD = 1;
+const LAST_CHILD = -1;
+
 /**
  * Consumes drop events.
  */
@@ -34,7 +38,7 @@ class SieveDropHandler {
   }
 
   /**
-   * Gets the flavour for this drop type
+   * Gets the flavour for this drop type.
    *
    * @returns {string[]}
    *   a string array containing all supported drop flavours.
@@ -374,61 +378,77 @@ class SieveBlockDropHandler extends SieveDropHandler {
   }
 
   /**
-   * Moves a the given test from the source to the target destination.
+   * Moves a test from a condition to a block.
    *
-   * @param {*} source
-   * @param {*} target
+   * First it adds a new condition to the bock and then moves the test from
+   * the old condition to the new one.
+   *
+   * @param {SieveAbstractElement} source
+   *   the test to be moved.
+   * @param {SieveAbstractElement} target
+   *   the target block to which the element should be added.
    */
   moveTest(source, target) {
 
     // Create a new Condition...
     const newCondition = this.document().createByName("condition");
 
-    // Find the if element which owns this test...
-    let conditional = source;
+    // Find the conditional which owns this test...
+    let conditional = source.parent();
+
     while (conditional.parent().test)
       conditional = conditional.parent();
 
+    let origin = source.parent();
     // ... remove everything between our test and the conditional...
-    let oldOwner = source.remove(true, conditional);
+    source.remove();
 
-    // ... in case the conditional has no more a test...
-    // ... we need to transfer all block element...
+    // Collapse the source if it is empty.
+    origin = this.document().collapse(origin);
+
+    // We need to transfer all block elements, in case the conditional
+    // has no children after collapsing the origin.
     if (!conditional.test()) {
-      oldOwner = conditional.remove(true, target);
-
       newCondition.append(conditional);
-      newCondition.children(1).test(source);
-      newCondition.children(0).remove(true);
+      newCondition.getChild(SECOND_CHILD).test(source);
+      newCondition.getChild(FIRST_CHILD).remove();
     }
     else
-      newCondition.children(0).test(source);
+      newCondition.getChild(FIRST_CHILD).test(source);
 
     target.append(newCondition, this.sibling());
 
     target.widget().reflow();
-    if (conditional.parent())
-      conditional.widget().reflow();
-    source.widget().reflow();
-    oldOwner.widget().reflow();
+    origin.widget().reflow();
 
+    // Do an async garbage collection
+    setTimeout(() => { this.document().compact(); }, 0);
   }
 
   /**
+   * Moves an action between blocks.
    *
    * @param {SieveAbstractElement} source
+   *   the source element which should be moved
    * @param {SieveAbstractElement} target
+   *   the target where the element should be added.
    */
   moveAction(source, target) {
 
-    // remember owner
-    const oldOwner = source.remove(true, target);
-    // Move Item to new owner
+    // Remember our origin
+    let origin = source.parent();
+
+    // Move it to the new parent.
     target.append(source, this.sibling());
 
     // refresh old and new Owner
     target.widget().reflow();
-    oldOwner.widget().reflow();
+
+    origin = this.document().collapse(origin);
+    origin.widget().reflow();
+
+    // Do an async garbage collection
+    setTimeout(() => { this.document().compact(); }, 0);
   }
 
   /**
@@ -536,25 +556,35 @@ class SieveTrashBoxDropHandler extends SieveDropHandler {
    */
   moveElement(sivFlavour, id) {
 
-    let item = this.document().id(id);
-    if (!item)
+    const item = this.document().id(id);
+    if (!item) {
+      // FIXME: instead of throwing we should try to repair the document.
+      // this.document().root().widget().reflow();
       throw new Error("Trash Drop Handler: No Element found for " + id);
+    }
 
-    item = item.remove(true);
+    let parent = item.parent();
 
-    if (!item)
-      throw new Error("Trash Drop Handler: No Element found for " + id);
+    item.remove();
 
-    item.widget().reflow();
+    // We need to cleanup empty parent elements.
+    parent = this.document().collapse(parent);
 
-    window.setTimeout(() => { this.document().compact(); }, 0);
+    // Reflow the root node in case the parent is unknown.
+    if (!parent)
+      parent = this.document().root();
+
+    parent.widget().reflow();
+
+    // We defer the call to compact this avoids blocking the main thread.
+    setTimeout(() => { this.document().compact(); }, 0);
   }
 }
 
 // ****************************************************************************//
 
 /**
- * Implements an handler for Sieve Test actions..
+ * Implements a drop handler which accepts elements dropped onto a conditional element
  */
 class SieveConditionDropHandler extends SieveDropHandler {
 
@@ -569,6 +599,8 @@ class SieveConditionDropHandler extends SieveDropHandler {
    * @inheritdoc
    */
   canMoveElement(flavour, id) {
+
+    // TODO test the CanMove logic seems to be broken.
 
     // actions can only be added as last element...
     if (flavour === "sieve/action")
@@ -612,7 +644,7 @@ class SieveConditionDropHandler extends SieveDropHandler {
     if (!target)
       return false;
 
-    if (!target.children(":last").test)
+    if (!target.getChild(LAST_CHILD).test)
       return false;
 
     return true;
@@ -627,9 +659,13 @@ class SieveConditionDropHandler extends SieveDropHandler {
    *   the id of the sieve element to be moved
    */
   moveElement(flavour, id) {
+
+    // FIXME Test move to condition logic....
+
     let oldOwner;
 
     const source = this.document().id(id);
+    // FIXME Exception descriptions are wrong
     if (!source)
       throw new Error("Block Drop Handler: No Element found for " + id);
 
@@ -638,7 +674,7 @@ class SieveConditionDropHandler extends SieveDropHandler {
       throw new Error("Block Drop Handler: No Element found for " + this.parent().id());
 
     if (flavour === "sieve/action") {
-      oldOwner = source.remove(true, target);
+      oldOwner = source.remove();
 
       // we need to warp the action into an else statement
       target.append(
@@ -659,7 +695,7 @@ class SieveConditionDropHandler extends SieveDropHandler {
       conditional = conditional.parent();
 
     // ... remove everything between our test and the conditional...
-    oldOwner = source.remove(true, conditional);
+    oldOwner = source.remove();
 
     // in case the conditional is empty we can reuse it ...
     // ... this keep all block elements intact...
@@ -670,7 +706,7 @@ class SieveConditionDropHandler extends SieveDropHandler {
     }
     else {
       conditional.test(source);
-      oldOwner = conditional.remove(true, target);
+      oldOwner = conditional.remove();
     }
 
     target.append(conditional, this.sibling());
@@ -706,7 +742,7 @@ class SieveConditionDropHandler extends SieveDropHandler {
     if (!target)
       return false;
 
-    if (!target.children(":last").test)
+    if (!target.getChild(LAST_CHILD).test)
       return false;
 
     return true;
@@ -806,6 +842,9 @@ class SieveTestDropHandler extends SieveDropHandler {
    *   the id of the sieve element to be moved
    */
   moveElement(sivFlavour, id) {
+
+    // TODO Test moveing a test.
+
     const source = this.document().id(id);
     if (!source)
       throw new Error("Test Drop Handler: No Element found for " + id);
@@ -837,7 +876,7 @@ class SieveTestDropHandler extends SieveDropHandler {
     target.parent(inner);
 
     // cleanup but stop at the source's parent condition
-    let oldOwner = source.remove(true, conditional);
+    let oldOwner = source.remove();
     let newConditional;
 
     // in case the conditional is empty we should migrate all actions ...
@@ -849,11 +888,11 @@ class SieveTestDropHandler extends SieveDropHandler {
         newConditional = newConditional.parent();
 
       // migrate our children...
-      while (conditional.children().length)
-        newConditional.append(conditional.children(0).remove());
+      while (conditional.getChildren().length)
+        newConditional.append(conditional.getChild(FIRST_CHILD).remove());
 
       // do the remaining cleanup...
-      oldOwner = oldOwner.remove(true, target);
+      oldOwner = oldOwner.remove();
     }
 
     inner.append(source);
@@ -990,7 +1029,7 @@ class SieveMultaryDropHandler extends SieveDropHandler {
       conditional = conditional.parent();
 
     // ... remove everything between our test and the conditional...
-    let oldOwner = source.remove(true, conditional);
+    let oldOwner = source.remove();
     let newConditional;
 
     // in case the conditional is empty we should migrate all actions ...
@@ -1002,11 +1041,11 @@ class SieveMultaryDropHandler extends SieveDropHandler {
         newConditional = newConditional.parent();
 
       // migrate our children...
-      while (conditional.children().length)
-        newConditional.append(conditional.children(0).remove());
+      while (conditional.getChildren().length)
+        newConditional.append(conditional.getChild(FIRST_CHILD).remove());
 
       // continue cleanup
-      oldOwner = oldOwner.remove(true, target);
+      oldOwner = oldOwner.remove();
     }
 
     target.append(source, this.sibling());

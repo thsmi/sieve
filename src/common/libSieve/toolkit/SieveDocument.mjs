@@ -14,6 +14,7 @@ import { SieveParser } from "./SieveParser.mjs";
 import { SieveCapabilities } from "./logic/GenericCapabilities.mjs";
 
 const QUOTE_LENGTH = 50;
+const NOT_FOUND = -1;
 
 /**
  * Creates a new document for sieve scripts it is used to parse
@@ -32,15 +33,9 @@ class SieveDocument {
    */
   constructor(grammar, widgets) {
     this._widgets = widgets;
-    this._nodes = {};
+    this._nodes = new Map();
 
     this.grammar = grammar;
-
-    // we cannot use this.createBySpec(). It would add a node without a parent...
-    // ... to this._nodes. All nodes without a valid parent and their...
-    // ... descendants are removed when this.compact() is called. So that we...
-    // ... would end up with an empty tree.
-    this._rootNode = this.getSpecByName("block/rootnode").onNew(this);
 
     this._capabilities = new SieveCapabilities();
   }
@@ -69,6 +64,7 @@ class SieveDocument {
    *   all the specifications or undefined.
    */
   getSpecsByType(id) {
+
     if (!id.startsWith("@"))
       throw new Error(`Invalid type name ${id}.`);
 
@@ -128,9 +124,19 @@ class SieveDocument {
 
   /**
    * Returns the root node for this document
-   * @returns {SieveElement} the documents root node.
+   *
+   *  @returns {SieveElement} the documents root node.
    */
   root() {
+
+    // We initialize the rood node lazily and we cannot use this.createBySpec().
+    // It would add a node without a parent to this._nodes.
+    //
+    // All nodes without a valid parent and their descendants are removed when
+    // this.compact() is called. So that we would end up with an empty tree.
+    if (!this._rootNode)
+      this._rootNode = this.getSpecByName("block/rootnode").onNew(this);
+
     return this._rootNode;
   }
 
@@ -173,8 +179,12 @@ class SieveDocument {
 
     const result = [];
 
-    this._walk(this.root().elms, name, result);
+    const items = [
+      this.root().getElement("imports"),
+      this.root().getElement("body")
+    ];
 
+    this._walk(items, name, result);
     return result;
   }
 
@@ -185,7 +195,7 @@ class SieveDocument {
    *   the html element
    */
   html() {
-    return this._rootNode.widget().html();
+    return this.root().widget().html();
   }
 
   /**
@@ -220,15 +230,9 @@ class SieveDocument {
     if (!spec.onCapable(this.capabilities()))
       throw new Error("Capability not supported");
 
-    const item = spec.onNew(this);
+    const item = spec.onNew(this, parser, parent);
 
-    if (parser)
-      item.init(parser);
-
-    if (parent)
-      item.parent(parent);
-
-    this._nodes[item.id()] = item;
+    this._nodes.set(item.id(), item);
 
     return item;
   }
@@ -398,21 +402,75 @@ class SieveDocument {
    *   the requested element.
    */
   id(id) {
-    return this._nodes[id];
+    return this._nodes.get(id);
   }
 
   /**
-   * Gets and sets the script content for this document.
+   * Gets the script content for this document.
    *
-   * @param {string} [data]
-   *   the script content to be parsed by this document.
    * @returns {string}
    *   the document converted to a script
    */
-  script(data) {
-    if (typeof (data) === "undefined")
-      return this._rootNode.toScript();
+  getScript() {
+    this.capabilities().clear();
 
+    this.root().getElement("body").require(this.capabilities());
+
+    for (const item of this.capabilities().dependencies)
+      this.require(item);
+
+    // TODO Remove unused requires...
+    return this.root().toScript();
+  }
+
+  /**
+   * Add a require to the import block.
+   * In the require is already present, it will be silently skipped.
+   *
+   * @param {string} capability
+   *   the require capability which should be added.
+   * @returns {SieveBlockImport}
+   *   a self reference.
+   */
+  require(capability) {
+    const imports = this.root().getElement("imports");
+
+    // We should try to insert new requires directly after the last require
+    // statement otherwise it looks strange. So we just keep track of the
+    // last require we found.
+    let last = NOT_FOUND;
+
+    for (const [index, item] of imports.getChildren().entries()) {
+      if (item.nodeName() !== "import/require")
+        continue;
+
+      if (item.getElement("capabilities").contains(capability))
+        return this;
+
+      last = index;
+    }
+
+    const elm = imports.createByName("import/require");
+    elm.getElement("capabilities").values(capability);
+
+    // FIXME we should use append here instead of duplicating code.
+    // no other import was found means just push
+    if (last === NOT_FOUND) {
+      imports.getChildren().push(elm);
+      return this;
+    }
+
+    imports.getChildren().splice(last, 0, elm);
+    return this;
+  }
+
+  /**
+   * Sets the new sieve content for this document.
+   *
+   * @param {string} data
+   *   the script content to be parsed by this document.
+   */
+  setScript(data) {
     // the sieve syntax prohibits single \n and \r
     // they have to be converted to \r\n
 
@@ -423,26 +481,31 @@ class SieveDocument {
     // ... finally convert all \r to \r\n
     data = data.replace(/\r/g, "\r\n");
 
-    let r = 0;
-    let n = 0;
-    for (let i = 0; i < data.length; i++) {
-      if (data.charCodeAt(i) === "\r".charCodeAt(0))
-        r++;
-      if (data.charCodeAt(i) === "\n".charCodeAt(0))
-        n++;
-    }
-    if (n !== r)
-      throw new Error("Something went terribly wrong. The linebreaks are mixed up...\n");
-
     const parser = new SieveParser(data);
 
-    this._rootNode.init(parser);
+    this.root().init(parser);
 
     if (!parser.empty())
       throw new Error(`Unknown Element at: ${parser.bytes()}`);
 
-    // data should be empty right here...
-    return parser.bytes();
+    this.checkImports();
+  }
+
+  /**
+   * Checks if all of the import section's require statements are supported.
+   */
+  checkImports() {
+    const imports = this.root().getElement("imports");
+
+    for (const item of imports.getChildren()) {
+
+      if (item.nodeName() !== "import/require")
+        continue;
+
+      for (const dependency of item.getElement("capabilities").values())
+        if (!this.capabilities().hasCapability(dependency))
+          throw new Error('Unknown capability string "' + dependency + '"');
+    }
   }
 
   /**
@@ -463,6 +526,33 @@ class SieveDocument {
   }
 
   /**
+   * Removes empty elements from the tree. It starts at the given leave and
+   * traverses down until either a non empty element or the root node is found.
+   *
+   * @param {SieveAbstractElement} element
+   *   the element where to start the traversal.
+   *
+   * @returns {SieveAbstractElement}
+   *   the first non empty element.
+   */
+  collapse(element) {
+
+    if (!element)
+      return null;
+
+    let item = null;
+
+    while (element.empty()) {
+      item = element;
+      element = item.parent();
+
+      item.remove();
+    }
+
+    return element;
+  }
+
+  /**
    * In oder to speedup mutation elements are cached. But this cache is lazy.
    * So deleted objects will remain in memory until you call this cleanup
    * Method.
@@ -470,38 +560,39 @@ class SieveDocument {
    * It checks all cached elements for a valid parent pointer. If it's missing
    * the document was obviously deleted...
    *
-   * @param {string[]} whitelist
-   *   an optional whitelist list, with elements which should not be released
    * @returns {int}
    *   the number of deleted elements
    */
-  compact(whitelist) {
+  compact() {
 
     const items = [];
     let cnt = 0;
 
-    whitelist = [].concat(whitelist);
+    // Delete all nodes without a parent element.
+    for (const [key, value] of this._nodes) {
+      if (value.parent() !== null)
+        continue;
 
-    // scan for null nodes..
-    for (const item in this._nodes)
-      if (!whitelist.includes(this._nodes[item]))
-        if (this._nodes[item].parent() === null)
-          items.push(item);
+      this._nodes.delete(key);
+      items.push(key);
+      cnt++;
+    }
 
-    // ...cleanup these nodes...
-    for (let i = 0; i < items.length; i++)
-      delete (this._nodes[items[i]]);
-
-    // ... and remove all dependent nodes
+    // Remove all nodes which reference a node without a parent.
     while (items.length) {
-      const it = items.shift();
+      const id = items.shift();
 
-      for (const item in this._nodes)
-        if (!whitelist.includes(this._nodes[item]))
-          if (this._nodes[item].parent().id() === it)
-            items.push(item);
+      for (const [key, value] of this._nodes)
+        if (value.parent().id() === id)
+          items.push(key);
 
-      delete (this._nodes[it]);
+      if (!this._nodes.has(id))
+        continue;
+
+      const node = this._nodes.get(id);
+      node.parent(null);
+
+      this._nodes.delete(id);
       cnt++;
     }
 

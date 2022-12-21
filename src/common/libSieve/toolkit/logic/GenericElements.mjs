@@ -20,19 +20,21 @@ import {
 import * as SieveGrammarHelper from "./SieveGrammarHelper.mjs";
 import { SieveDocument } from "../SieveDocument.mjs";
 
+const dictionary = new Map();
+
 /**
- *
+ * Specifies how to construct a new element.
  */
-class SieveAbstractGeneric {
+class SieveSpecification {
 
   /**
    * Creates a new instance.
    *
-   * @param {object} item
+   * @param {object} spec
    *   the element's specification
    */
-  constructor(item) {
-    this.item = item;
+  constructor(spec) {
+    this.spec = spec;
   }
 
   /**
@@ -47,9 +49,19 @@ class SieveAbstractGeneric {
    *   true in case the generic is capable of parsing
    *   otherwise false.
    */
-  // eslint-disable-next-line no-unused-vars
   onProbe(parser, document) {
-    return this.item.matcher(this.item, parser, document);
+    if (!this.spec && !this.spec.properties)
+      throw new Error("Invalid element specification.");
+
+    // Check the first matcher contained in the properties.
+    for (const property of this.spec.properties) {
+      if (!property.matcher)
+        continue;
+
+      return property.matcher(property, this.spec, parser, document);
+    }
+
+    throw new Error("No matcher specified.");
   }
 
   /**
@@ -58,26 +70,35 @@ class SieveAbstractGeneric {
    * @param {SieveDocument} docshell
    *   a reference to the parent document which owns this element.
    *
+   * @param {SieveParser} [parser]
+   *   optional data used to initialize the new element
+   *
+   * @param {SieveAbstractElement} [parent]
+   *   the optional parent element which owns the newly generated element.
+   *
    * @returns {SieveAbstractElement}
    *   the new element.
    */
-  onNew(docshell) {
-    const element = new SieveGenericStructure(docshell, this.item.id.node);
+  onNew(docshell, parser, parent) {
+    const element = new this.spec.initializer(
+      docshell, this.spec.id.node, this.spec.id.type);
 
-    // FIXME: The token should be the first property. The properties matcher
-    // should check if the first property exists.
+    if (element.addRequirements)
+      element.addRequirements(this.spec.requires.getImports());
 
-    element
-      .addLiteral(this.item.token)
-      .addRequirements(this.item.requires.getImports());
+    for (const property of this.spec.properties) {
 
-    for (const elm of this.item.properties) {
+      if (!property.initializer)
+        continue;
 
-      if (!elm.initializer)
-        throw new Error("Invalid property initializer...");
-
-      elm["initializer"](element, elm);
+      property.initializer(element, property, this.spec);
     }
+
+    if (parser)
+      element.init(parser);
+
+    if (parent)
+      element.parent(parent);
 
     return element;
   }
@@ -92,68 +113,39 @@ class SieveAbstractGeneric {
    *   true in case the action is capable
    */
   onCapable(capabilities) {
-    return this.item.requires.isCapable(capabilities);
+    return this.spec.requires.isCapable(capabilities);
   }
 }
 
-
 /**
+ * Registers a new specification for a structure.
  *
+ * @param {Identifier} id
+ *   the tag's unique identifier containing the name, type and
+ *   optionally required imports.
+ * @param  {...Fields} properties
+ *   the optional tag properties in order of their precedence.
  */
-class SieveGroupSpecification extends SieveAbstractGeneric {
+function addStructure(id, ...properties) {
 
+  const definition = {
+    ...id,
+    "initializer" : SieveGenericStructure,
+    "properties": properties
+  };
 
-  /**
-   * @inheritdoc
-   */
-  onNew(docshell) {
+  if (definition.id.node === null || typeof (definition.id.node) === 'undefined')
+    throw new Error("Node expected but not found");
 
-    // The easiest case, there is no default. At least one of the items has to exist.
-    // We detect this by the mandatory tag.
-    if ((typeof (this.item.mandatory) !== "undefined") && (this.item.mandatory === true)) {
-      const element = new SieveGroupElement(docshell, this.item.id.node);
-      element.setToken(this.item.token);
-      element.addItems(this.item.items);
-      element.setCurrentElement(this.item.value);
-      return element;
-    }
+  if (dictionary.has[definition.id.node])
+    throw new Error(`Structure ${definition.id.node} already registered`);
 
-    // The next case, there is an implicit server side default.
-    // This is typically when a default is defined the server.
-    // We detect this whenever no value is defined.
-    if (this.item.value === null || typeof (this.item.value) === "undefined") {
-      const element = new SieveImplicitGroupElement(docshell, this.item.id.node);
-      element.setToken(this.item.token);
-      element.addItems(this.item.items);
-      return element;
-    }
-
-    // The last case is when we have an explicit default.
-    // Like the match types have, it will automatically fallback to an :is
-    // We detect this when the value is defined.
-    const element = new SieveExplicitGroupElement(docshell, this.item.id.node);
-    element.setToken(this.item.token);
-    element.addItems(this.item.items);
-    element.setDefaultElement(this.item.value);
-    return element;
-  }
+  dictionary.set(definition.id.node, definition);
 }
 
-
-// TODO the spec should contain an initlaizer call, which decides what instance to create.
-const dictionary = {
-  "structures" : new Map(),
-  "groups" : new Map(),
-  "generics" : new Map(),
-
-  has: (item) => {
-    return dictionary.structures.has(item) || dictionary.groups.has(item) || dictionary.generics.has(item);
-  }
-};
-
-
 /**
- * Registers a new object specification
+ * Registers a new action specification.
+ * It automatically adds a semicolon token to the specification.
  *
  * @param {Identifier} id
  *   the action's unique identifier containing the name, type and
@@ -164,224 +156,55 @@ const dictionary = {
  *   the optional actions properties in order of their precedence.
  */
 function addAction(id, token, ...properties) {
-
-  const definition = {
-    ...id,
-    ...token,
-    "properties": properties
-  };
-
-  // Ensure the item has a valid structure...
   // ... there has to be a token ...
-  if (definition.token === null || typeof (definition.token) === 'undefined')
-    throw new Error("Token expected but not found");
+  if (token === null || typeof (token) === 'undefined')
+    throw new Error(`No token found in definition for ${id.name}`);
 
-  if (definition.id.node === null || typeof (definition.id.node) === 'undefined')
-    throw new Error("Node expected but not found");
+  if (token.token === null || typeof (token.token) === 'undefined')
+    throw new Error(`No token found in definition for ${id.name}`);
 
-  if (dictionary.has[definition.id.node])
-    throw new Error("Actions already registered");
+  properties.unshift(token);
+  properties.push(SieveGrammarHelper.token(";", "\r\n"));
 
-  // To simplify the definitions, we magically add the semicolon which
-  // terminates an action here.
-  definition["properties"].push(SieveGrammarHelper.token(";", "\r\n"));
-
-  dictionary.structures.set(definition.id.node, definition);
+  addStructure(id, ...properties);
 }
 
-
-/**
- * Registers a new tag specification.
- *
- * @param {Identifier} id
- *   the test's unique identifier containing the name, type and
- *   the optionally required imports
- * @param {Token} token
- *   token which identifiers this test.
- * @param {...Fields} properties
- *   the optional test properties in order of their precedence.
- */
-function addTest(id, token, ...properties) {
-  // Ensure the item has a valid structure...
-  const definition = {
-    ...id,
-    ...token,
-    "properties": properties
-  };
-
-  // ... there has to be a token ...
-  if (definition.token === null || typeof (definition.token) === 'undefined') {
-    throw new Error(`Token expected but not found ${id.name}`);
-  }
-
-  if (definition.id.node === null || typeof (definition.id.node) === 'undefined')
-    throw new Error("Node expected but not found");
-
-  if (dictionary.has[definition.id.node])
-    throw new Error("Test already registered");
-
-  dictionary.structures.set(definition.id.node, definition);
-}
-
-/**
- * Registers a new tag specification.
- *
- * @param {Identifier} id
- *   the tag's unique identifier containing the name, type and
- *   optionally required imports.
- * @param {Token} token
- *   the token which identifies this tag.
- * @param  {...Fields} properties
- *   the optional tag properties in order of their precedence.
- */
-function addTag(id, token, ...properties) {
-
-  const definition = {
-    ...id,
-    ...token,
-    "properties": properties
-  };
-
-  dictionary.structures.set(definition.id.node, definition);
-}
+// TODO have a separate function for addTest and addTag
 
 /**
  * Registers a new group specification.
  *
  * @param {Identifier} id
  *   the group's unique identifier.
- * @param {...object} [options]
+ * @param {...object} [properties]
  *   optional group specifications.
  */
-function addGroup(id, ...options) {
+function addGroup(id, ...properties) {
 
   // Our default matcher is a class matcher
-  let definition = {
+  const definition = {
     ...id,
-    ...SieveGrammarHelper.classMatcher()
+    "properties": properties
   };
-
-  // We assume a type with the same name exists...
-  definition["items"] = [`@${definition.id.node}/`];
-
-  for (const option of options)
-    definition = { ...definition, ...option };
 
   if (definition.id.node === null || typeof (definition.id.node) === 'undefined')
     throw new Error("Node expected but not found");
 
-  dictionary.groups.set(definition.id.node, definition);
+  definition["initializer"] = SieveImplicitGroupElement;
 
-}
+  for (const property of definition.properties) {
+    if (property.mandatory) {
+      definition["initializer"] = SieveGroupElement;
+      break;
+    }
 
-
-/**
- *
- * @param {*} action
- * @param {*} item
- *
- */
-function extendGenericProperty(action, item) {
-
-  let property = null;
-
-  if (!action.properties) {
-    action.properties = [item];
-    return;
+    if ((typeof(property.value) !== "undefined") && (property.value !== null)) {
+      definition["initializer"] = SieveExplicitGroupElement;
+      break;
+    }
   }
 
-  property = action.properties.find((cur) => {
-    return cur.id === item.id;
-  });
-
-  if (!property) {
-    action.properties.unshift(item);
-    return;
-  }
-
-  item.elements.forEach((cur) => {
-    property.elements.unshift(cur);
-  });
-}
-
-/**
- *
- * @param {*} item
- *
- */
-function extendGeneric(item) {
-
-  if (!dictionary.has(item.extends))
-    return;
-
-  // We currently only support extending structures....
-  const x = dictionary.structures.get(item.extends);
-
-  if (item.properties) {
-    item.properties.forEach(function (property) {
-      extendGenericProperty(x, property);
-    });
-  }
-
-  // TODO we currently just replace the requirements.
-  // instead we should extend it with an any..
-  if (item.requires) {
-    x.requires = new SieveGrammarHelper.Imports(item.requires);
-  }
-}
-
-
-// TODO should be merged with abstract generic and renamed to "specification".
-/**
- * Implements a wrapper for a Generic element
- */
-class SieveGenericSpecification {
-
-  /**
-   * Creates a new Instance.
-   *
-   * @param {Identifier} id
-   *   the element's unique identifier.
-   * @param {Class} initializer
-   *   the class which should be used to create new object.
-   * @param {Function} matcher
-   *   the matcher function which checks if a document snippet is compatible
-   *   with this specification or not.
-   */
-  constructor(id, initializer, matcher) {
-    this.initializer = initializer;
-    this.onProbe = matcher;
-    this.id = id;
-  }
-
-  /**
-   * Creates a new Sieve Element for this specification.
-   *
-   * @param {SieveDocument} docshell
-   *   the document which owns this element's instance
-   * @returns {SieveAbstractElement}
-   *   the new instance.
-   */
-  onNew(docshell) {
-    const instance = new this.initializer(docshell);
-
-    // Fixme remove this ugly hack.
-    instance["nodeName"] = () => { return this.id.node; };
-    instance["nodeType"] = () => { return this.id.type; };
-
-    return instance;
-  }
-
-  /**
-   * Checks if the element is supported by the capabilities
-   *
-   * @returns {boolean}
-   *   true in case the server supports this tag otherwise false.
-   */
-  onCapable() {
-    // TODO: Read capabilities from id element....
-    return true;
-  }
+  dictionary.set(definition.id.node, definition);
 }
 
 /**
@@ -391,28 +214,55 @@ class SieveGenericSpecification {
  *   the elements unique identifier.
  * @param {Class} initializer
  *   the class which should be used to create new object.
- * @param {Function} matcher
- *   the matcher function which checks if a document snippet is compatible
+ * @param {object} property
+ *   the property which is used when probing if a document snippet is compatible
  *   with this specification or not.
  */
-function addGeneric(id, initializer, matcher) {
+function addGeneric(id, initializer, property) {
 
-  const definition = {
+  const spec = {
     ...id,
     "initializer" : initializer,
-    "matcher" : matcher
+    "properties" : [property]
   };
 
-  dictionary.generics.set(definition.id.node, definition);
+  dictionary.set(spec.id.node, spec);
 }
 
+/**
+ * Extends an existing specification.
+ *
+ * @param {string} id
+ *   the identifier which should be extended.
+ * @param  {...any} specs
+ *   the specification to be extended.
+ */
+function extendGeneric(id, ...specs) {
+
+  if (!dictionary.has(id))
+    throw new Error(`Cannot extend unknown element ${id}}`);
+
+  const elm = dictionary.get(id);
+
+  for (const spec of specs) {
+
+    if (spec.property) {
+      spec.property(elm.properties);
+      continue;
+    }
+
+    if (spec.requires) {
+      elm.requires = new SieveGrammarHelper.Imports(spec.requires);
+      continue;
+    }
+  }
+}
 
 /**
  * Adds a specification to the dictionary.
  *
  * @param {Map} specs
  *   a map which contains all the element and type specifications.
- *    *
  * @param {string} name
  *  a unique name for this element
  * @param {string} type
@@ -471,29 +321,15 @@ function addSpec(specs, name, type, obj) {
  * @returns {SieveDocument}
  *   the document based on the given grammar.
  */
-function createGrammar(capabilities, designer) {
+function createDocument(capabilities, designer) {
 
   const grammar = new Map();
 
-  for (const spec of dictionary.structures.values()) {
+  for (const spec of dictionary.values()) {
     addSpec(
       grammar,
       spec.id.node, spec.id.type,
-      new SieveAbstractGeneric(spec));
-  }
-
-  for (const spec of dictionary.groups.values()) {
-    addSpec(
-      grammar,
-      spec.id.node, spec.id.type,
-      new SieveGroupSpecification(spec));
-  }
-
-  for (const spec of dictionary.generics.values()) {
-    addSpec(
-      grammar,
-      spec.id.node, spec.id.type,
-      new SieveGenericSpecification(spec.id, spec.initializer, spec.matcher));
+      new SieveSpecification(spec));
   }
 
   const doc = new SieveDocument(grammar, designer);
@@ -508,15 +344,17 @@ function createGrammar(capabilities, designer) {
 
 const SieveGrammar = {};
 
-SieveGrammar.addAction = addAction;
 SieveGrammar.addGroup = addGroup;
-SieveGrammar.addTag = addTag;
-SieveGrammar.addTest = addTest;
+
+SieveGrammar.addAction = addAction;
+SieveGrammar.addTag = addStructure;
+SieveGrammar.addTest = addStructure;
+SieveGrammar.addStructure = addStructure;
 
 SieveGrammar.extendAction = extendGeneric;
 SieveGrammar.extendTest = extendGeneric;
 
-SieveGrammar.create = createGrammar;
+SieveGrammar.create = createDocument;
 
 SieveGrammar.addGeneric = addGeneric;
 

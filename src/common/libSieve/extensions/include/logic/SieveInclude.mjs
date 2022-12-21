@@ -11,8 +11,11 @@
  */
 
 import {
-  parameters, stringListField, stringField,
-  tags, tag, id, token
+  id, token,
+  parameters, tags,
+  tag, stringList, string,
+
+  items, value
 } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
@@ -29,7 +32,7 @@ SieveGrammar.addAction(
 
   token("global"),
   parameters(
-    stringListField("variables", "Example")));
+    stringList("variables", "Example")));
 
 
 SieveGrammar.addTag(
@@ -54,7 +57,8 @@ SieveGrammar.addTag(
 
 SieveGrammar.addGroup(
   id("tag/location-type"),
-  { value: ":personal" }
+  items("@tag/location-type/"),
+  value(":personal")
 );
 
 
@@ -69,4 +73,4 @@ SieveGrammar.addAction(
     tag("once", "action/include/once"),
     tag("optional", "action/include/optional")),
   parameters(
-    stringField("script", "Example")));
+    string("script", "Example")));

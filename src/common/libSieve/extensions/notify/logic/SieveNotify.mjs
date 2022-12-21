@@ -11,9 +11,13 @@
  */
 
 import {
-  parameters,
-  id, token, all,
-  tags, tag, stringField, stringListField
+  id, token,
+
+  parameters, tags, items,
+  tag, string, stringList,
+
+  insert,
+  all
 } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
@@ -35,7 +39,7 @@ SieveGrammar.addAction(
     tag("options", "action/notify/options"),
     tag("message", "action/notify/message")),
   parameters(
-    stringField("method"))
+    string("method"))
 );
 
 SieveGrammar.addTag(
@@ -43,21 +47,21 @@ SieveGrammar.addTag(
 
   token(":from"),
   parameters(
-    stringField("from")));
+    string("from")));
 
 SieveGrammar.addTag(
   id("action/notify/importance", "@action/notify/importance"),
 
   token(":importance"),
   parameters(
-    stringField("importance", "2")));
+    string("importance", "2")));
 
 SieveGrammar.addTag(
   id("action/notify/options", "@action/notify/options"),
 
   token(":options"),
   parameters(
-    stringListField("options")));
+    stringList("options")));
 
 SieveGrammar.addTag(
   id("action/notify/message", "@action/notify/message"),
@@ -65,7 +69,7 @@ SieveGrammar.addTag(
   token(":message"),
 
   parameters(
-    stringField("message")));
+    string("message")));
 
 // Test valid_notify_method
 // Usage:  valid_notify_method
@@ -75,7 +79,7 @@ SieveGrammar.addTest(
 
   token("valid_notify_method"),
   parameters(
-    stringListField("uris", "stringlist", "Example")));
+    stringList("uris", "stringlist", "Example")));
 
 // Test notify_method_capability
 // Usage:  notify_method_capability
@@ -91,9 +95,9 @@ SieveGrammar.addTest(
   tags(
     tag("match-type", "comparator")),
   parameters(
-    stringField("uri"),
-    stringField("capability", "online"),
-    stringListField("keys", "yes")));
+    string("uri"),
+    string("capability", "online"),
+    stringList("keys", "yes")));
 
 
 //  Usage:  ":encodeurl"
@@ -109,14 +113,11 @@ SieveGrammar.addTag(
 );
 
 SieveGrammar.addGroup(
-  id("modifier/15", "@modifier/")
+  id("modifier/15", "@modifier/"),
+  items("@modifier/15/")
 );
 
-SieveGrammar.extendAction({
-  extends: "action/set",
-
-  properties: [
-    tags(
-      tag("modifier/15"))
-  ]
-});
+SieveGrammar.extendAction(
+  "action/set",
+  insert(tags(tag("modifier/15")))
+);

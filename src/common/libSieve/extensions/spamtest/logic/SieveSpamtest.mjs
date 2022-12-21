@@ -11,8 +11,10 @@
  */
 
 import {
-  tag, tags, id, token,
-  parameters, stringField
+  id, token,
+  tags, parameters,
+  tag, string,
+  insert
 } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
@@ -30,7 +32,7 @@ SieveGrammar.addTest(
     tag("comparator"),
     tag("match-type")),
   parameters(
-    stringField("value", "1"))
+    string("value", "1"))
 );
 
 SieveGrammar.addTag(
@@ -38,15 +40,12 @@ SieveGrammar.addTag(
   token(":percent")
 );
 
-// TODO no need to extend this here could be done directl in add test...
-SieveGrammar.extendTest({
-  extends: "test/spamtest",
-
-  properties: [
-    tags(
-      tag("percent", "test/spamtestplus/percent", "spamtestplus" ))
-  ]
-});
+// TODO no need to extend this here could be done directly in add test...
+SieveGrammar.extendTest(
+  "test/spamtest",
+  insert(
+    tags(tag("percent", "test/spamtestplus/percent", "spamtestplus")))
+);
 
 // virustest [COMPARATOR] [MATCH-TYPE] <value: string>
 SieveGrammar.addTest(
@@ -57,6 +56,6 @@ SieveGrammar.addTest(
     tag("comparator"),
     tag("match-type")),
   parameters(
-    stringField("value", "1"))
+    string("value", "1"))
 );
 

@@ -10,7 +10,7 @@
  *
  */
 
-import { parameters, stringField, id, token } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+import { id, token, parameters, string } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 
@@ -19,8 +19,8 @@ SieveGrammar.addAction(
 
   token("reject"),
   parameters(
-    // FIX me initialize this with a multi line string...
-    stringField("reason"))
+    // FIXME initialize this with a multi line string...
+    string("reason"))
 );
 
 
@@ -29,6 +29,6 @@ SieveGrammar.addAction(
 
   token("ereject"),
   parameters(
-    // FIX me initialize this with a multi line string...
-    stringField("reason"))
+    // FIXME initialize this with a multi line string...
+    string("reason"))
 );

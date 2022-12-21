@@ -13,7 +13,7 @@
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 import {
-  tags, tag, id, token
+  tags, tag, id, token, parameters, insert, before
 } from "./../../../toolkit/logic/SieveGrammarHelper.mjs";
 
 // "fileinto" [":copy"] <folder: string>
@@ -22,16 +22,12 @@ SieveGrammar.addTag(
   token(":copy")
 );
 
-const fileinto = {
-  extends: "action/fileinto",
-
-  properties: [
-    tags(
-      tag("copy", "action/fileinto/copy", "copy"))
-  ]
-};
-
-SieveGrammar.extendAction(fileinto);
+SieveGrammar.extendAction(
+  "action/fileinto",
+  insert(
+    tags(tag("copy", "action/fileinto/copy", "copy")),
+    before(parameters()))
+);
 
 // "redirect" [":copy"] <address: string>
 SieveGrammar.addTag(
@@ -39,13 +35,9 @@ SieveGrammar.addTag(
   token(":copy")
 );
 
-const redirect = {
-  extends: "action/redirect",
-
-  properties: [
-    tags(
-      tag("copy", "action/redirect/copy", "copy"))
-  ]
-};
-
-SieveGrammar.extendAction(redirect);
+SieveGrammar.extendAction(
+  "action/redirect",
+  insert(
+    tags(tag("copy", "action/redirect/copy", "copy")),
+    before(parameters()))
+);

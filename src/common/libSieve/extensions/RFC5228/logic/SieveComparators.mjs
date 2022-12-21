@@ -10,7 +10,7 @@
  *
  */
 
-import { id, token } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+import { id, token, items, value } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 /**
@@ -74,11 +74,10 @@ SieveGrammar.addTag(
   token("\"i;ascii-numeric\"")
 );
 
-// *******************************************************************
-
 SieveGrammar.addGroup(
   id("comparator"),
   token(":comparator"),
-  { value : "\"i;ascii-casemap\"" }
+  items("@comparator/"),
+  value("\"i;ascii-casemap\"")
 );
 

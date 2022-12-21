@@ -229,15 +229,33 @@
     ]
   });
 
-  tests.set("pipe", {
-    script: "${workspace}/libSieve/extensions/pipe/tests/SievePipeTest.mjs",
+  tests.set("vnd.dovecot.pipe", {
+    script: "${workspace}/libSieve/extensions/vnd.dovecot.pipe/tests/SievePipeTest.mjs",
     extend: "rfc5228",
     require: [
       "${workspace}/libSieve/extensions/copy/logic/SieveCopy.mjs",
       "${workspace}/libSieve/extensions/variables/logic/SieveVariables.mjs",
       "${workspace}/libSieve/extensions/subaddress/logic/SieveSubaddress.mjs",
       "${workspace}/libSieve/extensions/vacation/logic/SieveVacation.mjs",
-      "${workspace}/libSieve/extensions/pipe/logic/SievePipe.mjs"
+      "${workspace}/libSieve/extensions/vnd.dovecot.pipe/logic/SievePipe.mjs"
+    ]
+  });
+
+  tests.set("vnd.dovecot.debug", {
+    script: "${workspace}/libSieve/extensions/vnd.dovecot.debug/tests/SieveDebugTest.mjs",
+    extend: "rfc5228",
+    require: [
+      "${workspace}/libSieve/extensions/variables/logic/SieveVariables.mjs",
+      "${workspace}/libSieve/extensions/vnd.dovecot.debug/logic/SieveDebug.mjs"
+    ]
+  });
+
+  tests.set("vnd.dovecot.report", {
+    script: "${workspace}/libSieve/extensions/vnd.dovecot.report/tests/SieveReportTest.mjs",
+    extend: "rfc5228",
+    require: [
+      "${workspace}/libSieve/extensions/environment/logic/SieveEnvironment.mjs",
+      "${workspace}/libSieve/extensions/vnd.dovecot.report/logic/SieveReport.mjs"
     ]
   });
 

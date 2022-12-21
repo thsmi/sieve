@@ -10,7 +10,7 @@
  *
  */
 
-import { parameters, stringField, id, token } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+import { id, token, parameters, string } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 SieveGrammar.addAction(
@@ -33,7 +33,7 @@ SieveGrammar.addAction(
 
   token("redirect"),
   parameters(
-    stringField("address", "username@example.com"))
+    string("address", "username@example.com"))
 );
 
 // <"fileinto"> <string> <";">
@@ -42,5 +42,5 @@ SieveGrammar.addAction(
 
   token("fileinto"),
   parameters(
-    stringField("path", "INBOX"))
+    string("path", "INBOX"))
 );

@@ -10,7 +10,7 @@
  *
  */
 
-import { id } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+import { id, items, value } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 // Usage:  foreverypart [":name" string] block
@@ -73,8 +73,8 @@ SieveGrammar.addTag({
 
 SieveGrammar.addGroup(
   id("mimeopts"),
-  // fixme what is the default
-  {value: ":text"}
+  items("@mimeopts/"),
+  value(":text")
 );
 
 // Usage:  header [":mime"] [":anychild"] [MIMEOPTS]

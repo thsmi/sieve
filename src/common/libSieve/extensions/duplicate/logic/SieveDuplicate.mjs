@@ -11,7 +11,8 @@
  */
 
 import {
-  stringField, numericField, parameters,
+  items,
+  string, number, parameters,
   tag, tags, token, id
 } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 
@@ -44,7 +45,7 @@ SieveGrammar.addTag(
 
   token(":handle"),
   parameters(
-    stringField("handle"))
+    string("handle"))
 );
 
 
@@ -54,7 +55,7 @@ SieveGrammar.addTag(
 
   token(":header"),
   parameters(
-    stringField("header"))
+    string("header"))
 );
 
 // uniqueid/id
@@ -63,12 +64,13 @@ SieveGrammar.addTag(
 
   token(":uniqueid"),
   parameters(
-    stringField("uniqueid"))
+    string("uniqueid"))
 );
 
 
 SieveGrammar.addGroup(
-  id("test/duplicate/unique")
+  id("test/duplicate/unique"),
+  items("@test/duplicate/unique/")
 );
 
 // seconds
@@ -77,5 +79,5 @@ SieveGrammar.addTag(
 
   token(":seconds"),
   parameters(
-    numericField("timeout", DEFAULT_TIMEOUT))
+    number("timeout", DEFAULT_TIMEOUT))
 );

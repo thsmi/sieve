@@ -10,7 +10,13 @@
  *
  */
 
-import { parameters, field, id, token } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+import {
+  id, token,
+  parameters, items,
+  attribute,
+  value
+} from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 /*
@@ -50,7 +56,8 @@ SieveGrammar.addTag(
 
 SieveGrammar.addGroup(
   id("relational-match"),
-  { value : '"eq"'}
+  items("@relational-match/"),
+  value('"eq"')
 );
 
 /**
@@ -63,7 +70,7 @@ SieveGrammar.addTag(
 
   token(":value"),
   parameters(
-    field("relational-match", "relational-match", '"eq"'))
+    attribute("relational-match", "relational-match", '"eq"'))
 );
 
 /**
@@ -76,5 +83,5 @@ SieveGrammar.addTag(
   id("match-type/count", "@match-type/", "relational"),
   token(":count"),
   parameters(
-    field("relational-match", "relational-match", '"eq"'))
+    attribute("relational-match", "relational-match", '"eq"'))
 );

@@ -14,7 +14,7 @@ import { SieveParser } from "./../../../toolkit/SieveParser.mjs";
 import { SieveAbstractElement } from "./../../../toolkit/logic/AbstractElements.mjs";
 
 import { SieveGrammar } from "../../../toolkit/logic/GenericElements.mjs";
-import { id } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+import { id, token, items } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 
 // ToDo HashComment separated by line breaks are equivalent to bracket Comments...
 
@@ -47,8 +47,8 @@ class SieveDeadCode extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell) {
-    super(docshell);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
     this.whiteSpace = "";
   }
 
@@ -79,8 +79,8 @@ class SieveBracketComment extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell) {
-    super(docshell);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
     this.text = "";
   }
 
@@ -112,8 +112,8 @@ class SieveHashComment extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell) {
-    super(docshell);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
     this.text = "";
   }
 
@@ -148,8 +148,8 @@ class SieveWhiteSpace extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell) {
-    super(docshell);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
     this.elements = [];
   }
 
@@ -230,26 +230,31 @@ class SieveWhiteSpace extends SieveAbstractElement {
 
 SieveGrammar.addGeneric(
   id("whitespace/linebreak", "@whitespace/"),
+
   SieveLineBreak,
-  (parser) => { return parser.startsWith("\r\n"); });
+  token("\r\n"));
 
 SieveGrammar.addGeneric(
   id("whitespace/deadcode", "@whitespace/"),
+
   SieveDeadCode,
-  (parser) => { return (parser.isChar([" ", "\t"])); });
+  // FIXME : token(" ", "\t")
+  { "matcher": (property, spec, parser) => { return (parser.isChar([" ", "\t"])); } });
 
 SieveGrammar.addGeneric(
   id("comment/bracketcomment", "@comment"),
+
   SieveBracketComment,
-  (parser) => { return parser.startsWith("/*"); } );
+  token("/*"));
 
 SieveGrammar.addGeneric(
   id("comment/hashcomment", "@comment"),
+
   SieveHashComment,
-  (parser) => { return parser.isChar("#"); });
+  token("#"));
 
 SieveGrammar.addGeneric(
   id("whitespace", "@whitespace"),
+
   SieveWhiteSpace,
-  (parser, document) => { return document.probeByClass(["@whitespace/", "@comment"], parser); }
-);
+  items("@whitespace/", "@comment"));

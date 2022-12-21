@@ -10,7 +10,7 @@
  *
  */
 
-import { id, token } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+import { id, token, items, value } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 SieveGrammar.addTag(
@@ -31,5 +31,6 @@ SieveGrammar.addTag(
 
 SieveGrammar.addGroup(
   id("address-part"),
-  { value: ":all" }
+  items("@address-part/"),
+  value(":all")
 );

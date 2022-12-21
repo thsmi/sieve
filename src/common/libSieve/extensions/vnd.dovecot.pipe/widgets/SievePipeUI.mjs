@@ -51,7 +51,7 @@ class SieveExecuteActionUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./extensions/pipe/templates/SieveExecuteUI.html";
+    return "./extensions/vnd.dovecot.pipe/templates/SieveExecuteUI.html";
   }
 
   /**
@@ -244,7 +244,7 @@ class SieveFilterActionUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./extensions/pipe/templates/SieveFilterUI.html";
+    return "./extensions/vnd.dovecot.pipe/templates/SieveFilterUI.html";
   }
 
   /**
@@ -326,7 +326,7 @@ class SievePipeActionUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./extensions/pipe/templates/SievePipeUI.html";
+    return "./extensions/vnd.dovecot.pipe/templates/SievePipeUI.html";
   }
 
   /**
@@ -416,8 +416,8 @@ class SieveFilterTestUI extends SieveFilterActionUI {
   /**
    * @inheritdoc
    */
-  createHtml(parent) {
-    const elm = super.createHtml(parent);
+  createHtml(parent, invalidate) {
+    const elm = super.createHtml(parent, invalidate);
     elm.classList.add("sivTest");
     elm.classList.remove("sivAction");
     return elm;
@@ -455,8 +455,8 @@ class SieveExecuteTestUI extends SieveExecuteActionUI {
   /**
    * @inheritdoc
    */
-  createHtml(parent) {
-    const elm = super.createHtml(parent);
+  createHtml(parent, invalidate) {
+    const elm = super.createHtml(parent, invalidate);
     elm.classList.add("sivTest");
     elm.classList.remove("sivAction");
     return elm;

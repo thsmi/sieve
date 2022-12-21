@@ -10,7 +10,7 @@
  *
  */
 
-import { SieveAbstractElement } from "./AbstractElements.mjs";
+import { SieveAbstractElement, SieveAbstractParentElement } from "./AbstractElements.mjs";
 
 // TODO we need to do a cleanup, which means document caches elements by their id.
 // These elements should be also tracked by the generic elements. especially with tags.
@@ -228,8 +228,6 @@ class SieveGenericLiteral extends SieveAbstractGeneric {
 
     return result;
   }
-
-
 }
 
 /**
@@ -309,7 +307,7 @@ class SieveGenericMandatoryItem extends SieveAbstractGeneric {
    * @param {object} parameter
    *   the parameter which should be set
    */
-  addParameter(parameter) {
+  addProperty(parameter) {
 
     if (parameter.type === null || typeof (parameter.type) === 'undefined')
       throw new Error("Parameter without a type ");
@@ -336,7 +334,7 @@ class SieveGenericMandatoryItem extends SieveAbstractGeneric {
    * @returns {SieveGenericMandatoryItem}
    *   a self reference
    */
-  setParameters(parameters) {
+  setProperties(parameters) {
 
     if (!parameters || !parameters.length)
       throw new Error("Invalid Parameters");
@@ -346,7 +344,7 @@ class SieveGenericMandatoryItem extends SieveAbstractGeneric {
 
     // Initialize all Parameters...
     parameters.forEach((parameter) => {
-      this.addParameter(parameter);
+      this.addProperty(parameter);
     });
 
     return this;
@@ -388,6 +386,8 @@ class SieveGenericMandatoryItem extends SieveAbstractGeneric {
     } catch (ex) {
       // FIXME: we should reset the elements to their default values.
       // Swallow the exception and reset the position as if nothing happened
+      console.log("Parsing optional failed");
+      console.log(ex);
       parser.pos(pos);
     }
 
@@ -437,7 +437,7 @@ class SieveGenericMandatoryItem extends SieveAbstractGeneric {
  * This also means they have an implicit default value which makes parsing awkward.
  *
  * In case the tag is missing (which means using the implicit default) the class is fully transparent.
- * Otherwise it is greedy and eats leading and trailing whitespaces.
+ * Otherwise it is greedy and eats leading and trailing whitespace.
  */
 class SieveGenericOptionalItem extends SieveAbstractGeneric {
 
@@ -515,7 +515,7 @@ class SieveGenericOptionalItem extends SieveAbstractGeneric {
    *   the tag which should be added.
    *
    */
-  addTag(tag) {
+  addProperty(tag) {
 
     if (tag.type === null || typeof (tag.type) === 'undefined')
       throw new Error("Tag without a type");
@@ -548,14 +548,14 @@ class SieveGenericOptionalItem extends SieveAbstractGeneric {
    * Sets the tags, tags are by definition non positional, optional and always
    * start with a unique token.
    *
-   * @param {object} tags
+   * @param {object} properties
    *   the structure containing the tags definition.
    * @returns {SieveGenericOptionalItem}
    *   a self reference
    */
-  setTags(tags) {
+  setProperties(properties) {
 
-    if (!tags || !tags.length) {
+    if (!properties || !properties.length) {
       throw new Error("Invalid Tags");
     }
 
@@ -563,8 +563,8 @@ class SieveGenericOptionalItem extends SieveAbstractGeneric {
       throw new Error("Tags already initialized");
 
     // Initialize all Parameters...
-    tags.forEach((tag) => {
-      this.addTag(tag);
+    properties.forEach((property) => {
+      this.addProperty(property);
     });
 
     if (this._elements.size)
@@ -716,6 +716,7 @@ class SieveGenericOptionalItem extends SieveAbstractGeneric {
   }
 }
 
+
 /**
  *
  */
@@ -724,22 +725,12 @@ class SieveGenericStructure extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, type) {
-    super(docshell);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
 
     this._elements = [];
     this._requirements = null;
     this._nodeName = type;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  nodeName() {
-    if (this._nodeName === null)
-      throw new Error("Uninitialized Element");
-
-    return this._nodeName;
   }
 
   /**
@@ -832,8 +823,7 @@ class SieveGenericStructure extends SieveAbstractElement {
   }
 
   /**
-   * Adds a literal to the generic element.
-   * A literal is a fixed string.
+   * Adds a string token to the generic element.
    *
    * @param {string} token
    *   the literals token
@@ -844,7 +834,7 @@ class SieveGenericStructure extends SieveAbstractElement {
    * @returns {SieveGenericStructure}
    *   a self reference
    */
-  addLiteral(token, postfix, prefix) {
+  addToken(token, postfix, prefix) {
 
     const literal = new SieveGenericLiteral(token, this);
     literal.setPostfix(postfix);
@@ -855,62 +845,50 @@ class SieveGenericStructure extends SieveAbstractElement {
     return this;
   }
 
-
   /**
-   * Adds a tag to the generic structure. A tag is an optional non positional
-   * parameters which starts with a unique token.
+   * Adds a set of properties to this structure.
    *
-   * @param {Array.<object>|object} tags
-   *   the tags which should be added.
+   * In case positional is true, then the set of properties is considered to
+   * exist in precisely the given order.  t is typically used for parameters
+   * which have a fixed order and do not start with a unique token. Thus they
+   * can only be identified by their position.
+   *
+   * Otherwise if positional is false, then each property in the given set
+   * can (but does not have to) appear in any order at most once. It is used
+   * for tags. Which are optional without a given order but start with a unique
+   * token. The token is used to identify the property
+   *
+   * @param {object} properties
+   *   the properties which should be added.
+   * @param {boolean} positional
+   *   true in case it is positional otherwise false.
    * @returns {SieveGenericStructure}
    *   a self reference
    */
-  addTags(tags) {
+  addProperties(properties, positional) {
 
     // we bail silently out in case no tags are defined.
-    if (typeof (tags) === "undefined" || tags === null)
+    if (typeof (properties) === "undefined" || properties === null)
       return this;
 
     // Ok if it is something else than an array we just
     // convert it into an array
-    if (!Array.isArray(tags))
-      tags = [tags];
+    if (!Array.isArray(properties))
+      properties = [properties];
 
-    if (tags.length === 0)
+    if (properties.length === 0)
       return this;
 
-    this._elements.push(
-      new SieveGenericOptionalItem(this).setTags(tags));
+    const item = (positional === false ?
+      new SieveGenericOptionalItem(this) : new SieveGenericMandatoryItem(this));
+
+    item.setProperties(properties);
+
+    this._elements.push(item);
 
     return this;
   }
 
-  /**
-   * Add parameters to this structure. Parameters are element with a fixed
-   * position. Only very few start start with a token, as the position is
-   * typically enough information for parsing.
-   *
-   * In case an element is not found at the expected position an an error
-   * will be raised
-   *
-   * @param  {Array.<object>|object} parameters
-   *   the configuration and parameter for the generic items.
-   * @returns {SieveGenericStructure}
-   *   a self reference
-   */
-  addParameters(parameters) {
-
-    if (typeof (parameters) === "undefined" || parameters === null)
-      return this;
-
-    if (!Array.isArray(parameters))
-      parameters = [parameters];
-
-    this._elements.push(
-      new SieveGenericMandatoryItem(this).setParameters(parameters));
-
-    return this;
-  }
 
   /**
    * Checks if the generic structure contains an element with the given id.
@@ -962,20 +940,13 @@ class SieveGroupElement extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, type) {
-    super(docshell);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
 
     this._items = [];
     this._prefix = null;
     this._nodeName = type;
     this._current = null;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  nodeName() {
-    return this._nodeName;
   }
 
   /**
@@ -1056,7 +1027,7 @@ class SieveGroupElement extends SieveAbstractElement {
    * @returns {SieveGenericUnion}
    *   a self reference
    */
-  setToken(token) {
+  addToken(token) {
 
     if (token === null || typeof (token) === "undefined") {
       this._prefix = null;
@@ -1077,9 +1048,12 @@ class SieveGroupElement extends SieveAbstractElement {
    * @returns {SieveGenericUnion}
    *   a self reference
    */
-  addItems(items) {
+  addItems(...items) {
+    if (!items.length) {
+      throw new Error("Invalid types specified definition");
+    }
 
-    this._items = this._items.concat(items);
+    this._items.push(...items);
     return this;
   }
 
@@ -1269,8 +1243,8 @@ class SieveExplicitGroupElement extends SieveImplicitGroupElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, nodeName) {
-    super(docshell, nodeName);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
     this._default = null;
   }
 

@@ -66,6 +66,13 @@ function compact() {
 }
 
 /**
+ * Triggers a complete UI reflow.
+ */
+function reflow() {
+  dom2.root().widget().reflow();
+}
+
+/**
  * Initializes the sieve rendering ui and script parser
  *
  * @param {object} capabilities
@@ -78,35 +85,20 @@ function init(capabilities) {
 
   const docShell = dom2;
 
-  // populate the action section
-  const actions = document.querySelector("#sivActions");
-  while (actions.firstChild)
-    actions.firstChild.remove();
+  for (const name of ["Action", "Test", "Operator"]) {
+    const items = document.querySelector(`#siv${name}s`);
+    while (items.firstChild)
+      items.firstChild.remove();
 
-  for (const action of docShell.getSpecsByType("@action")) {
-    if (action.onCapable(docShell.capabilities()))
-      actions.append(createMenuItem(action.item.id.node, "sieve/action", docShell));
-  }
+    for (const type of docShell.getSpecsByType(`@${name.toLowerCase()}`)) {
+      if (!type.onCapable(docShell.capabilities()))
+        continue;
 
-  // populate the test section
-  const tests = document.querySelector("#sivTests");
-  while (tests.firstChild)
-    tests.firstChild.remove();
+      if (type.spec.id.node === "test/boolean")
+        continue;
 
-  for (const test of docShell.getSpecsByType("@test")) {
-    if (test.onCapable(docShell.capabilities()))
-      if (test.item.id.node !== "test/boolean")
-        tests.append(createMenuItem(test.item.id.node, "sieve/test", docShell));
-  }
-
-  // populate the operator section
-  const operators = document.querySelector("#sivOperators");
-  while (operators.firstChild)
-    operators.firstChild.remove();
-
-  for (const operator of docShell.getSpecsByType("@operator")) {
-    if (operator.onCapable(docShell.capabilities()))
-      operators.append(createMenuItem(operator.id.node, "sieve/operator", docShell));
+      items.append(createMenuItem(type.spec.id.node, `sieve/${name.toLowerCase()}`, docShell));
+    }
   }
 
   // create the trash bin
@@ -124,7 +116,7 @@ function init(capabilities) {
  *   the current sieve script as string
  **/
 function getSieveScript() {
-  return dom2.script();
+  return dom2.getScript();
 }
 
 /**
@@ -162,10 +154,10 @@ function setSieveScript(script, capabilities) {
   else
     document.querySelector('#txtScript').value = script;
 
-  dom2.script(script);
+  dom2.setScript(script);
 
   document.querySelector("#txtOutput")
-    .value = dom2.script();
+    .value = dom2.getScript();
 
   const output = document.querySelector(`#divOutput`);
   while (output.firstChild)
@@ -313,6 +305,9 @@ async function main() {
 
   document.querySelector("#DebugCompact")
     .addEventListener("click", () => { compact(); });
+
+  document.querySelector("#DebugReflow")
+    .addEventListener("click", () => { reflow(); });
 
   const url = new URL(window.location);
 

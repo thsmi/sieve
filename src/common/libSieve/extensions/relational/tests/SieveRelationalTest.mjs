@@ -89,13 +89,13 @@ suite.add("Missing operator", () => {
 suite.add("Validate :value constructors", () => {
 
   const snippet = ':value "eq"';
-  suite.expectValidSnippet("match-type/value", snippet, ["relational"]);
+  suite.expectDefaultSnippet("match-type/value", snippet, ["relational"]);
 });
 
 suite.add("Validate :count constructors", () => {
 
   const snippet = ':count "eq"';
-  suite.expectValidSnippet("match-type/count", snippet, ["relational"]);
+  suite.expectDefaultSnippet("match-type/count", snippet, ["relational"]);
 });
 
 /*

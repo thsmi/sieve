@@ -23,8 +23,18 @@ class SieveAbstractElement {
    *
    * @param {SieveDocument} docshell
    *  the document which owns this element
+   * @param {string} name
+   *   the element's name
+   * @param {string} type
+   *   the element's type
    */
-  constructor(docshell) {
+  constructor(docshell, name, type) {
+
+    if ((typeof(name) === "undefined") || (name === null))
+      throw new Error("No node name supplied");
+
+    if ((typeof(type) === "undefined") || (type === null))
+      throw new Error("No node type supplied");
 
     // Generate a random element id.
     this._id = Math.floor(
@@ -33,6 +43,9 @@ class SieveAbstractElement {
 
     this._parent = null;
     this._docshell = docshell;
+
+    this._name = name;
+    this._type = type;
   }
 
   /**
@@ -105,7 +118,7 @@ class SieveAbstractElement {
    *   the node name
    */
   nodeName() {
-    throw new Error("Implement SieveAbstractElement::nodeName()");
+    return this._name;
   }
 
   /**
@@ -116,7 +129,7 @@ class SieveAbstractElement {
    *   the type
    */
   nodeType() {
-    throw new Error("Implement SieveAbstractElement::nodeType()");
+    return this._type;
   }
 
   /**
@@ -157,16 +170,16 @@ class SieveAbstractElement {
 
   /**
    *
-   * @param {boolean} refresh
+   * @param {boolean} invalidate
    * @returns
    */
-  html(refresh) {
-    if (typeof (refresh) !== "undefined")
-      if (refresh)
-        this.widget().reflow();
+  html(invalidate) {
 
     if (this.widget() === null)
       return null;
+
+    if (invalidate === true)
+      this.widget().reflow();
 
     return this.widget().html();
   }
@@ -220,23 +233,13 @@ class SieveAbstractElement {
    * Removes this node from the parent Node.
    * The Node is not removed from the document.
    *
-   * If cascade is set to true, empty parents will be removed unless either the
-   * root node or the specified stop marker is removed.
-   *
-   * @param {boolean} [cascade]
-   *   set to true if you want to delete empty parents
-   * @param {SieveAbstractElement} [stop]
-   *   element which stops the cascade
    * @returns {SieveAbstractElement}
    *   returns the node which is removed
    */
-  remove(cascade, stop) {
+  remove() {
     // Locate our parent...
     if (!this._parent)
       throw new Error("No parent Node");
-
-    if ((stop) && (this.id() === stop.id()))
-      cascade = false;
 
     // The worst case we have a parent but our parent does not know us...
     if (this._parent && !this._parent.hasChild(this.id())) {
@@ -247,17 +250,187 @@ class SieveAbstractElement {
     }
 
     // ...and remove this node
-    const elm = this._parent.removeChild(this.id(), cascade, stop);
-
-    if ((!cascade) && (elm.id() !== this.id()))
-      throw new Error("Could not remove Node");
+    const elm = this._parent.removeChild(this.id());
 
     // ... finally cleanup all evidence to our parent Node;
     this.parent(null);
     return elm;
   }
+
+  /**
+   * Checks if the block has a child with the given identifier
+   *
+   * @param {string} identifier
+   *   the child's unique id
+   * @returns {boolean}
+   *   true in case the child is known otherwise false.
+   */
+  // eslint-disable-next-line no-unused-vars
+  hasChild(identifier) {
+    // the element is not capable of handling children thus we return false.
+    return false;
+  }
+}
+
+/**
+ * An abstract implementation for an sieve element which hosts child elements.
+ */
+class SieveAbstractParentElement extends SieveAbstractElement {
+
+  /**
+   * @inheritdoc
+   */
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
+    this.elms = [];
+  }
+
+  /**
+   * Returns the element's children
+   * @returns {SieveAbstractElement[]}
+   *   the children as array.
+   */
+  getChildren() {
+    return this.elms;
+  }
+
+  /**
+   * Returns the element with the given index.
+   * Positives indices start from the beginning while negative indices start from th end.
+   *
+   * @param {int} idx
+   *   the index as integer
+   *
+   * @returns {SieveAbstractElement}
+   *   the element with the given index.
+   */
+  getChild(idx) {
+    return this.getChildren().at(idx);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  hasChild(identifier) {
+    for (const elm of this.getChildren())
+      if (elm.id() === identifier)
+        return true;
+
+    return false;
+  }
+
+  /**
+   * Appends an Element to this Element.
+   * If the element is already existent,it will be moved.
+   *
+   * @param {SieveElement} elm
+   *   the element that should be appended
+   * @param {SieveElement} [sibling]
+   *   defines the sibling after which the new element should be inserted.
+   *   In case no matching sibling is found, it will be appended at the end.
+   * @returns {SieveAbstractBlock}
+   *   a self reference
+   */
+  append(elm, sibling) {
+    // we have to do this fist as there is a good chance the the index
+    // might change after deleting...
+    if (elm.parent())
+      elm.remove();
+
+    let idx = this.getChildren().length;
+
+    if (sibling && sibling.id())
+      for (idx = 0; idx < this.getChildren().length; idx++)
+        if (this.getChild(idx).id() === sibling.id())
+          break;
+
+    this.getChildren().splice(idx, 0, elm);
+    elm.parent(this);
+
+    return this;
+  }
+
+  /**
+   * Removes the node including all child elements.
+   *
+   * To remove just a child node pass it's id as an argument
+   *
+   * @param {int} childId
+   *  the child id which should be removed.
+   *
+   * @returns {SieveAbstractElement}
+   *   the removed element
+   */
+  removeChild(childId) {
+
+    if (!childId)
+      throw new Error("Child ID Missing");
+
+    // Let's search and remove the child...
+    for (let i = 0; i < this.getChildren().length; i++) {
+
+      const elm = this.getChild(i);
+      if (elm.id() !== childId)
+        continue;
+
+      elm.parent(null);
+      this.getChildren().splice(i, 1);
+
+      return elm;
+    }
+
+    // ... we fail in case we have not found the child
+    throw new Error(`Unknown child ${childId}`);
+  }
+
+  /**
+   * Checks if the block is empty
+   *
+   * @returns {boolean}
+   *   true in case the block is empty otherwise false.
+   */
+  empty() {
+
+    // The direct descendants of our root node are always considered as
+    // not empty they would get accidentally whipped out on a cleanup.
+
+    if (this.document().root().id() === this.parent().id())
+      return false;
+
+    for (const elm of this.getChildren())
+      if (elm.widget())
+        return false;
+
+    return true;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  require(imports) {
+
+    for (const elm of this.getChildren()) {
+      if (!elm.require)
+        continue;
+
+      elm.require(imports);
+    }
+  }
+
+  /**
+   * @inheritdoc
+   */
+  toScript() {
+    let str = "";
+
+    for (const child of this.getChildren())
+      str += child.toScript();
+
+    return str;
+  }
 }
 
 export {
-  SieveAbstractElement
+  SieveAbstractElement,
+  SieveAbstractParentElement
 };

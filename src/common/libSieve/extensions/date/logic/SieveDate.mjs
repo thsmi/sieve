@@ -50,8 +50,9 @@ time-zone
 
 
 import {
+  items, value,
   id, token,
-  stringField, stringListField, parameters,
+  string, stringList, parameters,
   tag, tags
 } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 
@@ -76,13 +77,14 @@ SieveGrammar.addTag(
 
   token(":zone"),
   parameters(
-    stringField("time-zone", '+0100')
+    string("time-zone", '+0100')
   )
 );
 
 SieveGrammar.addGroup(
   id("zone"),
-  { value: ":originalzone" }
+  items("@zone/"),
+  value(":originalzone")
 );
 
 // usage: date [<":zone" <time-zone: string>> / ":originalzone"]
@@ -98,9 +100,9 @@ SieveGrammar.addTest(
     tag("match-type"),
     tag("comparator")),
   parameters(
-    stringField("header", 'date'),
-    stringField("datepart", 'date'),
-    stringListField("keys", getCurrentDate())
+    string("header", 'date'),
+    string("datepart", 'date'),
+    stringList("keys", getCurrentDate())
   )
 );
 
@@ -120,8 +122,8 @@ SieveGrammar.addTest(
     tag("match-type"),
     tag("comparator")),
   parameters(
-    stringField("datepart", 'date'),
-    stringListField("keys", getCurrentDate()))
+    string("datepart", 'date'),
+    stringList("keys", getCurrentDate()))
 );
 
 

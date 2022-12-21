@@ -13,9 +13,9 @@
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 import {
-  stringField, stringListField,
-  optionals, parameters, fields, field,
-  tag, tags, id, token, numericField
+  id, token,
+  tag, attribute, string, stringList, number,
+  optionals, parameters, fields, tags
 } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 
 SieveGrammar.addTag(
@@ -31,8 +31,8 @@ SieveGrammar.addAction(
   tags(
     tag("last", "action/addheader/last")),
   parameters(
-    stringField("name", "X-Header"),
-    stringField("value", "Some Value"))
+    string("name", "X-Header"),
+    string("value", "Some Value"))
 );
 
 // ":index" <fieldno: number> [":last"]
@@ -45,9 +45,9 @@ SieveGrammar.addTag(
   //   numericField("name", "1"),
   //   optional(tag("last","action/addheader/last")))
   fields("field",
-    numericField("name", "1")),
+    number("name", "1")),
   optionals(
-    field("last", "action/addheader/last")
+    attribute("last", "action/addheader/last")
   )
 );
 
@@ -65,7 +65,7 @@ SieveGrammar.addAction(
     tag("match-type", "match-type"),
     tag("comparator", "comparator")),
   parameters(
-    stringField("name", "X-Header")),
+    string("name", "X-Header")),
   optionals("parameters2",
-    stringListField("values", ""))
+    stringList("values", ""))
 );

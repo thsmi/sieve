@@ -71,7 +71,7 @@ class SieveDataTransfer {
    *   a unique token
    */
   generateToken() {
-    return ""
+    return "siv-"
       + (Math.floor(Math.random() * RANDOM_SEED_SIZE).toString(HEX_STRING))
       + Date.now().toString(HEX_STRING);
   }

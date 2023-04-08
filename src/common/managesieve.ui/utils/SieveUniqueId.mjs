@@ -19,12 +19,16 @@ const HEX_STRING = 16;
 class SieveUniqueId {
 
   /**
-   * Creates a pseudo random alpha numerical id.
+   * Creates a pseudo random alpha numerical uuid lookalike
+   *
+   * It starts always with the id prefix, this guarantees that it will
+   * never start with a number and thus can be used safely as an HTML id.
+   *
    * @returns {string}
    *   the generated id.
    */
   generate() {
-    return ""
+    return "siv-"
         + (Math.floor(Math.random() * RANDOM_SEED_SIZE).toString(HEX_STRING))
         + Date.now().toString(HEX_STRING);
   }

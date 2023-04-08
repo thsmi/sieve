@@ -37,7 +37,7 @@ class SieveAbstractElement {
       throw new Error("No node type supplied");
 
     // Generate a random element id.
-    this._id = ""
+    this._id = "siv-"
       + Math.floor(Math.random() * RANDOM_SEED_SIZE).toString(HEX_STRING)
       + Date.now().toString(HEX_STRING);
 

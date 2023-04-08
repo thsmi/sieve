@@ -8,7 +8,6 @@
       // Basic Sieve Elements
       "${workspace}/libSieve/toolkit/logic/GenericCapabilities.mjs",
       "${workspace}/libSieve/toolkit/SieveParser.mjs",
-      "${workspace}/libSieve/toolkit/SieveLexer.mjs",
       "${workspace}/libSieve/toolkit/SieveDocument.mjs",
       "${workspace}/libSieve/toolkit/logic/AbstractElements.mjs",
       "${workspace}/libSieve/toolkit/logic/GenericAtoms.mjs",

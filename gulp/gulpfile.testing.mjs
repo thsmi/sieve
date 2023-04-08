@@ -16,7 +16,7 @@ import app from "./gulpfile.app.mjs";
 import wx from "./gulpfile.wx.mjs";
 import path from 'path';
 
-const BUILD_DIR_TEST = path.join(common.BASE_DIR_BUILD, "test/");
+const BUILD_DIR_TEST = path.join(common.BASE_DIR_BUILD, "test/unittests");
 
 /**
  * Packs the unit test for the standalone application.

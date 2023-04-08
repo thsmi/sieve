@@ -108,7 +108,7 @@
 
         // FIXME : Should be read from a config ...
         if (script.startsWith("${workspace}"))
-          script = script.replace("${workspace}", path.join(__dirname, "../../../build/test/app"));
+          script = script.replace("${workspace}", path.join(__dirname, "../../../../build/test/unittests/app"));
 
         script = path.normalize(script);
 

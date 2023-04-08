@@ -10,7 +10,7 @@
  *
  */
 
-const SEED_SIZE = 10000000;
+const RANDOM_SEED_SIZE = 10000000;
 const HEX_STRING = 16;
 
 /**
@@ -37,8 +37,8 @@ class SieveAbstractElement {
       throw new Error("No node type supplied");
 
     // Generate a random element id.
-    this._id = Math.floor(
-      Math.random() * SEED_SIZE).toString(HEX_STRING)
+    this._id = ""
+      + Math.floor(Math.random() * RANDOM_SEED_SIZE).toString(HEX_STRING)
       + Date.now().toString(HEX_STRING);
 
     this._parent = null;

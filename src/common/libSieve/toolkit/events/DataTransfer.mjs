@@ -71,7 +71,9 @@ class SieveDataTransfer {
    *   a unique token
    */
   generateToken() {
-    return Math.floor(Math.random() * RANDOM_SEED_SIZE).toString(HEX_STRING) + Date.now().toString(HEX_STRING);
+    return ""
+      + (Math.floor(Math.random() * RANDOM_SEED_SIZE).toString(HEX_STRING))
+      + Date.now().toString(HEX_STRING);
   }
 
   /**
@@ -96,7 +98,7 @@ class SieveDataTransfer {
    * @param {string} flavour
    *   the flavour as string
    * @returns {string}
-   *   the data stored in the dragtarget.
+   *   the data stored in the drag target.
    */
   getData(flavour) {
 

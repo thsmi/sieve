@@ -9,9 +9,8 @@
   /* global TestCase */
 
 
-  const ASCII = 36;
-  const SEED_OFFSET = 2;
-  const SEED_LENGTH = 16;
+  const RANDOM_SEED_SIZE = 10000000;
+  const HEX_STRING = 16;
 
   /**
    * Uses an iframe to emulate a sandbox.
@@ -94,8 +93,9 @@
     getUniqueId() {
 
       if (!this.id) {
-        this.id = Date.now().toString(ASCII)
-          + "-" + Math.random().toString(ASCII).substr(SEED_OFFSET, SEED_LENGTH);
+        this.id = ""
+          + Math.floor(Math.random() * RANDOM_SEED_SIZE).toString(HEX_STRING)
+          + Date.now().toString(HEX_STRING);
       }
 
       return this.id;

@@ -48,7 +48,9 @@ class SieveAbstractBoxUI {
     this._handler = {};
 
     // create a unique id, which makes identifying the dom object easier.
-    this.uniqueId = "siv-" + Math.floor(Math.random() * RANDOM_SEED_SIZE).toString(HEX_STRING) + Date.now().toString(HEX_STRING);
+    this.uniqueId = "siv-"
+      + Math.floor(Math.random() * RANDOM_SEED_SIZE).toString(HEX_STRING)
+      + Date.now().toString(HEX_STRING);
   }
 
   /**

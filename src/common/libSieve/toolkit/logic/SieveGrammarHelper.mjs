@@ -16,13 +16,18 @@ import * as Matcher from "./Matcher.mjs";
  */
 
 /**
+ * Adds a spec into the properties.
+ * The new spec will be inserted directly before the given identifier.
+ * It will throw in case the identifier does not exists.
  *
  * @param {object} spec
  *   the elements specification.
- * @param {*} before
+ * @param {string} beforeId
+ *   the id before this spec should be inserted.
  * @returns {object}
+ *   the new property
  */
-function insert(spec, before) {
+function insert(spec, beforeId) {
 
   return { property : (properties) => {
     const property = properties.find((item) => {
@@ -34,11 +39,11 @@ function insert(spec, before) {
       return;
     }
 
-    if (!before)
+    if (!beforeId)
       throw new Error("No such property");
 
     const idx = properties.findIndex((item) => {
-      return ((item.id) && (item.id === before));
+      return ((item.id) && (item.id === beforeId));
     });
 
     properties.splice(idx, 0, spec);
@@ -175,20 +180,20 @@ function token(literal, postfix) {
 
 /**
  *
- * @param  {...any} items
+ * @param  {...any} elms
  * @returns {object}
  */
-function any(...items) {
-  return { "any" : items};
+function any(...elms) {
+  return { "any" : elms};
 }
 
 /**
  *
- * @param  {...any} items
+ * @param  {...any} elms
  * @returns {object}
  */
-function all(...items) {
-  return { "all" : items};
+function all(...elms) {
+  return { "all" : elms};
 }
 
 /**
@@ -208,7 +213,7 @@ function all(...items) {
  * server just uses his default. Thus we as a client do not know what the
  * default is. YOu model this by not setting a default value at all.
  *
- * @param {string} value
+ * @param {string} defaultValue
  *   the default value
  * @param {boolean} [mandatory]
  *   if true the value is mandatory and only used a initializer.
@@ -216,7 +221,7 @@ function all(...items) {
  * @returns {object}
  *   the value specification.
  */
-function value(value, mandatory) {
+function value(defaultValue, mandatory) {
 
   if ((typeof(mandatory) === "undefined") || (mandatory === null))
     mandatory = false;
@@ -228,7 +233,7 @@ function value(value, mandatory) {
       else
         element.setDefaultElement(elm.value);
     },
-    "value" : value,
+    "value" : defaultValue,
     "mandatory" : mandatory
   };
 }

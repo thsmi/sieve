@@ -495,7 +495,8 @@ class SieveBlockDropHandler extends SieveDropHandler {
 
   /**
    *
-   * @param {*} sivFlavour
+   * @param {string} sivFlavour
+   *   the drag operation's flavour.
    * @param {*} type
    */
   createElement(sivFlavour, type) {
@@ -550,7 +551,7 @@ class SieveTrashBoxDropHandler extends SieveDropHandler {
    * Moves a sieve element to the trash bin and removes it from the document.
    *
    * @param {string} sivFlavour
-   *   the drag operations flavour.
+   *   the drag operation's flavour.
    * @param {string} id
    *   the id of the sieve element to be removed
    */
@@ -1070,7 +1071,7 @@ class SieveMultaryDropHandler extends SieveDropHandler {
 
   /**
    *
-   * @param {*} sivFlavour
+   * @param {string} sivFlavour
    * @param {*} type
    */
   createElement(sivFlavour, type) {

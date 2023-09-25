@@ -160,7 +160,7 @@
   "notify.from": "Sovrascrivi il mittente predefinito",
   "notify.from.text": "Il server predefinito è normalmente l’utente corrente. È possibile sovrascriverlo, ma onde minimizzare/prevenire la falsificazione del valore dell'autore, le implementazioni del server impongono restrizioni su quali valori possono essere specificati.",
   "notify.importance": "Sovrascrivi l'importanza predefinita",
-  "notify.importance.text": "Only few protocols support an importance or priority at all. Refer to the method’s documentation for more details on how the importance is mapped.",
+  "notify.importance.text": "Solo pochi protocolli supportano un'importanza o una priorità. Riferirsi alla documentazione del metodo per maggiori dettagli su come è mappata l'importanza.",
   "notify.importance.high": "Alta",
   "notify.importance.normal": "Normale",
   "notify.importance.low": "Bassa",

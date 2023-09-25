@@ -158,7 +158,7 @@
   "notify.message.custom": "… per inviare un messaggio personalizzato",
   "notify.message.custom.text": "I dati del messaggio da inserire nella notifica. Le implementazioni possono abbreviare il messaggio per ragioni tecniche o estetiche.",
   "notify.from": "Sovrascrivi il mittente predefinito",
-  "notify.from.text": "The server’s default is normally the current user. You can override this, but in oder minimize/prevent forgery of the author value, the server implementations impose restrictions on what values can be specified.",
+  "notify.from.text": "Il server predefinito è normalmente l’utente corrente. È possibile sovrascriverlo, ma onde minimizzare/prevenire la falsificazione del valore dell'autore, le implementazioni del server impongono restrizioni su quali valori possono essere specificati.",
   "notify.importance": "Sovrascrivi l'importanza predefinita",
   "notify.importance.text": "Only few protocols support an importance or priority at all. Refer to the method’s documentation for more details on how the importance is mapped.",
   "notify.importance.high": "Alta",

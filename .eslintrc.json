@@ -66,7 +66,7 @@
         "no-trailing-spaces": "error",
         "strict": ["warn", "function"],
         "no-shadow-restricted-names": "error",
-        "no-new-object": "error",
+        "no-object-constructor": "error",
         "no-new-func": "error",
         "no-multi-spaces": "error",
         "no-multi-str": "error",

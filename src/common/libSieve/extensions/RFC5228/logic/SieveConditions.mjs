@@ -250,16 +250,18 @@ class SieveCondition extends SieveBlockBody {
 
     const elm = super.removeChild(childId);
 
+    // We can skip in case we are out of conditions.
     if (!this.getChildren().length)
       return elm;
 
+    // Otherwise we need to check if our first child is a test.
+    // we do this by checking if a test attribute is resend.
     const child = this.getChild(FIRST_CHILD);
-
-    if (this.child.test)
+    if (child.test)
       return elm;
 
-    // If we endup with an empty else we merge it into parent
-    // and copy all of our else statements into our parent...
+    // If not we have a dangling else. We merge it into parent block by
+    // moving all of our else statements into our parent...
     while (child.getChildren().length)
       this.parent().append(child.getChild(FIRST_CHILD), this);
 

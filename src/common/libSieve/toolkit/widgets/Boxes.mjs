@@ -523,8 +523,10 @@ class SieveDialogBoxUI extends SieveSourceBoxUI {
 
     content.append(this.getSummary());
 
+    // FIXME: Is this really true?
     // We need this container to make customizing the box easier.
     // e.g. for the allof/anyof operator.
+    /*
     const div = document.createElement("div");
     div.classList.add("sivEditableElement");
 
@@ -533,6 +535,13 @@ class SieveDialogBoxUI extends SieveSourceBoxUI {
     div.append(controls);
 
     parent.append(div);
+    */
+
+
+    parent.classList.add("sivEditableElement");
+    parent.append(content);
+    parent.append(code);
+    parent.append(controls);
 
     return parent;
   }
@@ -604,7 +613,9 @@ class SieveActionDialogBoxUI extends SieveDialogBoxUI {
    */
   createHtml(parent, invalidate) {
     const elm = super.createHtml(parent, invalidate);
+
     elm.classList.add("sivAction");
+    elm.classList.add("siv-" + this.getSieve().nodeName().replace("/", "-"));
     return elm;
   }
 }
@@ -631,7 +642,8 @@ class SieveTestDialogBoxUI extends SieveDialogBoxUI {
   createHtml(parent, invalidate) {
     const elm = super.createHtml(parent, invalidate);
     elm.classList.add("sivTest");
-    elm.classList.add("badge", "rounded-pill", "text-bg-light", "fw-normal");
+    elm.classList.add("siv-" + this.getSieve().nodeName().replace("/", "-"));
+    // elm.classList.add("badge", "rounded-pill", "text-bg-light", "fw-normal");
     return elm;
   }
 }

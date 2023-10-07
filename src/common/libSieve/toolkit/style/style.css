@@ -78,10 +78,12 @@ div[data-sieve-flavour][data-sieve-dragging] {
   padding-bottom: 0;
 }
 
+.sivConditionChild,
 .sivConditionSpacer:not(:first-of-type) {
   background-image: url('vline2.png');
   background-position: -4px center;
   background-repeat: repeat-y;
+  padding-left: 15px;
 }
 
 /*.sivConditionText {
@@ -101,6 +103,8 @@ div[data-sieve-flavour][data-sieve-dragging] {
 }
 
 .sivConditionalChild {
+  background-color: #e8edf0;
+  border: 1px #dde4e9 solid;
   padding: 3px 0 3px 3px;
 }
 

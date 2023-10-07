@@ -88,26 +88,25 @@ class SieveConditionUI extends SieveSourceBoxUI {
     const FRAGMENT =
       `<div>
          <div class="sivConditionText sivConditionIf">
-           <div data-i18n="condition.if"></div>
-           <div class="sivConditionChild" style="flex: 1 1 auto"></div>
+           <div data-i18n="condition.if" style="flex: 1 1 auto"></div>
            <div class="sivSummaryControls">
              <span class="sivIconCode"></span>
            </div>
          </div>
          <div class="sivConditionText sivConditionElse">
-           <div data-i18n="condition.else" ></div>
-           <div class="sivConditionChild" style="flex: 1 1 auto"></div>
+           <div data-i18n="condition.else" style="flex: 1 1 auto"></div>
            <div class="sivSummaryControls">
              <span class="sivIconCode"></span>
            </div>
          </div>
          <div class="sivConditionText sivConditionElseIf">
-           <div data-i18n="condition.elseif" ></div>
-           <div class="sivConditionChild" style="flex: 1 1 auto"></div>
+           <div data-i18n="condition.elseif" style="flex: 1 1 auto"></div>
            <div class="sivSummaryControls">
              <span class="sivIconCode"></span>
            </div>
          </div>
+
+         <div class="sivConditionChild"></div>
 
          <div class="sivSummaryContent"></div>
 
@@ -120,7 +119,6 @@ class SieveConditionUI extends SieveSourceBoxUI {
          </div>
        </div>`;
 
-    debugger
     const item = (new SieveTemplate()).convertFragment(FRAGMENT);
 
     parent.classList.add("sivCondition");
@@ -151,7 +149,8 @@ class SieveConditionUI extends SieveSourceBoxUI {
 
       const child = item.querySelector(".sivConditionChild").cloneNode(true);
       child.append(children[i].html(invalidate));
-      condition.querySelector(".sivConditionChild").append(child);
+      elm2.append(child);
+      // condition.querySelector(".sivConditionChild").append(child);
     }
 
     elm2.append((new SieveDropBoxUI(this, "sivConditionSpacer"))

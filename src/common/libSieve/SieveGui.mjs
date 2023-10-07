@@ -53,6 +53,7 @@ function createMenuItem(action, flavour, docShell) {
   elm.classList.add("border");
   elm.classList.add("rounded");
   elm.textContent = action.split('/')[NAME];
+  elm.classList.add("siv-" + action.replace("/", "-"));
 
   return elm;
 }

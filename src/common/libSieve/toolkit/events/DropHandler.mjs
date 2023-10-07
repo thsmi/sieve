@@ -486,7 +486,12 @@ class SieveBlockDropHandler extends SieveDropHandler {
     return false;
   }
 
-
+  /**
+   *
+   * @param {*} source
+   * @param {*} target
+   * @returns
+   */
   isDescendent2(source, target) {
     if (source.nodeType() !== "@test")
       return false;

@@ -1,4 +1,10 @@
 
+/**
+ *
+ * @param {*} elm
+ * @param {*} name
+ * @param {*} items
+ */
 function validateElements(elm, name, items) {
   if (!elm)
     throw new Error(`${name} expected but not found`);
@@ -15,15 +21,49 @@ function validateElements(elm, name, items) {
     throw new Error("Invalid structure too many elements...");
 }
 
+/**
+ *
+ * @param {*} type
+ * @returns
+ */
+function sivSpacer(type) {
+  return (elms) => {
+
+    if (!elms.length)
+      throw new Error(`Spacer ${type} expected but not found`);
+
+    const elm = elms.shift();
+
+    if (elm.children.length !== 0)
+      throw new Error("No Children expected");
+
+    if (!elm.classList.contains("sivDropBox") )
+      throw new Error("Dropbox expected");
+
+    if (!elm.classList.contains(type))
+      throw new Error(type + " spacer expected");
+  };
+}
+
+/**
+ *
+ * @returns
+ */
 function sivConditionSpacer() {
   return sivSpacer("sivConditionSpacer");
 }
 
+/**
+ *
+ * @returns
+ */
 function sivBlockSpacer() {
   return sivSpacer("sivBlockSpacer");
 }
 
-
+/**
+ *
+ */
 function sivCondition(...items) {
   const structure = [sivConditionSpacer()];
 
@@ -37,7 +77,11 @@ function sivCondition(...items) {
   };
 }
 
-
+/**
+ *
+ * @param  {...any} items
+ * @returns
+ */
 function sivBlock(...items) {
 
   const structure = [sivBlockSpacer()];
@@ -51,6 +95,11 @@ function sivBlock(...items) {
   };
 }
 
+/**
+ *
+ * @param {*} type
+ * @returns
+ */
 function sivTest(type) {
   return (elm) => {
     if (!elm.classList.contains("sivConditionalChild"))
@@ -69,21 +118,33 @@ function sivTest(type) {
   };
 }
 
+/**
+ *
+ * @param {*} condition
+ * @returns
+ */
 function sivNot(condition) {
   return (elm) => {
-    debugger;
   };
 }
 
+/**
+ *
+ * @param {*} condition
+ * @returns
+ */
 function sivAnyOf(condition) {
   return (elm) => {
-    debugger;
   };
 }
 
+/**
+ *
+ * @param {*} condition
+ * @returns
+ */
 function sivAllOf(condition) {
   return (elm) => {
-    debugger;
   };
 }
 
@@ -128,7 +189,12 @@ function sivIf(condition, ...body) {
   };
 }
 
-
+/**
+ *
+ * @param {*} test
+ * @param {*} body
+ * @returns
+ */
 function sivElseIf(test, body) {
   return (elms) => {
     if (!elms.length < 2)
@@ -144,11 +210,17 @@ function sivElseIf(test, body) {
     if (!elm.classList.contains("sivConditionChild"))
       throw new Error(`elseif expected  but got ${elm.outerHTML.substring(0, 40)}...`);
 
-   // TODO test the body...
+    // TODO test the body...
   };
 }
 
-function sivElse(test,body) {
+/**
+ *
+ * @param {*} test
+ * @param {*} body
+ * @returns
+ */
+function sivElse(test, body) {
   return (elms) => {
     if (!elms.length < 1)
       throw new Error(`Else expected but not found`);
@@ -157,30 +229,14 @@ function sivElse(test,body) {
     if (!elm.classList.contains("sivConditionChild"))
       throw new Error(`Else expected  but got ${elm.outerHTML.substring(0, 40)}...`);
 
-   // TODO test the body...
-  };
-}
-
-function sivSpacer(type) {
-  return (elms) => {
-
-    if (!elms.length)
-      throw new Error(`Spacer ${type} expected but not found`);
-
-    const elm = elms.shift();
-
-    if (elm.children.length !== 0)
-      throw new Error("No Children expected");
-
-    if (!elm.classList.contains("sivDropBox") )
-      throw new Error("Dropbox expected");
-
-    if (!elm.classList.contains(type))
-      throw new Error(type + " spacer expected");
+    // TODO test the body...
   };
 }
 
 
+/**
+ *
+ **/
 function validate(root, ...items) {
   (sivBlock(...items))([root]);
 }

@@ -12,7 +12,6 @@
 
 import { suite } from "./../../js/TestSuite.mjs";
 
-debugger;
 import {
   validate,
   sivCondition,
@@ -352,7 +351,6 @@ fixture.add("Move to 5th block drop", async (simulator) => {
     + IF + ADDRESS + "{" + NEW_LINE + "}" + NEW_LINE
     + IF + EXISTS + "{" + NEW_LINE + "}" + NEW_LINE);
 
-  debugger;
   validate(
     await simulator.waitForElement("#divOutput > div > div.sivBlock"),
     sivCondition(
@@ -425,8 +423,8 @@ fixture.add("Move to 1st condition drop", async (simulator) => {
     + IF + EXISTS + "{" + NEW_LINE + "}" + NEW_LINE
     + ELSIF + ADDRESS + "{" + NEW_LINE + "}" + NEW_LINE);
 
-  debugger;
-  await simulator.wait(30*1000);
+  // debugger;
+  await simulator.wait(30 * 1000);
 });
 
 
@@ -492,8 +490,8 @@ fixture.add("Move to 2nd condition drop", async (simulator) => {
     + ELSIF + ADDRESS + "{" + NEW_LINE + "}" + NEW_LINE);
 
 
-  await simulator.wait(30*1000);
-  debugger;
+  await simulator.wait(30 * 1000);
+  // debugger;
 });
 
 
@@ -539,7 +537,8 @@ suite.add("Deep Nesting - Move to 1st condition drop", async (simulator) => {
 
 */
 
-/*if address "To" "me@example.com"{
+/*
+  if address "To" "me@example.com"{
   if exists "From"{
   }
   }
@@ -555,7 +554,8 @@ suite.add("Deep Nesting - Move to 1st condition drop", async (simulator) => {
 // move third if
 // move header
 
- /*if address "To" "me@example.com"{
+/*
+  if address "To" "me@example.com"{
   if exists "From"{
   if header "Subject" "Example"{
   }

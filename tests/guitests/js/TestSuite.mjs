@@ -51,13 +51,16 @@ class AbstractTest {
   }
 }
 
+/**
+ *
+ */
 class TestCase extends AbstractTest {
 
   /**
    * Create a new instance
    *
    * @param {string} name
-   *   the tasks name
+   *   the testcase name
    * @param {Function} callback
    *
    */
@@ -70,10 +73,20 @@ class TestCase extends AbstractTest {
     this.report = null;
   }
 
+  /**
+   * Returns the test case name.
+   *
+   * @returns {string}
+   *   the test case name
+   */
   getName() {
     return this.name;
   }
 
+  /**
+   *
+   * @param {*} report
+   */
   setReport(report) {
     this.report = report.createReport(this.getId(), this.getName());
   }
@@ -115,6 +128,9 @@ class TestCase extends AbstractTest {
   }
 }
 
+/**
+ *
+ */
 class TestFixture extends AbstractTest {
 
 
@@ -143,6 +159,10 @@ class TestFixture extends AbstractTest {
     return this.name;
   }
 
+  /**
+   *
+   * @param {*} report
+   */
   setReport(report) {
     this.report = report.createReport(this.getId(), this.getName());
   }
@@ -177,6 +197,9 @@ class TestFixture extends AbstractTest {
   }
 }
 
+/**
+ *
+ */
 class TestSuite {
 
   /**

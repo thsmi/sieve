@@ -311,7 +311,7 @@ function addSpec(specs, name, type, obj) {
  * In case the grammar is already created is flushes and reinitializes
  * the lexer.
  *
- * @param {Object<string, boolean>} [capabilities]
+ * @param {{[key:string]:boolean}} [capabilities]
  *   the capabilities, in case omitted they will be unchanged.
  *
  * @param {SieveDesigner} [designer]

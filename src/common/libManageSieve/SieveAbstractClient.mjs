@@ -773,7 +773,7 @@ class SieveAbstractClient {
    *
    * @param {string|SieveUrl} url
    *   the url with hostname and port
-   * @param {Object<string, object>} [options]
+   * @param {{[key:string]:object}} [options]
    *   the connection options as hash map.
    *
    * @returns {SieveAbstractClient}

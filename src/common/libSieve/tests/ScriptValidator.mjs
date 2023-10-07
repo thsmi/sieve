@@ -31,7 +31,7 @@ if (!suite)
  *
  * @param {string} script
  *   the script to parse
- * @param {Object<string, boolean>} [capabilities]
+ * @param {{[key:string]:boolean}} [capabilities]
  *   optional parameter which simulates the the server's capabilities
  *
  * @returns {SieveDocument}

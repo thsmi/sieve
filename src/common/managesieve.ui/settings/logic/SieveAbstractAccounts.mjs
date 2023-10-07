@@ -57,7 +57,7 @@ class SieveAbstractAccounts {
    * Returns a list with all accounts.
    * The accounts are returned as key value pairs (unique id and Account)
    *
-   * @returns { Object<string, SieveAccount>}
+   * @returns {{[key:string]:SieveAccount}}
    *   a list with sieve account.
    */
   getAccountIds() {

@@ -56,8 +56,8 @@
             "error",
             "always"
         ],
-        "prefer-const" :"warn",
-        "no-octal":"error",
+        "prefer-const": "warn",
+        "no-octal": "error",
         "no-octal-escape": "error",
         "no-new-wrappers": "error",
         "no-whitespace-before-property": "error",
@@ -71,7 +71,7 @@
         "no-multi-spaces": "error",
         "no-multi-str": "error",
         "no-new": "error",
-        "no-loop-func" : "warn",
+        "no-loop-func": "warn",
         "no-lone-blocks": "error",
         "new-parens": "error",
         "eol-last": [
@@ -99,21 +99,21 @@
             "error",
             "that"
         ],
-        "no-constructor-return" : "error",
+        "no-constructor-return": "error",
         "max-depth": "error",
         "eqeqeq": "error",
-        "no-class-assign" : "warn",
+        "no-class-assign": "warn",
         "no-sequences": "error",
         "no-labels": "error",
         "no-label-var": "error",
         "consistent-return": "error",
         "no-use-before-define": "error",
         "no-else-return": "error",
-        "no-empty-pattern" : "warn",
+        "no-empty-pattern": "warn",
         "no-const-assign": "error",
         "no-this-before-super": "warn",
-        "no-eq-null" : "warn",
-        "no-dupe-class-members" :"error",
+        "no-eq-null": "warn",
+        "no-dupe-class-members": "error",
         "no-undef": "error",
         "no-unreachable": "error",
         "no-unused-vars": [
@@ -132,25 +132,25 @@
         "no-console": ["warn", { "allow": ["warn", "error"] }],
         "no-caller": "error",
         "no-eval": "error",
-        "no-extra-label" :"error",
-        "no-floating-decimal":"error",
+        "no-extra-label": "error",
+        "no-floating-decimal": "error",
         "no-extend-native": "error",
         "no-implied-eval": "error",
         "no-global-assign": "warn",
-        "no-implicit-globals" :"warn",
+        "no-implicit-globals": "warn",
         "no-iterator": "error",
         "no-proto": "error",
-        "no-redeclare" : "error",
+        "no-redeclare": "error",
         "no-return-assign": "error",
         "no-self-compare": "error",
-        "no-self-assign" : "error",
+        "no-self-assign": "error",
         "no-script-url": "error",
-        "no-shadow":"warn",
-        "no-useless-catch":"warn",
-        "no-unused-labels":"error",
+        "no-shadow": "warn",
+        "no-useless-catch": "warn",
+        "no-unused-labels": "error",
         "no-unmodified-loop-condition": "error",
         "no-useless-concat": "error",
-        "no-useless-escape":"error",
+        "no-useless-escape": "error",
         "no-useless-call": "error",
         "no-void": "error",
         "no-with": "error",
@@ -162,7 +162,7 @@
             "error",
             "unix"
         ],
-        "rest-spread-spacing": ["error", "never"],
+        "rest-spread-spacing": ["error",  "never" ],
         "no-inline-comments": "error",
         "no-multi-assign": "error",
         "no-tabs": "error",
@@ -172,28 +172,28 @@
             "error",
             "always"
         ],
-        "no-warning-comments" : "warn",
-        "arrow-body-style": [ "error", "always" ],
-        "arrow-parens": ["error", "always" ],
+        "no-warning-comments": "warn",
+        "arrow-body-style": [ "error",  "always" ],
+        "arrow-parens": [ "error", "always" ],
         "arrow-spacing": "error",
-
-        "jsdoc/require-jsdoc": ["error", {
-            "exemptEmptyFunctions":false,
+        "jsdoc/check-alignment": 1,
+        //"jsdoc/check-examples": ["warn", {"paddedIndent": 4 }],
+        "jsdoc/check-param-names": 1,
+        "jsdoc/check-tag-names": 1,
+        "jsdoc/check-types": 1,
+        "jsdoc/require-jsdoc": [ "error", {
+            "exemptEmptyFunctions": false,
             "require": {
-                "ClassDeclaration" : true,
-                "ClassExpression" : true,
-                "FunctionDeclaration":true,
-                "MethodDefinition":true
+                "ClassDeclaration": true,
+                "ClassExpression": true,
+                "FunctionDeclaration": true,
+                "MethodDefinition": true
             }
-         }],
+        }],
         "jsdoc/newline-after-description": 0,
         "jsdoc/valid-types": 1,
         "jsdoc/no-undefined-types": 0,
         "jsdoc/require-description-complete-sentence": 0,
-
-        "jsdoc/check-param-names": 1,
-        "jsdoc/check-tag-names": 1,
-        "jsdoc/check-types": 1,
         "jsdoc/require-param": 1,
         "jsdoc/require-param-description": 1,
         "jsdoc/require-param-name": 1,
@@ -201,52 +201,14 @@
         "jsdoc/require-returns-description": 1,
         "jsdoc/require-returns-type": 1,
         "jsdoc/require-returns-check": 1,
-        "jsdoc/require-returns":  ["warn"],
+        "jsdoc/require-returns": ["warn"],
         "jsdoc/require-description": 1,
         "jsdoc/require-example": 0,
-        "jsdoc/require-hyphen-before-param-description": 0,
-
-        //"jsdoc/check-examples": ["warn", {"paddedIndent": 4 }],
-        "jsdoc/check-alignment": 1
-        //,
-
-        //"unicorn/prefer-type-error" : "off",
-        //"unicorn/prefer-math-trunc" : "off",
-        //"unicorn/prefer-ternary" : "off",
-        //"unicorn/catch-error-name": "off",
-        //"unicorn/prefer-string-slice" : "off",
-        //"unicorn/explicit-length-check": "off",
-        //"unicorn/no-fn-reference-in-iterator":"off",
-        //"unicorn/no-unused-properties": "error",
-        //"unicorn/no-useless-undefined" : "off",
-        //"unicorn/prefer-optional-catch-binding" : "warn",
-        //"unicorn/prefer-add-event-listener": "warn",
-        //"unicorn/prefer-prototype-methods" : "warn",
-
-        // Rules which make no sense
-        //"unicorn/prevent-abbreviations" : "off",
-        //"unicorn/empty-brace-spaces" : "off",
-        //"unicorn/no-static-only-class" : "off",
-        //"unicorn/no-lonely-if" : "off",
-        //"unicorn/no-array-for-each" : "off",
-        //"unicorn/filename-case": "off",
-        //"unicorn/no-null": "off",
-        //"unicorn/no-for-loop":"off",
-        //"unicorn/consistent-destructuring" : "off",
-        //"unicorn/numeric-separators-style" : "off",
-
-        // Rules which ae broken or design flaws which cannot work.
-        //"unicorn/prefer-array-some" : "off",
-        //"unicorn/no-array-callback-reference" : "off",
-        //"unicorn/prefer-dom-node-remove" : "off",
-        //"unicorn/consistent-function-scoping" : "off",
-        //"unicorn/prefer-spread" : "off",
-        //"unicorn/better-regex" : "off",
-        //"unicorn/prefer-module" : "off",
-
-        // Currently off requires a newer node version
-        //"unicorn/prefer-node-protocol" : "off",
-        //"unicorn/prefer-array-flat" : "off"
-
-   }
+        "jsdoc/require-hyphen-before-param-description": 0
+    },
+    "settings": {
+        "jsdoc": {
+            "mode": "typescript"
+        }
+    }
 }

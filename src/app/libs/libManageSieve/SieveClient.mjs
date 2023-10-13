@@ -81,6 +81,24 @@ class SieveNodeClient extends SieveAbstractClient {
 
     this.socket = net.connect(this.port, this.host);
 
+    // Do TLS handshake before installing connection state event handlers
+
+    if (this.security === TLS_SECURITY_IMPLICIT) {
+      // In case of implicit tls we directly upgrade the socket...
+      // ... so no need to set a data listener here ...
+      // Any exception including socket error and TLS handshake error will spew
+      // out of the returned Promise. Let it bubble upwards.
+      await this.startTLS(options);
+    }
+    else {
+      // Not a TLS session. Install the event directly to the socket
+      this.socket.on('data', async (data) => {
+        this.onData(data);
+      });
+    }
+
+    // Now install the handlers
+
     this.socket.on('error', async(error) => {
       this.getLogger().logState(`SieveClient: OnError (Connection ${this.host}:${this.port})`);
       // Node guarantees that close is called after error.
@@ -93,17 +111,6 @@ class SieveNodeClient extends SieveAbstractClient {
 
       // The sever closed the connection, so no time to gracefully disconnect.
       await this.disconnect(new Error("Server closed connection unexpectedly"));
-    });
-
-    // In case of implicit tls we directly upgrade the socket...
-    // ... so no need to set a data listener here ...
-    if (this.security === TLS_SECURITY_IMPLICIT) {
-      await this.startTLS(options);
-      return this;
-    }
-
-    this.socket.on('data', async (data) => {
-      this.onData(data);
     });
 
     return this;
@@ -131,7 +138,7 @@ class SieveNodeClient extends SieveAbstractClient {
 
     await super.startTLS();
 
-    return await new Promise((resolve) => {
+    return await new Promise((resolve, reject) => {
       // Upgrade the current socket.
       // this.tlsSocket = tls.TLSSocket(socket, options).connect();
       this.tlsSocket = tls.connect({
@@ -220,14 +227,9 @@ class SieveNodeClient extends SieveAbstractClient {
           });
 
         } catch (ex) {
-          // We cannot exit here with a reject or exception. Because the server
-          // side will hang up the connection thus triggers a disconnect event.
-          // As this disconnect will cause an exception we would race against it.
-          //
-          // To avoid this race we call disconnect gracefully here, which will
-          // mark the connection as dead, thus the disconnect handler will not fire,
-          // but the disconnect call will still throw an error for us.
+          reject(ex);
           this.disconnect(ex);
+          return;
         }
       });
 

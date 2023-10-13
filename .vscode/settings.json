@@ -8,6 +8,7 @@
   },
   "files.eol": "\n",
   "editor.tabSize": 2,
+  "editor.insertSpaces": true,
   "editor.useTabStops": false,
   "editor.rulers": [
     80

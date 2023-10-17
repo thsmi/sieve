@@ -15,6 +15,8 @@
   "settings.less" : "Less",
   "settings.accept" : "Apply",
 
+  "filedialog.filter.allfiles": "All Files",
+
   "account.disconnected.title" : "Not Connected to the Server",
   "account.disconnected.description" : "The account is not connected to the server.",
   "account.connect" : "Connect",
@@ -77,6 +79,16 @@
   "connection.handshake.description" : "The TLS handshake specified in the Manage Sieve RFC is defined as explicit. An explicit handshake is theoretically weaker than an implicit, but no vulnerabilities are known for Manage Sieve. Also no server implementation officially supports an implicit handshake, but most of them can be reconfigured to do so. Keep in mind both the client and the server have to use the same handshake type.",
   "connection.handshake.explicit" : "Explicit (Default)",
   "connection.handshake.implicit" : "Implicit",
+  "connection.certificate.description": "Set the TLS client certificate and private key to present to the server. Set the CA Bundle to do server verification.",
+  "connection.cachain": "CA Bundle",
+  "connection.cert": "Certificate",
+  "connection.key": "Private Key",
+  "connection.browsefile": "Browse",
+  "connection.browsefile.title.ca": "Select TLS CA file",
+  "connection.browsefile.title.cert": "Select TLS certificate file",
+  "connection.browsefile.title.key": "Select TLS private key file",
+  "connection.browsefile.filtername.cert": "Certificate  (crt, pem, der)",
+  "connection.browsefile.filtername.key": "Private Key (key, pem, der)",
 
   "credentials.title" : "Credentials",
   "credentials.security" : "Security",
@@ -140,6 +152,13 @@
   "password.dialog.password" : "Password",
   "password.dialog.remember" : "Remember password",
   "password.dialog.accept" : "Login",
+
+  "tlspassdialog.title": "Encrypted Private Key",
+  "tlspassdialog.description": "The private key is encrypted with a passphrase. Please enter the passphrase for the private key.",
+  "tlspassdialog.privatekey": "Private Key",
+  "tlspassdialog.passphrase": "Passphrase",
+  "tlspassdialog.remember": "Remember passphrase",
+  "tlspassdialog.accept": "Continue",
 
   "authorization.title" : "Authorization Required",
   "authorization.description" : "Please enter the user as which you would like to be authorized.",

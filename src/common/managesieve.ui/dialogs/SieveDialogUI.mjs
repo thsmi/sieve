@@ -678,6 +678,93 @@ class SieveErrorDialog extends SieveDialog {
   }
 }
 
+/**
+ * Prompts the passphrase used to decrypt the private key.
+ * The show method returns null or the object.
+ */
+class SieveTLSPassphraseDialog extends SieveDialog {
+
+  /**
+   * Creates a password dialog.
+   *
+   * @param {string} filepath
+   *   the path to the private key in question.
+   * @param {{
+   *    remember : boolean,
+   *    error : string
+   *  }} [options]
+   *   extended additional options.
+   *   In case "remember" is set to true a switch will be rendered which allows
+   *   the user to select if the passphrase should be stored.
+   *   "error" can be set to display the error occurred in the underlying
+   *   crypto lib.
+   */
+  constructor(filepath, options) {
+    super();
+    this.filepath = filepath;
+
+    if (typeof (options) === "undefined" || options === null)
+      options = {};
+
+    this.options = options;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./dialogs/dialog.account.tls.passphrase.html";
+  }
+
+  /**
+   * @inheritdoc
+   */
+  onInit() {
+    const dialog = this.getDialog();
+
+    if (!this.options.remember)
+      dialog.querySelector(".sieve-passphrase-remember").style.display = "none";
+
+    dialog.querySelector(".sieve-privatekey-path").textContent = this.filepath;
+
+    if (this.options.error) {
+      dialog.querySelector(".sieve-privatekey-error").textContent = this.options.error;
+    }
+
+    this.getDialog().querySelector('.sieve-passphrase').addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        const event = document.createEvent('HTMLEvents');
+        event.initEvent('click', true, false);
+        this.getDialog().querySelector(".sieve-dialog-resolve").dispatchEvent(event);
+      }
+    });
+  }
+
+  /**
+   * @inheritdoc
+   */
+  onShown() {
+    this.getDialog().querySelector('.sieve-passphrase').focus();
+  }
+
+  /**
+   * @inheritdoc
+   */
+  onAccept() {
+    return {
+      "passphrase": this.getDialog().querySelector(".sieve-passphrase").value,
+      "remember": document.querySelector("#sieve-passphrase-remember").checked
+    };
+  }
+
+  /**
+   * @inheritdoc
+   */
+  onCancel() {
+    return null;
+  }
+}
+
 export {
   SievePasswordDialog,
   SieveRenameScriptDialog,
@@ -688,5 +775,6 @@ export {
   SieveAuthorizationDialog,
   SieveScriptBusyDialog,
   SieveScriptSaveDialog,
-  SieveErrorDialog
+  SieveErrorDialog,
+  SieveTLSPassphraseDialog
 };

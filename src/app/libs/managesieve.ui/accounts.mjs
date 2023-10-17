@@ -24,7 +24,8 @@ import {
   SieveDeleteAccountDialog,
   SieveErrorDialog,
   SievePasswordDialog,
-  SieveAuthorizationDialog
+  SieveAuthorizationDialog,
+  SieveTLSPassphraseDialog
 } from "./dialogs/SieveDialogUI.mjs";
 
 /**
@@ -176,8 +177,16 @@ async function main() {
   SieveIpcClient.setRequestHandler("accounts", "account-disconnected",
     async (msg) => { return await accounts.render(msg.payload); });
 
+  SieveIpcClient.setRequestHandler("accounts", "tls-show-passphrase",
+    async (msg) => {
+      return await (new SieveTLSPassphraseDialog(
+        msg.payload.filepath,
+        msg.payload.options)).show();
+    });
+
   accounts.render();
   (new SieveUpdaterUI()).check();
+
 }
 
 if (document.readyState !== 'loading')

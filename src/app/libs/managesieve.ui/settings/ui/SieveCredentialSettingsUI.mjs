@@ -12,6 +12,7 @@
 /* global bootstrap */
 
 import { SieveTemplate } from "./../../utils/SieveTemplate.mjs";
+import { SieveI18n } from "./../../utils/SieveI18n.mjs";
 
 const SECURITY_NONE = 0;
 const SECURITY_EXPLICIT = 1;
@@ -217,6 +218,40 @@ class SieveCredentialsSettingsUI {
   }
 
   /**
+   * Sets the file paths to the CA bundle, certificate and private key.
+   *
+   * @param {object} tlsfiles
+   *   a map object containing tls file paths
+   * @returns {SieveServerSettingsUI}
+   *   a self reference
+   */
+  setConnectionCertificates(tlsfiles) {
+    const parent = this.getDialog();
+
+    parent.querySelector(".sieve-settings-cachain").value = tlsfiles.cachain;
+    parent.querySelector(".sieve-settings-cert").value = tlsfiles.cert;
+    parent.querySelector(".sieve-settings-key").value = tlsfiles.key;
+
+    return this;
+  }
+
+  /**
+   * Gets the current tls files settings.
+   *
+   * @returns {object}
+   *  an object containing current settings of paths to tls files for connection
+   */
+  getConnectionCertificates() {
+    const parent = this.getDialog();
+
+    return {
+      cachain: parent.querySelector(".sieve-settings-cachain").value,
+      cert: parent.querySelector(".sieve-settings-cert").value,
+      key: parent.querySelector(".sieve-settings-key").value
+    };
+  }
+
+  /**
    * Shows the advanced setting
    */
   showAdvanced() {
@@ -264,6 +299,61 @@ class SieveCredentialsSettingsUI {
         modal.hide();
       });
 
+    const getCertFilters = (i18n) => {
+      return [
+        {
+          name: i18n.getString("connection.browsefile.filtername.cert"),
+          extensions: ['crt', 'der', 'pem']
+        },
+        { name: i18n.getString("filedialog.filter.allfiles"), extensions: ['*'] }
+      ];
+    };
+    const getKeyFilters = (i18n) => {
+      return [
+        {
+          name: i18n.getString("connection.browsefile.filtername.key"),
+          extensions: ['key', 'pem']
+        },
+        { name: i18n.getString("filedialog.filter.allfiles"), extensions: ['*'] }
+      ];
+    };
+    const installTLSBrowseBtnEvent = (btn, input, filtersFunc, titleI18n) => {
+      dialog
+        .querySelector(btn)
+        .addEventListener("click", async () => {
+          const i18n = SieveI18n.getInstance();
+          const inputtag = dialog.querySelector(input);
+
+          const r = await this.account.send("ipcrenderer-open-dialog", {
+            options: {
+              title: i18n.getString(titleI18n),
+              defaultPath: inputtag.value ? inputtag.value : "",
+              filters: filtersFunc(i18n)
+            }
+          });
+
+          if (!r.canceled) {
+            inputtag.value = r.filePaths[0];
+          }
+        });
+    };
+
+    installTLSBrowseBtnEvent(
+      ".sieve-settings-browse-cachain",
+      ".sieve-settings-cachain",
+      getCertFilters,
+      "connection.browsefile.title.ca");
+    installTLSBrowseBtnEvent(
+      ".sieve-settings-browse-cert",
+      ".sieve-settings-cert",
+      getCertFilters,
+      "connection.browsefile.title.cert");
+    installTLSBrowseBtnEvent(
+      ".sieve-settings-browse-key",
+      ".sieve-settings-key",
+      getKeyFilters,
+      "connection.browsefile.title.key");
+
     return await new Promise((resolve) => {
 
       dialog.addEventListener('hidden.bs.modal', () => {
@@ -285,7 +375,8 @@ class SieveCredentialsSettingsUI {
     const settings = {
       general: {
         security: this.getConnectionSecurity(),
-        sasl: this.getSaslMechanism()
+        sasl: this.getSaslMechanism(),
+        tlsfiles: this.getConnectionCertificates()
       },
       authentication: {
         username: this.getAuthentication(),
@@ -332,24 +423,21 @@ class SieveCredentialsSettingsUI {
         });
       });
 
-    // Show the forget password button only when a password is stored.
-    if (credentials.authentication.stored)
-      parent.querySelector(".sieve-settings-forget-password").classList.remove("d-none");
-    else
-      parent.querySelector(".sieve-settings-forget-password").classList.add("d-none");
-
     parent
       .querySelector(".sieve-settings-forget-password button")
       .addEventListener("click", async () => {
         await this.account.send("account-settings-forget-credentials");
 
         this.getDialog()
-          .querySelector(".sieve-settings-forget-password").classList.add("d-none");
+          .querySelector(".sieve-settings-forget-password button").disabled = true;
       });
 
     // Authorization settings....
     this.setAuthorizationType(credentials.authorization.type);
     this.setAuthorization(credentials.authorization.username);
+
+    // Connection TLS files
+    this.setConnectionCertificates(credentials.general.tlsfiles);
 
     parent
       .querySelectorAll(".sieve-settings-authorization .dropdown-item")

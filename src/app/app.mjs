@@ -184,7 +184,8 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
       return {
         "general": {
           security: await account.getSecurity().getTLS(),
-          sasl: await account.getSecurity().getMechanism()
+          sasl: await account.getSecurity().getMechanism(),
+          tlsfiles: await account.getSecurity().getTLSFiles()
         },
         "authentication": {
           username: await (await account.getAuthentication()).getUsername(),
@@ -203,6 +204,7 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
 
       const account = await accounts.getAccountById(msg.payload.account);
       await (await account.getAuthentication()).forget();
+      await (await account.getSecurity()).clearStoredTLSPassphrase();
     },
 
     "account-settings-set-credentials": async function (msg) {
@@ -213,6 +215,7 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
 
       await account.getSecurity().setTLS(msg.payload.general.security);
       await account.getSecurity().setMechanism(msg.payload.general.sasl);
+      await account.getSecurity().setTLSFiles(msg.payload.general.tlsfiles);
 
       await account.getAuthentication().setUsername(msg.payload.authentication.username);
 
@@ -629,6 +632,10 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
 
     "decrypt-string" : async(msg) => {
       return await ipcRenderer.invoke("decrypt-string", msg.payload);
+    },
+
+    "ipcrenderer-open-dialog" : async(msg) => {
+      return await ipcRenderer.invoke("open-dialog", msg.payload.options);
     }
   };
 

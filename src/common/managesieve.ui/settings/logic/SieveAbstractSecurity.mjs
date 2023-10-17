@@ -52,6 +52,27 @@ class SieveAbstractSecurity {
   async getMechanism() {
     return await "default";
   }
+
+  /**
+   * Gets the TLS files map object.
+   *
+   * @returns {object}
+   *  the TLS files map object
+   */
+  async getTLSFiles () {
+    return await { cachain: "", cert: "", key: "" };
+  }
+
+  /**
+   * Gets the stored passphrase for the private key.
+   *
+   * @returns {(string|null)}
+   *  stored passphrase if exists.
+   *  null if no passphrase is stored.
+   */
+  async getStoredTLSPassphrase() {
+    return await null;
+  }
 }
 
 export {

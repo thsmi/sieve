@@ -310,6 +310,11 @@ class SieveAbstractSession {
       return this;
     }
 
+    if (name === "starttls") {
+      this.listeners.onStartTLS = callback;
+      return this;
+    }
+
     throw new SieveClientException(`Unknown callback handler ${name}`);
   }
 
@@ -417,6 +422,10 @@ class SieveAbstractSession {
 
     if (!this.getCompatibility().canStartTLS())
       throw new SieveClientException("Server does not support a secure connection.");
+
+    if (this.listeners.onStartTLS) {
+      options.tlsContext = await this.listeners.onStartTLS();
+    }
 
     this.getLogger().logSession(`... requesting starttls ...`);
     await this.sendRequest(new SieveStartTLSRequest());

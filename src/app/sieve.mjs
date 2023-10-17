@@ -85,6 +85,15 @@ async function createWindow() {
     }
   });
 
+  // Listen in for 'Ctrl + Shift + I' and 'F12' to show dev tools
+  win.webContents.on('before-input-event', (e, input) => {
+    if ((input.control && input.shift && input.key.toLowerCase() === 'i') ||
+        input.key.toLowerCase() === 'f12')
+    {
+      win.webContents.openDevTools({ "mode": "detach", "activate": true });
+    }
+  });
+
   const handleRedirect = (e, uri) => {
     if (uri !== win.webContents.getURL()) {
       e.preventDefault();
@@ -122,15 +131,15 @@ async function main() {
     win.focus();
   });
 
-  ipcMain.handle("open-dialog", async(event, options) => {
+  ipcMain.handle("open-dialog", async (event, options) => {
     return await dialog.showOpenDialog(options);
   });
 
-  ipcMain.handle("save-dialog", async(event, options) => {
+  ipcMain.handle("save-dialog", async (event, options) => {
     return await dialog.showSaveDialog(options);
   });
 
-  ipcMain.handle("get-version", async() => {
+  ipcMain.handle("get-version", async () => {
     return await app.getVersion();
   });
 
@@ -138,7 +147,7 @@ async function main() {
     // Open the DevTools.
     win.webContents.openDevTools({
       "mode": "detach",
-      "activate" : true
+      "activate": true
     });
   });
 

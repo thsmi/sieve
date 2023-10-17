@@ -9,6 +9,8 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+const fs = require('fs');
+const tls = require('tls');
 import { SieveSession } from "./SieveSession.mjs";
 
 /**
@@ -89,6 +91,77 @@ class SieveNodeSessions {
     return await (await account.getAuthorization()).getAuthorization();
   }
 
+  /**
+   * Called before STARTTLS is initiated.
+   *
+   * @param {SieveAccount}account the SieveAccount instance
+   * @returns {tls.SecurityContext}
+   *  the SecurityContext instance set up for the particular tls connection
+   */
+  async onStartTLS(account) {
+    const options = {};
+    let loaded = false;
+    const sec = await account.getSecurity();
+    const tlsfiles = await sec.getTLSFiles();
+    let r;
+    let tlsCtx = undefined;
+
+    if (tlsfiles.cachain) {
+      options.ca = await fs.promises.readFile(tlsfiles.cachain);
+      loaded = true;
+    }
+    if (tlsfiles.cert) {
+      options.cert = await fs.promises.readFile(tlsfiles.cert);
+      loaded = true;
+    }
+    if (tlsfiles.key) {
+      options.key = await fs.promises.readFile(tlsfiles.key);
+      loaded = true;
+    }
+
+    if (!loaded) {
+      // No option set. The user doesn't want this.
+      return undefined;
+    }
+
+    options.passphrase = await sec.getStoredTLSPassphrase();
+
+    do {
+      try {
+        tlsCtx = tls.createSecureContext(options);
+        break;
+      }
+      catch (ex) {
+        // Assume that the error is caused by wrong passphrase.
+        // Nodejs does not gift-wrap errors from the underlying crypto
+        // lib(openssl). Making guesses on what the error is based on the
+        // error messages from the crypto library could be a bad idea.
+
+        // Even if createSecureContext() fails because of some other reason,
+        // the user may notice it from the error message that would say
+        // something other than "BAD_PASS" on the next iteration.
+        r = await sec.promptPassphrase(tlsfiles.key, ex.toString());
+
+        if (r) {
+          // New passphrase to try on next iteration
+          options.passphrase = r.passphrase;
+          continue;
+        }
+        else {
+          // The user closed the dialog. Give up.
+          throw ex;
+        }
+      }
+    } while (!tlsCtx);
+
+    if (r && r.remember) {
+      // This means a new passphrase has been tried successfully and the
+      // user intends to save it.
+      await sec.setStoredTLSPassphrase(r.passphrase);
+    }
+
+    return tlsCtx;
+  }
 
 
   /**
@@ -123,6 +196,7 @@ class SieveNodeSessions {
 
     session.on("authenticate", async (hasPassword) => { return await this.onAuthenticate(account, hasPassword); });
     session.on("authorize", async () => { return await this.onAuthorize(account); });
+    session.on("starttls", async () => { return await this.onStartTLS(account); });
 
     this.sessions.set(id, session);
   }

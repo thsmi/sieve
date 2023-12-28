@@ -560,7 +560,7 @@ class SieveAbstractClient {
    * @returns {SieveAbstractClient}
    *   a self reference
    **/
-  startTLS() {
+  async startTLS() {
     if (!this.isSecurable())
       throw new Error("TLS can't be started not a secure socket");
 
@@ -773,7 +773,7 @@ class SieveAbstractClient {
    *
    * @param {string|SieveUrl} url
    *   the url with hostname and port
-   * @param {object.<string, object>} [options]
+   * @param {object<string, object>} [options]
    *   the connection options as hash map.
    *
    * @returns {SieveAbstractClient}
@@ -953,8 +953,7 @@ class SieveAbstractClient {
     this.getLogger().logState("[SieveAbstractClient:onReceive] ... add data to buffer...");
     this.buffer.write(data);
 
-    // Schedule processing the received data.
-    (async () => { await this.receive(); })();
+    this.receive();
   }
 
   /**

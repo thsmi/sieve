@@ -216,6 +216,7 @@ class SieveNodeClient extends SieveAbstractClient {
             fingerprint: cert.fingerprint,
             fingerprint256: cert.fingerprint256,
 
+            code: error.code,
             message: `Error upgrading (${this.tlsSocket.authorizationError})`
           });
 

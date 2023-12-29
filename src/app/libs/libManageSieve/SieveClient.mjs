@@ -136,7 +136,8 @@ class SieveNodeClient extends SieveAbstractClient {
       // this.tlsSocket = tls.TLSSocket(socket, options).connect();
       this.tlsSocket = tls.connect({
         socket: this.socket,
-        rejectUnauthorized: false
+        servername: this.host,
+        rejectUnauthorized: false        
       });
 
       this.tlsSocket.on('secureConnect', () => {

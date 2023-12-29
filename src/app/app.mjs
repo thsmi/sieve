@@ -30,7 +30,7 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
 import { SieveUpdater } from "./libs/managesieve.ui/updater/SieveUpdater.mjs";
 import { SieveTabUI } from "./libs/managesieve.ui/tabs/SieveTabsUI.mjs";
 
-import { SieveThunderbirdImport } from "./libs/managesieve.ui/importer/SieveThunderbirdImport.mjs";
+import { SieveThunderbirdProfiles } from "./libs/managesieve.ui/importer/SieveThunderbirdProfile.mjs";
 import { SieveAutoConfig } from "./libs/libManageSieve/SieveAutoConfig.mjs";
 
 import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
@@ -62,7 +62,7 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
 
     "import-thunderbird": function () {
       logger.logAction("Import Thunderbird accounts");
-      return (new SieveThunderbirdImport()).getAccounts();
+      return (new SieveThunderbirdProfiles()).getAccounts();
     },
 
     // account endpoints...

@@ -9,7 +9,7 @@
       </div>
 
       <div class="modal-body">
-        <div class="sieve-import-progress">
+        <div class="sieve-import-progress d-none">
           <p data-i18n="import.verify"></p>
           <div class="progress">
             <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0"
@@ -18,8 +18,19 @@
         </div>
 
         <div class="sieve-import-items"></div>
-
       </div>
+
+      <div class="sieve-import-error d-none">
+        <div class="modal-body">
+          <div data-i18n="import.error.description"></div>
+
+          <p class="sieve-import-error-description" role="alert"></p>
+        </div>
+        <div class="modal-footer">
+          <button data-i18n="import.error.accept" type="button" class="btn btn-primary sieve-import-error-resolve"></button>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>

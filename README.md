@@ -71,7 +71,7 @@ for details about third party licenses included into this project.
 
 You are looking for the most recent release?
 
-[They are avilable by downloading from the Releases page (release notes can also be viewed)](https://github.com/thsmi/sieve/releases).
+[They are available by downloading from the Releases page (release notes can also be viewed)](https://github.com/thsmi/sieve/releases).
 
 
 You are just intrerrested how the graphical editor looks like prior installing the app or the webextension? Then head over to the demo page at https://thsmi.github.io/sieve-demo/ it features the Graphical Editor UI running inside a plain browser. But keep in mind this demo is only the graphical editor which can not connect to a sieve backend.

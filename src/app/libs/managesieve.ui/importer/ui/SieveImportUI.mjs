@@ -11,10 +11,10 @@
 
 /* global bootstrap */
 import { SieveTemplate } from "./../utils/SieveTemplate.mjs";
-import { SieveIpcClient } from "./../utils/SieveIpcClient.mjs";
+import { SieveIpcClient } from "../../utils/SieveIpcClient.mjs";
 
 /**
- * Imports sieve settings from mailers.
+ * Imports sieve settings from Thunderbird.
  */
 class SieveImportUI {
 

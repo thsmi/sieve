@@ -13,9 +13,10 @@
         "node": true
     },
     "parserOptions": {
-        "ecmaVersion": 11,
+        "ecmaVersion": 2022,
         "ecmaFeatures": {
-            "jsx": false
+            "jsx": false,
+            "impliedStrict" : true
         },
         "sourceType": "module"
     },

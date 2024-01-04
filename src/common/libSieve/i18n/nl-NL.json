@@ -140,7 +140,7 @@
   "string.tab.advanced": "Advanced",
   "string.tab.help": "Help",
   "string.variables": "Any of the following strings…",
-  "string.keywords": "… any of the keywords…",
+  "string.keywords": "… een van de trefwoorden…",
   "string.help": "",
   "string.summary": "Any string ${sources} ${matchtype} any of ${value}",
   "notify.tab.home": "Notify",

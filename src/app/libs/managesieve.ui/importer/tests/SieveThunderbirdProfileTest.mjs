@@ -573,7 +573,7 @@ suite.add("Get Profiles, has accounts", function () {
   // We need to mock out object to be testable
   profiles.createProfile = (dirname, section) => {
     suite.assertEquals(path.join(__dirname, "Thunderbird"), dirname);
-    suite.assertEquals(sections.shift(), section.replace("\r\n","\r"));
+    suite.assertEquals(sections.shift(), section.replace("\r\n", "\r"));
 
     const account = accounts.shift();
 
@@ -610,7 +610,7 @@ suite.add("Get Profiles, has no accounts", function () {
   // We need to mock out object to be testable
   profiles.createProfile = (dirname, section) => {
     suite.assertEquals(path.join(__dirname, "Thunderbird"), dirname);
-    suite.assertEquals(sections.shift(), section.replace("\r\n","\r"));
+    suite.assertEquals(sections.shift(), section.replace("\r\n", "\r"));
 
     const account = accounts.shift();
 
@@ -641,7 +641,7 @@ suite.add("Get Accounts by Profiles, has Accounts", function () {
   profiles.getProfileDirectory = () => { return path.join(__dirname, "Thunderbird"); };
   profiles.createProfile = (dirname, section) => {
     suite.assertEquals(path.join(__dirname, "Thunderbird"), dirname);
-    suite.assertEquals(sections.shift(), section.replace("\r\n","\r"));
+    suite.assertEquals(sections.shift(), section.replace("\r\n", "\r"));
 
     const account = accounts.shift();
     const json = jsons.shift();
@@ -675,7 +675,7 @@ suite.add("Get Accounts by Profiles, has no accounts", function () {
   profiles.getProfileDirectory = () => { return path.join(__dirname, "Thunderbird"); };
   profiles.createProfile = (dirname, section) => {
     suite.assertEquals(path.join(__dirname, "Thunderbird"), dirname);
-    suite.assertEquals(sections.shift(), section.replace("\r\n","\r"));
+    suite.assertEquals(sections.shift(), section.replace("\r\n", "\r"));
 
     const account = accounts.shift();
     const json = jsons.shift();

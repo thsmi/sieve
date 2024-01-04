@@ -675,7 +675,6 @@ suite.add("Get Accounts by Profiles, has no accounts", function () {
   profiles.getProfileDirectory = () => { return path.join(__dirname, "Thunderbird"); };
   profiles.createProfile = (dirname, section) => {
     suite.assertEquals(path.join(__dirname, "Thunderbird"), dirname);
-    debugger;
     suite.assertEquals(sections.shift(), section.replaceAll("\r\n", "\n"));
 
     const account = accounts.shift();

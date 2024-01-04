@@ -18,6 +18,8 @@ if (!suite)
 
 import { SieveUpdater } from "./../SieveUpdater.mjs";
 
+const NUMBER_SIX = 6;
+
 suite.add("Major Version Bump", function () {
   suite.assertFalse((new SieveUpdater()).isOlder("6", "5.5.4"));
   suite.assertFalse((new SieveUpdater()).isOlder("6.5", "5.5.4"));
@@ -136,8 +138,8 @@ suite.add("Comparator - smaller than", function () {
 });
 
 suite.add("Int conversion", function () {
-  suite.assertEquals((new SieveUpdater()).getInt("6"), 6);
-  suite.assertEquals((new SieveUpdater()).getInt("6.5"), 6);
-  suite.assertEquals((new SieveUpdater()).getInt("6,5"), 6);
+  suite.assertEquals((new SieveUpdater()).getInt("6"), NUMBER_SIX);
+  suite.assertEquals((new SieveUpdater()).getInt("6.5"), NUMBER_SIX);
+  suite.assertEquals((new SieveUpdater()).getInt("6,5"), NUMBER_SIX);
   suite.assertNaN((new SieveUpdater()).getInt("A"));
 });

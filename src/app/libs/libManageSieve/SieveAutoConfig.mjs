@@ -99,7 +99,7 @@ class SieveAutoConfig {
 
       sieve.addListener(listener);
 
-      sieve.connect(new SieveUrl(`sieve://${this.hostname}:${port}`), false);
+      sieve.connect(new SieveUrl(`sieve://${this.hostname}:${port}`), { security: 0});
     });
   }
 }

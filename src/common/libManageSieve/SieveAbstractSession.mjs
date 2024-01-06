@@ -64,7 +64,7 @@ class SieveAbstractSession {
    *
    * @param {string} id
    *   the unique session id.
-   * @param {object.<string, object>} options
+   * @param {Object<string, object>} options
    *   a dictionary with options as key/value pairs.
    */
   constructor(id, options) {
@@ -589,7 +589,7 @@ class SieveAbstractSession {
    *
    * @param {string} url
    *   the sieve url with hostname and port.
-   * @param {object.<string, object>} [options]
+   * @param {Object<string, object>} [options]
    *   the connection options as hash map.
    * @returns {SieveSession}
    *   a self reference

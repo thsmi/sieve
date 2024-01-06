@@ -10,8 +10,8 @@
  */
 
 /* global bootstrap */
-import { SieveTemplate } from "./../utils/SieveTemplate.mjs";
-import { SieveIpcClient } from "../../utils/SieveIpcClient.mjs";
+import { SieveTemplate } from "./../../utils/SieveTemplate.mjs";
+import { SieveIpcClient } from "./../../utils/SieveIpcClient.mjs";
 
 /**
  * Imports sieve settings from Thunderbird.
@@ -27,7 +27,7 @@ class SieveImportUI {
    *   the account information.
    */
   async addAccount(profile, account) {
-    const item = await (new SieveTemplate()).load("./importer/account.import.item.html");
+    const item = await (new SieveTemplate()).load("./importer/ui/account.import.item.html");
 
     item.querySelector(".sieve-import-username").textContent = account["username"];
     item.querySelector(".sieve-import-hostname").textContent = account["hostname"];
@@ -125,7 +125,7 @@ class SieveImportUI {
    */
   async show() {
 
-    const dialog = await (new SieveTemplate()).load("./importer/account.import.html");
+    const dialog = await (new SieveTemplate()).load("./importer/ui/account.import.html");
     dialog.querySelector(".sieve-import-progress").classList.add("d-none");
     document.querySelector("#ctx").append(dialog);
 

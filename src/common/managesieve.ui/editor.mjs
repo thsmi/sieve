@@ -50,6 +50,13 @@ async function main() {
   SieveLogger.getInstance().level(
     await SieveIpcClient.sendMessage("core", "settings-get-loglevel"));
 
+  // Enable dark mode if the system's color-scheme is dark
+  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.documentElement.setAttribute('data-bs-theme', 'dark')
+  } else {
+    document.documentElement.setAttribute('data-bs-theme', 'light')
+  }
+
   await (SieveI18n.getInstance()).load();
 
   try {

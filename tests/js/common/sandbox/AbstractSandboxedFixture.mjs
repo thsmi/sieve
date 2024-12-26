@@ -214,7 +214,6 @@ class AbstractSandboxedTestFixture {
     this.assertEquals(expected.toString(), actual.toString(), message);
   }
 
-
   /**
    * Checks if the actual value matches the expectation.
    * In case it does not it throws an exception.

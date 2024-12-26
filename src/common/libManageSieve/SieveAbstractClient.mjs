@@ -521,7 +521,7 @@ class SieveAbstractClient {
    * @returns {boolean}
    *   true in case the connection is alive otherwise false
    */
-  isAlive() {
+  async isAlive() {
     if (!this.socket)
       return false;
 
@@ -773,7 +773,7 @@ class SieveAbstractClient {
    *
    * @param {string|SieveUrl} url
    *   the url with hostname and port
-   * @param {object<string, object>} [options]
+   * @param {Object<string, object>} [options]
    *   the connection options as hash map.
    *
    * @returns {SieveAbstractClient}

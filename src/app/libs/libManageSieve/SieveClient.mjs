@@ -39,7 +39,7 @@ class SieveNodeClient extends SieveAbstractClient {
   /**
    * @inheritdoc
    */
-  isAlive() {
+  async isAlive() {
     if (this.isSecured() && !this.tlsSocket)
       return false;
 

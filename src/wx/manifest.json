@@ -23,6 +23,14 @@
     "storage"
   ],
   "experiment_apis": {
+    "tcpSocket": {
+      "schema": "api/schemas/tcp_socket.json",
+      "parent" : {
+        "scopes": [ "addon_parent" ],
+        "script" : "api/parent/ext-tcp-socket.js",
+        "paths": [["tcpSocket"]]
+      }
+    },
     "SieveAccountsApi": {
       "schema": "api/sieve/SieveAccountsApi.json",
       "parent": {
@@ -34,21 +42,6 @@
           [
             "sieve",
             "accounts"
-          ]
-        ]
-      }
-    },
-    "SieveSocketApi": {
-      "schema": "api/sieve/SieveSocketApi.json",
-      "parent": {
-        "scopes": [
-          "addon_parent"
-        ],
-        "script": "api/sieve/SieveSocketApi.js",
-        "paths": [
-          [
-            "sieve",
-            "socket"
           ]
         ]
       }

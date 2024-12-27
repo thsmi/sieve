@@ -51,7 +51,7 @@ function createMenuItem(action, flavour, docShell) {
 
   const elm = elm2.html();
   elm.classList.add("sivMenuItem");
-  elm.classList.add("bg-light");
+  elm.classList.add("sivTertiaryBackground");
   elm.classList.add("border");
   elm.classList.add("rounded");
   elm.textContent = action.split('/')[NAME];
@@ -252,6 +252,13 @@ function showInfoMessage(message, content) {
  * Executed as soon as the DOM is Ready.
  */
 async function main() {
+
+  // Enable dark mode if the system's color-scheme is dark
+  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.documentElement.setAttribute('data-bs-theme', 'dark');
+  } else {
+    document.documentElement.setAttribute('data-bs-theme', 'light');
+  }
 
   // Connect the error handler...
   window.addEventListener("error", (event) => {

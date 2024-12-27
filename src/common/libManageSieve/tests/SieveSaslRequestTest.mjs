@@ -80,6 +80,8 @@ async function expectFailingResponse(request, data) {
   try {
     data = Array.from(data, (x) => { return x.charCodeAt(0); });
     await request.onResponse(new SieveResponseParser(data));
+
+  // eslint-disable-next-line no-unused-vars
   } catch (ex) {
     return;
   }

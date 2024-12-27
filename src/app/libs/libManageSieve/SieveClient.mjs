@@ -9,6 +9,8 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+/* global preload */
+
 import { SieveUrl } from "./SieveUrl.mjs";
 import {
   SieveAbstractClient,
@@ -17,9 +19,6 @@ import {
 } from "./SieveAbstractClient.mjs";
 
 import { SieveCertValidationException } from "./SieveExceptions.mjs";
-
-const net = require('net');
-const tls = require('tls');
 
 /**
  * Uses Node networking to realize a sieve client.
@@ -79,7 +78,7 @@ class SieveNodeClient extends SieveAbstractClient {
     this.security = options.security;
     this.secured = false;
 
-    this.socket = net.connect(this.port, this.host);
+    this.socket = preload.createSocket(this.port, this.host);
 
     this.socket.on('error', async(error) => {
       this.getLogger().logState(`SieveClient: OnError (Connection ${this.host}:${this.port})`);
@@ -134,11 +133,7 @@ class SieveNodeClient extends SieveAbstractClient {
     return await new Promise((resolve) => {
       // Upgrade the current socket.
       // this.tlsSocket = tls.TLSSocket(socket, options).connect();
-      this.tlsSocket = tls.connect({
-        socket: this.socket,
-        servername: this.host,
-        rejectUnauthorized: false
-      });
+      this.tlsSocket = preload.createTlsSocket(this.socket, this.host);
 
       this.tlsSocket.on('secureConnect', () => {
 

@@ -9,6 +9,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+/* global preload */
 
 const SIEVE_GITHUB_UPDATE_URL = "https://thsmi.github.io/sieve/update.json";
 const MAJOR_VERSION = 0;
@@ -160,7 +161,7 @@ class SieveUpdater {
    */
   async check() {
 
-    const currentVersion = await (require('electron').ipcRenderer.invoke("get-version"));
+    const currentVersion = await preload.getVersion();
 
     return this.compare(
       await (await fetch(SIEVE_GITHUB_UPDATE_URL)).json(),

@@ -9,11 +9,11 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+/* global preload */
+
 const DEFAULT_AUTHORIZATION = 3;
 
 const FIRST_ELEMENT = 0;
-
-const { ipcRenderer, shell, clipboard } = require('electron');
 
 // Import the node modules into our global namespace...
 import { SieveLogger } from "./libs/managesieve.ui/utils/SieveLogger.mjs";
@@ -57,7 +57,7 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
     },
 
     "update-goto-url": () => {
-      shell.openExternal('https://github.com/thsmi/sieve/releases/latest');
+      preload.openUpdateUrl();
     },
 
     "import-thunderbird": function () {
@@ -247,7 +247,7 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
           { name: 'All Files', extensions: ['*'] }]
       };
 
-      const filename = await ipcRenderer.invoke("open-dialog", options);
+      const filename = await preload.openDialog(options);
 
       if (filename.canceled)
         return;
@@ -279,7 +279,7 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
           { name: 'All Files', extensions: ['*'] }]
       };
 
-      const filename = await ipcRenderer.invoke("save-dialog", options);
+      const filename = await preload.saveDialog(options);
 
       // Check if the dialog was canceled...
       if (filename.canceled)
@@ -526,7 +526,7 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
           { name: 'All Files', extensions: ['*'] }]
       };
 
-      const filename = await ipcRenderer.invoke("open-dialog", options);
+      const filename = await preload.openDialog(options);
 
       if (filename.canceled)
         return undefined;
@@ -552,7 +552,7 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
           { name: 'All Files', extensions: ['*'] }]
       };
 
-      const filename = await ipcRenderer.invoke("save-dialog", options);
+      const filename = await preload.saveDialog(options);
 
       // Check if the dialog was canceled...
       if (filename.canceled)
@@ -562,11 +562,11 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
     },
 
     "copy": function (msg) {
-      clipboard.writeText(msg.payload.data);
+      preload.copy(msg.payload.data);
     },
 
     "paste": function () {
-      return clipboard.readText();
+      return preload.paste();
     },
 
     "get-preference": async (msg) => {
@@ -612,23 +612,23 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
     },
 
     "open-developer-tools": async() => {
-      await ipcRenderer.invoke("open-developer-tools");
+      await preload.openDeveloperTools();
     },
 
     "reload-ui" : async() => {
-      await ipcRenderer.invoke("reload-ui");
+      await preload.reloadUI();
     },
 
     "has-encryption" : async() => {
-      return await ipcRenderer.invoke("has-encryption");
+      return await preload.hasEncryption();
     },
 
     "encrypt-string" : async(msg) => {
-      return await ipcRenderer.invoke("encrypt-string", msg.payload);
+      return await preload.encrypt(msg.payload);
     },
 
     "decrypt-string" : async(msg) => {
-      return await ipcRenderer.invoke("decrypt-string", msg.payload);
+      return await preload.decrypt(msg.payload);
     }
   };
 

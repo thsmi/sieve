@@ -49,9 +49,12 @@ async function createWindow() {
     height: DEFAULT_WINDOW_HEIGHT,
     icon: icon,
     webPreferences: {
-      // nodeIntegrationInSubFrames: true,
+      preload: path.join(app.getAppPath(), 'preload.js'),
+
+      // TODO we need to switch here to preloads and remove the node logic from
+      // the renderer thread.
       nodeIntegration: true,
-      contextIsolation: false
+      contextIsolation: true
     }
   });
 

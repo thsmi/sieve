@@ -12,13 +12,13 @@
 // This is an ugly hack for an Electron shortcoming. Technically we want to use
 // ESM style imports. But this is not possible because the rendering process only
 // allows to load modules from the chrome context not from the node module context.
-// Thus we need to use a classic ols school import.
+// Thus we need to use a classic old school import.
 // But to make things more complicated if running a mjs module in node. Which is
 // done for unit testing. Then we don't have a require, because ESMs don't need
 // it normally.
 // This means we need polyfill for the following three cases:
 // If we have a global.require we are running a commonjs in a node context.
-// In case we have a window.require then we are running inside an electron redering
+// In case we have a window.require then we are running inside an electron rendering
 // process. In case neither nor is true we are most likely in a node esm context.
 
 // eslint-disable-next-line no-console

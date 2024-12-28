@@ -222,7 +222,6 @@
      * @returns {AbstractTestReport}
      *   a self reference.
      */
-    // eslint-disable-next-line no-unused-vars
     error(ex) {
       this.status = STATUS_ERROR;
       this.stop();
@@ -252,7 +251,6 @@
      * @returns {AbstractTestReport}
      *   a self reference.
      */
-    // eslint-disable-next-line no-unused-vars
     fail(ex) {
       this.status = STATUS_FAILURE;
       this.stop();

@@ -15,12 +15,6 @@
       "osx": {
         "command": "./node_modules/.bin/eslint"
       },
-      "args": [
-        "./src/**/*.js",
-        "./src/**/*.mjs",
-        "./tests/**/*.js",
-        "./tests/**/*.mjs"
-      ],
       "promptOnClose": false,
       "presentation": {
         "echo": true,

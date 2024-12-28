@@ -10,7 +10,6 @@
  *
  */
 
-/* eslint-disable no-magic-numbers */
 
 /* global net */
 const suite = net.tschmid.yautt.test;

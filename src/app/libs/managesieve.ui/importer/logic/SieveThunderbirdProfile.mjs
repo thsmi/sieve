@@ -18,10 +18,9 @@
 // it normally.
 // This means we need polyfill for the following three cases:
 // If we have a global.require we are running a commonjs in a node context.
-// In case we have a window.require then we are running inside an electron redering
+// In case we have a window.require then we are running inside an electron rendering
 // process. In case neither nor is true we are most likely in a node esm context.
 
-// eslint-disable-next-line no-console
 const require = (global || window).require || (await import("node:module")).createRequire(import.meta.url);
 
 const path = require('path');
@@ -188,7 +187,7 @@ class SieveThunderbirdAccounts {
   }
 
   /**
-   * Gets the serverId which is accociated to the account id.
+   * Gets the serverId which is associated to the account id.
    *
    * @param {string} accountId
    *   the server which is associated to the given account id.
@@ -210,7 +209,7 @@ class SieveThunderbirdAccounts {
    * Returns the settings from the preference file for all imap accounts.
    *
    * @returns {object[]}
-   *   a list with all accounts knonw by the the profile.
+   *   a list with all accounts known by the the profile.
    */
   getAccounts() {
 
@@ -231,7 +230,7 @@ class SieveThunderbirdAccounts {
         });
 
       } catch (ex) {
-        SieveLogger.getInstance().logAction(`Can't import account ${id} because of execption ${ex}`);
+        SieveLogger.getInstance().logAction(`Can't import account ${id} because of exception ${ex}`);
       }
     }
 
@@ -337,7 +336,7 @@ class SieveThunderbirdProfile {
 
   /**
    * Reads the preferences located inside the profile directory.
-   * In case the file does not exist an empyt string is returned.
+   * In case the file does not exist an empty string is returned.
    *
    * @returns {string}
    *   the preference as string. In case the file does not exist and empty
@@ -369,7 +368,7 @@ class SieveThunderbirdProfile {
    * Returns the settings from the preference file for all imap accounts.
    *
    * @returns {SieveThunderbirdAccount[]}
-   *   a list with all accounts knonw by the the profile.
+   *   a list with all accounts known by the the profile.
    */
   getAccounts() {
     return this.createAccount(this.getPreferences()).getAccounts();
@@ -398,8 +397,8 @@ class SieveThunderbirdProfile {
 class SieveThunderbirdProfiles {
 
   /**
-   * Returns electon's process info.
-   * Used priarily for testing to mock the global non overridable process object.
+   * Returns electron's process info.
+   * Used primarily for testing to mock the global non overridable process object.
    *
    * @returns {ProcessInfo}
    *   the process info.

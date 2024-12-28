@@ -90,6 +90,7 @@ function packageCodeMirror(destination) {
     BASE_DIR_CODEMIRROR + "/lib/**",
     BASE_DIR_CODEMIRROR + "/mode/sieve/**",
     BASE_DIR_CODEMIRROR + "/theme/eclipse.css",
+    BASE_DIR_CODEMIRROR + "/theme/material-darker.css",
     BASE_DIR_CODEMIRROR + "/LICENSE",
     BASE_DIR_CODEMIRROR + "/package.json"
   ], { base: BASE_DIR_CODEMIRROR }).pipe(

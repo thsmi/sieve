@@ -115,7 +115,7 @@ function packageSrc() {
   return gulp.src([
     BASE_DIR_APP + "/**",
     `!${BASE_DIR_APP}/libs/libManageSieve/**`
-  ]).pipe(gulp.dest(BUILD_DIR_APP));
+  ], { encoding: false} ).pipe(gulp.dest(BUILD_DIR_APP));
 }
 
 /**
@@ -129,7 +129,7 @@ function packageIcons() {
 
   return gulp.src([
     path.join(common.BASE_DIR_COMMON, "icons") + "/**"
-  ], { base: common.BASE_DIR_COMMON }).pipe(gulp.dest(BUILD_DIR_APP_LIBS));
+  ], { base: common.BASE_DIR_COMMON, encoding: false }).pipe(gulp.dest(BUILD_DIR_APP_LIBS));
 }
 
 /**
@@ -305,7 +305,7 @@ function packageAppImageDir() {
 
   return gulp.src([
     OUTPUT_DIR_APP_LINUX + "/**/*"
-  ]).pipe(gulp.dest(APP_IMAGE_DIR));
+  ], { encoding: false}).pipe(gulp.dest(APP_IMAGE_DIR));
 }
 
 /**
@@ -320,7 +320,7 @@ function packageAppImageFiles() {
 
   return gulp.src([
     appImageFiles + "/**/*"
-  ], { base: appImageFiles}).pipe(gulp.dest(APP_IMAGE_DIR));
+  ], { base: appImageFiles, encoding: false}).pipe(gulp.dest(APP_IMAGE_DIR));
 }
 
 /**

@@ -134,7 +134,7 @@ function src2(dir, files) {
     files = [files];
 
   return gulp.src(
-    files, { base: dir, root: dir, cwd:dir, passthrough: true });
+    files, { base: dir, root: dir, cwd:dir, passthrough: true, encoding: false });
 }
 
 /**

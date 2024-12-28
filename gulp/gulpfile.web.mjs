@@ -71,7 +71,7 @@ function packageSrc() {
     `!${BASE_DIR_WEB}/config.ini`,
     `!**/__pycache__/**`,
     `!${BASE_DIR_WEB}/static/libs/libManageSieve/**`
-  ]).pipe(gulp.dest(BUILD_DIR_WEB));
+  ], { encoding: false}).pipe(gulp.dest(BUILD_DIR_WEB));
 }
 
 /**
@@ -84,7 +84,7 @@ function packageIcons() {
 
   return gulp.src(
     [path.join(common.BASE_DIR_COMMON, "icons") + "/*.ico"],
-    { base: common.BASE_DIR_COMMON })
+    { base: common.BASE_DIR_COMMON, encoding: false })
     .pipe(gulp.dest(path.join(BUILD_DIR_WEB, 'static')));
 }
 
@@ -144,7 +144,7 @@ function packageManageSieveUiApp() {
     path.join(base, "/tabs/*.mjs"),
     path.join(base, "/tabs/*.html"),
     path.join(base, "/utils/SieveIpcClient.mjs")
-  ], { base: base }).pipe(gulp.dest(destination));
+  ], { base: base, encoding: false }).pipe(gulp.dest(destination));
 }
 
 /**

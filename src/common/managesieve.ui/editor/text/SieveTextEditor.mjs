@@ -130,11 +130,15 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
     editor.append(
       await loader.load("./editor/text/editor.plaintext.html"));
 
+    let theme = "eclipse";
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches)
+      theme = "material-darker";
+
     this.cm = CodeMirror.fromTextArea(document.querySelector(`#${this.id}`), {
       lineNumbers: true,
       lineWrapping: true,
 
-      theme: "eclipse",
+      theme: theme,
       matchBrackets: true,
 
       inputStyle: "contenteditable"

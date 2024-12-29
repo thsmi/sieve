@@ -642,6 +642,13 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
    * Called as soon as the DOM is ready.
    */
   function main() {
+    // Enable dark mode if the system's color-scheme is dark
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-bs-theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-bs-theme', 'light');
+    }
+
     (new SieveTabUI()).init();
   }
 

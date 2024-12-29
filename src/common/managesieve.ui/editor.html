@@ -10,6 +10,7 @@
 
   <link rel="stylesheet" href="./../../libs/CodeMirror/lib/codemirror.css">
   <link rel="stylesheet" href="./../../libs/CodeMirror/theme/eclipse.css">
+  <link rel="stylesheet" href="./../../libs/CodeMirror/theme/material-darker.css">
 
   <script src="./../../libs/CodeMirror/lib/codemirror.js"></script>
   <script src="./../../libs/CodeMirror/addon/search/searchcursor.js"></script>
@@ -24,6 +25,24 @@
       border-style: solid;
       height: auto;
     }
+
+    html[data-bs-theme=dark] .CodeMirror {
+      border: none !important;
+      background-color: var(--bs-body-bg) !important;
+    }
+
+    html[data-bs-theme=dark] .CodeMirror-gutters{
+      background-color: var(--bs-body-bg) !important;
+    }
+
+    html[data-bs-theme=dark] .activeline {
+      background-color: rgba(var(--bs-body-color-rgb), 0.03) !important;
+    }
+
+    html[data-bs-theme=dark] #sieve-editor-toolbar {
+      border-bottom: var(--bs-border-width) solid var(--bs-border-color-translucent) !important;
+    }
+
 
     #sieve-widget-editor {
       border: 0;

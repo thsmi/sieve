@@ -31,7 +31,7 @@ async function packageAppTests() {
     "!**/appImage/**",
     "!**/doc/**",
     "!**/icons/**"
-  ]).pipe(gulp.dest(`${BUILD_DIR_TEST}/app/`));
+  ], { encoding: false}).pipe(gulp.dest(`${BUILD_DIR_TEST}/app/`));
 
   await gulp.src([
     path.join(app.BASE_DIR_APP, "/libs") + "/**",
@@ -42,7 +42,7 @@ async function packageAppTests() {
     "!**/appImage/**",
     "!**/doc/**",
     "!**/icons/**"
-  ]).pipe(gulp.dest(`${BUILD_DIR_TEST}/app/`));
+  ], { encoding: false}).pipe(gulp.dest(`${BUILD_DIR_TEST}/app/`));
 }
 
 /**
@@ -59,7 +59,7 @@ async function packageWxTests() {
     "!**/appImage/**",
     "!**/doc/**",
     "!**/icons/**"
-  ]).pipe(gulp.dest(`${BUILD_DIR_TEST}/wx/`));
+  ], { encoding: false}).pipe(gulp.dest(`${BUILD_DIR_TEST}/wx/`));
 
   await gulp.src([
     path.join(wx.BASE_DIR_WX, "/libs") + "/**",
@@ -70,7 +70,7 @@ async function packageWxTests() {
     "!**/appImage/**",
     "!**/doc/**",
     "!**/icons/**"
-  ]).pipe(gulp.dest(`${BUILD_DIR_TEST}/wx/`));
+  ], { encoding: false}).pipe(gulp.dest(`${BUILD_DIR_TEST}/wx/`));
 }
 
 /**
@@ -82,7 +82,7 @@ async function packageTestSuite() {
 
   await gulp.src([
     BASE_PATH + "/**"
-  ]).pipe(gulp.dest(BUILD_DIR_TEST + '/'));
+  ], { encoding: false}).pipe(gulp.dest(BUILD_DIR_TEST + '/'));
 }
 
 /**

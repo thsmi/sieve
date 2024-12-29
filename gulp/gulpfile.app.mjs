@@ -24,7 +24,7 @@ import https from "./gulpfile.common.https.mjs";
 import path from 'path';
 
 
-import packager from 'electron-packager';
+import packager from '@electron/packager';
 
 
 const CACHE_DIR_APP = path.join(common.BASE_DIR_BUILD, "electron/cache");

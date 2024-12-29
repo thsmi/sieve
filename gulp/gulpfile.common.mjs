@@ -33,6 +33,8 @@ const INDEX_MAJOR = 0;
 const INDEX_MINOR = 1;
 const INDEX_PATCH = 2;
 
+const VERSION_TRIPLE = 3;
+
 const MAJOR_INCREMENT = 1;
 const MINOR_INCREMENT = 1;
 const PATCH_INCREMENT = 1;
@@ -255,7 +257,7 @@ async function getPackageVersion(file) {
 
   version = version.split(".");
 
-  while (version.length < 3)
+  while (version.length < VERSION_TRIPLE)
     version.push(0);
 
   return version;

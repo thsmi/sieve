@@ -85,15 +85,13 @@ async function createWindow() {
     }
   });
 
-  const handleRedirect = (e, uri) => {
-    if (uri !== win.webContents.getURL()) {
-      e.preventDefault();
-      shell.openExternal(uri);
-    }
-  };
-
   // win.webContents.on('will-navigate', handleRedirect);
-  win.webContents.on('new-window', handleRedirect);
+  win.webContents.setWindowOpenHandler((details) => {
+    if (details.url.startsWith("https://"))
+      shell.openExternal(details.url);
+
+    return { action: 'deny'};
+  });
 }
 
 /**

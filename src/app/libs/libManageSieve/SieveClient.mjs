@@ -136,6 +136,7 @@ class SieveNodeClient extends SieveAbstractClient {
       // this.tlsSocket = tls.TLSSocket(socket, options).connect();
       this.tlsSocket = tls.connect({
         socket: this.socket,
+        servername: this.host,
         rejectUnauthorized: false
       });
 
@@ -216,6 +217,7 @@ class SieveNodeClient extends SieveAbstractClient {
             fingerprint: cert.fingerprint,
             fingerprint256: cert.fingerprint256,
 
+            code: error.code,
             message: `Error upgrading (${this.tlsSocket.authorizationError})`
           });
 

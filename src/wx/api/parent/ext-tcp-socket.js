@@ -14,7 +14,6 @@
   /* global ExtensionCommon */
   /* global Components */
   /* global ChromeUtils */
-  /* global globalThis */
 
   const Cc = Components.classes;
   const Ci = Components.interfaces;

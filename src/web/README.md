@@ -26,7 +26,7 @@ backend with a reverse proxy.
 * Install a python 3.8 or up
   No external python packages are required, a raw python is sufficient.
 
-* Optional, create I python virtual env.
+* Optional, create a python virtual env.
   A [venv or virtual environment](https://docs.python.org/3/tutorial/venv.html)
   is a sandboxed python runtime environment which will isolate the local environment
   from the global  python installation. It is shipped by default no external

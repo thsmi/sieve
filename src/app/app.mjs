@@ -13,7 +13,7 @@ const DEFAULT_AUTHORIZATION = 3;
 
 const FIRST_ELEMENT = 0;
 
-const { ipcRenderer } = require('electron');
+const { ipcRenderer, shell, clipboard } = require('electron');
 
 // Import the node modules into our global namespace...
 import { SieveLogger } from "./libs/managesieve.ui/utils/SieveLogger.mjs";
@@ -30,7 +30,7 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
 import { SieveUpdater } from "./libs/managesieve.ui/updater/SieveUpdater.mjs";
 import { SieveTabUI } from "./libs/managesieve.ui/tabs/SieveTabsUI.mjs";
 
-import { SieveThunderbirdImport } from "./libs/managesieve.ui/importer/SieveThunderbirdImport.mjs";
+import { SieveThunderbirdProfiles } from "./libs/managesieve.ui/importer/logic/SieveThunderbirdProfile.mjs";
 import { SieveAutoConfig } from "./libs/libManageSieve/SieveAutoConfig.mjs";
 
 import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
@@ -56,13 +56,13 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
       return await (new SieveUpdater()).check();
     },
 
-    "open-url": (msg) => {
-      require("electron").shell.openExternal(msg.payload.data);
+    "update-goto-url": () => {
+      shell.openExternal('https://github.com/thsmi/sieve/releases/latest');
     },
 
     "import-thunderbird": function () {
       logger.logAction("Import Thunderbird accounts");
-      return (new SieveThunderbirdImport()).getAccounts();
+      return (new SieveThunderbirdProfiles()).getAccounts();
     },
 
     // account endpoints...
@@ -562,11 +562,11 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
     },
 
     "copy": function (msg) {
-      require("electron").clipboard.writeText(msg.payload.data);
+      clipboard.writeText(msg.payload.data);
     },
 
     "paste": function () {
-      return require("electron").clipboard.readText();
+      return clipboard.readText();
     },
 
     "get-preference": async (msg) => {
@@ -642,8 +642,14 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
    * Called as soon as the DOM is ready.
    */
   function main() {
-    (new SieveTabUI()).init();
+    // Enable dark mode if the system's color-scheme is dark
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-bs-theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-bs-theme', 'light');
+    }
 
+    (new SieveTabUI()).init();
   }
 
   if (document.readyState !== 'loading')

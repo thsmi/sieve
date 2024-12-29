@@ -12,6 +12,16 @@
 import path from 'path';
 import url from 'url';
 
+import {
+  app,
+  ipcMain,
+  dialog,
+  safeStorage,
+  BrowserWindow,
+  Menu,
+  shell
+} from 'electron';
+
 const DEFAULT_WINDOW_WIDTH = 1200;
 const DEFAULT_WINDOW_HEIGHT = 600;
 
@@ -24,11 +34,8 @@ let win = null;
 
 /**
  * Creates the main window
- *
- * @param {Electron} electron
- *   a reference to the electron's root context object.
  */
-async function createWindow(electron) {
+async function createWindow() {
 
   const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
@@ -37,7 +44,7 @@ async function createWindow(electron) {
     icon = path.join(__dirname, 'libs/icons/linux.png');
 
   // Create the browser window.
-  win = new electron.BrowserWindow({
+  win = new BrowserWindow({
     width: DEFAULT_WINDOW_WIDTH,
     height: DEFAULT_WINDOW_HEIGHT,
     icon: icon,
@@ -65,7 +72,7 @@ async function createWindow(electron) {
   });
 
   // As suggested in https://github.com/electron/electron/issues/4068
-  const inputMenu = electron.Menu.buildFromTemplate([
+  const inputMenu = Menu.buildFromTemplate([
     { role: 'cut' },
     { role: 'copy' },
     { role: 'paste' }
@@ -78,36 +85,31 @@ async function createWindow(electron) {
     }
   });
 
-  const handleRedirect = (e, uri) => {
-    if (uri !== win.webContents.getURL()) {
-      e.preventDefault();
-      electron.shell.openExternal(uri);
-    }
-  };
-
   // win.webContents.on('will-navigate', handleRedirect);
-  win.webContents.on('new-window', handleRedirect);
+  win.webContents.setWindowOpenHandler((details) => {
+    if (details.url.startsWith("https://"))
+      shell.openExternal(details.url);
+
+    return { action: 'deny'};
+  });
 }
 
 /**
  * The main entry point into this application.
- *
- * @param {Electron} electron
- *   a reference to the electron's root context object.
  */
-async function main(electron) {
+async function main() {
 
   // ensure we are running as a singleton.
-  const isLocked = electron.app.requestSingleInstanceLock();
+  const isLocked = app.requestSingleInstanceLock();
 
   if (!isLocked) {
     // eslint-disable-next-line no-console
     console.log("Exiting app is locked");
-    electron.app.quit();
+    app.quit();
     return;
   }
 
-  electron.app.on('second-instance', () => {
+  app.on('second-instance', () => {
     // Someone tried to run a second instance, we should focus our window.
     if (!win)
       return;
@@ -118,19 +120,19 @@ async function main(electron) {
     win.focus();
   });
 
-  electron.ipcMain.handle("open-dialog", async(event, options) => {
-    return await electron.dialog.showOpenDialog(options);
+  ipcMain.handle("open-dialog", async(event, options) => {
+    return await dialog.showOpenDialog(options);
   });
 
-  electron.ipcMain.handle("save-dialog", async(event, options) => {
-    return await electron.dialog.showSaveDialog(options);
+  ipcMain.handle("save-dialog", async(event, options) => {
+    return await dialog.showSaveDialog(options);
   });
 
-  electron.ipcMain.handle("get-version", async() => {
-    return await electron.app.getVersion();
+  ipcMain.handle("get-version", async() => {
+    return await app.getVersion();
   });
 
-  electron.ipcMain.handle("open-developer-tools", () => {
+  ipcMain.handle("open-developer-tools", () => {
     // Open the DevTools.
     win.webContents.openDevTools({
       "mode": "detach",
@@ -138,43 +140,43 @@ async function main(electron) {
     });
   });
 
-  electron.ipcMain.handle("reload-ui", () => {
+  ipcMain.handle("reload-ui", () => {
     // Force reload...
     win.webContents.reloadIgnoringCache();
   });
 
-  electron.ipcMain.handle("has-encryption", () => {
-    return electron.safeStorage.isEncryptionAvailable();
+  ipcMain.handle("has-encryption", () => {
+    return safeStorage.isEncryptionAvailable();
   });
 
-  electron.ipcMain.handle("encrypt-string", (event, plainText) => {
-    return electron.safeStorage.encryptString(plainText).toString('hex');
+  ipcMain.handle("encrypt-string", (event, plainText) => {
+    return safeStorage.encryptString(plainText).toString('hex');
   });
 
-  electron.ipcMain.handle("decrypt-string", (event, encrypted) => {
-    return electron.safeStorage.decryptString(Buffer.from(encrypted, "hex"));
+  ipcMain.handle("decrypt-string", (event, encrypted) => {
+    return safeStorage.decryptString(Buffer.from(encrypted, "hex"));
   });
 
 
   // Wait until electron is completely up, otherwise some API might not be ready.
-  await electron.app.whenReady();
+  await app.whenReady();
 
-  await createWindow(electron);
+  await createWindow();
 
   // Quit when all windows are closed.
-  electron.app.on('window-all-closed', () => {
+  app.on('window-all-closed', () => {
     // On macOS it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== 'darwin') {
-      electron.app.quit();
+      app.quit();
     }
   });
 
-  electron.app.on('activate', () => {
+  app.on('activate', () => {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (win === null) {
-      createWindow(electron);
+      createWindow();
     }
   });
 

@@ -27,6 +27,11 @@ body {
 #tabs-container {
   height: 50px;
   padding: 0;
+  background-color: var(--bs-body-color) !important;
+}
+
+html[data-bs-theme=dark] #tabs-container {
+  background-color: rgba(var(--bs-body-color-rgb), 0.03) !important;
 }
 
 #tabs-scroll-left {
@@ -36,6 +41,9 @@ body {
   width: 20px;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
+
+  text-align: center;
+  border-bottom: var(--bs-border-width) solid var(--bs-border-color-translucent) !important;
 
   cursor: pointer;
 }
@@ -47,6 +55,9 @@ body {
   width: 20px;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
+
+  text-align: center;
+  border-bottom: var(--bs-border-width) solid var(--bs-border-color-translucent) !important;
 
   cursor: pointer;
 }
@@ -65,6 +76,8 @@ body {
   position: relative;
   border-bottom: none;
   display: block;
+
+  border-bottom: var(--bs-border-width) solid var(--bs-border-color-translucent) !important;
 }
 
 #tabs-items > li {

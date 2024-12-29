@@ -311,6 +311,13 @@
     ]
   });
 
+  tests.set("app-importer", {
+    script: "${workspace}/managesieve.ui/importer/tests/SieveThunderbirdProfileTest.mjs",
+    require: [
+      "${workspace}/managesieve.ui/importer/logic/SieveThunderbirdProfile.mjs"
+    ]
+  });
+
 
   exports.tests = tests;
 

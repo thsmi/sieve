@@ -235,15 +235,71 @@ class AbstractSandboxedTestFixture {
 
     if (typeof (message) === 'undefined' || message === null) {
 
-      if (expected === null)
-        message = `Assert failed\nExpected null`;
-      else
+      if (typeof(expected) === "undefined")
+        message = `Assert failed\nExpected value is undefined`;
+      else if (expected === null)
+        message = `Assert failed\nExpected value is null`;
+      else {
         message = `Assert failed\nExpected (${expected.length} Bytes): \n${expected}\n\n`;
 
-      message += `But got (${actual.length} Bytes)\n${actual}`;
+        if (typeof(actual) === "undefined")
+          message += "But got undefined";
+        else if (actual === null)
+          message += "But got null";
+        else
+          message += `But got (${actual.length} Bytes)\n${actual}`;
+      }
     }
 
     this.fail(`${message}`);
+  }
+
+  /**
+   * Checks if the figen array throws and exception.
+   * It compares if the exeptions message starts with the given message.
+   *
+   * @param {Function} closure
+   *   a closure containing the call which is expected to throws.
+   * @param {string} message
+   *   the message which should be matched against the exception's message.
+   *   It compares via starts with, means it is enough if the exceptions message
+   *   starts with the given message.
+   */
+  assertThrows(closure, message) {
+    try {
+      closure();
+    } catch (ex) {
+      if (!ex.message.startsWith(message)) {
+        this.fail(`Assert failed: Exception with message >>${message}<< expected but >>${ex.message}<< thrown\n`);
+        return;
+      }
+
+      this.logTrace(`Assert successful: Exception with message >>${message}<< thrown\n`);
+      return;
+    }
+
+    this.fail("Assert failed\n Expected exception but call succeeded.");
+    return;
+  }
+
+  /**
+   * Checks if the given array has a length of zero elements.
+   *
+   * @param {object[]} actual
+   *   the array to be checked.
+   */
+  assertEmptyArray(actual) {
+    if (!Object.prototype.hasOwnProperty.call(actual, "length")) {
+      this.fail(`Assert failed: Expected an element with a length attribute.`);
+      return;
+    }
+
+    if (actual.length !== 0) {
+      this.fail(`Assert failed: Expected zero elements but got ${actual.length}.`);
+      return;
+    }
+
+    this.logTrace(`Assert successful: Array is empty.\n`);
   }
 
   /**

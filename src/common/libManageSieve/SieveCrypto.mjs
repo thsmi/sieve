@@ -38,7 +38,7 @@ class SieveWebCrypto {
    */
   constructor(name) {
 
-    if ((name !== HASH_SHA1) && (name !== HASH_SHA256) && (this.name !== HASH_SHA512))
+    if ((name !== HASH_SHA1) && (name !== HASH_SHA256) && (name !== HASH_SHA512))
       throw new Error(`Unknown Hash algorithm ${name}`);
 
     this.name = name;

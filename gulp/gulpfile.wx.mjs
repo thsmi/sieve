@@ -153,7 +153,7 @@ function packageIcons() {
 
   return gulp.src([
     path.join(common.BASE_DIR_COMMON, "icons") + "/**"
-  ], { base: common.BASE_DIR_COMMON }).pipe(gulp.dest(BUILD_DIR_WX_LIBS));
+  ], { base: common.BASE_DIR_COMMON, encoding: false }).pipe(gulp.dest(BUILD_DIR_WX_LIBS));
 }
 
 /**

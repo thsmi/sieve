@@ -13,7 +13,7 @@ import { SieveAbstractAccounts } from "./SieveAbstractAccounts.mjs";
 import { SieveIpcClient } from "./../utils/SieveIpcClient.mjs";
 import { SieveTemplate } from "./../utils/SieveTemplate.mjs";
 
-import { SieveImportUI } from "./../importer/SieveImportUI.mjs";
+import { SieveImportUI } from "./../importer/ui/SieveImportUI.mjs";
 import { SieveAccountCreateUI } from "./SieveAccountCreateUI.mjs";
 
 /**

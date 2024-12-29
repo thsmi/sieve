@@ -24,7 +24,7 @@ import https from "./gulpfile.common.https.mjs";
 import path from 'path';
 
 
-import packager from 'electron-packager';
+import packager from '@electron/packager';
 
 
 const CACHE_DIR_APP = path.join(common.BASE_DIR_BUILD, "electron/cache");
@@ -114,7 +114,7 @@ function packageSrc() {
   return gulp.src([
     BASE_DIR_APP + "/**",
     `!${BASE_DIR_APP}/libs/libManageSieve/**`
-  ]).pipe(gulp.dest(BUILD_DIR_APP));
+  ], { encoding: false} ).pipe(gulp.dest(BUILD_DIR_APP));
 }
 
 /**
@@ -128,7 +128,7 @@ function packageIcons() {
 
   return gulp.src([
     path.join(common.BASE_DIR_COMMON, "icons") + "/**"
-  ], { base: common.BASE_DIR_COMMON }).pipe(gulp.dest(BUILD_DIR_APP_LIBS));
+  ], { base: common.BASE_DIR_COMMON, encoding: false }).pipe(gulp.dest(BUILD_DIR_APP_LIBS));
 }
 
 /**
@@ -304,7 +304,7 @@ function packageAppImageDir() {
 
   return gulp.src([
     OUTPUT_DIR_APP_LINUX + "/**/*"
-  ]).pipe(gulp.dest(APP_IMAGE_DIR));
+  ], { encoding: false}).pipe(gulp.dest(APP_IMAGE_DIR));
 }
 
 /**
@@ -319,7 +319,7 @@ function packageAppImageFiles() {
 
   return gulp.src([
     appImageFiles + "/**/*"
-  ], { base: appImageFiles}).pipe(gulp.dest(APP_IMAGE_DIR));
+  ], { base: appImageFiles, encoding: false}).pipe(gulp.dest(APP_IMAGE_DIR));
 }
 
 /**
@@ -376,7 +376,12 @@ async function packageAppImage() {
 
   logger.info(`Packaging app image`);
 
-  await (promisify(exec)(`${tool} "${source}" "${destination}"  2>&1`));
+  try {
+    await (promisify(exec)(`${tool} "${source}" "${destination}"  2>&1`));
+  } catch (ex) {
+    logger.info(ex.stdout);
+    throw ex;
+  }
 }
 
 /**

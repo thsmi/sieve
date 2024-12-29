@@ -26,6 +26,10 @@ A clear and concise description of what the bug is.
 #### Logs and Traces
 If applicable, include a debug log/trace with your issue. Just go to the extensions settings and enable debugging options in the debug tab. Dumping "byte arrays" is usually not necessary. Keep in mind the line starting with "AUTHENTICATE" contains your password. So scramble this line.
 
+Detailed instructions how to access traces and enable logging can be found in the wiki:
+ * https://github.com/thsmi/sieve/wiki/FAQ---Application#app-logging-and-debugging
+ * https://github.com/thsmi/sieve/wiki/FAQ---WebExtension#logging--debugging
+
 If applicable and possible, include information and logs from your mail server.
 
 #### Screenshots

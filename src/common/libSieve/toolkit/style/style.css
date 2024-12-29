@@ -2,8 +2,8 @@
 .sivAction[data-sieve-flavour],
 .sivConditionText,
 .sivConditionCode {
-  border: 1px #dde4e9 solid;
-  background-color: #f3f6f7;
+  border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color);
+  background-color: var(--bs-secondary-bg);
   padding-left: 3px;
 
   cursor: default;
@@ -41,7 +41,7 @@
 
 .sivEditableElement:hover {
   border: 1px red #ededed solid;
-  background-color: white;
+  background-color: var(--bs-body-bg);
   box-shadow: 0 0 7px gray;
 }
 
@@ -104,8 +104,8 @@ div[data-sieve-flavour][data-sieve-dragging] {
 
 .sivConditionalChild {
   padding: 3px 0 3px 3px;
-  background-color: #e8edf0;
-  border: 1px #dde4e9 solid;
+  background-color: var(--bs-tertiary-bg);
+  border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color);
 }
 
 .sivConditionSpacer {

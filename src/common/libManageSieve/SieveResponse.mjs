@@ -345,7 +345,7 @@ class SieveCapabilitiesResponse extends SieveSimpleResponse {
    * Parses the sieve extensions string. It is a space separated list of strings.
    * @param {string} value
    *   the string which should be parsed
-   * @returns  {object.<string, boolean>}
+   * @returns  {Object<string, boolean>}
    *   a map with pairs of extension name and activation status.
    */
   parseSieveExtensions(value) {
@@ -473,7 +473,7 @@ class SieveCapabilitiesResponse extends SieveSimpleResponse {
    *   optional if true a string will be returned otherwise a
    *   structure with key value pairs.
    *
-   * @returns {object.<string,boolean>|string}
+   * @returns {Object<string,boolean>|string}
    *   the server's supported extension.
    */
   getExtensions(asString) {

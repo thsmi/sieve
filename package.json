@@ -8,17 +8,23 @@
     "test": "tests"
   },
   "devDependencies": {
+
+    "codemirror": "^6.0.1",
     "@codemirror/legacy-modes": "^6.1.0",
     "@rollup/plugin-node-resolve": "^13.3.0",
-    "bootstrap": "^5.2.0",
-    "codemirror": "^6.0.1",
-    "electron": "^19.0.9",
-    "electron-packager": "^15.5.1",
-    "eslint": "^8.20.0",
-    "eslint-plugin-jsdoc": "^39.3.3",
-    "gulp": "^4.0.0",
     "rollup": "^2.77.0",
-    "yazl": "^2.5.1"
+
+    "electron": "^33.2.1",
+    "@electron/packager": "^18.3.6",
+
+    "bootstrap": "^5.3.3",
+
+    "@eslint/js": "^9.17.0",
+    "eslint-plugin-jsdoc": "^50.6.1",
+    "globals": "^15.14.0",
+
+    "gulp": "^5.0.0",
+    "yazl": "^3.3.1"
   },
   "scripts": {
     "start-win32": "gulp \"app:package-win32\" && cd ./build/electron/out/sieve-win32-x64/ && sieve.exe",
@@ -27,7 +33,7 @@
     "test": "gulp \"test:package\" && node ./tests/index.js ./build/test/app",
     "server": "node ./tools/Server/Server.js",
     "gulp": "gulp",
-    "lint": "eslint --config .eslintrc.json ./src/**/*.js ./src/**/*.mjs ./tests/**/*.js ./tests/**/*.mjs gulpfile.mjs ./gulp/**.mjs"
+    "lint": "eslint"
   },
   "repository": {
     "type": "git",

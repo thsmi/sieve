@@ -19,14 +19,15 @@ if (!suite)
 
 import { SieveUrl } from "./../SieveUrl.mjs";
 
-const SIEVE_DEFAULT_URL = 4190;
+const SIEVE_DEFAULT_PORT = 4190;
+const SIEVE_CUSTOM_PORT = 1234;
 
 suite.add("Parsing sieve://host", function () {
 
   const url = new SieveUrl("sieve://host");
 
   suite.assertEquals("host", url.getHost());
-  suite.assertEquals(SIEVE_DEFAULT_URL, url.getPort());
+  suite.assertEquals(SIEVE_DEFAULT_PORT, url.getPort());
   suite.assertNull(url.getUser());
   suite.assertNull(url.getPassword());
 });
@@ -36,7 +37,7 @@ suite.add("Parsing sieve://user@host", function () {
   const url = new SieveUrl("sieve://user@host");
 
   suite.assertEquals("host", url.getHost());
-  suite.assertEquals(SIEVE_DEFAULT_URL, url.getPort());
+  suite.assertEquals(SIEVE_DEFAULT_PORT, url.getPort());
   suite.assertEquals("user", url.getUser());
   suite.assertNull(url.getPassword());
 });
@@ -46,7 +47,7 @@ suite.add("Parsing sieve://user:password@host", function () {
   const url = new SieveUrl("sieve://user:password@host");
 
   suite.assertEquals("host", url.getHost());
-  suite.assertEquals(SIEVE_DEFAULT_URL, url.getPort());
+  suite.assertEquals(SIEVE_DEFAULT_PORT, url.getPort());
   suite.assertEquals("user", url.getUser());
   suite.assertEquals("password", url.getPassword());
 });
@@ -56,7 +57,7 @@ suite.add("Parsing sieve://host:1234", function () {
   const url = new SieveUrl("sieve://host:1234");
 
   suite.assertEquals("host", url.getHost());
-  suite.assertEquals(SIEVE_DEFAULT_URL, url.getPort());
+  suite.assertEquals(SIEVE_CUSTOM_PORT, url.getPort());
   suite.assertNull(null, url.getUser());
   suite.assertNull(url.getPassword());
 });
@@ -66,7 +67,7 @@ suite.add("Parsing sieve://user@host:1234", function () {
   const url = new SieveUrl("sieve://user@host:1234");
 
   suite.assertEquals("host", url.getHost());
-  suite.assertEquals(SIEVE_DEFAULT_URL, url.getPort());
+  suite.assertEquals(SIEVE_CUSTOM_PORT, url.getPort());
   suite.assertEquals("user", url.getUser());
   suite.assertNull(url.getPassword());
 });
@@ -76,7 +77,7 @@ suite.add("Parsing sieve://user:password@host:1234", function () {
   const url = new SieveUrl("sieve://user:password@host:1234");
 
   suite.assertEquals("host", url.getHost());
-  suite.assertEquals(SIEVE_DEFAULT_URL, url.getPort());
+  suite.assertEquals(SIEVE_CUSTOM_PORT, url.getPort());
   suite.assertEquals("user", url.getUser());
   suite.assertEquals("password", url.getPassword());
 });
@@ -86,7 +87,7 @@ suite.add("Parsing sieve://c3.mail.example.com", function () {
   const url = new SieveUrl("sieve://c3.mail.example.com");
 
   suite.assertEquals("c3.mail.example.com", url.getHost());
-  suite.assertEquals(SIEVE_DEFAULT_URL, url.getPort());
+  suite.assertEquals(SIEVE_DEFAULT_PORT, url.getPort());
   suite.assertEquals(null, url.getUser());
   suite.assertEquals(null, url.getPassword());
 });

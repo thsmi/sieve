@@ -9,7 +9,7 @@
   "import.hostname": "Имя хоста",
   "import.username": "Имя пользователя",
   "import.accept": "Import",
-  "import.error.description": "Failed to import Account",
+  "import.error.description": "Failed to import Account.",
   "import.error.accept": "Ok",
   "settings.title": "Настройки учетной записи",
   "settings.more": "Подробнее",

@@ -141,7 +141,7 @@
   "script.delete.title": "Skript löschen",
   "script.delete.description1": "Möchten Sie das Skript",
   "script.delete.description2": "wirklich löschen?",
-  "script.delete.description3": "Kann nicht rückgängig gemacht werden!",
+  "script.delete.description3": "Dieser Vorgang kann nicht rückgängig gemacht werden!",
   "script.delete.accept": "Löschen",
   "script.rename.title": "Skript umbenennen",
   "script.rename.description": "Bitte geben Sie den neuen Skriptnamen ein",

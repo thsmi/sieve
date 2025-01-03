@@ -196,13 +196,13 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
       return sessions.get(msg.payload.account).isConnecting();
     },
 
-    "account-connected": function (msg) {
+    "account-connected": async function (msg) {
       logger.logAction(`Is connected ${msg.payload.account}`);
 
       if (!sessions.has(msg.payload.account))
         return false;
 
-      return sessions.get(msg.payload.account).isConnected();
+      return await (sessions.get(msg.payload.account).isConnected());
     },
 
     "account-connect": async function (msg) {
@@ -290,7 +290,7 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
           if (secInfo.isDomainMismatch)
             overrideBits |= ERROR_MISMATCH;
 
-          await (browser.sieve.socket.addCertErrorOverride(
+          await (browser.tcpSocket.addCertErrorOverride(
             secInfo.host, `${secInfo.port}`, secInfo.rawDER, overrideBits));
 
           await (actions["account-connect"](msg));
@@ -544,6 +544,10 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
       logger.logAction(`Set default value for ${name}`);
 
       await accounts.getEditor().setValue(name, value);
+    },
+
+    "open-web-address": async (msg) => {
+      browser.windows.openDefaultBrowser(msg.payload.data);
     }
   };
 

@@ -29,6 +29,7 @@ class SieveUrl {
    *  the url in server form to be parsed.
    */
   constructor(url) {
+
     const regex = /^sieve:\/\/((?<user>.+?)(:(?<password>.+?))?@)?(?<host>[^:]+)(:(?<port>\d+))?$/gs;
     const match = regex.exec(url);
 
@@ -36,9 +37,18 @@ class SieveUrl {
       throw new Error(`Not a valid sieve url ${url}`);
 
     this.host = match.groups["host"];
-    this.port = match.groups["port"];
     this.user = match.groups["user"];
     this.password = match.groups["password"];
+
+    this.port = match.groups["port"];
+
+    if ((this.port === null) || (typeof(this.port) === "undefined"))
+      this.port = SIEVE_PORT;
+    else
+      this.port = Number.parseInt(this.port, 10);
+
+    if (Number.isNaN(this.port))
+      throw new Error(`Invalid port in sieve url ${url}`);
   }
 
   /**
@@ -55,13 +65,10 @@ class SieveUrl {
    * Returns the uri's remote port.
    * In case it was not specified it will return the default sieve port.
    *
-   * @returns {string}
+   * @returns {int}
    *   the remote port
    */
   getPort() {
-    if ((this.port === null) || (typeof(this.port) === "undefined"))
-      this.port = `${SIEVE_PORT}`;
-
     return this.port;
   }
 

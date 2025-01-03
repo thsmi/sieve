@@ -115,7 +115,7 @@ class SieveSetActionUI extends SieveActionDialogBoxUI {
       .replace("${variable}", '<em class="sivSetVariable"></em>')
       .replace("${value}", '<div><em class="sivSetValue"></em></div>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivSetVariable").textContent
       = this.name().value();
     elm.querySelector(".sivSetValue").textContent
@@ -498,7 +498,7 @@ class SieveStringTestUI extends SieveTestDialogBoxUI {
       .replace("${matchtype}", '<span class="sivStringMatchType"></span>')
       .replace("${value}", '<em class="sivStringValue"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
 
     elm.querySelector(".sivStringSources").textContent
       = this.sources().values();

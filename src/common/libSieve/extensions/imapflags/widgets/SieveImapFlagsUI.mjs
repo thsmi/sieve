@@ -84,7 +84,7 @@ class SieveSetFlagUI extends SieveAbstractFlagUI {
     const msg = SieveI18n.getInstance().getString("setflag.summary")
       .replace("${flags}", '<em class="sivSetflagFlags"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivSetflagFlags").textContent = this.flags().values().join(", ");
     return elm;
   }
@@ -109,7 +109,7 @@ class SieveAddFlagUI extends SieveAbstractFlagUI {
     const msg = SieveI18n.getInstance().getString("addflag.summary")
       .replace("${flags}", '<em class="sivAddflagFlags"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivAddflagFlags").textContent = this.flags().values().join(", ");
     return elm;
   }
@@ -135,7 +135,7 @@ class SieveRemoveFlagUI extends SieveAbstractFlagUI {
     const msg = SieveI18n.getInstance().getString("removeflag.summary")
       .replace("${flags}", '<em class="sivRemoveflagFlags"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivRemoveflagFlags").textContent = this.flags().values().join(", ");
     return elm;
   }
@@ -223,7 +223,7 @@ class SieveHasFlagUI extends SieveTestDialogBoxUI {
     const msg = SieveI18n.getInstance().getString("hasflag.summary")
       .replace("${flags}", '<em class="sivHasflagFlags"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivHasflagFlags").textContent = this.flags().values().join(", ");
     return elm;
   }

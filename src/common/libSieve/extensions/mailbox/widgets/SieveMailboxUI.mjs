@@ -75,7 +75,7 @@ class SieveMailboxExistsTestUI extends SieveTestDialogBoxUI {
     const msg = SieveI18n.getInstance().getString("mailboxexists.summary")
       .replace("${mailboxes}", '<em class="sivMailboxExistsMailboxes"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivMailboxExistsMailboxes").textContent
       = this.mailboxes().values();
 
@@ -151,7 +151,7 @@ class SieveMetaDataExistsTestUI extends SieveTestDialogBoxUI {
       .replace("${mailbox}", '<em class="sivMetaDataExistsMailbox"></em>')
       .replace("${annotations}", '<em class="sivMetaDataExistsAnnotations"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivMetaDataExistsMailbox").textContent
       = this.mailbox();
     elm.querySelector(".sivMetaDataExistsAnnotations").textContent
@@ -276,7 +276,7 @@ class SieveMetaDataTestUI extends SieveTestDialogBoxUI {
       .replace("${matchtype}", '<em class="sivMetaDataMatchType"></em>')
       .replace("${keys}", '<em class="sivMetaDataKeys"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivMetaDataAnnotation").textContent
       = this.annotation();
     elm.querySelector(".sivMetaDataMailbox").textContent
@@ -337,7 +337,7 @@ class SieveServerMetaDataExistsTestUI extends SieveTestDialogBoxUI {
     const msg = SieveI18n.getInstance().getString("servermetadataexists.summary")
       .replace("${annotations}", '<em class="sivServerMetaDataExistsAnnotations"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivServerMetaDataExistsAnnotations").textContent
       = this.annotations().values();
 
@@ -443,7 +443,7 @@ class SieveServerMetaDataTestUI extends SieveTestDialogBoxUI {
       .replace("${matchtype}", '<em class="sivServerMetaDataMatchType"></em>')
       .replace("${keys}", '<em class="sivServerMetaDataKeys"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivServerMetaDataAnnotation").textContent
       = this.annotation();
     elm.querySelector(".sivServerMetaDataMatchType").textContent

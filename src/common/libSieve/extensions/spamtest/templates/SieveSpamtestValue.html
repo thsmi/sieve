@@ -1,27 +1,35 @@
-<div>
-  <div id="sivSpamtestValue" data-list-dropdown="#sivSpamtestTemplate">
-  </div>
-
-  <div id="sivSpamtestTemplate" class="d-none">
-    <div class="dropdown-menu dropdown-menu-end">
-      <button class="dropdown-item" type="button" data-value="0">0
-        <small data-i18n="spamtest.absolute.nottested" class="text-muted"></small>
-      </button>
-      <div class="dropdown-divider"></div>
-      <button class="dropdown-item" type="button" data-value="1">1
-        <small data-i18n="spamtest.absolute.nospam" class="text-muted"></small>
-      </button>
-      <div class="dropdown-item" data-value="5">
-        <div>
-          <span class="sivSpamtestRangeValue">5</span>
-          <small data-i18n="spamtest.absolute.likelyspan" class="text-muted"></small>
-        </div>
-        <input type="range" class="form-range sieve-string-dropdown-updatable" min="2" max="9" value="5"
-          data-update-element=".sivSpamtestRangeValue">
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <div>
+      <div id="sivSpamtestValue" data-list-dropdown="#sivSpamtestTemplate">
       </div>
-      <button class="dropdown-item" type="button" data-value="10">10
-        <small data-i18n="spamtest.absolute.spam" class="text-muted">Message definitely contains spam</small>
-      </button>
+
+      <div id="sivSpamtestTemplate" class="d-none">
+        <div class="dropdown-menu dropdown-menu-end">
+          <button class="dropdown-item" type="button" data-value="0">0
+            <small data-i18n="spamtest.absolute.nottested" class="text-muted"></small>
+          </button>
+          <div class="dropdown-divider"></div>
+          <button class="dropdown-item" type="button" data-value="1">1
+            <small data-i18n="spamtest.absolute.nospam" class="text-muted"></small>
+          </button>
+          <div class="dropdown-item" data-value="5">
+            <div>
+              <span class="sivSpamtestRangeValue">5</span>
+              <small data-i18n="spamtest.absolute.likelyspan" class="text-muted"></small>
+            </div>
+            <input type="range" class="form-range sieve-string-dropdown-updatable" min="2" max="9" value="5"
+              data-update-element=".sivSpamtestRangeValue">
+          </div>
+          <button class="dropdown-item" type="button" data-value="10">10
+            <small data-i18n="spamtest.absolute.spam" class="text-muted">Message definitely contains spam</small>
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
+  </body>
+</html>

@@ -125,7 +125,7 @@ class SieveEnvironmentUI extends SieveTestDialogBoxUI {
       .replace("${matchtype}", '<span class="sivEnvironmentMatchType"></span>')
       .replace("${keys}", '<em class="sivEnvironmentKeys"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivEnvironmentName").textContent = this.name().value();
     elm.querySelector(".sivEnvironmentMatchType").textContent = " " + this.matchtype().getElement().toScript();
     elm.querySelector(".sivEnvironmentKeys").textContent = " " + this.keys().values().join(", ");

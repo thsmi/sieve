@@ -38,7 +38,7 @@ class SieveReturnUI extends SieveActionDialogBoxUI {
    */
   getSummary() {
     const msg = SieveI18n.getInstance().getString("return.summary");
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     return elm;
   }
 }
@@ -101,7 +101,7 @@ class SieveGlobalActionUI extends SieveActionDialogBoxUI {
     const msg = SieveI18n.getInstance().getString("global.summary")
       .replace("${variables}", '<em class="sivGlobalVariables"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivGlobalVariables").textContent
       = this.variables().values();
     return elm;
@@ -235,7 +235,7 @@ class SieveIncludeActionUI extends SieveActionDialogBoxUI {
     const msg = SieveI18n.getInstance().getString(entity)
       .replace("${script}", '<em class="sivIncludeScript"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivIncludeScript").textContent = this.script();
     return elm;
   }

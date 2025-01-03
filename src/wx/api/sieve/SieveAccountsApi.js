@@ -61,11 +61,21 @@
             },
 
             async getUsername(id) {
-              return await getIncomingServer(id).realUsername;
+              const server = getIncomingServer(id);
+
+              if ((typeof(server.realUsername) !== "undefined") && (server.realUsername !== null))
+                return server.realUsername;
+
+              return server.username;
             },
 
             async getHostname(id) {
-              return await getIncomingServer(id).realHostName;
+              const server = getIncomingServer(id);
+
+              if ((typeof(server.realHostName) !== "undefined") && (server.realHostName !== null))
+                return server.realHostName;
+
+              return server.hostName;
             }
           }
         }

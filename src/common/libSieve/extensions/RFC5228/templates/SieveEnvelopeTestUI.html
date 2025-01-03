@@ -1,48 +1,56 @@
-<div>
-  <ul id="template-tabs">
-    <li class="nav-item">
-      <a data-i18n="envelope.tab.home" class="nav-link active" data-bs-toggle="tab" href="#sieve-widget-envelope-test" role="tab"></a>
-    </li>
-    <li class="nav-item">
-      <a data-i18n="envelope.tab.advanced" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-advanced" role="tab"></a>
-    </li>
-    <li class="nav-item">
-      <a data-i18n="envelope.tab.help" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-help" role="tab"></a>
-    </li>
-  </ul>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+</head>
+  <body>
+    <div>
+      <ul id="template-tabs">
+        <li class="nav-item">
+          <a data-i18n="envelope.tab.home" class="nav-link active" data-bs-toggle="tab" href="#sieve-widget-envelope-test" role="tab"></a>
+        </li>
+        <li class="nav-item">
+          <a data-i18n="envelope.tab.advanced" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-advanced" role="tab"></a>
+        </li>
+        <li class="nav-item">
+          <a data-i18n="envelope.tab.help" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-help" role="tab"></a>
+        </li>
+      </ul>
 
-  <div id="template-content">
-    <div class="tab-content m-2">
-      <div class="tab-pane fade show active" id="sieve-widget-envelope-test" role="tabpanel">
-        <div class="mb-3">
-          <h5 data-i18n="envelope.envelopes"></h5>
+      <div id="template-content">
+        <div class="tab-content m-2">
+          <div class="tab-pane fade show active" id="sieve-widget-envelope-test" role="tabpanel">
+            <div class="mb-3">
+              <h5 data-i18n="envelope.envelopes"></h5>
 
-          <div id="sivEnvelopeList"
-               data-list-dropdown="#sivEnvelopeListTemplate">
-          </div>
+              <div id="sivEnvelopeList"
+                   data-list-dropdown="#sivEnvelopeListTemplate">
+              </div>
 
-          <div id="sivEnvelopeListTemplate" class="d-none">
-            <div class="dropdown-menu dropdown-menu-end">
-              <button class="dropdown-item" type="button">From</button>
-              <button class="dropdown-item" type="button">To</button>
+              <div id="sivEnvelopeListTemplate" class="d-none">
+                <div class="dropdown-menu dropdown-menu-end">
+                  <button class="dropdown-item" type="button">From</button>
+                  <button class="dropdown-item" type="button">To</button>
+                </div>
+              </div>
+
+              <br />
+              <div id="sivEnvelopeMatchTypes"></div>
+              <br />
+              <div id="sivEnvelopeAddressPart"></div>
+              <br />
+
+              <h5 data-i18n="envelope.keywords"></h5>
+              <div id="sivEnvelopeKeyList"></div>
+
             </div>
           </div>
-
-          <br />
-          <div id="sivEnvelopeMatchTypes"></div>
-          <br />
-          <div id="sivEnvelopeAddressPart"></div>
-          <br />
-
-          <h5 data-i18n="envelope.keywords"></h5>
-          <div id="sivEnvelopeKeyList"></div>
-
+          <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
+            <div id="sivEnvelopeComparator"> </div>
+          </div>
+          <div data-i18n="envelope.help" style="white-space: pre-line" class="tab-pane fade form-text" id="sieve-widget-help" role="tabpanel"></div>
         </div>
       </div>
-      <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
-        <div id="sivEnvelopeComparator"> </div>
-      </div>
-      <div data-i18n="envelope.help" style="white-space: pre-line" class="tab-pane fade form-text" id="sieve-widget-help" role="tabpanel"></div>
     </div>
-  </div>
-</div>
+  </body>
+</html>

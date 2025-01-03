@@ -9,10 +9,8 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-const DEFAULT_TAB_POLICY = true;
 const DEFAULT_TAB_WIDTH = 2;
-const DEFAULT_INDENTATION_POLICY = false;
-const DEFAULT_INDENTATION_WIDTH = 2;
+const DEFAULT_INDENTATION = "  ";
 
 /**
  * Manages the sieve editor settings.
@@ -51,17 +49,11 @@ class SieveEditorSettings {
    */
   async getValue(name) {
 
-    if (name === "tabulator-policy")
-      return await this.pref.getBoolean("editor.tabulator-policy", DEFAULT_TAB_POLICY);
-
     if (name === "tabulator-width")
       return await this.pref.getInteger("editor.tabulator-width", DEFAULT_TAB_WIDTH);
 
-    if (name === "indentation-policy")
-      return await this.pref.getBoolean("editor.indentation-policy", DEFAULT_INDENTATION_POLICY);
-
-    if (name === "indentation-width")
-      return await this.pref.getInteger("editor.indentation-width", DEFAULT_INDENTATION_WIDTH);
+    if (name === "indentation-unit")
+      return await this.pref.getString("editor.indentation-unit", DEFAULT_INDENTATION);
 
     if (name === "syntax-check")
       return await this.pref.getBoolean("editor.syntax-check", true);

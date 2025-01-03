@@ -61,6 +61,7 @@
   "account.settings" : "Settings",
   "account.newscript" : "New script",
   "account.donate" : "Donate",
+  "account.donate.url": "https://www.paypal.me/thsmi",
 
   "server.title" : "Server Settings",
   "server.displayname" : "Display name",
@@ -184,7 +185,7 @@
   "editor.settings" : "Settings",
   "editor.save" : "Save",
   "editor.donate" : "Donate",
-  "editor.error" :"Server reports script errors",
+  "editor.donate.url" : "https://www.paypal.me/thsmi",
 
   "editor.menu.settings" : "Editor Settings",
   "editor.menu.reload" : "Reload UI",
@@ -204,9 +205,10 @@
   "editor.syntax.title" : "Syntax check",
   "editor.syntax.description" : "While editing script they can be checked for validity. The syntax check is performed by the server. In order to keep network traffic low, syntax check are grouped.",
   "editor.syntax.switch" : "Checks scripts while editing",
+  "editor.syntax.success" : "Excellent! Server reports no script errors...",
 
   "editor.indentation.title" : "Indentation",
-  "editor.indentation.description" : "The editor automatically indents code while typing.",
+  "editor.indentation.description" : "The editor automatically indents code while typing. The indentation policy specifies which characters (tabs or spaces) should be used. The indentation width defines how many indentation characters shall be used. The tab width defines how many spaces are used to render a tab character.",
   "editor.indentation.width" : "Indention width",
   "editor.indentation.policy" : "Indention Policy",
   "editor.indentation.tabs" : "Use Tabs",
@@ -226,17 +228,23 @@
   "texteditor.redo" : "Redo",
   "texteditor.findAndReplace" : "Find & replace",
   "texteditor.reference" : "Reference",
+  "texteditor.reference.url" : "https://thsmi.github.io/sieve-reference/en/index.html",
 
-  "texteditor.find" : "Find",
+  "texteditor.find.next" : "Next",
+  "texteditor.find.previous" : "Previous",
   "texteditor.find.text" : "Search for...",
-  "texteditor.replace" : "Replace",
+
+  "texteditor.replace.next" : "Next",
+  "texteditor.replace.all" : "All",
   "texteditor.replace.text" : "Replace with...",
 
   "texteditor.matchCase" : "Match case",
-  "texteditor.backwards" : "Search backward",
+  "texteditor.regex" : "RegEx",
+
 
   "updater.title" : "New version available!",
   "updater.message" : "Click to download the update.",
+  "updater.url.latest" : "https://github.com/thsmi/sieve/releases/latest",
 
   "debug.transport.description" : "Used to log and debug the communication between this app and the server. All of the settings apply to this accounts after a reconnect.",
   "debug.transport.clientserver" : "Client to Server communication (requests)",
@@ -244,7 +252,7 @@
   "debug.transport.states" : "Exceptions and State Machine Information",
   "debug.transport.rawdump" : "Raw Dump/Dump Byte Stream",
   "debug.transport.session" : "Session management",
-  "debug.transport.trace" : "Print full stack trace for log messages",
+  "debug.transport.trace" : "Print full stack trace for transport related log messages",
 
   "debug.global.title" : "Global",
   "debug.global.description" : "Used to log and debug the app's UI and rendering. The settings are global and apply to all accounts after restarting the app.",
@@ -252,6 +260,7 @@
   "debug.global.ipc" : "IPC Messages",
   "debug.global.widgets" : "Widgets",
   "debug.global.i18n" : "Internationalization (I18n)",
+  "debug.global.trace" : "Print full stack trace for UI related log messages",
 
   "debug.console.show" : "Show Console",
   "debug.ui.reload" : "Reload UI"

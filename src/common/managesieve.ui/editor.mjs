@@ -88,14 +88,4 @@ if (document.readyState !== 'loading')
 else
   document.addEventListener('DOMContentLoaded', () => { main(); }, { once: true });
 
-/*
-CodeMirror.on(window, "resize", function() {
-  document.body.getElementsByClassName("CodeMirror-fullscreen")[0]
-    .CodeMirror.getWrapperElement().style.height = winHeight() + "px";
-});
-*/
-
-// hlLine = editor.addLineClass(0, "background", "activeline");
-
-// editor.on("change", function() { onChange(); });
 

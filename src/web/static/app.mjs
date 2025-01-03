@@ -33,7 +33,6 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
   const actions = {
 
     // "update-check"
-    // "update-goto-url"
     // "import-thunderbird"
     // "account-probe"
     // "account-create"
@@ -160,13 +159,13 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
       return sessions.get(msg.payload.account).isConnecting();
     },
 
-    "account-connected": function (msg) {
+    "account-connected": async function (msg) {
       logger.logAction(`Is connected ${msg.payload.account}`);
 
       if (!sessions.has(msg.payload.account))
         return false;
 
-      return sessions.get(msg.payload.account).isConnected();
+      return await (sessions.get(msg.payload.account).isConnected());
     },
 
 
@@ -345,6 +344,10 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
       logger.logAction(`Set default value for ${name}`);
 
       await accounts.getEditor().setValue(name, value);
+    },
+
+    "open-web-address": async (msg) => {
+      window.open(msg.payload.data);
     }
   };
 

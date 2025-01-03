@@ -120,7 +120,7 @@ class SieveAddHeaderUI extends SieveActionDialogBoxUI {
       .replace("${name}", '<em class="sivAddheaderName"></em>')
       .replace("${value}", '<em class="sivAddheaderValue"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivAddheaderName").textContent
       = this.name().value();
     elm.querySelector(".sivAddheaderValue").textContent
@@ -385,7 +385,7 @@ class SieveDeleteHeaderUI extends SieveActionDialogBoxUI {
       .replace("${value}", '<em class="sivDeleteheaderValue"></em>')
       .replace("${matchtype}", '<em class="sivDeleteheaderMatchType"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
 
     elm.querySelector(".sivDeleteheaderName").textContent
       = this.name().value();

@@ -1,90 +1,98 @@
-<div>
-  <ul id="template-tabs">
-    <li class="nav-item">
-      <a data-i18n="virustest.tab.home" class="nav-link active" data-bs-toggle="tab" href="#sieve-widget-virustest" role="tab"></a>
-    </li>
-    <li class="nav-item">
-      <a data-i18n="virustest.tab.advanced" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-advanced" role="tab"></a>
-    </li>
-    <li class="nav-item">
-      <a data-i18n="virustest.tab.help" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-help" role="tab"></a>
-    </li>
-  </ul>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <div>
+      <ul id="template-tabs">
+        <li class="nav-item">
+          <a data-i18n="virustest.tab.home" class="nav-link active" data-bs-toggle="tab" href="#sieve-widget-virustest" role="tab"></a>
+        </li>
+        <li class="nav-item">
+          <a data-i18n="virustest.tab.advanced" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-advanced" role="tab"></a>
+        </li>
+        <li class="nav-item">
+          <a data-i18n="virustest.tab.help" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-help" role="tab"></a>
+        </li>
+      </ul>
 
-  <div id="template-content">
-    <div class="tab-content m-2">
-      <div class="tab-pane fade show active" id="sieve-widget-virustest" role="tabpanel">
+      <div id="template-content">
+        <div class="tab-content m-2">
+          <div class="tab-pane fade show active" id="sieve-widget-virustest" role="tabpanel">
 
-        <div class="mb-3">
-          <h5 data-i18n="virustest.title"></h5>
-          <br />
-          <div id="sivVirustestMatchTypes"> </div>
-          <br />
-          <div id="sivVirustestValue" data-list-dropdown="#sivVirustestTemplate">
-          </div>
+            <div class="mb-3">
+              <h5 data-i18n="virustest.title"></h5>
+              <br />
+              <div id="sivVirustestMatchTypes"> </div>
+              <br />
+              <div id="sivVirustestValue" data-list-dropdown="#sivVirustestTemplate">
+              </div>
 
-          <div id="sivVirustestTemplate" class="d-none">
-            <div class="dropdown-menu dropdown-menu-end">
-              <button class="dropdown-item" type="button" data-value="0">0
-                <small data-i18n="virustest.nottested" class="text-muted"></small>
-              </button>
-              <div class="dropdown-divider"> </div>
-              <button class="dropdown-item" type="button" data-value="1">1
-                <small data-i18n="virustest.notinfected" class="text-muted"></small>
-              </button>
-              <button class="dropdown-item" type="button" data-value="2">2
-                <small data-i18n="virustest.sanitized" class="text-muted"></small>
-              </button>
-              <button class="dropdown-item" type="button" data-value="3">3
-                <small data-i18n="virustest.cured" class="text-muted"></small>
-              </button>
-              <div class="dropdown-divider"> </div>
-              <button class="dropdown-item" type="button" data-value="4">4
-                <small data-i18n="virustest.likelyinfected" class="text-muted"></small>
-              </button>
-              <button class="dropdown-item" type="button" data-value="5">5
-                <small data-i18n="virustest.infected" class="text-muted"></small>
-              </button>
+              <div id="sivVirustestTemplate" class="d-none">
+                <div class="dropdown-menu dropdown-menu-end">
+                  <button class="dropdown-item" type="button" data-value="0">0
+                    <small data-i18n="virustest.nottested" class="text-muted"></small>
+                  </button>
+                  <div class="dropdown-divider"> </div>
+                  <button class="dropdown-item" type="button" data-value="1">1
+                    <small data-i18n="virustest.notinfected" class="text-muted"></small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="2">2
+                    <small data-i18n="virustest.sanitized" class="text-muted"></small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="3">3
+                    <small data-i18n="virustest.cured" class="text-muted"></small>
+                  </button>
+                  <div class="dropdown-divider"> </div>
+                  <button class="dropdown-item" type="button" data-value="4">4
+                    <small data-i18n="virustest.likelyinfected" class="text-muted"></small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="5">5
+                    <small data-i18n="virustest.infected" class="text-muted"></small>
+                  </button>
+                </div>
+              </div>
+
             </div>
           </div>
+          <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
+            <div id="sivVirustestComparator"> </div>
+          </div>
+          <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+            <p data-i18n="virustest.help" style="white-space: pre-line"></p>
+            <table class="table table-striped">
+              <tbody>
+                <tr>
+                  <th scope="row">0</th>
+                  <td data-i18n="virustest.nottested"></td>
+                </tr>
+                <tr>
+                  <th scope="row">1</th>
+                  <td data-i18n="virustest.notinfected"></td>
+                </tr>
+                <tr>
+                  <th scope="row">2</th>
+                  <td data-i18n="virustest.sanitized"></td>
+                </tr>
+                <tr>
+                  <th scope="row">3</th>
+                  <td data-i18n="virustest.cured"></td>
+                </tr>
+                <tr>
+                  <th scope="row">4</th>
+                  <td data-i18n="virustest.likelyinfected"></td>
+                </tr>
+                <tr>
+                  <th scope="row">5</th>
+                  <td data-i18n="virustest.infected"></td>
+                </tr>
+              </tbody>
+            </table>
 
+          </div>
         </div>
       </div>
-      <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
-        <div id="sivVirustestComparator"> </div>
-      </div>
-      <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
-        <p data-i18n="virustest.help" style="white-space: pre-line"></p>
-        <table class="table table-striped">
-          <tbody>
-            <tr>
-              <th scope="row">0</th>
-              <td data-i18n="virustest.nottested"></td>
-            </tr>
-            <tr>
-              <th scope="row">1</th>
-              <td data-i18n="virustest.notinfected"></td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td data-i18n="virustest.sanitized"></td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td data-i18n="virustest.cured"></td>
-            </tr>
-            <tr>
-              <th scope="row">4</th>
-              <td data-i18n="virustest.likelyinfected"></td>
-            </tr>
-            <tr>
-              <th scope="row">5</th>
-              <td data-i18n="virustest.infected"></td>
-            </tr>
-          </tbody>
-        </table>
-
-      </div>
     </div>
-  </div>
-</div>
+  </body>
+</html>

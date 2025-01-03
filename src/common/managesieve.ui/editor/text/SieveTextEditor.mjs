@@ -403,6 +403,10 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
     document
       .querySelector("#sieve-editor-searchbar")
       .addEventListener("click", () => { this.onToggleSearchbar(); });
+
+    document
+      .querySelector("#sieve-editor-msg .btn-pin")
+      .addEventListener("click", () => { this.onToggleSyntaxErrorPin(); });
   }
 
   /**
@@ -602,6 +606,7 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
 
   /**
    * Checks if syntax checking is enabled
+   *
    * @returns {boolean}
    *   true in case syntax check is enabled otherwise false
    */
@@ -610,20 +615,84 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
   }
 
   /**
+   * Checks if the syntax error pane is pinned or not.
+   *
+   * @returns {boolean}
+   *   true in case it is pinned otherwise false.
+   */
+  isPinned() {
+    const dataset = document
+      .querySelector("#sieve-editor-msg")
+      .dataset;
+
+    return (dataset.isPinned !== undefined);
+  }
+
+  /**
+   * Pins the syntax error pane.
+   */
+  pinSyntaxError() {
+    const dataset = document
+      .querySelector("#sieve-editor-msg")
+      .dataset;
+
+    dataset.isPinned = true;
+  }
+
+  /**
+   * Called whenever the pin syntax error button was pressed.
+   */
+  onToggleSyntaxErrorPin() {
+    if (this.isPinned()) {
+      this.unpinSyntaxError();
+      return;
+    }
+
+    this.pinSyntaxError();
+  }
+
+  /**
+   * Unpins the syntax error pane.
+   **/
+  unpinSyntaxError() {
+    const elm = document
+      .querySelector("#sieve-editor-msg");
+
+    delete elm.dataset.isPinned;
+  }
+
+  /**
+   * Checks if the error pane shows an error.
+   *
+   * @returns {boolean}
+   *   true in case the error pane shows an error otherwise false.
+   */
+  hasErrors() {
+    const dataset = document
+      .querySelector("#sieve-editor-msg");
+
+    return (dataset.hasErrors !== undefined);
+  }
+
+  /**
    * Shows a message box with the given syntax errors
+   *
    * @param {string} errors
    *   the errors which should be displayed
    */
   showSyntaxErrors(errors) {
+
     const msg = document.querySelector("#sieve-editor-msg");
     msg.style.display = '';
+
+    msg.dataset.hasErrors = true;
 
     // To reduce css layout complexity we have to syntax error boxes.
     // One floating visible to the user and one invisible sticking to tbe
     // very bottom of the page. This ensures the floating box will never
     // overlap with floating one.
 
-    for (const details of msg.querySelectorAll(".sieve-editor-msg-details")) {
+    for (const details of msg.querySelectorAll(".sieve-editor-msg-error")) {
       while (details.firstChild)
         details.firstChild.remove();
 
@@ -635,7 +704,16 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
    * Hides the syntax errors.
    */
   hideSyntaxErrors() {
-    document.querySelector("#sieve-editor-msg").style.display = 'none';
+
+    const msg = document.querySelector("#sieve-editor-msg");
+    delete msg.dataset.hasErrors;
+
+    for (const details of msg.querySelectorAll(".sieve-editor-msg-error")) {
+      while (details.firstChild)
+        details.firstChild.remove();
+
+      details.textContent = "";
+    }
   }
 
   /**

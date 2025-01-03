@@ -65,26 +65,28 @@
 
         </div>
 
-        <div id="sieve-editor-msg">
-          <!-- We do some magic here. First we render the real content-->
-          <div class="footer fixed-bottom container mx-2">
-            <div class="alert alert-warning" role="alert">
-              <h4 class="alert-heading" data-i18n="editor.error"></h4>
-              <p class="sieve-editor-msg-details"></p>
-            </div>
-          </div>
+      </div>
 
-          <!-- An invisible element which ensures there is alway enough -->
-          <!-- so that the message never overlays the textbox -->
-          <!-- it is like a dynamically sized space -->
-          <div class="footer container invisible mx-2">
-            <div class="alert alert-warning" role="alert">
-              <h4 class="alert-heading" data-i18n="editor.error"></h4>
-              <p class="sieve-editor-msg-details"></p>
+      <div id="sieve-editor-msg">
+        <!-- We do some magic here. First we render the real content-->
+        <div class="fixed-bottom">
+          <div class="container">
+            <div class="alert alert-info alert-dismissible" role="alert">
+              <button type="button" class="btn btn-outline-info btn-pin"></button>
+              <div class="sieve-editor-msg-success" data-i18n="editor.syntax.success"></div>
+              <div class="sieve-editor-msg-error"></div>
             </div>
           </div>
         </div>
+        <!-- An invisible element which ensures there is alway enough -->
+        <!-- so that the message never overlays the textbox -->
+        <!-- it is like a dynamically sized space -->
+        <div class="container invisible">
+          <div class="alert alert-info alert-dismissible" role="alert">
+            <div class="sieve-editor-msg-success" data-i18n="editor.syntax.success"></div>
+            <div class="sieve-editor-msg-error"></div>
+          </div>
+        </div>
       </div>
-    </div>
   </body>
 </html>

@@ -132,6 +132,13 @@ async function main() {
     return await app.getVersion();
   });
 
+  ipcMain.handle("open-web-address", async(event, uri) => {
+    if (!uri.startsWith("https://"))
+      throw new Error("Invalid web address " + uri);
+
+    await shell.openExternal(uri);
+  });
+
   ipcMain.handle("open-developer-tools", () => {
     // Open the DevTools.
     win.webContents.openDevTools({

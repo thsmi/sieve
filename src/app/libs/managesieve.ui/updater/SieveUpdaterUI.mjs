@@ -30,7 +30,7 @@ class SieveUpdaterUI {
     const template = await (new SieveTemplate()).load("./updater/update.html");
 
     template.querySelector(".sieve-update-msg").addEventListener("click", () => {
-      SieveIpcClient.sendMessage("core", "open-url", url);
+      SieveIpcClient.sendMessage("core", "open-web-address", url);
     });
 
     const parent = document.querySelector("#ctx");

@@ -212,7 +212,7 @@ class SieveAbstractAccountUI {
    */
   async onDonate() {
     const url = (new SieveTemplate()).getI18n().getString("account.donate.url");
-    this.send("open-url", url);
+    this.send("open-web-address", url);
   }
 
   /**

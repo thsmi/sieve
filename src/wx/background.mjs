@@ -546,7 +546,7 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
       await accounts.getEditor().setValue(name, value);
     },
 
-    "open-url": async (msg) => {
+    "open-web-address": async (msg) => {
       browser.windows.openDefaultBrowser(msg.payload.data);
     }
   };

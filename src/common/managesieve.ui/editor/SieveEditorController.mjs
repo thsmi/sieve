@@ -165,7 +165,7 @@ class SieveEditorController {
    *   the url to be opened.
    */
   async openUrl(url) {
-    await this.send("open-url", url);
+    await this.send("open-web-address", url);
   }
 
   /**

@@ -33,7 +33,6 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
   const actions = {
 
     // "update-check"
-    // "update-goto-url"
     // "import-thunderbird"
     // "account-probe"
     // "account-create"
@@ -347,7 +346,7 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
       await accounts.getEditor().setValue(name, value);
     },
 
-    "open-url": async (msg) => {
+    "open-web-address": async (msg) => {
       window.open(msg.payload.data);
     }
   };

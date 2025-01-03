@@ -27,12 +27,8 @@ import {
   undo, redo, undoDepth
 } from "./../../../CodeMirror/codemirror.mjs";
 
-
 const COMPILE_DELAY = 500;
 const DEFAULT_TAB_SIZE = 2;
-
-// FIXME.. Scroll into view offset
-// const EDITOR_SCROLL_INTO_VIEW_OFFSET = 200;
 
 /**
  * An alternate code mirror search panel implementation.
@@ -138,11 +134,11 @@ class SieveSearchPanel {
 
     document
       .querySelector("#sieve-editor-case-sensitive")
-      .addEventListener("", () => { this.onSearchChanged(); });
+      .addEventListener("click", () => { this.onSearchChanged(); });
 
     document
       .querySelector("#sieve-editor-regex")
-      .addEventListener("", () => { this.onSearchChanged(); });
+      .addEventListener("click", () => { this.onSearchChanged(); });
 
     document
       .querySelector("#sieve-editor-find").focus();
@@ -308,6 +304,21 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
     this.tabSize = new Compartment();
     this.indentUnit = new Compartment();
 
+    this.theme = new Compartment();
+
+    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    const darkTheme = EditorView.theme({}, {dark:true});
+    const lightTheme = EditorView.theme({}, {dark:false});
+
+    const cursorScrollMargin = EditorState.transactionExtender.of((tr) => {
+      return {
+        effects: EditorView.scrollIntoView(tr.newSelection.main, {
+          y: "center"
+        })
+      };
+    });
+
     const state = EditorState.create({
       extensions: [
         basicSetup,
@@ -316,7 +327,9 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
         this.indentUnit.of(indentUnit.of("  ")),
         this.tabSize.of(EditorState.tabSize.of(DEFAULT_TAB_SIZE)),
         search({ createPanel: (view) => { return this.onInitSearch(view); } }),
-        EditorView.updateListener.of((v) => { this.onStateChanged(v); })
+        EditorView.updateListener.of((v) => { this.onStateChanged(v); }),
+        this.theme.of(isDark ? darkTheme : lightTheme),
+        cursorScrollMargin
       ]
     });
 
@@ -563,7 +576,8 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
 
     this.focus();
 
-    await this.getController().setPreference("syntax-check", this.syntaxCheckEnabled);
+    await this.getController().setPreference(
+      "syntax-check", this.syntaxCheckEnabled);
   }
 
   /**
@@ -575,7 +589,8 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
 
     this.focus();
 
-    await this.getController().setPreference("syntax-check", this.syntaxCheckEnabled);
+    await this.getController().setPreference(
+      "syntax-check", this.syntaxCheckEnabled);
 
     // reset the timer...
     if (this.timeout === null)

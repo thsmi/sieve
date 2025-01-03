@@ -9,10 +9,25 @@
   <link rel="stylesheet" href="./../../libs/bootstrap/css/bootstrap.min.css">
 
   <style>
+
     .cm-editor {
       border-color: #eee;
       border-width: 0px 1px 1px 1px;
       border-style: solid;
+    }
+
+    html[data-bs-theme=dark] .cm-editor {
+      border: none !important;
+      background-color: var(--bs-body-bg) !important;
+    }
+
+    html[data-bs-theme=dark] .cm-gutters {
+      border-right: none !important;
+      background-color: var(--bs-body-bg) !important;
+    }
+
+    html[data-bs-theme=dark] .cm-activeLineGutter {
+      background-color: var(--bs-body-bg) !important;
     }
 
     .cm-editor.cm-focused {
@@ -26,23 +41,26 @@
       border-bottom: none !important;
     }
 
-    html[data-bs-theme=dark] .CodeMirror {
-      border: none !important;
-      background-color: var(--bs-body-bg) !important;
-    }
 
-    html[data-bs-theme=dark] .CodeMirror-gutters{
-      background-color: var(--bs-body-bg) !important;
-    }
-
-    html[data-bs-theme=dark] .activeline {
-      background-color: rgba(var(--bs-body-color-rgb), 0.03) !important;
+    #sieve-editor-toolbar {
+      border-bottom: 1px solid #eee;
     }
 
     html[data-bs-theme=dark] #sieve-editor-toolbar {
       border-bottom: var(--bs-border-width) solid var(--bs-border-color-translucent) !important;
     }
 
+    #sieve-editor-errors {
+      border-bottom: 1px solid #eee;
+    }
+
+    html[data-bs-theme=dark] #sieve-editor-errors {
+      border-bottom: var(--bs-border-width) solid var(--bs-border-color-translucent) !important;
+    }
+
+    #sieve-editor-errors:empty {
+      display:none;
+    }
 
     #sieve-widget-editor {
       border: 0;

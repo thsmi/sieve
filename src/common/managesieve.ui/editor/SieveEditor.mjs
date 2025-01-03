@@ -37,6 +37,9 @@ class SieveEditorUI extends SieveEditorController {
    * Resizes the widget editors iframe to fill all of the available screen.
    */
   resize() {
+    if (this.isTextEditor())
+      return;
+
     const topOffset = document
       .querySelector("#sieve-widget-editor")
       .getBoundingClientRect()

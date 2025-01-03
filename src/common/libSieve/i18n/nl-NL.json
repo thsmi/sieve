@@ -177,7 +177,7 @@
   "redirect.tab.home": "Redirect",
   "redirect.tab.help": "Help",
   "redirect.address.label": "Forward email to:",
-  "redirect.address.placeholder": "Enter mail",
+  "redirect.address.placeholder": "Enter mail address",
   "redirect.address.invalid": "Invalid redirect address",
   "redirect.help": "Redirect forwards the message to the given address. It makes no changes to the message body or existing headers, but it may add new headers.\n\nThe envelope sender address on the outgoing message is chosen by the sieve implementation.\n\nImplementations may ignore a redirect action silently due to policy reasons.",
   "redirect.summary": "Redirect message to ${address}",

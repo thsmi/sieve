@@ -33,6 +33,9 @@ const HTTP_INTERNAL_ERROR = 500;
 
 const CONTENT_TYPE_HTML = "text/html";
 
+const IS_SMALLER = -1;
+const IS_LARGER = 1;
+
 /**
  * Guesses the mime type by the file extensions
  *
@@ -68,15 +71,15 @@ function getContentType(filePath) {
 }
 
 /**
- * Compares  the given path elements.
+ * Compares the given path elements.
  *
  * A directory always wins the comparison.
  * Otherwise in case two directories or two
  * files are compared alphabetically.
  *
- * @param {*} a
+ * @param {fs.Dirent} a
  *   the first path
- * @param {*} b
+ * @param {fs.Dirent} b
  *   the second path.
  *
  * @returns {int}
@@ -88,19 +91,23 @@ function sortDirectory(a, b) {
     return a.name.localeCompare(b.name);
 
   if (a.isDirectory())
-    return -1;
+    return IS_SMALLER;
 
   if (b.isDirectory())
-    return 1;
+    return IS_LARGER;
 
   return a.name.localeCompare(b.name);
 }
 
 /**
+ * Lists a directory.
  *
- * @param {*} filePath
- * @param {*} url
- * @param {*} response
+ * @param {string} filePath
+ *   the local path the directory to be listed.
+ * @param {URL} url
+ *   the url of the original call.
+ * @param {http.ServerResponse} response
+ *   the server's response object.
  */
 async function doDirectoryListing(filePath, url, response) {
   const items = await (util.promisify(fs.readdir))(filePath, { withFileTypes: true });
@@ -130,8 +137,10 @@ async function doDirectoryListing(filePath, url, response) {
 }
 
 /**
+ * Displays the server's index page.
  *
- * @param {*} response
+ * @param {http.ServerResponse} response
+ *   the server's response object.
  */
 function doIndex(response) {
 

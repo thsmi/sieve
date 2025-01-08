@@ -8,7 +8,7 @@
   "background": {
     "page": "background.html"
   },
-  "manifest_version": 2,
+  "manifest_version": 3,
   "default_locale": "en_US",
   "browser_specific_settings": {
     "gecko": {

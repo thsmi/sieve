@@ -95,8 +95,8 @@ suite.add("Parsing sieve://c3.mail.example.com", function () {
 suite.add("Parsing invalid port sieve://c3.mail.example.com:abc", function () {
 
   try {
-    // eslint-disable-next-line no-unused-vars
-    const url = new SieveUrl("sieve://c3.mail.example.com:abc");
+    // eslint-disable-next-line no-new
+    new SieveUrl("sieve://c3.mail.example.com:abc");
   } catch (ex) {
     suite.assertEquals(ex.message, "Not a valid sieve url sieve://c3.mail.example.com:abc");
     return;

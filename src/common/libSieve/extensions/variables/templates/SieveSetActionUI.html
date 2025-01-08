@@ -1,41 +1,49 @@
-<div>
-  <ul id="template-tabs">
-    <li class="nav-item">
-      <a data-i18n="set.tab.home" class="nav-link active" data-bs-toggle="tab" href="#sieve-widget-setaction"
-        role="tab"></a>
-    </li>
-    <li class="nav-item">
-      <a data-i18n="set.tab.advanced" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-advanced"
-        role="tab"></a>
-    </li>
-    <li class="nav-item">
-      <a data-i18n="set.tab.help" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-help" role="tab"></a>
-    </li>
-  </ul>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <div>
+      <ul id="template-tabs">
+        <li class="nav-item">
+          <a data-i18n="set.tab.home" class="nav-link active" data-bs-toggle="tab" href="#sieve-widget-setaction"
+            role="tab"></a>
+        </li>
+        <li class="nav-item">
+          <a data-i18n="set.tab.advanced" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-advanced"
+            role="tab"></a>
+        </li>
+        <li class="nav-item">
+          <a data-i18n="set.tab.help" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-help" role="tab"></a>
+        </li>
+      </ul>
 
-  <div id="template-content">
-    <div class="tab-content m-2">
-      <div class="tab-pane fade show active" id="sieve-widget-setaction" role="tabpanel">
-          <div class="mb-3">
-            <label data-i18n="set.value"></label>
-            <textarea class="form-control" id="sivVariableValue" rows="6"> </textarea>
+      <div id="template-content">
+        <div class="tab-content m-2">
+          <div class="tab-pane fade show active" id="sieve-widget-setaction" role="tabpanel">
+              <div class="mb-3">
+                <label data-i18n="set.value"></label>
+                <textarea class="form-control" id="sivVariableValue" rows="6"> </textarea>
+              </div>
+              <div class="mb-3">
+                <label data-i18n="set.variable"></label>
+                <form class="was-validated" novalidate="novalidate">
+                  <input type="text" class="form-control" id="sivVariableName"
+                    pattern="((([A-Za-z_][A-Za-z0-9_]*))\.((([0-9]+)|([A-Za-z_][A-Za-z0-9_]*))\.)*)?(([0-9]+)|([A-Za-z_][A-Za-z0-9_]*))"
+                    required="required" />
+                  <div data-i18n="set.variable.invalid" class="invalid-feedback"></div>
+                </form>
+              </div>
           </div>
-          <div class="mb-3">
-            <label data-i18n="set.variable"></label>
-            <form class="was-validated" novalidate="novalidate">
-              <input type="text" class="form-control" id="sivVariableName"
-                pattern="((([A-Za-z_][A-Za-z0-9_]*))\.((([0-9]+)|([A-Za-z_][A-Za-z0-9_]*))\.)*)?(([0-9]+)|([A-Za-z_][A-Za-z0-9_]*))"
-                required="required" />
-              <div data-i18n="set.variable.invalid" class="invalid-feedback"></div>
-            </form>
+          <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
+            <p data-i18n="set.modifier" class="form-text"></p>
+            <div id="sivModifier"> </div>
           </div>
+          <div data-i18n="set.help" style="white-space: pre-line" class="tab-pane fade form-text" id="sieve-widget-help"
+            role="tabpanel"></div>
+        </div>
       </div>
-      <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
-        <p data-i18n="set.modifier" class="form-text"></p>
-        <div id="sivModifier"> </div>
-      </div>
-      <div data-i18n="set.help" style="white-space: pre-line" class="tab-pane fade form-text" id="sieve-widget-help"
-        role="tabpanel"></div>
     </div>
-  </div>
-</div>
+  </body>
+</html>

@@ -484,7 +484,7 @@ class SieveDialogBoxUI extends SieveSourceBoxUI {
            </div>
          </div>`;
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convertFragment(FRAGMENT);
 
     // First assign unique ids...
     const content = elm.querySelector(".sivSummaryContent");

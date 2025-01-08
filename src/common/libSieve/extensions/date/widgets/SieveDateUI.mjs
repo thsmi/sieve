@@ -262,7 +262,7 @@ class SieveDateTestUI extends SieveTestDialogBoxUI {
       .replace("${matchtype}", '<em class="sivDateMatchType"></em>')
       .replace("${keys}", '<em class="sivDateKeys"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivDateDatePart").textContent
       = this.datepart().value();
     elm.querySelector(".sivDateHeader").textContent
@@ -388,7 +388,7 @@ class SieveCurrentDateTestUI extends SieveTestDialogBoxUI {
       .replace("${matchtype}", '<span class="sivCurrentDateMatchType"></span>')
       .replace("${keys}", '<span class="sivCurrentDateKeys"></span>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivCurrentDateDatePart").textContent
       = this.datepart().value();
     elm.querySelector(".sivCurrentDateMatchType").textContent

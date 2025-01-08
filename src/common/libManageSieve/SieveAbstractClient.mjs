@@ -521,7 +521,7 @@ class SieveAbstractClient {
    * @returns {boolean}
    *   true in case the connection is alive otherwise false
    */
-  isAlive() {
+  async isAlive() {
     if (!this.socket)
       return false;
 
@@ -560,7 +560,7 @@ class SieveAbstractClient {
    * @returns {SieveAbstractClient}
    *   a self reference
    **/
-  startTLS() {
+  async startTLS() {
     if (!this.isSecurable())
       throw new Error("TLS can't be started not a secure socket");
 
@@ -953,8 +953,7 @@ class SieveAbstractClient {
     this.getLogger().logState("[SieveAbstractClient:onReceive] ... add data to buffer...");
     this.buffer.write(data);
 
-    // Schedule processing the received data.
-    (async () => { await this.receive(); })();
+    this.receive();
   }
 
   /**

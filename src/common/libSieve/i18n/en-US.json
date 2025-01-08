@@ -27,16 +27,16 @@
   "numeric.gigabytes" : "Gigabytes",
 
   "return.tab.help" : "Help",
-  "return.help" : "",
+  "return.help" : "Stops the current script and returns to the parent script which included this script.",
 
   "stop.tab.help" : "Help",
-  "stop.help" : "",
+  "stop.help" : "Stops processing the script.\n\nIt will perform an 'implicit keep' unless it was cancelled via a 'discard'.",
 
   "discard.tab.help" : "Help",
-  "discard.help" : "",
+  "discard.help" : "Discard is used to silently throw away a message. It does so by canceling the 'implicit keep'.\n\nThe 'implicit keep' is a safe guard to prevent accidental dataloss. By default sieve delivers a message to the mailbox, except the message was written to a mailbox (e.g. fileinto), redirected to a new address (e.g. redirect), explicitly thrown out (e.g. reject) or the 'implicit keep' was canceled (e.g. discard).",
 
   "keep.tab.help" : "Help",
-  "keep.help" : "",
+  "keep.help" : "Instructs sieve to explicitly deliver the message to the user's inbox. It is a shorthand for fileinto \"INBOX\"\n\n By default sieve implements a so called 'implicit keep' which means it will automatically call a 'keep' at the end of the script, except the message was written to a mailbox (e.g. fileinto), redirected to a new address (e.g. redirect), explicitly thrown out (e.g. reject) or the 'implicit keep' was canceled (e.g. discard)",
 
   "fileinto.tab.home" : "Fileinto",
   "fileinto.tab.help" : "Help",
@@ -49,7 +49,7 @@
   "exists.tab.home" : "Exists",
   "exists.tab.help" : "Help",
   "exists.header.label" : "All headers exist:",
-  "exists.help.text": "",
+  "exists.help.text": "Checks if a mail contains all of the given headers.\n\nKeep in mind headers can be easily faked and there is no guarantee they exist. If you need trustworthy information always refer to the mail's envelope.",
   "exists.summary" : "Headers ${headers} exist",
 
   "header.tab.home" : "Header",
@@ -159,7 +159,7 @@
   "ereject.tab.home" : "Reject",
   "ereject.tab.help" : "Help",
   "ereject.reject" : "Reject incoming messages and reply the following reason:",
-  "ereject.help" : "",
+  "ereject.help" : "Rejects the message with the given reason.\n\nIt relies on the mail envelope's instead of  headers. Which is more reliable than the deprecated and unsafe 'reject'.",
 
   "string.tab.home" : "String",
   "string.tab.advanced" : "Advanced",
@@ -315,7 +315,7 @@
   "include.personal.text" : "Personal scripts are located in your personal and private Sieve repository.",
   "include.global.label" : "Global",
   "include.global.text" : "Global scripts are stored in a site-wide Sieve repository.\nIt is accessible to all users any typically provided and maintained by your administrator.",
-  "include.help" : "",
+  "include.help" : "Includes another script sieve script.\n\nAny stop in the included script will also terminate the parent script. Use a 'return' to exit the included script without stopping the parent script.\n\nThe script can be either included from the user's sieve script repository. Alternatively the administrator can provide global script repository.",
   "include.summary.personal" : "Include personal script ${script}",
   "include.summary.global" : "Include global script ${script}",
 

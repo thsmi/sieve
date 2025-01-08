@@ -64,7 +64,7 @@ class SieveRejectActionUI extends SieveActionDialogBoxUI {
     const msg = SieveI18n.getInstance().getString("reject.summary")
       .replace("${reason}", '<div><em class="sivRejectReason"></em></div>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivRejectReason").textContent
       = this.reason().quote(MAX_QUOTE_LEN);
     return elm;

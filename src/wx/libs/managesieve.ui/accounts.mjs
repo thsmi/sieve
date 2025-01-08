@@ -24,6 +24,24 @@ import {
 } from "./dialogs/SieveDialogUI.mjs";
 
 /**
+ * The delay between subsequent keep alive messages.
+ */
+// eslint-disable-next-line no-magic-numbers
+const KEEP_ALIVE_DELAY = 15 * 1000;
+
+/**
+ * The timeout after which the keep alive message is considered lost.
+ */
+// eslint-disable-next-line no-magic-numbers
+const KEEP_ALIVE_TIMEOUT = 5 * 1000;
+
+/**
+ * The timeout of the ready message. We use here a more aggressive polling
+ * to be more responsive.
+ */
+const READY_TIMEOUT = 500;
+
+/**
  * Shows a prompt which asks the user for the new script name.
  *
  * @returns {string}
@@ -95,9 +113,74 @@ async function onError(message) {
 }
 
 /**
+ * WebExtensionV3 are a strangely odd design, or better to say colossal design
+ * flaw. After a short period of inactivity an extension get unloaded automatically.
+ *
+ * Which ends up in worst case in a webextension which flip and flops between
+ * loaded and unloaded and thus wastes or better to say burns resources instead
+ * of saving them.
+ *
+ * To avoid this we constantly run a ping between the frontend and the backend,
+ * this should prevent the automatic unloading as long as we have a window open.
+ */
+async function onKeepAlive() {
+
+  try {
+    await SieveIpcClient.sendMessage("core", "ping", null, null, KEEP_ALIVE_TIMEOUT);
+  // eslint-disable-next-line no-unused-vars
+  } catch (ex) {
+    // Do nothing we'll retry later.
+  }
+
+  setTimeout(() => { onKeepAlive(); }, KEEP_ALIVE_DELAY);
+}
+
+/**
+ * Checks if the background page is ready for messages.
+ * It simply sends a ping message and expects a response within a reasonable time.
+ *
+ * The background page will be unloaded after 30 seconds of inactivity and reloading
+ * it into memory is awful slow.
+ *
+ * @returns {boolean}
+ *   true in case the the background page is ready otherwise false.
+ */
+async function isReady() {
+
+  try {
+    await SieveIpcClient.sendMessage("core", "ping", null, null, READY_TIMEOUT);
+  // eslint-disable-next-line no-unused-vars
+  } catch (ex) {
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * Waits for the background page to become ready.
+ * It polls is ready and returns as soon as the background page responds to a ping.
+ *
+ * The background page will be unloaded after 30 seconds of inactivity and reloading
+ * it into memory is awful slow.
+ */
+async function waitForReady() {
+
+  let ready = false;
+
+  do {
+    ready = await isReady();
+
+  } while (!ready);
+}
+
+/**
  * The main entry point for the account view
  */
 async function main() {
+
+  await waitForReady();
+
 
   // TODO move to editor
   /*    window.onbeforeunload = (e) => {
@@ -105,15 +188,17 @@ async function main() {
     e.preventDefault();
   };*/
   try {
+    // Start the keep alive ping
+    await onKeepAlive();
 
     SieveLogger.getInstance().level(
       await SieveIpcClient.sendMessage("core", "settings-get-loglevel"));
 
     // Enable dark mode if the system's color-scheme is dark
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      document.documentElement.setAttribute('data-bs-theme', 'dark');
+      window.document.documentElement.setAttribute('data-bs-theme', 'dark');
     } else {
-      document.documentElement.setAttribute('data-bs-theme', 'light');
+      window.document.documentElement.setAttribute('data-bs-theme', 'light');
     }
 
     await (SieveI18n.getInstance()).load();
@@ -121,7 +206,7 @@ async function main() {
     try {
       document.title = SieveI18n.getInstance().getString("title.accounts");
     } catch {
-      document.title = "Sieve Message Filters";
+      // In case it fails we stick with the default.
     }
 
     const accounts = new SieveAccounts();

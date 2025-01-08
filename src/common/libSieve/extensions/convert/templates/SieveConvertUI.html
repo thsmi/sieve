@@ -1,60 +1,68 @@
-<div>
-  <ul id="template-tabs">
-    <li class="nav-item">
-      <a data-i18n="convert.tab.home" class="nav-link active" data-bs-toggle="tab" href="#sieve-widget-convert"
-        role="tab"></a>
-    </li>
-    <li class="nav-item">
-      <a data-i18n="convert.tab.help" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-help" role="tab"></a>
-    </li>
-  </ul>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <div>
+      <ul id="template-tabs">
+        <li class="nav-item">
+          <a data-i18n="convert.tab.home" class="nav-link active" data-bs-toggle="tab" href="#sieve-widget-convert"
+            role="tab"></a>
+        </li>
+        <li class="nav-item">
+          <a data-i18n="convert.tab.help" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-help" role="tab"></a>
+        </li>
+      </ul>
 
-  <div id="template-content">
-    <div class="tab-content m-2">
-      <div class="tab-pane fade show active" id="sieve-widget-convert" role="tabpanel">
+      <div id="template-content">
+        <div class="tab-content m-2">
+          <div class="tab-pane fade show active" id="sieve-widget-convert" role="tabpanel">
 
-        <div class="mb-3">
-          <h5 data-i18n="convert.from"></h5>
-          <div id="sivConvertFrom" data-list-dropdown="#sivConvertTemplate"></div>
+            <div class="mb-3">
+              <h5 data-i18n="convert.from"></h5>
+              <div id="sivConvertFrom" data-list-dropdown="#sivConvertTemplate"></div>
 
-          <h5 data-i18n="convert.to"></h5>
-          <div id="sivConvertTo" data-list-dropdown="#sivConvertTemplate"></div>
+              <h5 data-i18n="convert.to"></h5>
+              <div id="sivConvertTo" data-list-dropdown="#sivConvertTemplate"></div>
 
-          <div id="sivConvertTemplate" class="d-none">
-            <div class="dropdown-menu dropdown-menu-end">
-              <button class="dropdown-item" type="button" data-value="image/tiff">
-                <div>image/tiff</div>
-              </button>
-              <button class="dropdown-item" type="button" data-value="image/jpeg">
-                <div>image/jpeg</div>
-              </button>
-              <button class="dropdown-item" type="button" data-value="image/png">
-                <div>image/png</div>
-              </button>
-              <button class="dropdown-item" type="button" data-value="image/gif">
-                <div>image/gif</div>
-              </button>
-              <div class="dropdown-divider"> </div>
-              <button class="dropdown-item" type="button" data-value="text/plain">
-                <div>text/plain</div>
-              </button>
-              <button class="dropdown-item" type="button" data-value="text/html">
-                <div>text/html</div>
-              </button>
-              <button class="dropdown-item" type="button" data-value="application/pdf">
-                <div>application/pdf</div>
-              </button>
+              <div id="sivConvertTemplate" class="d-none">
+                <div class="dropdown-menu dropdown-menu-end">
+                  <button class="dropdown-item" type="button" data-value="image/tiff">
+                    <div>image/tiff</div>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="image/jpeg">
+                    <div>image/jpeg</div>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="image/png">
+                    <div>image/png</div>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="image/gif">
+                    <div>image/gif</div>
+                  </button>
+                  <div class="dropdown-divider"> </div>
+                  <button class="dropdown-item" type="button" data-value="text/plain">
+                    <div>text/plain</div>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="text/html">
+                    <div>text/html</div>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="application/pdf">
+                    <div>application/pdf</div>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <h5 data-i18n="convert.transcode"></h5>
+            <div data-i18n="convert.transcode.text" class="form-text"></div>
+            <div id="sivConvertTranscoding" data-list-min="0">
             </div>
           </div>
-        </div>
-
-        <h5 data-i18n="convert.transcode"></h5>
-        <div data-i18n="convert.transcode.text" class="form-text"></div>
-        <div id="sivConvertTranscoding" data-list-min="0">
+          <div data-i18n="convert.help" style="white-space: pre-line" class="tab-pane fade form-text" id="sieve-widget-help"
+            role="tabpanel"></div>
         </div>
       </div>
-      <div data-i18n="convert.help" style="white-space: pre-line" class="tab-pane fade form-text" id="sieve-widget-help"
-        role="tabpanel"></div>
     </div>
-  </div>
-</div>
+  </body>
+</html>

@@ -16,7 +16,6 @@ import { SieveI18n } from "./utils/SieveI18n.mjs";
 import { SieveEditorUI } from "./editor/SieveEditor.mjs";
 import { SieveScriptSaveDialog } from "./dialogs/SieveDialogUI.mjs";
 
-
 let editor = null;
 
 /**
@@ -52,9 +51,9 @@ async function main() {
 
   // Enable dark mode if the system's color-scheme is dark
   if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    document.documentElement.setAttribute('data-bs-theme', 'dark');
+    window.document.documentElement.setAttribute('data-bs-theme', 'dark');
   } else {
-    document.documentElement.setAttribute('data-bs-theme', 'light');
+    window.document.documentElement.setAttribute('data-bs-theme', 'light');
   }
 
   await (SieveI18n.getInstance()).load();
@@ -62,7 +61,7 @@ async function main() {
   try {
     document.title = SieveI18n.getInstance().getString("title.editor");
   } catch {
-    document.title = "Edit Sieve Script";
+    // In case it fails we stick with the default.
   }
 
   const url = new URL(window.location);
@@ -88,14 +87,4 @@ if (document.readyState !== 'loading')
 else
   document.addEventListener('DOMContentLoaded', () => { main(); }, { once: true });
 
-/*
-CodeMirror.on(window, "resize", function() {
-  document.body.getElementsByClassName("CodeMirror-fullscreen")[0]
-    .CodeMirror.getWrapperElement().style.height = winHeight() + "px";
-});
-*/
-
-// hlLine = editor.addLineClass(0, "background", "activeline");
-
-// editor.on("change", function() { onChange(); });
 

@@ -15,16 +15,20 @@ import logger from 'gulplog';
 import { readdir, unlink, rmdir, readFile, writeFile } from 'fs/promises';
 import { createWriteStream, existsSync } from 'fs';
 
+import { rollup } from 'rollup';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+
 import path from 'path';
 import yazl from 'yazl';
 
 const JSON_INDENTATION = 2;
 
 const BASE_DIR_BOOTSTRAP = "./node_modules/bootstrap/dist";
-const BASE_DIR_CODEMIRROR = "./node_modules/codemirror";
 
 const BASE_DIR_COMMON = "./src/common";
 const BASE_DIR_BUILD = "./build";
+
+const FILE_CODEMIRROR = "./CodeMirror/codemirror.mjs";
 
 const DIR_LIBSIEVE = "./libSieve";
 const DIR_MANAGESIEVEUI = "./managesieve.ui";
@@ -74,7 +78,7 @@ async function clean() {
 }
 
 /**
- * Copies the codemirror sources into the build directory.
+ * Calls rollup to bundle and deploy the codemirror sources into the build directory.
  *
  * @param {string} destination
  *   where to place the codemirror sources
@@ -82,19 +86,19 @@ async function clean() {
  * @returns {Stream}
  *   a stream to be consumed by gulp
  */
-function packageCodeMirror(destination) {
+async function packageCodeMirror(destination) {
 
-  return gulp.src([
-    BASE_DIR_CODEMIRROR + "/addon/edit/**",
-    BASE_DIR_CODEMIRROR + "/addon/search/**",
-    BASE_DIR_CODEMIRROR + "/lib/**",
-    BASE_DIR_CODEMIRROR + "/mode/sieve/**",
-    BASE_DIR_CODEMIRROR + "/theme/eclipse.css",
-    BASE_DIR_CODEMIRROR + "/theme/material-darker.css",
-    BASE_DIR_CODEMIRROR + "/LICENSE",
-    BASE_DIR_CODEMIRROR + "/package.json"
-  ], { base: BASE_DIR_CODEMIRROR }).pipe(
-    gulp.dest(destination));
+  const input = {
+    input : path.join(BASE_DIR_COMMON, FILE_CODEMIRROR),
+    plugins : [nodeResolve()]
+  };
+
+  const output = {
+    file: path.join(destination, FILE_CODEMIRROR),
+    format : "es"
+  };
+
+  await (await rollup(input)).write(output);
 }
 
 /**

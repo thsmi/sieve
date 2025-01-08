@@ -160,6 +160,15 @@ class SieveEditorController {
   }
 
   /**
+   * Opens the given url in the default browser.
+   * @param {string} url
+   *   the url to be opened.
+   */
+  async openUrl(url) {
+    await this.send("open-web-address", url);
+  }
+
+  /**
    * Executes an action on the communication process.
    *
    * @param {string} action

@@ -210,7 +210,7 @@ class SieveExecuteActionUI extends SieveActionDialogBoxUI {
     const msg = SieveI18n.getInstance().getString("execute.summary")
       .replace("${program}", '<em class="sivExecuteProgram"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivExecuteProgram").textContent = this.program().value();
     return elm;
   }
@@ -292,7 +292,7 @@ class SieveFilterActionUI extends SieveActionDialogBoxUI {
     const msg = SieveI18n.getInstance().getString("filter.summary")
       .replace("${program}", '<em class="sivFilterProgram"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivFilterProgram").textContent = this.program().value();
     return elm;
   }
@@ -391,7 +391,7 @@ class SievePipeActionUI extends SieveActionDialogBoxUI {
     const msg = SieveI18n.getInstance().getString("pipe.summary")
       .replace("${program}", '<em class="sivPipeProgram"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivPipeProgram").textContent = this.program().value();
     return elm;
   }
@@ -430,7 +430,7 @@ class SieveFilterTestUI extends SieveFilterActionUI {
     const msg = SieveI18n.getInstance().getString("filter.summary.test")
       .replace("${program}", '<em class="sivFilterProgram"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivFilterProgram").textContent = this.program().value();
     return elm;
   }
@@ -469,7 +469,7 @@ class SieveExecuteTestUI extends SieveExecuteActionUI {
     const msg = SieveI18n.getInstance().getString("execute.summary.test")
       .replace("${program}", '<em class="sivExecuteProgram"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivExecuteProgram").textContent = this.program().value();
     return elm;
   }

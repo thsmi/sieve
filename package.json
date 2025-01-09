@@ -8,7 +8,7 @@
     "test": "tests"
   },
   "devDependencies": {
-    "electron": "^33.2.1",
+    "electron": "^33.3.1",
     "@electron/packager": "^18.3.6",
 
     "bootstrap": "^5.3.3",

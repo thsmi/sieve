@@ -12,60 +12,32 @@
 
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
+import {
+  tags, tag, id, token, parameters, insert, before
+} from "./../../../toolkit/logic/SieveGrammarHelper.mjs";
+
 // "fileinto" [":copy"] <folder: string>
-const fileintocopy = {
-  node: "action/fileinto/copy",
-  type: "action/fileinto/",
+SieveGrammar.addTag(
+  id("action/fileinto/copy", "@action/fileinto/", "copy"),
+  token(":copy")
+);
 
-  requires: "copy",
-
-  token: ":copy"
-};
-
-SieveGrammar.addTag(fileintocopy);
-
-const fileinto = {
-  extends: "action/fileinto",
-
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "copy",
-      type: "action/fileinto/copy",
-      requires: "copy"
-    }]
-  }]
-};
-
-SieveGrammar.extendAction(fileinto);
+SieveGrammar.extendAction(
+  "action/fileinto",
+  insert(
+    tags(tag("copy", "action/fileinto/copy", "copy")),
+    before(parameters()))
+);
 
 // "redirect" [":copy"] <address: string>
-const redirectcopy = {
-  node: "action/redirect/copy",
-  type: "action/redirect/",
+SieveGrammar.addTag(
+  id("action/redirect/copy", "@action/redirect/", "copy"),
+  token(":copy")
+);
 
-  requires: "copy",
-
-  token: ":copy"
-};
-
-SieveGrammar.addTag(redirectcopy);
-
-const redirect = {
-  extends: "action/redirect",
-
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "copy",
-      type: "action/redirect/copy",
-      requires: "copy"
-    }]
-  }]
-};
-
-SieveGrammar.extendAction(redirect);
+SieveGrammar.extendAction(
+  "action/redirect",
+  insert(
+    tags(tag("copy", "action/redirect/copy", "copy")),
+    before(parameters()))
+);

@@ -67,8 +67,8 @@ class SieveNotUI extends SieveSimpleBoxUI {
   /**
    * @inheritdoc
    */
-  createHtml(parent) {
-    const elm = super.createHtml(parent);
+  createHtml(parent, invalidate) {
+    const elm = super.createHtml(parent, invalidate);
     elm.classList.add("sivOperator");
     return elm;
   }
@@ -146,7 +146,7 @@ class SieveAnyOfAllOfUI extends SieveDialogBoxUI {
   /**
    * @inheritdoc
    */
-  createHtml(parent) {
+  createHtml(parent, invalidate) {
 
     super.createHtml(parent);
     parent.classList.add("sivOperator");
@@ -165,7 +165,7 @@ class SieveAnyOfAllOfUI extends SieveDialogBoxUI {
       ul.classList.add("ps-3");
 
       const li = document.createElement("li");
-      li.append(test[TEST_ELEMENT].html());
+      li.append(test[TEST_ELEMENT].html(invalidate));
       li.classList.add("sivOperatorChild");
 
       ul.append(li);

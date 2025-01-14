@@ -10,50 +10,33 @@
  *
  */
 
-import { SieveLexer } from "./../../../toolkit/SieveLexer.mjs";
 import { SieveBlock, SieveBlockBody } from "./SieveBlocks.mjs";
+
+import { SieveGrammar } from "../../../toolkit/logic/GenericElements.mjs";
+import { id, token } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+
 
 const BEFORE_BLOCK = 0;
 const AFTER_BLOCK = 1;
 const BEFORE_TEST = 2;
 
+const FIRST_CHILD = 0;
+
 /**
- *
+ * Implements the else block of an if else statement
  */
 class SieveElse extends SieveBlock {
 
   /**
    * @inheritdoc
    */
-  constructor(docshell, id) {
-    super(docshell, id);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
 
     this.ws = [];
 
-    this.ws[BEFORE_BLOCK] = this._createByName("whitespace", "\r\n");
-    this.ws[AFTER_BLOCK] = this._createByName("whitespace", "\r\n");
-  }
-
-  /**
-   * @inheritdoc
-   */
-  // eslint-disable-next-line no-unused-vars
-  static isElement(parser, lexer) {
-    return parser.startsWith("else");
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeName() {
-    return "condition/else";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeType() {
-    return "condition/";
+    this.ws[BEFORE_BLOCK] = this.createByName("whitespace", "\r\n");
+    this.ws[AFTER_BLOCK] = this.createByName("whitespace", "\r\n");
   }
 
   /**
@@ -82,46 +65,23 @@ class SieveElse extends SieveBlock {
   }
 }
 
-
 /**
- *
+ * Implements a n if block from an if/else statement.
  */
 class SieveIf extends SieveBlock {
 
   /**
    * @inheritdoc
    */
-  constructor(docshell, id) {
-    super(docshell, id);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
 
     this._test = null;
 
     this.ws = [];
-    this.ws[BEFORE_TEST] = this._createByName("whitespace");
-    this.ws[BEFORE_BLOCK] = this._createByName("whitespace", "\r\n");
-    this.ws[AFTER_BLOCK] = this._createByName("whitespace", "\r\n");
-  }
-
-  /**
-   * @inheritdoc
-   */
-  // eslint-disable-next-line no-unused-vars
-  static isElement(parser, lexer) {
-    return parser.startsWith("if");
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeName() {
-    return "condition/if";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeType() {
-    return "condition/";
+    this.ws[BEFORE_TEST] = this.createByName("whitespace");
+    this.ws[BEFORE_BLOCK] = this.createByName("whitespace", "\r\n");
+    this.ws[AFTER_BLOCK] = this.createByName("whitespace", "\r\n");
   }
 
   /**
@@ -132,11 +92,10 @@ class SieveIf extends SieveBlock {
 
     this.ws[BEFORE_TEST].init(parser);
 
-    this._test = this._createByClass(["test", "operator"], parser);
+    this._test = this.createByClass(["@test", "@operator"], parser);
 
     this.ws[BEFORE_BLOCK].init(parser);
 
-    // Ugly hack to all super of parent.
     super.init(parser);
 
     this.ws[AFTER_BLOCK].init(parser);
@@ -145,36 +104,44 @@ class SieveIf extends SieveBlock {
   }
 
   /**
+   * @inheritdoc
+   */
+  hasChild(identifier) {
+
+    if (this._test.id() === identifier)
+      return true;
+
+    return super.hasChild(identifier);
+  }
+
+  /**
+   * Removes the child node from the test.
    *
    * @param {string} childId
    *   the child's unique id.
-   * @param {boolean} cascade
-   * @param {SieveAbstractElement} stop
    *
    * @returns {SieveAbstractElement}
+   *   the deleted element.
    */
-  removeChild(childId, cascade, stop) {
+  removeChild(childId) {
 
-    const elm = super.removeChild(childId);
-    if (cascade && elm)
-      return this;
+    // Check if the test should be deleted. If so we just remove the complete
+    // if, because it can't exist without a test.
+    if (this._test && this._test.id() === childId) {
 
-    if (elm)
+      const elm = this._test;
+      this._test.parent(null);
+      this._test = null;
+
       return elm;
+    }
 
-    if (this.test().id() !== childId)
-      throw new Error("Unknown ChildId");
+    // Otherwise we are asked to delete one of our block children.
+    // It is perfectly ok if we end up with an empty body.
+    if (super.hasChild(childId))
+      return super.removeChild(childId);
 
-    if (!cascade)
-      throw new Error("Use cascade to delete conditions");
-
-    this.test().parent(null);
-    this._test = null;
-
-    if ((!stop) || (stop.id() !== this.id()))
-      return this.remove(cascade, stop);
-
-    return this;
+    throw new Error(`Can not remove unknown id ${childId}`);
   }
 
   /**
@@ -205,10 +172,7 @@ class SieveIf extends SieveBlock {
   }
 
   /**
-   * Checks if the element contains any tests.
-   *
-   * @returns {boolean}
-   *   true in case the if contains tests otherwise false.
+   * @inheritdoc
    */
   empty() {
     return (!this._test) ? true : false;
@@ -243,31 +207,10 @@ class SieveCondition extends SieveBlockBody {
   /**
    * @inheritdoc
    */
-  constructor(docshell, id) {
-    super(docshell, id);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
 
-    this.elms[0] = this._createByName("condition/if", "if false {\r\n}\r\n");
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static isElement(parser, lexer) {
-    return SieveIf.isElement(parser, lexer);
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeName() {
-    return "condition";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeType() {
-    return "condition";
+    this.elms[0] = this.createByName("condition/if", "if false {\r\n}\r\n");
   }
 
   /**
@@ -275,61 +218,54 @@ class SieveCondition extends SieveBlockBody {
    */
   init(parser) {
 
-    this.elms[0] = this._createByName("condition/if", parser);
+    this.elms[0] = this.createByName("condition/if", parser);
 
     while (parser.startsWith("elsif")) {
       parser.extract("els");
 
       this.elms.push(
-        this._createByName("condition/if", parser));
+        this.createByName("condition/if", parser));
 
     }
 
-    if (this._probeByName("condition/else", parser))
-      this.elms.push(this._createByName("condition/else", parser));
+    if (this.probeByName("condition/else", parser))
+      this.elms.push(this.createByName("condition/else", parser));
 
     return this;
   }
 
   /**
+   * Removes the given condition.
+   *
+   * In case we end up with an empty else, we clear the else and merge it into
+   * the parent node.
    *
    * @param {string} childId
-   *   the childs unique id.
-   * @param {boolean} cascade
-   * @param {SieveAbstractElement} stop
+   *   the child's unique id.
+   *
+   * @returns {SieveAbstractElement}
+   *   the deleted child element
    */
-  removeChild(childId, cascade, stop) {
-    // should we remove the whole node
-    if (typeof (childId) === "undefined")
-      throw new Error("Child ID Missing");
+  removeChild(childId) {
 
-    if (stop && (stop.id() === this.id()))
-      cascade = false;
+    const elm = super.removeChild(childId);
 
-    const elm = super.removeChild(childId, cascade, stop);
+    // We can skip in case we are out of conditions.
+    if (!this.getChildren().length)
+      return elm;
 
-    //  ... if we endup after delete with just an else, merge it into parent...
-    if ((this.children().length) && (!this.children(0).test)) {
-      // we copy all of our else statements into our parent...
-      while (this.children(0).children().length)
-        this.parent().append(this.children(0).children(0), this);
+    // Otherwise we need to check if our first child is a test.
+    // we do this by checking if a test attribute is resend.
+    const child = this.getChild(FIRST_CHILD);
+    if (child.test)
+      return elm;
 
-      return this.children(0).remove(cascade, stop);
-    }
+    // If not we have a dangling else. We merge it into parent block by
+    // moving all of our else statements into our parent...
+    while (child.getChildren().length)
+      this.parent().append(child.getChild(FIRST_CHILD), this);
 
-
-    // If SieveBlockBody cascaded through our parent, it should be null...
-    // ... and we are done
-
-    // 4. the condition might now be empty
-    if (this.parent() && (!this.children().length))
-      return this.remove(cascade, stop);
-
-    if (this.parent() && cascade)
-      return this;
-
-
-    return elm;
+    return this.getChild(FIRST_CHILD).remove(stop);
   }
 
   /**
@@ -338,17 +274,32 @@ class SieveCondition extends SieveBlockBody {
   toScript() {
     let str = "";
 
-    for (let i = 0; i < this.elms.length; i++) {
-      if ((i > 0) && (this.elms[i].test))
+    for (let i = 0; i < this.getChildren().length; i++) {
+      const child = this.getChild(i);
+      if ((i > 0) && (child.test))
         str += "els";
 
-      str += this.elms[i].toScript();
+      str += child.toScript();
     }
 
     return str;
   }
 }
 
-SieveLexer.register(SieveIf);
-SieveLexer.register(SieveElse);
-SieveLexer.register(SieveCondition);
+SieveGrammar.addGeneric(
+  id("condition/if", "@condition/"),
+
+  SieveIf,
+  token("if"));
+
+SieveGrammar.addGeneric(
+  id("condition/else", "@condition/"),
+
+  SieveElse,
+  token("else"));
+
+SieveGrammar.addGeneric(
+  id("condition", "@condition"),
+
+  SieveCondition,
+  token("if"));

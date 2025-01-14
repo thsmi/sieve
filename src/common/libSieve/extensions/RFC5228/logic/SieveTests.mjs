@@ -11,285 +11,193 @@
  */
 
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
-import { SieveAbstractElement } from "./../../../toolkit/logic/AbstractElements.mjs";
-import { SieveLexer } from "./../../../toolkit/SieveLexer.mjs";
+import { SieveAbstractParentElement } from "./../../../toolkit/logic/AbstractElements.mjs";
+import {
+  id, token,
+  parameters, tags, items,
+  value,
+  tag, number, stringList, attribute
+} from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+
+SieveGrammar.addTest(
+  id("test/envelope", "@test", "envelope"),
+
+  token("envelope"),
+  tags(
+    tag("address-part"),
+    tag("match-type"),
+    tag("comparator")),
+  parameters(
+    stringList("envelopes", "To"),
+    stringList("keys", "me@example.com"))
+);
+
+
+// address [ADDRESS-PART] [COMPARATOR] [MATCH-TYPE]
+//             <header-list: string-list> <key-list: string-list>
+SieveGrammar.addTest(
+  id("test/address", "@test"),
+
+  token("address"),
+  tags(
+    tag("address-part"),
+    tag("match-type"),
+    tag("comparator")),
+  parameters(
+    stringList("headers", "To"),
+    stringList("keys", "me@example.com"))
+);
+
+// <"exists"> <header-names: string-list>
+SieveGrammar.addTest(
+  id("test/exists", "@test"),
+
+  token("exists"),
+  parameters(
+    stringList("headers", "From"))
+);
+
+// <"header"> [COMPARATOR] [MATCH-TYPE] <header-names: string-list> <key-list: string-list>
+SieveGrammar.addTest(
+  id("test/header", "@test"),
+
+  token("header"),
+  tags(
+    tag("comparator"),
+    tag("match-type")),
+  parameters(
+    stringList("headers", "Subject"),
+    stringList("keys", "Example"))
+);
+
+SieveGrammar.addTest(
+  id("test/boolean/true", "@test/boolean/"),
+  token("true")
+);
+
+SieveGrammar.addTest(
+  id("test/boolean/false", "@test/boolean/"),
+  token("false")
+);
+
+SieveGrammar.addGroup(
+  id("test/boolean", "@test"),
+  items("@test/boolean/"),
+  // Boolean tests don't have an implicit default value
+
+  // FIXME we should wrap this into a mandatory(value("false"))
+  value("false", true)
+);
+
+
+// size <":over" / ":under"> <limit: number>
+
+SieveGrammar.addTag(
+  id("test/size/operator/over", "@test/size/operator/"),
+  token(":over")
+);
+
+SieveGrammar.addTag(
+  id("test/size/operator/under", "@test/size/operator/"),
+  token(":under")
+);
+
+SieveGrammar.addGroup(
+  id("test/size/operator"),
+  items("@test/size/operator/"),
+
+  // Either the :over or the :under operator has to exist
+  // there is no default value in case the operator is omitted.
+  value(":over", true)
+);
+
+SieveGrammar.addTest(
+  id("test/size", "@test"),
+
+  token("size"),
+
+  parameters(
+    attribute("operator", "test/size/operator"),
+    number("limit", "1M"))
+);
+
 
 const LEADING_WHITESPACE = 0;
 const TEST = 1;
 const TAILING_WHITESPACE = 2;
 
-SieveGrammar.addTest({
-
-  node: "test/envelope",
-  type: "test",
-
-  requires: "envelope",
-
-  token: "envelope",
-
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "address-part",
-      type: "address-part"
-    }, {
-      id: "match-type",
-      type: "match-type"
-    }, {
-      id: "comparator",
-      type: "comparator"
-    }]
-  }, {
-    id: "parameters",
-
-    elements: [{
-      id: "envelopes",
-      type: "stringlist",
-      value: '"To"'
-    }, {
-      id: "keys",
-      type: "stringlist",
-      value: '"me@example.com"'
-
-    }]
-  }]
-});
-
-
-// address [ADDRESS-PART] [COMPARATOR] [MATCH-TYPE]
-//             <header-list: string-list> <key-list: string-list>
-SieveGrammar.addTest({
-  node: "test/address",
-  type: "test",
-
-  token: "address",
-
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "address-part",
-      type: "address-part"
-    }, {
-      id: "comparator",
-      type: "comparator"
-    }, {
-      id: "match-type",
-      type: "match-type"
-
-    }]
-  }, {
-    id: "parameters",
-
-    elements: [{
-      id: "headers",
-      type: "stringlist",
-      value: '"To"'
-    }, {
-      id: "keys",
-      type: "stringlist",
-      value: '"me@example.com"'
-
-    }]
-  }]
-});
-
-// <"exists"> <header-names: string-list>
-SieveGrammar.addTest({
-  node: "test/exists",
-  type: "test",
-
-  token: "exists",
-
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "headers",
-      type: "stringlist",
-      value: '"From"'
-    }]
-  }]
-});
-
-// <"header"> [COMPARATOR] [MATCH-TYPE] <header-names: string-list> <key-list: string-list>
-SieveGrammar.addTest({
-  node: "test/header",
-  type: "test",
-
-  token: "header",
-
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "comparator",
-      type: "comparator"
-    }, {
-      id: "match-type",
-      type: "match-type"
-    }]
-  }, {
-    id: "parameters",
-
-    elements: [{
-      id: "headers",
-      type: "stringlist",
-      value: '"Subject"'
-    }, {
-      id: "keys",
-      type: "stringlist",
-      value: '"Example"'
-    }]
-  }]
-});
-
-SieveGrammar.addTest({
-  node: "test/boolean/true",
-  type: "test/boolean/",
-
-  token: "true"
-});
-
-
-SieveGrammar.addTest({
-  node: "test/boolean/false",
-  type: "test/boolean/",
-
-  token: "false"
-});
-
-SieveGrammar.addGroup({
-  node: "test/boolean",
-  type: "test",
-
-  // Boolean tests don't have an implicit default value
-  value: "false",
-  mandatory: true,
-
-  items: ["test/boolean/"]
-});
-
-
-// size <":over" / ":under"> <limit: number>
-
-SieveGrammar.addTag({
-  node: "test/size/operator/over",
-  type: "test/size/operator/",
-
-  token: ":over"
-});
-
-SieveGrammar.addTag({
-  node: "test/size/operator/under",
-  type: "test/size/operator/",
-
-  token: ":under"
-});
-
-SieveGrammar.addGroup({
-  node: "test/size/operator",
-  type: "test/size/operator",
-
-  // Either the :over or the :under operator has to exist
-  // there is no default value in case the operator is omitted.
-  value: ":over",
-  mandatory: true,
-
-  items: ["test/size/operator/"]
-});
-
-SieveGrammar.addTest({
-  node: "test/size",
-  type: "test",
-
-  token: "size",
-
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "operator",
-      type: "test/size/operator"
-    }, {
-      id: "limit",
-      type: "number"
-    }]
-  }]
-});
-
-// TODO Stringlist and testslist are quite similar
 
 /**
- *
- * @param {*} docshell
- * @param {string} id
- *   the test lists unique id.
+ * Implements a list with tests.
  */
-function SieveTestList(docshell, id) {
-  SieveAbstractElement.call(this, docshell, id);
-  this.tests = [];
-}
+class SieveTestList extends SieveAbstractParentElement {
 
-SieveTestList.prototype = Object.create(SieveAbstractElement.prototype);
-SieveTestList.prototype.constructor = SieveTestList;
+  /**
+   * @inheritdoc
+   */
+  init(parser) {
 
-// eslint-disable-next-line no-unused-vars
-SieveTestList.isElement = function (parser, lexer) {
-  return parser.isChar("(");
-};
-
-SieveTestList.nodeName = function () {
-  return "test/testlist";
-};
-
-SieveTestList.nodeType = function () {
-  return "test/";
-};
-
-SieveTestList.prototype.init
-  = function (parser) {
-    this.tests = [];
+    while (this.getChildren().length)
+      this.getChildren().pop();
 
     parser.extractChar("(");
 
     while (!parser.isChar(")")) {
-      if (this.tests.length > 0)
+
+      if (this.getChildren().length)
         parser.extractChar(",");
 
       const element = [];
 
-      element[LEADING_WHITESPACE] = this._createByName("whitespace");
-      if (this._probeByName("whitespace", parser))
+      element[LEADING_WHITESPACE] = this.createByName("whitespace");
+      if (this.probeByName("whitespace", parser))
         element[LEADING_WHITESPACE].init(parser);
 
-      element[TEST] = this._createByClass(["test", "operator"], parser);
+      element[TEST] = this.createByClass(["@test", "@operator"], parser);
 
-      element[TAILING_WHITESPACE] = this._createByName("whitespace");
-      if (this._probeByName("whitespace", parser))
+      element[TAILING_WHITESPACE] = this.createByName("whitespace");
+      if (this.probeByName("whitespace", parser))
         element[TAILING_WHITESPACE].init(parser);
 
-      this.tests.push(element);
+      this.getChildren().push(element);
     }
 
     parser.extractChar(")");
 
     return this;
-  };
+  }
 
-SieveTestList.prototype.append
-  = function (elm, sibling) {
+  /**
+   * @inheritdoc
+   */
+  hasChild(identifier) {
+    for (const elm of this.getChildren())
+      if (elm[TEST].id() === identifier)
+        return true;
+
+    return false;
+  }
+
+  /**
+   * Adds a new test to the test list.
+   *
+   *  @param {SieveAbstractElement} elm
+   *   the test which should be added.
+   * @param {SieveAbstractElement} [sibling]
+   *   the after which the element should be added, if omitted it will
+   *   be added to the end.
+   *
+   * @returns {SieveTestList}
+   *   a self reference
+   */
+  append(elm, sibling) {
     let element = [];
 
     switch ([].concat(elm).length) {
       case 1:
-        element[LEADING_WHITESPACE] = this._createByName("whitespace", "\r\n");
+        element[LEADING_WHITESPACE] = this.createByName("whitespace", "\r\n");
         element[TEST] = elm;
-        element[TAILING_WHITESPACE] = this._createByName("whitespace");
+        element[TAILING_WHITESPACE] = this.createByName("whitespace");
         break;
 
       case 3:
@@ -305,89 +213,114 @@ SieveTestList.prototype.append
     if (elm.parent())
       elm.remove();
 
-    let idx = this.tests.length;
+    let idx = this.getChildren().length;
 
-    if (sibling && (sibling.id() >= 0))
-      for (idx = 0; idx < this.tests.length; idx++)
-        if (this.tests[idx][TEST].id() === sibling.id())
-          break;
+    if (sibling) {
+      if (sibling.id)
+        sibling = sibling.id();
 
-    this.tests.splice(idx, 0, element);
+      if (sibling >= 0)
+        for (idx = 0; idx < this.getChildren(); idx++)
+          if (this.getChild(idx)[TEST].id() === sibling)
+            break;
+    }
+
+    this.getChildren().splice(idx, 0, element);
     elm.parent(this);
 
     return this;
-  };
+  }
 
-SieveTestList.prototype.empty
-  = function () {
-    // The direct descendants of our root node are always considered as
-    // not empty. Otherwise cascaded remove would wipe them away.
-    if (this.document().root() === this.parent())
-      return false;
+  /**
+   * Removes the given child element from the test list.
+   *
+   * @param {string} childId
+   *  the child element's unique id.
+   *
+   * @returns {SieveAbstractElement}
+   *   the removed element.
+   */
+  removeChild(childId) {
 
-    for (let i = 0; i < this.tests.length; i++)
-      if (this.tests[i][TEST].widget())
+    if (!childId)
+      throw new Error("Child ID Missing");
+
+    // Is it a direct match?
+    for (let i = 0; i < this.getChildren().length; i++) {
+
+      const elm = this.getChild(i);
+      if (elm[TEST].id() !== childId)
+        continue;
+
+      elm[TEST].parent(null);
+      this.getChildren().splice(i, 1);
+
+      return elm;
+    }
+
+    // ... we fail in case we have not found the child
+    throw new Error(`Unknown child ${childId}`);
+  }
+
+  /**
+   * Checks if the element is empty.
+   *
+   * @returns {boolean}
+   *   if the element is empty otherwise false.
+   */
+  empty() {
+    for (const elm of this.getChildren())
+      if (elm[TEST].widget())
         return false;
 
     return true;
-  };
+  }
 
-SieveTestList.prototype.removeChild
-  = function (childId, cascade, stop) {
-    // should we remove the whole node
-    if (typeof (childId) === "undefined")
-      throw new Error("Child ID Missing");
-    // return SieveAbstractElement.prototype.remove.call(this);
+  /**
+   * @inheritdoc
+   */
+  require(imports) {
 
-    // ... or just a child item
-    let elm = null;
-    // Is it a direct match?
-    for (let i = 0; i < this.tests.length; i++) {
-      if (this.tests[i][TEST].id() !== childId)
-        continue;
+    for (const elm of this.getChildren())
+      elm[TEST].require(imports);
+  }
 
-      elm = this.tests[i][TEST];
-      elm.parent(null);
-
-      this.tests.splice(i, 1);
-
-      break;
-    }
-
-    if (cascade && this.empty())
-      if ((!stop) || (stop.id() !== this.id()))
-        return this.remove(cascade, stop);
-
-    if (cascade)
-      return this;
-
-    return elm;
-  };
-
-
-SieveTestList.prototype.toScript
-  = function () {
+  /**
+   * @inheritdoc
+   */
+  toScript() {
     let result = "(";
 
-    for (let i = 0; i < this.tests.length; i++) {
+    for (let i = 0; i < this.getChildren().length; i++) {
+      const elm = this.getChild(i);
+
       result = result
         + ((i > 0) ? "," : "")
-        + this.tests[i][LEADING_WHITESPACE].toScript()
-        + this.tests[i][TEST].toScript()
-        + this.tests[i][TAILING_WHITESPACE].toScript();
+        + elm[LEADING_WHITESPACE].toScript()
+        + elm[TEST].toScript()
+        + elm[TAILING_WHITESPACE].toScript();
     }
 
     result += ")";
 
     return result;
-  };
+  }
+}
 
-SieveTestList.prototype.require
-  = function (imports) {
-    for (let i = 0; i < this.tests.length; i++)
-      this.tests[i][TEST].require(imports);
-  };
 
-SieveLexer.register(SieveTestList);
+SieveGrammar.addGeneric(
+  id("test/testlist", "@test/"),
+
+  SieveTestList
+);
+
+// SieveGrammar.addList(
+//   id("test/testlist", "@test/"),
+
+//   token("("),
+//   parameters(
+//     items("test", ["@test", "@operator"])),
+//   token(")")
+// );
 
 export { SieveTestList };

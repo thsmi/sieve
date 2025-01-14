@@ -10,6 +10,13 @@
  *
  */
 
+import {
+  id, token,
+  parameters, items,
+  attribute,
+  value
+} from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 /*
@@ -23,81 +30,48 @@ import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
           ; "ne" means "not equal to", the C operator "!=".
  */
 
-SieveGrammar.addTag({
-  node: "relational-match/gt",
-  type: "relational-match/",
+SieveGrammar.addTag(
+  id("relational-match/gt", "@relational-match/"),
+  token('"gt"'));
 
-  token: '"gt"'
-});
+SieveGrammar.addTag(
+  id("relational-match/ge", "@relational-match/"),
+  token('"ge"'));
 
-SieveGrammar.addTag({
-  node: "relational-match/ge",
-  type: "relational-match/",
+SieveGrammar.addTag(
+  id("relational-match/lt", "@relational-match/"),
+  token('"lt"'));
 
-  token: '"ge"'
-});
+SieveGrammar.addTag(
+  id("relational-match/le", "@relational-match/"),
+  token('"le"'));
 
-SieveGrammar.addTag({
-  node: "relational-match/lt",
-  type: "relational-match/",
+SieveGrammar.addTag(
+  id("relational-match/eq", "@relational-match/"),
+  token('"eq"'));
 
-  token: '"lt"'
-});
+SieveGrammar.addTag(
+  id("relational-match/ne", "@relational-match/"),
+  token('"ne"'));
 
-SieveGrammar.addTag({
-  node: "relational-match/le",
-  type: "relational-match/",
-
-  token: '"le"'
-});
-
-SieveGrammar.addTag({
-  node: "relational-match/eq",
-  type: "relational-match/",
-
-  token: '"eq"'
-});
-
-SieveGrammar.addTag({
-  node: "relational-match/ne",
-  type: "relational-match/",
-
-  token: '"ne"'
-});
-
-SieveGrammar.addGroup({
-  node: "relational-match",
-  type: "relational-match",
-
-  value: '"eq"',
-
-  items: ["relational-match/"]
-});
+SieveGrammar.addGroup(
+  id("relational-match"),
+  items("@relational-match/"),
+  value('"eq"')
+);
 
 /**
  * The value match type does a relational comparison between strings
  *
  *  VALUE = ":value" relational-match
  */
-SieveGrammar.addTag({
-  node: "match-type/value",
-  type: "match-type/",
+SieveGrammar.addTag(
+  id("match-type/value", "@match-type/", "relational"),
 
-  token: ":value",
-
-  requires: "relational",
-
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "relational-match",
-      type: "relational-match",
-
-      value: '"eq"'
-    }]
-  }]
-});
+  token(":value"),
+  parameters(
+    attribute("relational-match", "relational-match", '"eq"'))
+);
 
 /**
  * The count match type determines the number of the specified entities in the
@@ -105,22 +79,9 @@ SieveGrammar.addTag({
  *
  * Count should only be used with a numeric comparator.
  */
-SieveGrammar.addTag({
-  node: "match-type/count",
-  type: "match-type/",
-
-  token: ":count",
-
-  requires: "relational",
-
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "relational-match",
-      type: "relational-match",
-
-      value: '"eq"'
-    }]
-  }]
-});
+SieveGrammar.addTag(
+  id("match-type/count", "@match-type/", "relational"),
+  token(":count"),
+  parameters(
+    attribute("relational-match", "relational-match", '"eq"'))
+);

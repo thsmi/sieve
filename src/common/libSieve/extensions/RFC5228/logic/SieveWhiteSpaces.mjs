@@ -12,7 +12,9 @@
 
 import { SieveParser } from "./../../../toolkit/SieveParser.mjs";
 import { SieveAbstractElement } from "./../../../toolkit/logic/AbstractElements.mjs";
-import { SieveLexer } from "./../../../toolkit/SieveLexer.mjs";
+
+import { SieveGrammar } from "../../../toolkit/logic/GenericElements.mjs";
+import { id, token, items } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 
 // ToDo HashComment separated by line breaks are equivalent to bracket Comments...
 
@@ -20,28 +22,6 @@ import { SieveLexer } from "./../../../toolkit/SieveLexer.mjs";
  *
  */
 class SieveLineBreak extends SieveAbstractElement {
-
-  /**
-   * @inheritdoc
-   */
-  // eslint-disable-next-line no-unused-vars
-  static isElement(parser, lexer) {
-    return parser.startsWith("\r\n");
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeName() {
-    return "whitespace/linebreak";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeType() {
-    return "whitespace/";
-  }
 
   /**
    * @inheritdoc
@@ -67,31 +47,9 @@ class SieveDeadCode extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, id) {
-    super(docshell, id);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
     this.whiteSpace = "";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  // eslint-disable-next-line no-unused-vars
-  static isElement(parser, lexer) {
-    return (parser.isChar([" ", "\t"]));
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeName() {
-    return "whitespace/deadcode";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeType() {
-    return "whitespace/";
   }
 
   /**
@@ -121,31 +79,9 @@ class SieveBracketComment extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, id) {
-    super(docshell, id);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
     this.text = "";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  // eslint-disable-next-line no-unused-vars
-  static isElement(parser, lexer) {
-    return parser.startsWith("/*");
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeName() {
-    return "comment/bracketcomment";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeType() {
-    return "comment";
   }
 
   /**
@@ -176,31 +112,9 @@ class SieveHashComment extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, id) {
-    super(docshell, id);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
     this.text = "";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  // eslint-disable-next-line no-unused-vars
-  static isElement(parser, lexer) {
-    return parser.isChar("#");
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeName() {
-    return "comment/hashcomment";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeType() {
-    return "comment";
   }
 
   /**
@@ -234,30 +148,9 @@ class SieveWhiteSpace extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, id) {
-    super(docshell, id);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
     this.elements = [];
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static isElement(parser, lexer) {
-    return lexer.probeByClass(["whitespace/", "comment"], parser);
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeName() {
-    return "whitespace";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeType() {
-    return "whitespace";
   }
 
   /**
@@ -279,7 +172,7 @@ class SieveWhiteSpace extends SieveAbstractElement {
    */
   isDeadCode() {
     for (const key in this.elements)
-      if (this.elements[key].nodeType !== "whitespace/")
+      if (this.elements[key].nodeType !== "@whitespace/")
         return false;
 
     return true;
@@ -307,12 +200,12 @@ class SieveWhiteSpace extends SieveAbstractElement {
     this.elements = [];
 
     // After the import section only deadcode and actions are valid
-    while (this._probeByClass(["whitespace/", "comment"], parser)) {
+    while (this.probeByClass(["@whitespace/", "@comment"], parser)) {
       // Check for CRLF...
-      if (crlf && this._probeByName("whitespace/linebreak", parser))
+      if (crlf && this.probeByName("whitespace/linebreak", parser))
         isCrlf = true;
 
-      this.elements.push(this._createByClass(["whitespace/", "comment"], parser));
+      this.elements.push(this.createByClass(["@whitespace/", "@comment"], parser));
 
       // break if we found a CRLF
       if (isCrlf)
@@ -334,9 +227,34 @@ class SieveWhiteSpace extends SieveAbstractElement {
   }
 }
 
-SieveLexer.register(SieveLineBreak);
-SieveLexer.register(SieveDeadCode);
-SieveLexer.register(SieveBracketComment);
-SieveLexer.register(SieveHashComment);
 
-SieveLexer.register(SieveWhiteSpace);
+SieveGrammar.addGeneric(
+  id("whitespace/linebreak", "@whitespace/"),
+
+  SieveLineBreak,
+  token("\r\n"));
+
+SieveGrammar.addGeneric(
+  id("whitespace/deadcode", "@whitespace/"),
+
+  SieveDeadCode,
+  // FIXME : token(" ", "\t")
+  { "matcher": (property, spec, parser) => { return (parser.isChar([" ", "\t"])); } });
+
+SieveGrammar.addGeneric(
+  id("comment/bracketcomment", "@comment"),
+
+  SieveBracketComment,
+  token("/*"));
+
+SieveGrammar.addGeneric(
+  id("comment/hashcomment", "@comment"),
+
+  SieveHashComment,
+  token("#"));
+
+SieveGrammar.addGeneric(
+  id("whitespace", "@whitespace"),
+
+  SieveWhiteSpace,
+  items("@whitespace/", "@comment"));

@@ -10,15 +10,13 @@
  *
  */
 
-import { SieveAbstractElement } from "./AbstractElements.mjs";
-import { SieveLexer } from "./../SieveLexer.mjs";
+import { SieveAbstractElement, SieveAbstractParentElement } from "./AbstractElements.mjs";
 
 // TODO we need to do a cleanup, which means document caches elements by their id.
 // These elements should be also tracked by the generic elements. especially with tags.
 // So it would be good to have a method which collects all ids of elements in use.
 // all other elements can then be dropped and removed.
 
-// TODO we need a list of items to emulate blocks...
 
 /**
  * An Abstract implementation for all Generic elements
@@ -116,8 +114,9 @@ class SieveGenericLiteral extends SieveAbstractGeneric {
 
     super(parent);
 
-    if (token === null || typeof (token) === "undefined" || typeof (token) !== "string")
-      throw new Error("Token in a Literal as to be a string but is " + typeof (token));
+    if (token === null || typeof (token) === "undefined" || typeof (token) !== "string") {
+      throw new Error("Token in a Literal has to be a string but is " + typeof (token));
+    }
 
     this._token = token;
     this._literal = null;
@@ -184,7 +183,7 @@ class SieveGenericLiteral extends SieveAbstractGeneric {
    */
   parse(parser) {
 
-    if (this.getDocument().probeByClass("whitespace", parser))
+    if (this.getDocument().probeByClass("@whitespace", parser))
       this._pre.init(parser);
     else
       this._pre.init("");
@@ -229,8 +228,6 @@ class SieveGenericLiteral extends SieveAbstractGeneric {
 
     return result;
   }
-
-
 }
 
 /**
@@ -259,6 +256,33 @@ class SieveGenericMandatoryItem extends SieveAbstractGeneric {
   }
 
   /**
+   * Enabled or disables an optional element.
+   *
+   * Note it is not possible to disable mandatory elements they are
+   * by definition always enabled.
+   *
+   * @param {string} id
+   *   the ids unique name.
+   * @param {boolean} status
+   *   the new status to be set
+   * @returns {boolean}
+   *   the element's current status after the update.
+   */
+  enable(id, status) {
+    if (!this.hasElement(id))
+      throw new Error(`No Element with id ${id}`);
+
+    const elm = this._elements.get(id);
+
+    if (!elm.isOptional)
+      throw new Error(`Not ${id} is not an optional element`);
+
+    elm.disabled = !status;
+
+    return elm.disabled;
+  }
+
+  /**
    * Returns the child element with the given id.
    *
    * In case the item has no known child element with the id an
@@ -279,10 +303,11 @@ class SieveGenericMandatoryItem extends SieveAbstractGeneric {
 
   /**
    * Initializes the given parameter.
+   *
    * @param {object} parameter
-   *  the parameter which should be set
+   *   the parameter which should be set
    */
-  addParameter(parameter) {
+  addProperty(parameter) {
 
     if (parameter.type === null || typeof (parameter.type) === 'undefined')
       throw new Error("Parameter without a type ");
@@ -290,6 +315,11 @@ class SieveGenericMandatoryItem extends SieveAbstractGeneric {
     const item = {};
     item.element = this.getParent().createByName(parameter.type, parameter.value);
     item.whitespace = this.getParent().createByName("whitespace", " ");
+
+    if (parameter.optional) {
+      item.isOptional = true;
+      item.disabled = true;
+    }
 
     this._elements.set(parameter.id, item);
   }
@@ -304,7 +334,7 @@ class SieveGenericMandatoryItem extends SieveAbstractGeneric {
    * @returns {SieveGenericMandatoryItem}
    *   a self reference
    */
-  setParameters(parameters) {
+  setProperties(parameters) {
 
     if (!parameters || !parameters.length)
       throw new Error("Invalid Parameters");
@@ -314,7 +344,7 @@ class SieveGenericMandatoryItem extends SieveAbstractGeneric {
 
     // Initialize all Parameters...
     parameters.forEach((parameter) => {
-      this.addParameter(parameter);
+      this.addProperty(parameter);
     });
 
     return this;
@@ -326,7 +356,8 @@ class SieveGenericMandatoryItem extends SieveAbstractGeneric {
   require(capabilities) {
 
     this._elements.forEach((item) => {
-      item.element.require(capabilities);
+      if (!item.element.disabled)
+        item.element.require(capabilities);
     });
 
     return this;
@@ -337,10 +368,43 @@ class SieveGenericMandatoryItem extends SieveAbstractGeneric {
    */
   parse(parser) {
 
-    this._elements.forEach((item) => {
+    const pos = parser.pos();
+
+    // First try parsing with all optionals enabled...
+    try {
+
+      for (const item of this._elements.values()) {
+
+        if (item.isOptional)
+          item.disabled = false;
+
+        item.whitespace.init(parser);
+        item.element.init(parser);
+      }
+
+      return this;
+    } catch (ex) {
+      // FIXME: we should reset the elements to their default values.
+      // Swallow the exception and reset the position as if nothing happened
+      console.log("Parsing optional failed");
+      console.log(ex);
+      parser.pos(pos);
+    }
+
+
+    // next try parse with all optionals disabled...
+
+    for (const item of this._elements.values()) {
+      if (item.isOptional) {
+        item.disabled = true;
+        // TODO reset to defaults.
+        continue;
+      }
+
       item.whitespace.init(parser);
       item.element.init(parser);
-    });
+    }
+
 
     return this;
   }
@@ -353,55 +417,13 @@ class SieveGenericMandatoryItem extends SieveAbstractGeneric {
     let result = "";
 
     this._elements.forEach((item) => {
-      result += item.whitespace.toScript();
-      result += item.element.toScript();
+      if (!item.disabled) {
+        result += item.whitespace.toScript();
+        result += item.element.toScript();
+      }
     });
 
     return result;
-  }
-}
-
-
-/**
- * A dependent element can only exist if an other element they depend on exists.
- * It is used e.g with variables lists in has flag.
- */
-class SieveGenericDependentItem extends SieveGenericMandatoryItem {
-
-  /**
-   * Checks if this elements is a dependent element.
-   * @returns {boolean}
-   *   true in case the element is dependent otherwise false.
-   */
-  isDependent() {
-    return true;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  parse(parser) {
-
-    try {
-      super.parse(parser);
-    } catch (ex) {
-      this.enabled = false;
-      throw ex;
-    }
-
-    this.enabled = true;
-    return this;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  toScript() {
-
-    if (!this.enabled)
-      return "";
-
-    return super.toScript();
   }
 }
 
@@ -415,7 +437,7 @@ class SieveGenericDependentItem extends SieveGenericMandatoryItem {
  * This also means they have an implicit default value which makes parsing awkward.
  *
  * In case the tag is missing (which means using the implicit default) the class is fully transparent.
- * Otherwise it is greedy and eats leading and trailing whitespaces.
+ * Otherwise it is greedy and eats leading and trailing whitespace.
  */
 class SieveGenericOptionalItem extends SieveAbstractGeneric {
 
@@ -493,7 +515,7 @@ class SieveGenericOptionalItem extends SieveAbstractGeneric {
    *   the tag which should be added.
    *
    */
-  addTag(tag) {
+  addProperty(tag) {
 
     if (tag.type === null || typeof (tag.type) === 'undefined')
       throw new Error("Tag without a type");
@@ -502,7 +524,7 @@ class SieveGenericOptionalItem extends SieveAbstractGeneric {
       throw new Error("Tag without an id");
 
     // Skip element if it is not supported by the current system
-    if (SieveLexer.supportsByName(tag.type) === false)
+    if (this.getDocument().supportsByName(tag.type) === false)
       return;
 
     const item = {};
@@ -523,22 +545,26 @@ class SieveGenericOptionalItem extends SieveAbstractGeneric {
   }
 
   /**
+   * Sets the tags, tags are by definition non positional, optional and always
+   * start with a unique token.
    *
-   * @param {object} tags
+   * @param {object} properties
+   *   the structure containing the tags definition.
    * @returns {SieveGenericOptionalItem}
    *   a self reference
    */
-  setTags(tags) {
+  setProperties(properties) {
 
-    if (!tags || !tags.length)
+    if (!properties || !properties.length) {
       throw new Error("Invalid Tags");
+    }
 
     if (this._optionals.length)
       throw new Error("Tags already initialized");
 
     // Initialize all Parameters...
-    tags.forEach((tag) => {
-      this.addTag(tag);
+    properties.forEach((property) => {
+      this.addProperty(property);
     });
 
     if (this._elements.size)
@@ -565,7 +591,7 @@ class SieveGenericOptionalItem extends SieveAbstractGeneric {
     // ... in any case it needs to be separated by a whitespace
     // if not we know are no tags.
     let whitespace = this.getParent().createByName("whitespace", "");
-    if (this.getDocument().probeByClass("whitespace", parser))
+    if (this.getDocument().probeByClass("@whitespace", parser))
       whitespace.init(parser);
 
     // then we clone the tags element to track duplicate elements.
@@ -594,7 +620,7 @@ class SieveGenericOptionalItem extends SieveAbstractGeneric {
         whitespace = this.getParent().createByName("whitespace", "");
 
         // In case there are no more whitespaces we can skip right here.
-        if (this.getDocument().probeByClass("whitespace", parser))
+        if (this.getDocument().probeByClass("@whitespace", parser))
           whitespace.init(parser);
 
         hasTags = true;
@@ -621,7 +647,9 @@ class SieveGenericOptionalItem extends SieveAbstractGeneric {
    */
   require(imports) {
 
-    for (const item of this._optionals.values()) {
+    for (const id of this._elements.values()) {
+
+      const item = this._optionals.get(id);
       item.element.require(imports);
     }
 
@@ -688,6 +716,7 @@ class SieveGenericOptionalItem extends SieveAbstractGeneric {
   }
 }
 
+
 /**
  *
  */
@@ -696,22 +725,12 @@ class SieveGenericStructure extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, id, type) {
-    super(docshell, id);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
 
     this._elements = [];
     this._requirements = null;
     this._nodeName = type;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  nodeName() {
-    if (this._nodeName === null)
-      throw new Error("Uninitialized Element");
-
-    return this._nodeName;
   }
 
   /**
@@ -734,64 +753,10 @@ class SieveGenericStructure extends SieveAbstractElement {
    */
   init(parser) {
 
-    let pos = null;
-    let prev = null;
-
     this._elements.forEach((element) => {
-
-      if (element.isDependent && element.isDependent()) {
-
-        // save the current position for a rollback
-        pos = parser.pos();
-
-        // A dependent element is optional so it is ok
-        // if we fail here
-        try {
-          element.parse(parser);
-        }
-        catch {
-          // TODO reset item
-          // Reset the position as if nothing happened
-          parser.pos(pos);
-          pos = null;
-        }
-
-        // and continue with the next element
-        prev = element;
-        return;
-      }
-
-      // This happens only if the previous element
-      // was a dependent element, and it was parsed
-      // successfully
-      if (pos !== null) {
-
-        try {
-          element.parse(parser);
-
-        } catch {
-
-          prev.enabled = false;
-
-          // parsing failed. So let's reset the position and
-          // try parsing without the dependent element.
-          // we need to reset the depended element
-          parser.pos(pos);
-          element.parse(parser);
-        }
-
-        pos = null;
-        return;
-      }
-
       element.parse(parser);
       return;
     });
-
-
-    /* this._elements.forEach( function ( element ) {
-       element.parse( parser );
-     }, this );*/
 
     return this;
   }
@@ -858,8 +823,7 @@ class SieveGenericStructure extends SieveAbstractElement {
   }
 
   /**
-   * Adds a literal to the generic element.
-   * A literal is a fixed string.
+   * Adds a string token to the generic element.
    *
    * @param {string} token
    *   the literals token
@@ -870,7 +834,7 @@ class SieveGenericStructure extends SieveAbstractElement {
    * @returns {SieveGenericStructure}
    *   a self reference
    */
-  addLiteral(token, postfix, prefix) {
+  addToken(token, postfix, prefix) {
 
     const literal = new SieveGenericLiteral(token, this);
     literal.setPostfix(postfix);
@@ -881,95 +845,50 @@ class SieveGenericStructure extends SieveAbstractElement {
     return this;
   }
 
-
   /**
-   * @param {Array.<object>|object} tags
+   * Adds a set of properties to this structure.
+   *
+   * In case positional is true, then the set of properties is considered to
+   * exist in precisely the given order.  t is typically used for parameters
+   * which have a fixed order and do not start with a unique token. Thus they
+   * can only be identified by their position.
+   *
+   * Otherwise if positional is false, then each property in the given set
+   * can (but does not have to) appear in any order at most once. It is used
+   * for tags. Which are optional without a given order but start with a unique
+   * token. The token is used to identify the property
+   *
+   * @param {object} properties
+   *   the properties which should be added.
+   * @param {boolean} positional
+   *   true in case it is positional otherwise false.
    * @returns {SieveGenericStructure}
    *   a self reference
    */
-  addOptionalItems(tags) {
+  addProperties(properties, positional) {
 
     // we bail silently out in case no tags are defined.
-    if (typeof (tags) === "undefined" || tags === null)
+    if (typeof (properties) === "undefined" || properties === null)
       return this;
 
     // Ok if it is something else than an array we just
     // convert it into an array
-    if (!Array.isArray(tags))
-      tags = [tags];
+    if (!Array.isArray(properties))
+      properties = [properties];
 
-    this._elements.push(
-      new SieveGenericOptionalItem(this).setTags(tags));
-
-    return this;
-  }
-
-  /**
-   * A dependent element is something between
-   * an optional and mandatory element.
-   *
-   * Such an element is by definition optional but can not
-   * live without the mandatory element but has a fixed position.
-   * This can occur in case of an ambiguous type definition.
-   *
-   * Let's take an example structure
-   * "action" <variables:string> [flags:string];
-   *
-   * As you can see the action has two string parameters.
-   * This allow the following two commands
-   *
-   * action "flags";
-   * action "variables" "flags"
-   *
-   * As the parser is linear the optional "variable" parameter
-   * would be greedy an consume the string so that the mandatory
-   * flags parameter would fails.
-   *
-   * A dependent element fixes this. The "variable" element is
-   * non greedy. So that in the first case the "flags".
-   *
-   * @param {Array.<object>|object} parameters
-   *   the configuration and parameters for the dependent item
-   * @returns {SieveGenericStructure}
-   *   a self reference
-   */
-  addDependentItems(parameters) {
-
-    if (typeof (parameters) === "undefined" || parameters === null)
+    if (properties.length === 0)
       return this;
 
-    if (!Array.isArray(parameters))
-      parameters = [parameters];
+    const item = (positional === false ?
+      new SieveGenericOptionalItem(this) : new SieveGenericMandatoryItem(this));
 
-    this._elements.push(
-      new SieveGenericDependentItem(this).setParameters(parameters));
+    item.setProperties(properties);
 
-    return this;
-  }
-
-  /**
-   * A mandatory element is a required element.
-   * In case it is not at the expected position
-   * an error will be raised
-   *
-   * @param  {Array.<object>|object} parameters
-   *   the configuration and parameter for the generic items.
-   * @returns {SieveGenericStructure}
-   *   a self reference
-   */
-  addMandatoryItems(parameters) {
-
-    if (typeof (parameters) === "undefined" || parameters === null)
-      return this;
-
-    if (!Array.isArray(parameters))
-      parameters = [parameters];
-
-    this._elements.push(
-      new SieveGenericMandatoryItem(this).setParameters(parameters));
+    this._elements.push(item);
 
     return this;
   }
+
 
   /**
    * Checks if the generic structure contains an element with the given id.
@@ -1021,20 +940,13 @@ class SieveGroupElement extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, id, type) {
-    super(docshell, id);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
 
     this._items = [];
     this._prefix = null;
     this._nodeName = type;
     this._current = null;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  nodeName() {
-    return this._nodeName;
   }
 
   /**
@@ -1115,7 +1027,7 @@ class SieveGroupElement extends SieveAbstractElement {
    * @returns {SieveGenericUnion}
    *   a self reference
    */
-  setToken(token) {
+  addToken(token) {
 
     if (token === null || typeof (token) === "undefined") {
       this._prefix = null;
@@ -1136,9 +1048,12 @@ class SieveGroupElement extends SieveAbstractElement {
    * @returns {SieveGenericUnion}
    *   a self reference
    */
-  addItems(items) {
+  addItems(...items) {
+    if (!items.length) {
+      throw new Error("Invalid types specified definition");
+    }
 
-    this._items = this._items.concat(items);
+    this._items.push(...items);
     return this;
   }
 
@@ -1328,8 +1243,8 @@ class SieveExplicitGroupElement extends SieveImplicitGroupElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, id, nodeName) {
-    super(docshell, id, nodeName);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
     this._default = null;
   }
 
@@ -1362,6 +1277,8 @@ class SieveExplicitGroupElement extends SieveImplicitGroupElement {
   }
 
   /**
+   * Gets the child element with the given id.
+   *
    * @param {string} [id]
    *   an optional id of the child element to get
    * @returns {SieveAbstractElement}

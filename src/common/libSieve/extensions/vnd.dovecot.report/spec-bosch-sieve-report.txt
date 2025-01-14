@@ -1,0 +1,392 @@
+
+
+
+
+                                                                S. Bosch
+
+                                                          March 19, 2016
+
+
+         Sieve Email Filtering: Sending Abuse Feedback Reports
+                        spec-bosch-sieve-report
+
+Abstract
+
+   This document defines a new vendor-defined action command "report"
+   for the "Sieve" email filtering language.  It provides the means to
+   send Messaging Abuse Reporting Format (MARF) reports (RFC 5965).
+   This format is intended for communications regarding email abuse and
+   related issues.  The "report" command allows (partially) automating
+   the exchange of these reports, which is particularly useful when the
+   Sieve script is executed for an IMAP event (RFC 6785) that is
+   triggered by direct user action.
+
+Table of Contents
+
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   1
+   2.  Conventions Used in This Document . . . . . . . . . . . . . .   2
+   3.  Action "report" . . . . . . . . . . . . . . . . . . . . . . .   2
+   4.  Sieve Capability Strings  . . . . . . . . . . . . . . . . . .   3
+   5.  Example . . . . . . . . . . . . . . . . . . . . . . . . . . .   3
+   6.  Security Considerations . . . . . . . . . . . . . . . . . . .   6
+   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   6
+     7.1.  Normative References  . . . . . . . . . . . . . . . . . .   6
+     7.2.  Informative References  . . . . . . . . . . . . . . . . .   6
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   7
+
+1.  Introduction
+
+   This is an extension to the Sieve filtering language defined by RFC
+   5228 [SIEVE].  It provides the means to send Messaging Abuse
+   Reporting Format (MARF) [MARF] report messages.  This format is
+   intended to exchange reports on abuse and related issues.
+
+   This extension adds the "report" action command, which sends a MARF
+   report to the indicated recipient address.  The author of the Sieve
+   script must also specify a human-readable messsage and the type of
+   the report.  The recipient is usually an automated system that will
+   take the appropriate action based on the report.
+
+   Normally, Sieve scripts are executed at message delivery.  In that
+   case, the "report" action would be of little use, since sending such
+   reports or performing the resulting actions is already part of the
+
+
+
+Bosch                  Expires September 20, 2016               [Page 1]
+
+                      Sieve: Sending Abuse Reports            March 2016
+
+
+   abuse detection software that commonly runs before the message is
+   even delivered.
+
+   Instead, the "report" action is mainly useful when used in Sieve
+   scripts that are run as triggered by an IMAP event [IMAPSIEVE].
+   Then, the Sieve script is executed as a direct result of user action
+   in most cases.  Certain user actions, such as moving or copying a
+   message into a particular mailbox, can then be defined to have a
+   special meaning.  For example, placing a message into the "Spam
+   Report" mailbox could mean that the user reports the message as
+   unsolicited bulk mail.  Conversely, placing a message in a mailbox
+   called "Ham Report" could mean that the user reports that the message
+   is erroneously classified as unsolicited bulk mail.  Using the
+   "report" action, the Sieve script that is run as a result of these
+   actions can convey the report in the standard MARF format to the
+   entity responsible for handling such reports.  This avoids the need
+   for the user's MUA software to support the MARF report format and the
+   need to configure where the reports are to be sent.
+
+   The "report" action is mainly intended to be used in Sieve scripts
+   that are controlled by the system administrator.  Also, this
+   extension is specific to the Pigeonhole Sieve implementation for the
+   Dovecot Secure IMAP server.  It will therefore most likely not be
+   supported by web interfaces and GUI-based Sieve editors.
+
+2.  Conventions Used in This Document
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+   document are to be interpreted as described in [KEYWORDS].
+
+   Conventions for notations are as in [SIEVE] Section 1.1, including
+   use of the "Usage:" label for the definition of action and tagged
+   arguments syntax.
+
+3.  Action "report"
+
+   Usage: report [":headers_only"] <feedback-type: string>
+                 <message: string> <recipient: string>
+
+   The "report" action is used to send a Messaging Abuse Reporting
+   Format (MARF) [MARF] report to the supplied recipient address.  The
+   "report" action composes the MARF report (the "report message") based
+   on the provided arguments and the "triggering message" that Sieve is
+   currently evaluating.  The envelope sender address on the report
+   message is chosen by the sieve implementation.
+
+
+
+
+
+Bosch                  Expires September 20, 2016               [Page 2]
+
+                      Sieve: Sending Abuse Reports            March 2016
+
+
+   The "feedback-type" argument is used as the value for the "Feedback-
+   Type" field in the machine-readable "message/feedback-report" MIME
+   part of the MARF report message.  The "feedback-type" string value
+   must conform to the MIME "token" syntax [RFC2045].
+
+   The "message" argument is a UTF-8 [UTF-8] string specifying a human-
+   readable text explaining the nature of the report.  It is directly
+   used as the body of the first MIME part of the MARF report with
+   content type "text/plain".
+
+   By default, the MARF report includes the triggering message in its
+   entirety as its third MIME part.  When the ":headers_only" tag is
+   specified, it contains only a copy of the entire header block from
+   the triggering message.  In that case the MIME type of the third part
+   is "text/rfc822-headers", rather than "message/rfc822" [MARF].
+
+   Since the "report" action is not normally used at message delivery,
+   the report message is not sent as a result of a newly delivered
+   message.  In such cases, mail loops are very unlikely to occur.
+   However, for the uncommon case that the "report" action is used at
+   message delivery, implementations MUST always endeavor to avoid mail
+   loops.  To that end, implementations MUST always include an "Auto-
+   Submitted:" field [RFC3834] in the report message.  Furthermore,
+   implementations MUST NOT allow sending report messages to the mail
+   account running this Sieve script.
+
+   The "report" action is compatible with all other actions, and does
+   not affect the operation of other actions.  In particular, the
+   "report" action MUST NOT cancel the implicit keep.  Substitution of
+   variables [VARIABLES] is supported for all arguments.
+
+   Multiple executed "report" actions are allowed.  However, only one
+   report message is sent for each unique combination of feedback type
+   and report recipient.  Subsequent duplicate report actions are
+   ignored without error and only the human-readable message from the
+   first instance of the duplicate action is used in the report.
+
+4.  Sieve Capability Strings
+
+   A Sieve implementation that defines the "report" action command will
+   advertise the capability string "vnd.dovecot.report".
+
+5.  Example
+
+   In this example, Victor receives some unsolicited bulk email at his
+   account "victim@example.org" and his mail filter failed to recognize
+   it as such.  The message is delivered to his INBOX and looks as
+   follows:
+
+
+
+Bosch                  Expires September 20, 2016               [Page 3]
+
+                      Sieve: Sending Abuse Reports            March 2016
+
+
+       Return-Path: <spammer@example.com>
+       Received: from mail.example.com by mail.example.org
+           for <victim@example.org>; Wed, 17 Thu 2016 03:01:02 +0100
+       Message-ID: <1234567.89ABCDEF@example.com>
+       Date: Thu, 17 Mar 2016 2:59:19 +0100
+       From: "Steve Pammer" <spammer@example.com>
+       To: "Victor Timson" <victim@example.org>
+       Subject: Male enhancement products
+       X-Spam-Score: 3.3/5.0
+       X-Spam-Status: not spam
+
+       We have very interesting offers!
+
+   The administrator of Victor's email account has created a "Spam
+   Report" mailbox and has asked Victor to move any misclassified e-mail
+   into that mailbox.  The following administrator-controlled Sieve
+   script is linked to that mailbox:
+
+   require ["imapsieve", "environment", "vnd.dovecot.report"];
+
+   if allof(
+       environment "imap.mailbox" "Spam Report",
+       environment "imap.cause" "COPY",
+       header "x-spam-status" "not spam") {
+       report "abuse" "This spam message slipped through."
+       "spam-report@example.org";
+   }
+
+   As instructed, Victor moves the message into the "Spam Report"
+   mailbox and the following message is sent to "spam-
+   report@example.org":
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Bosch                  Expires September 20, 2016               [Page 4]
+
+                      Sieve: Sending Abuse Reports            March 2016
+
+
+       Message-ID: <1458401523-377250-0@example.org>
+       Date: Sat, 19 Mar 2016 16:32:03 +0100
+       From: Postmaster <postmaster@example.org>
+       To: <spam-report@example.org>
+       Subject: Report: Male enhancement products
+       Auto-Submitted: auto-generated (report)
+       MIME-Version: 1.0
+       Content-Type: multipart/report; report-type=feedback-report;
+           boundary="324/example.org"
+
+       This is a MIME-encapsulated message
+
+       --324/example.org
+       Content-Type: text/plain; charset=utf-8
+       Content-Transfer-Encoding: 8bit
+       Content-Disposition: inline
+
+       This spam message slipped through.
+
+       --324/example.org
+       Content-Type: message/feedback-report
+
+       Version: 1
+       Feedback-Type: abuse
+       User-Agent: Exemplimail/1.3.15.rc1
+       Original-Mail-From: <spammer@example.com>
+
+       --324/example.org
+       Content-Type: message/rfc822
+       Content-Disposition: attachment
+
+       Return-Path: <spammer@example.com>
+       Received: from mail.example.com by mail.example.org
+         for <victim@example.org>; Wed, 17 Thu 2016 03:01:02 +0100
+       Message-ID: <1234567.89ABCDEF@example.com>
+       Date: Thu, 17 Mar 2016 2:59:19 +0100
+       From: "Steve Pammer" <spammer@example.com>
+       To: "Victor Timson" <victim@example.org>
+       Subject: Male enhancement products
+       X-Spam-Score: 3.3/5.0
+       X-Spam-Status: not spam
+
+       We have very interesting offers!
+
+       --324/example.org--
+
+
+
+
+
+
+Bosch                  Expires September 20, 2016               [Page 5]
+
+                      Sieve: Sending Abuse Reports            March 2016
+
+
+6.  Security Considerations
+
+   When used in IMAP context, the "report" command is executed for each
+   action and message that matches the criteria defined by the Sieve
+   script.  If the user performs matching activities with a large volume
+   of messages, a great many reports can be sent at one time.
+   Implementations and deployments MUST be designed to cope with such
+   incidents, either by limiting the number of reports or by otherwise
+   mitigating their collective impact.
+
+7.  References
+
+7.1.  Normative References
+
+   [KEYWORDS]
+              Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119, March 1997.
+
+   [MARF]     Shafranovich, Y., Levine, J., and M. Kucherawy, "An
+              Extensible Format for Email Feedback Reports", RFC 5965,
+              DOI 10.17487/RFC5965, August 2010,
+              <http://www.rfc-editor.org/info/rfc5965>.
+
+   [RFC2045]  Freed, N. and N. Borenstein, "Multipurpose Internet Mail
+              Extensions (MIME) Part One: Format of Internet Message
+              Bodies", RFC 2045, DOI 10.17487/RFC2045, November 1996,
+              <http://www.rfc-editor.org/info/rfc2045>.
+
+   [RFC3834]  Moore, K., "Recommendations for Automatic Responses to
+              Electronic Mail", RFC 3834, DOI 10.17487/RFC3834, August
+              2004, <http://www.rfc-editor.org/info/rfc3834>.
+
+   [SIEVE]    Guenther, P. and T. Showalter, "Sieve: An Email Filtering
+              Language", RFC 5228, January 2008.
+
+   [UTF-8]    Yergeau, F., "UTF-8, a transformation format of ISO
+              10646", STD 63, RFC 3629, November 2003.
+
+   [VARIABLES]
+              Homme, K., "Sieve Email Filtering: Variables Extension",
+              RFC 5229, January 2008.
+
+7.2.  Informative References
+
+   [IMAPSIEVE]
+              Leiba, B., "Support for Internet Message Access Protocol
+              (IMAP) Events in Sieve", RFC 6785, DOI 10.17487/RFC6785,
+              November 2012, <http://www.rfc-editor.org/info/rfc6785>.
+
+
+
+Bosch                  Expires September 20, 2016               [Page 6]
+
+                      Sieve: Sending Abuse Reports            March 2016
+
+
+Author's Address
+
+   Stephan Bosch
+   Enschede
+   NL
+
+   Email: stephan@rename-it.nl
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Bosch                  Expires September 20, 2016               [Page 7]

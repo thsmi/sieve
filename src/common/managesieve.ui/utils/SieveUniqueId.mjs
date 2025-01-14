@@ -8,9 +8,9 @@
  *
  */
 
-const ASCII = 36;
-const SEED_OFFSET = 2;
-const SEED_LENGTH = 16;
+const RANDOM_SEED_SIZE = 10000000;
+const HEX_STRING = 16;
+
 /**
  * Generates a poor mans unique id.
  * It simply combines the current time with a random number.
@@ -19,14 +19,18 @@ const SEED_LENGTH = 16;
 class SieveUniqueId {
 
   /**
-   * Creates a pseudo random alpha numerical id.
+   * Creates a pseudo random alpha numerical uuid lookalike
+   *
+   * It starts always with the id prefix, this guarantees that it will
+   * never start with a number and thus can be used safely as an HTML id.
+   *
    * @returns {string}
    *   the generated id.
    */
   generate() {
-    // "" + Math.floor(Math.random() * 10000000).toString(16) + Date.now().toString(16)
-    return Date.now().toString(ASCII)
-      + "-" + Math.random().toString(ASCII).substr(SEED_OFFSET, SEED_LENGTH);
+    return "siv-"
+        + (Math.floor(Math.random() * RANDOM_SEED_SIZE).toString(HEX_STRING))
+        + Date.now().toString(HEX_STRING);
   }
 }
 

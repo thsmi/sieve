@@ -1,0 +1,83 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#content {
+  flex: 1;
+  flex-grow: 1;
+  height: 100%;
+  overflow: scroll;
+  padding-left: 10px;
+}
+
+#sidebar {
+  flex-grow: 0;
+  flex-basis: 250px;
+  background-color: #f5f5f5;
+  padding-left: 10px;
+}
+
+#container {
+  display: flex;
+  height: 100%;
+}
+
+.success {
+  color: green;
+}
+
+.failure {
+  color: red;
+}
+
+.logInfo {
+  white-space: pre;
+}
+
+.logTrace {
+  white-space: pre;
+  color: gray;
+  display: none;
+}
+
+#divOutput.showTrace .logTrace {
+  display: inherit !important;
+}
+
+.logHeader {
+  font-size: 1.2em;
+  border-bottom: 1px solid lightgray;
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+
+.logError {
+  white-space: pre;
+  color: red;
+}
+
+.logFailure {
+  white-space: pre;
+  color: red;
+  padding-top: 10px;
+}
+
+.logSuccess {
+  white-space: pre;
+  color: green;
+  padding-top: 10px;
+}
+
+.logWarning {
+  white-space: pre;
+  color: orange;
+  padding-top: 10px;
+}
+
+#tests div span {
+  cursor: pointer;
+}

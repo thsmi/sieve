@@ -675,6 +675,12 @@
   "notifymethodcapability.maybe" : "maybe",
   "notifymethodcapability.maybe.text" : "The Sieve interpreter can't determine if the entity identified by the notification-uri is online or not",
   "notifymethodcapability.help" :"The notify_method_capability test retrieves the notification capability for given method and matches it to the given values.\n\nThe capability parameter is case insensitive. Currently only a single capability \"online\" is defined. But Sieve Notifications extensions may add aditional capabilities.\n\nThe \"online\" capabilities result is either \"yes\", \"no\" or \"maybe\". And describes the likelyness for a successfull delivery.\n\nNote that even after a \"yes\", there is no guarantee when and if the notification is received. Transport errors, recipient policy, etc. can prevent that.",
-  "notifymethodcapability.summary" :"Check the notification capabilities."
+  "notifymethodcapability.summary" :"Check the notification capabilities.",
+
+  "debug_log.tab.home" : "Debug Log",
+  "debug_log.tab.help" : "Help",
+  "debug_log.description" : "Log message to server's logfile:",
+  "debug_log.help" : "The 'debug_log' command prints the provided message to an implementation-defined logging facility.\n\nThe message may contain variable substitutions as provided by the 'variables'to dynamically compose the message from information available at runtime.",
+  "debug_log.summary": "Log ${message}"
 
 }

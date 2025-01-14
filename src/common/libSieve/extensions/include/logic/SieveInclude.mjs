@@ -10,127 +10,67 @@
  *
  */
 
+import {
+  id, token,
+  parameters, tags,
+  tag, stringList, string,
+
+  items, value
+} from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
-const _return = {
-  node: "action/return",
-  type: "action",
-  token: "return",
 
-  requires: "include"
-};
+SieveGrammar.addAction(
+  id("action/return", "@action", "include"),
+  token("return")
+);
 
-SieveGrammar.addAction(_return);
+// global <value: string-list>
+SieveGrammar.addAction(
+  id("action/global", "@action", { all: ["include", "variables"] }),
 
-
-const _global = {
-  node: "action/global",
-  type: "action",
-  token: "global",
-
-  requires: { all: ["include", "variables"] },
-
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "variables",
-
-      type: "stringlist",
-      value: '"Example"'
-    }]
-  }]
-};
-
-SieveGrammar.addAction(_global);
+  token("global"),
+  parameters(
+    stringList("variables", "Example")));
 
 
-const _once = {
-  node: "action/include/once",
-  type: "action/include/once",
-
-  requires: "include",
-
-  token: ":once"
-};
-
-SieveGrammar.addTag(_once);
+SieveGrammar.addTag(
+  id("action/include/once", "@action/include/once", "include"),
+  token(":once"));
 
 
-const _optional = {
-  node: "action/include/optional",
-  type: "action/include/optional",
-
-  requires: "include",
-
-  token: ":optional"
-};
-
-SieveGrammar.addTag(_optional);
+SieveGrammar.addTag(
+  id("action/include/optional", "@action/include/optional", "include"),
+  token(":optional"));
 
 
-const globallocation = {
-  node: "tag/location-type/global",
-  type: "tag/location-type/",
+SieveGrammar.addTag(
+  id("tag/location-type/global", "@tag/location-type/", "include"),
+  token(":global")
+);
 
-  token: ":global"
-};
-
-SieveGrammar.addTag(globallocation);
-
-
-const personallocation = {
-  node: "tag/location-type/personal",
-  type: "tag/location-type/",
-
-  token: ":personal"
-};
-
-SieveGrammar.addTag(personallocation);
+SieveGrammar.addTag(
+  id("tag/location-type/personal", "@tag/location-type/", "include"),
+  token(":personal"));
 
 
-SieveGrammar.addGroup({
-  node: "tag/location-type",
-  type: "tag/location-type",
-
-  value: ":personal",
-
-  items: ["tag/location-type/"]
-});
+SieveGrammar.addGroup(
+  id("tag/location-type"),
+  items("@tag/location-type/"),
+  value(":personal")
+);
 
 
-const _include = {
-  node: "action/include",
-  type: "action",
+// include [LOCATION] [":once"] [":optional"] <value: string>
 
-  token: "include",
+SieveGrammar.addAction(
+  id("action/include", "@action", "include"),
 
-  requires: "include",
-
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "location",
-      type: "tag/location-type"
-    }, {
-      id: "once",
-      type: "action/include/once"
-    }, {
-      id: "optional",
-      type: "action/include/optional"
-    }]
-  }, {
-    id: "parameters",
-
-    elements: [{
-      id: "script",
-      type: "string",
-
-      value: '"Example"'
-    }]
-  }]
-};
-
-SieveGrammar.addAction(_include);
+  token("include"),
+  tags(
+    tag("location", "tag/location-type"),
+    tag("once", "action/include/once"),
+    tag("optional", "action/include/optional")),
+  parameters(
+    string("script", "Example")));

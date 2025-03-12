@@ -11,17 +11,17 @@
 
     "codemirror": "^6.0.1",
     "@codemirror/legacy-modes": "^6.1.0",
-    "@rollup/plugin-node-resolve": "^13.3.0",
-    "rollup": "^2.77.0",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "rollup": "^4.35.0",
 
-    "electron": "^33.2.1",
+    "electron": "^35.0.1",
     "@electron/packager": "^18.3.6",
 
     "bootstrap": "^5.3.3",
 
-    "@eslint/js": "^9.17.0",
-    "eslint-plugin-jsdoc": "^50.6.1",
-    "globals": "^15.14.0",
+    "@eslint/js": "^9.22.0",
+    "eslint-plugin-jsdoc": "^50.6.6",
+    "globals": "^16.0.0",
 
     "gulp": "^5.0.0",
     "yazl": "^3.3.1"

@@ -11,8 +11,6 @@
  */
 
 import { SieveGrammar } from "./../toolkit/logic/GenericElements.mjs";
-import { SieveLexer } from "./../toolkit/SieveLexer.mjs";
-import { SieveDocument } from "./../toolkit/SieveScriptDOM.mjs";
 import { SieveCapabilities } from "./../toolkit/logic/GenericCapabilities.mjs";
 
 let suite = null;
@@ -41,14 +39,9 @@ if (!suite)
  */
 function parseScript(script, capabilities) {
 
-  SieveGrammar.create(capabilities);
+  const doc = SieveGrammar.create(capabilities);
 
-  if (capabilities)
-    SieveLexer.capabilities(capabilities);
-
-  const doc = new SieveDocument(SieveLexer, null);
-
-  doc.script(script);
+  doc.setScript(script);
 
   return doc;
 }
@@ -69,7 +62,7 @@ suite.parseScript = parseScript;
 function validateDocument(doc, script, capabilities) {
 
   suite.logTrace("Start Serializing Script");
-  const rv = doc.script();
+  const rv = doc.getScript();
   suite.logTrace("End Serializing Script");
 
   suite.assertEquals(script, rv);
@@ -127,54 +120,44 @@ suite.expectValidScript = expectValidScript;
  */
 function expectInvalidScript(script, exception, capabilities) {
 
-  SieveGrammar.create(capabilities);
-
-  if (capabilities)
-    SieveLexer.capabilities(capabilities);
-
-  const doc = new SieveDocument(SieveLexer, null);
+  const doc = SieveGrammar.create(capabilities);
 
   suite.logTrace("Start Parsing Script");
-  try {
-    doc.script(script);
-  }
-  catch (e) {
-    suite.logTrace("Exception caught");
-    suite.assertEquals(exception, e.toString().substr(0, exception.length));
-
-    return;
-  }
-
-  throw new Error("Exception expected");
+  suite.assertThrows(() => {
+    doc.setScript(script);
+  }, exception);
 }
 
 suite.expectInvalidScript = expectInvalidScript;
 
 /**
- * First it creates an element by its type with default values, converts it
+ * First it creates an element by its type then converts it
  * to a script and validates it against the snippet.
  *
  * Then does it does the reverse. It initializes the element with the snippet
  * and converts it to a script. The result has to be equal to the snippet.
  *
+ * By default the element is be initialized with the snippet.
+ * But if init is set to false, it won't be initialized and thus falls back
+ * to default values.
+ *
  * @param {string} type
  *   the element to be created
  * @param {string} snippet
- *   the snippet
+ *   the snippet.
  * @param {string[]} [capabilities]
  *   a string array with sieve capabilities needed for the test.
+ * @param {boolean} [init]
+ *   if true the new new element will be initialized with snippet.
  */
-function expectValidSnippet(type, snippet, capabilities) {
+function expectValidSnippet(type, snippet, capabilities, init) {
 
-  SieveGrammar.create(capabilities);
+  const initializer = (init === false ? undefined : snippet);
 
-  if (capabilities)
-    SieveLexer.capabilities(capabilities);
-
-  const doc = new SieveDocument(SieveLexer, null);
+  const doc = SieveGrammar.create(capabilities);
 
   // Create element with defaults and convert it to a script snippet...
-  const element = doc.createByName(type);
+  const element = doc.createByName(type, initializer);
   const rv1 = element.toScript();
 
   // ... and should match our expectation.
@@ -203,3 +186,45 @@ function expectValidSnippet(type, snippet, capabilities) {
 }
 
 suite.expectValidSnippet = expectValidSnippet;
+
+/**
+ * Creates a new element without initializing it, this creates the element
+ * with his defaults values.
+ *
+ * The resulting element is then converted to a script and compared against
+ * the expected snippet.
+ *
+ * @param {string} type
+ *   the element to be created.
+ * @param {string} expected
+ *   the expected snippet.
+ * @param {string[]} [capabilities]
+ *   a string array with sieve capabilities needed for the test.
+ */
+function expectDefaultSnippet(type, expected, capabilities) {
+  suite.expectValidSnippet(type, expected, capabilities, false);
+}
+
+suite.expectDefaultSnippet = expectDefaultSnippet;
+
+
+/**
+ * Creates an element for the given type and initializes it with the snippet.
+ * It expects that an exceptions is thrown while parsing.
+ *
+ * @param {string} type
+ *   the element to be created.
+ * @param {string} snippet
+ *   the snippet.
+ * @param {string} exception
+ *   the expected exception's message.
+ * @param {string[]} [capabilities]
+ *   a string array with sieve capabilities needed for the test.
+ */
+function expectInvalidSnippet(type, snippet, exception, capabilities) {
+  suite.assertThrows(() => {
+    expectValidSnippet(type, snippet, capabilities, true);
+  }, exception);
+}
+
+suite.expectInvalidSnippet = expectInvalidSnippet;

@@ -10,30 +10,22 @@
  *
  */
 
+import { id, token, parameters, number } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
-const vacationSeconds = {
-  extends: "action/vacation",
-  requires: { any: ["vacation-seconds", "vacation"] }
-};
+// A "vacation-seconds" implies "vacation", and a script with "vacation-seconds"
+// in a "require" list can omit "vacation" from that list.
+// This means we have to make the vacation action accept both "requires"
 
-SieveGrammar.extendAction(vacationSeconds);
+const DEFAULT_SECONDS = 1000;
 
-SieveGrammar.addTag({
-  node: "action/vacation/interval/seconds",
-  type: "action/vacation/interval/",
+SieveGrammar.extendAction(
+  "action/vacation",
+  { requires: { any: ["vacation-seconds", "vacation"] } });
 
-  token: ":seconds",
-
-  requires: "vacation-seconds",
-
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "seconds",
-      type: "number",
-      value: '1800'
-    }]
-  }]
-});
+SieveGrammar.addTag(
+  id("action/vacation/interval/seconds", "@action/vacation/interval/", "vacation-seconds"),
+  token(":seconds"),
+  parameters(
+    number("seconds", DEFAULT_SECONDS))
+);

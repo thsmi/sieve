@@ -162,7 +162,7 @@ class SieveNotifyActionUI extends SieveActionDialogBoxUI {
    */
   getSummary() {
     const msg = SieveI18n.getInstance().getString("notify.summary");
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     return elm;
   }
 }
@@ -272,7 +272,7 @@ class SieveNotifyMethodCapabilityUI extends SieveTestDialogBoxUI {
    */
   getSummary() {
     const msg = SieveI18n.getInstance().getString("notifymethodcapability.summary");
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     return elm;
   }
 }
@@ -325,7 +325,7 @@ class SieveValidNotifyMethodUI extends SieveTestDialogBoxUI {
     const msg = SieveI18n.getInstance().getString("validnotifymethod.summary")
       .replace("${uri}", '<em class="sivValidNotifyMethodUris"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivValidNotifyMethodUris").textContent = this.uris().toScript();
     return elm;
   }

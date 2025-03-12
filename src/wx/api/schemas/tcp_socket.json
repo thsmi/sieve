@@ -1,0 +1,337 @@
+[
+  {
+    "namespace": "tcpSocket",
+    "description": "TCP Client Socket implementation",
+    "//permissions": [
+      "TCPClientSocket"
+    ],
+    "types": [],
+    "properties": {},
+    "functions": [
+      {
+        "name": "create",
+        "description": "Prepares the tcp socket and returns a handle but does not start a connection to the remote server. Don't forget to call destroy after disconnecting or getting disconnected otherwise you'll leak event handlers.",
+        "type": "function",
+        "async": true,
+        "parameters": []
+      },
+      {
+        "name": "destroy",
+        "description": "Destroys the given tcp socket. This means it closes calls a disconnect and then destroys the socket including all registered event handlers.",
+        "type": "function",
+        "async": true,
+        "parameters": [
+          {
+            "name": "socketId",
+            "type": "string",
+            "description": "The socket's unique id returned by create."
+          }
+        ]
+      },
+      {
+        "name": "connect",
+        "description": "Connects the socket to a remote server. Be sure you attached all listeners before calling this, otherwise you end-up in a race between frontend and network due to the async nature of webextensions.",
+        "type": "function",
+        "async": true,
+        "parameters": [
+          {
+            "name": "socketId",
+            "type": "string",
+            "description": "The socket's unique id returned by create."
+          },
+          {
+            "name": "host",
+            "type": "string",
+            "description": "Destination hostname or IP address"
+          },
+          {
+            "name": "port",
+            "type": "integer",
+            "description": "Destination port"
+          },
+          {
+            "name": "options",
+            "type": "object",
+            "optional": true,
+            "description": "Socket options",
+            "default": {},
+            "properties": {
+              "useSecureTransport": {
+                "type": "boolean",
+                "description": "If true it will implicitly upgrade to secure upon connect. If false or undefined the connection will be unsecure. But you can upgrade it at any time by calling upgradeToSecure()",
+                "optional": true,
+                "default": false
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "disconnect",
+        "description": "Terminates the socket connection",
+        "type": "function",
+        "async": true,
+        "parameters": [
+          {
+            "name": "socket",
+            "type": "string",
+            "description": "The socket's unique id."
+          }
+        ]
+      },
+      {
+        "name": "upgradeToSecure",
+        "description": "Starts a TLS switchover and upgrades an unsecure socket to a secured one.",
+        "type": "function",
+        "async": true,
+        "parameters": [
+          {
+            "name": "socket",
+            "type": "string",
+            "description": "The socket's unique id."
+          }
+        ]
+      },
+      {
+        "name": "getReadyState",
+        "description": "Returns the socket's ready state.",
+        "type": "function",
+        "async": true,
+        "parameters": [
+          {
+            "name": "socket",
+            "type": "string",
+            "description": "The socket's unique id."
+          }
+        ]
+      },
+      {
+        "name": "getPort",
+        "description": "Returns the remote port which is used for the connection.",
+        "type": "function",
+        "async": true,
+        "parameters": [
+          {
+            "name": "socket",
+            "type": "string",
+            "description": "The socket's unique id."
+          }
+        ]
+      },
+      {
+        "name": "getHost",
+        "description": "Returns the the hostname to which the socket is connected to.",
+        "type": "function",
+        "async": true,
+        "parameters": [
+          {
+            "name": "socket",
+            "type": "string",
+            "description": "The socket's unique id."
+          }
+        ]
+      },
+      {
+        "name": "isSecure",
+        "description": "Returns true in case the socket is secured.",
+        "type": "function",
+        "async": true,
+        "parameters": [
+          {
+            "name": "socket",
+            "type": "string",
+            "description": "The socket's unique id."
+          }
+        ]
+      },
+      {
+        "name": "getBufferedAmount",
+        "description": "Returns the side of the send buffer.",
+        "type": "function",
+        "async": true,
+        "parameters": [
+          {
+            "name": "socket",
+            "type": "string",
+            "description": "The socket's unique id."
+          }
+        ]
+      },
+      {
+        "name": "send",
+        "description": "Sends data via the socket.",
+        "type": "function",
+        "async": true,
+        "parameters": [
+          {
+            "name": "socket",
+            "type": "string",
+            "description": "The socket's unique id."
+          },
+          {
+            "name": "data",
+            "type": "string",
+            "description": "The data to be send."
+          }
+        ]
+      },
+      {
+        "name": "sendBytes",
+        "description": "Sends bytes via tha the socket.",
+        "type": "function",
+        "async": true,
+        "parameters": [
+          {
+            "name": "socket",
+            "type": "string",
+            "description": "The socket's unique id."
+          },
+          {
+            "additionalProperties": true,
+            "description": "The data to be send via the socket.",
+            "isInstanceOf": "ArrayBuffer",
+            "name": "data",
+            "type": "object"
+          },
+          {
+            "name": "offset",
+            "type": "integer",
+            "optional": true,
+            "default": 0,
+            "description": "The starting offset within the ArrayBuffer (defaults to 0)."
+          },
+          {
+            "name": "length",
+            "type": "integer",
+            "optional": true,
+            "default": "data.byteLength",
+            "description": "The length of the data to process (defaults to the full ArrayBuffer)."
+          }
+        ]
+      },
+      {
+        "name": "getSecurityInfo",
+        "description": "Returns the sockets security information. Needs a secure connection.",
+        "type": "function",
+        "async": true,
+        "parameters": [
+          {
+            "name": "socket",
+            "type": "string",
+            "description": "The socket's unique id."
+          }
+        ]
+      },
+      {
+        "name": "addCertErrorOverride",
+        "type": "function",
+        "description": "Adds a certificate error override for the given cert.",
+        "async": true,
+        "parameters": [
+          {
+            "name": "host",
+            "type": "string",
+            "description": "The hostname to override"
+          },
+          {
+            "name": "port",
+            "type": "string",
+            "description": "The port to override"
+          },
+          {
+            "name": "rawDER",
+            "type": "array",
+            "description": "The server's certificate",
+            "items": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "flags",
+            "type": "integer",
+            "description": "The override flags."
+          }
+        ]
+      }
+    ],
+    "events": [
+      {
+        "name": "onOpen",
+        "type": "function",
+        "description": "Called whenever the a connection to the server is established.",
+        "parameters": [],
+        "returns": {},
+        "extraParameters": [
+          {
+            "name": "socket",
+            "description": "The socket's unique id",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "onDrain",
+        "type": "function",
+        "description": "Called whenever the buffers have been drained. Which means data will be sent immediately. In case the buffers have not drained your data will be added to the buffer.",
+        "returns": {},
+        "extraParameters": [
+          {
+            "name": "socket",
+            "description": "The socket's unique id",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "onData",
+        "type": "function",
+        "description": "Called whenever data is received",
+        "parameters": [
+          {
+            "name": "bytes",
+            "description": "The data received as byte array.",
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        ],
+        "returns": {},
+        "extraParameters": [
+          {
+            "name": "socket",
+            "description": "The socket's unique id",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "onError",
+        "type": "function",
+        "description": "Called in case of an error. It will automatically close the socket. You won't get an onClose event.",
+        "parameters": [],
+        "returns": {},
+        "extraParameters": [
+          {
+            "name": "id",
+            "description": "The socket's unique id",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "onClose",
+        "type": "function",
+        "description": "Called when the connection is closed.",
+        "returns": {},
+        "extraParameters": [
+          {
+            "name": "id",
+            "description": "The socket's unique id",
+            "type": "string"
+          }
+        ]
+      }
+    ]
+  }
+]

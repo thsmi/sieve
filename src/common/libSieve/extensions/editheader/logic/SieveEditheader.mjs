@@ -12,117 +12,60 @@
 
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
-SieveGrammar.addTag({
-  node: "action/addheader/last",
-  type: "action/addheader/",
+import {
+  id, token,
+  tag, attribute, string, stringList, number,
+  optionals, parameters, fields, tags
+} from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 
-  requires: "editheader",
+SieveGrammar.addTag(
+  id("action/addheader/last", "@action/addheader/", "editheader"),
+  token(":last")
+);
 
-  token: ":last"
-});
+// "addheader" [":last"] <field-name: string> <value: string>
+SieveGrammar.addAction(
+  id("action/addheader", "@action", "editheader"),
 
-// "addheader"[":last"] < field - name: string > <value: string>
-SieveGrammar.addAction({
-  node: "action/addheader",
-  type: "action",
-
-  requires: "editheader",
-
-  token: "addheader",
-
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "last",
-      type: "action/addheader/last"
-    }]
-  }, {
-    id: "parameters",
-
-    elements: [{
-      id: "name",
-      type: "string",
-      value: '"X-Header"'
-    }, {
-      id: "value",
-      type: "string",
-      value: '"Some Value"'
-    }]
-  }]
-});
+  token("addheader"),
+  tags(
+    tag("last", "action/addheader/last")),
+  parameters(
+    string("name", "X-Header"),
+    string("value", "Some Value"))
+);
 
 // ":index" <fieldno: number> [":last"]
-SieveGrammar.addTag({
-  node: "action/deleteheader/index",
-  type: "action/deleteheader/",
+SieveGrammar.addTag(
+  id("action/deleteheader/index", "@action/deleteheader/", "editheader"),
 
-  requires: "editheader",
-
-  token: ":index",
-
-  properties: [{
-    id: "field",
-
-    elements: [{
-      id: "name",
-      type: "number",
-      value: '1'
-    }]
-  }, {
-    id: "last",
-    optional: true,
-
-    elements: [{
-      id: "last",
-      type: "action/addheader/last"
-    }]
-  }]
-});
+  token(":index"),
+  // FIXME: should be a parameter instead of a custom field.
+  // parameters(
+  //   numericField("name", "1"),
+  //   optional(tag("last","action/addheader/last")))
+  fields("field",
+    number("name", "1")),
+  optionals(
+    attribute("last", "action/addheader/last")
+  )
+);
 
 // "deleteheader" [":index" <fieldno: number> [":last"]]
 //                   [COMPARATOR] [MATCH-TYPE]
 //                   <field-name: string>
 //                   [<value-patterns: string-list>]
 
-SieveGrammar.addAction({
-  node: "action/deleteheader",
-  type: "action",
+SieveGrammar.addAction(
+  id("action/deleteheader", "@action", "editheader"),
 
-  requires: "editheader",
-
-  token: "deleteheader",
-
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "index",
-      type: "action/deleteheader/index"
-    }, {
-      id: "match-type",
-      type: "match-type"
-    }, {
-      id: "comparator",
-      type: "comparator"
-    }]
-  }, {
-    id: "parameter",
-
-    elements: [{
-      id: "name",
-      type: "string",
-      value: '"X-Header"'
-    }]
-  }, {
-    id: "parameter2",
-    optional: true,
-    elements: [{
-      id: "values",
-      type: "stringlist",
-      value: '""'
-    }]
-  }]
-});
+  token("deleteheader"),
+  tags(
+    tag("index", "action/deleteheader/index"),
+    tag("match-type", "match-type"),
+    tag("comparator", "comparator")),
+  parameters(
+    string("name", "X-Header")),
+  optionals("parameters2",
+    stringList("values", ""))
+);

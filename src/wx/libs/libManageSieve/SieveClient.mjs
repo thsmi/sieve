@@ -34,11 +34,16 @@ class SieveMozClient extends SieveAbstractClient {
   /**
    * @inheritdoc
    */
-  isAlive() {
-    if (!super.isAlive(this))
+  async isAlive() {
+    if (!(await super.isAlive(this)))
       return false;
 
-    return browser.sieve.socket.isAlive(this.socket);
+    const state = await (browser.tcpSocket.getReadyState(this.socket));
+
+    if (state !== "open")
+      return false;
+
+    return true;
   }
 
   /**
@@ -55,7 +60,7 @@ class SieveMozClient extends SieveAbstractClient {
 
     this.getLogger().logState("[SieveClient:startTLS()] Upgrading to secure socket");
 
-    await browser.sieve.socket.startTLS(this.socket);
+    await browser.tcpSocket.upgradeToSecure(this.socket);
 
     this.secured = true;
   }
@@ -77,36 +82,40 @@ class SieveMozClient extends SieveAbstractClient {
 
     this.getLogger().logState(`Connecting to ${this.host}:${this.port} ...`);
 
-    this.socket = await (browser.sieve.socket.create(
-      this.host, this.port, this.getLogger().level()));
+    this.socket = await browser.tcpSocket.create();
 
-    await (browser.sieve.socket.onData.addListener((bytes) => {
+    // We need to register the listeners before calling connect otherwise
+    // we create race between the threads.
+    browser.tcpSocket.onData.addListener((bytes) => {
       this.onData(bytes);
-    }, this.socket));
+    }, this.socket);
 
-    await (browser.sieve.socket.onError.addListener(async (error) => {
+    browser.tcpSocket.onError.addListener(async (type, details) => {
       this.getLogger().logState(`SieveClient: OnError (Connection ${this.host}:${this.port})`);
 
       // Exceptions can't be transferred between experiments and background pages
       // This means we need to convert the error object into an exception.
-      if (error && error.type === "CertValidationError")
-        error = new SieveCertValidationException(error);
-      else if (error && error.type === "SocketError")
-        error = new SieveClientException(error.message);
+      let error = null;
+
+      if (type === "SecurityError")
+        error = new SieveCertValidationException(details);
+      else if (error.type === "SocketError")
+        error = new SieveClientException(details.message);
       else
-        error = new SieveException(`Socket failed without providing an error code.`);
+        error = new SieveException(details.message);
 
       if ((this.listener) && (this.listener.onError))
         await this.listener.onError(error);
-    }, this.socket));
 
-    await (browser.sieve.socket.onClose.addListener(async () => {
+    }, this.socket);
+
+    await (browser.tcpSocket.onClose.addListener(async () => {
       this.getLogger().logState(`SieveClient: OnClose (Connection ${this.host}:${this.port})`);
 
       await this.disconnect(new Error("Server closed connection unexpectedly"));
     }, this.socket));
 
-    await (browser.sieve.socket.connect(this.socket));
+    await (browser.tcpSocket.connect(this.socket, this.host, this.port, {}));
 
     return this;
   }
@@ -116,7 +125,7 @@ class SieveMozClient extends SieveAbstractClient {
    */
   async destroy() {
     this.getLogger().logState(`[SieveClient:destroy()] ... destroying socket...`);
-    await browser.sieve.socket.destroy(this.socket);
+    await browser.tcpSocket.destroy(this.socket);
     this.socket = null;
   }
 
@@ -126,13 +135,12 @@ class SieveMozClient extends SieveAbstractClient {
   onSend(data) {
 
     // Convert string into an UTF-8 array...
-    const output = Array.prototype.slice.call(
-      (new TextEncoder()).encode(data));
+    const output = new Uint8Array((new TextEncoder()).encode(data));
 
     if (this.getLogger().isLevelStream())
       this.getLogger().logStream(`Client -> Server [Byte Array]:\n${output}`);
 
-    browser.sieve.socket.send(this.socket, output);
+    browser.tcpSocket.sendBytes(this.socket, output.buffer, 0, output.buffer.byteLength);
   }
 }
 

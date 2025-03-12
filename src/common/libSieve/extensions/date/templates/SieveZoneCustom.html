@@ -1,14 +1,22 @@
-<div>
-  <div class="form-check">
-    <input type="radio" id="sivDateCustomZone" name="sieve-zone" value=":zone" class="form-check-input" />
-    <label data-i18n="zone.custom" class="form-check-label" for="sivDateCustomZone"></label>
-    <p data-i18n="zone.custom.text" class="form-text" style="white-space: pre-line"></small>
-    </p>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
     <div>
-      <form class="was-validated" novalidate="novalidate">
-        <input type="text" id="sivDateZoneOffset" class="form-control form-control-sm col-sm-3" pattern="((\+(13|12|11|10|0[0-9])([0-5][0-9]))|(-(11|10|0[1-9])([0-5][0-9]))|(\+1400)|(-1200))"
-          maxlength="5" size="5" value="+0100" required="required" />
-      </form>
+      <div class="form-check">
+        <input type="radio" id="sivDateCustomZone" name="sieve-zone" value=":zone" class="form-check-input" />
+        <label data-i18n="zone.custom" class="form-check-label" for="sivDateCustomZone"></label>
+        <p data-i18n="zone.custom.text" class="form-text" style="white-space: pre-line"></small>
+        </p>
+        <div>
+          <form class="was-validated" novalidate="novalidate">
+            <input type="text" id="sivDateZoneOffset" class="form-control form-control-sm col-sm-3" pattern="((\+(13|12|11|10|0[0-9])([0-5][0-9]))|(-(11|10|0[1-9])([0-5][0-9]))|(\+1400)|(-1200))"
+              maxlength="5" size="5" value="+0100" required="required" />
+          </form>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
+  </body>
+</html>

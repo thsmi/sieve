@@ -13,7 +13,7 @@ const DEFAULT_AUTHORIZATION = 3;
 
 const FIRST_ELEMENT = 0;
 
-const { ipcRenderer, shell, clipboard } = require('electron');
+const { ipcRenderer, clipboard } = require('electron');
 
 // Import the node modules into our global namespace...
 import { SieveLogger } from "./libs/managesieve.ui/utils/SieveLogger.mjs";
@@ -54,10 +54,6 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
 
     "update-check": async () => {
       return await (new SieveUpdater()).check();
-    },
-
-    "update-goto-url": () => {
-      shell.openExternal('https://github.com/thsmi/sieve/releases/latest');
     },
 
     "import-thunderbird": function () {
@@ -377,13 +373,13 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
       return sessions.get(msg.payload.account).isConnecting();
     },
 
-    "account-connected": function (msg) {
+    "account-connected": async function (msg) {
       logger.logAction(`Is connected ${msg.payload.account}`);
 
       if (!sessions.has(msg.payload.account))
         return false;
 
-      return sessions.get(msg.payload.account).isConnected();
+      return await sessions.get(msg.payload.account).isConnected();
     },
 
 
@@ -609,6 +605,10 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
       logger.logAction(`Set default value for ${name}`);
 
       await accounts.getEditor().setValue(name, value);
+    },
+
+    "open-web-address" : async(msg) => {
+      await ipcRenderer.invoke("open-web-address", msg.payload.data);
     },
 
     "open-developer-tools": async() => {

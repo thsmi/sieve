@@ -37,6 +37,9 @@ class SieveEditorUI extends SieveEditorController {
    * Resizes the widget editors iframe to fill all of the available screen.
    */
   resize() {
+    if (this.isTextEditor())
+      return;
+
     const topOffset = document
       .querySelector("#sieve-widget-editor")
       .getBoundingClientRect()
@@ -137,6 +140,13 @@ class SieveEditorUI extends SieveEditorController {
       .querySelector('.nav-item > a[href="#sieve-content-settings"]')
       .addEventListener('shown.bs.tab', () => { this.switchToSettings(); });
 
+    document
+      .querySelector("#sieve-editor-donate")
+      .addEventListener("click", () => {
+        const url = (new SieveTemplate()).getI18n().getString("editor.donate.url");
+        this.openUrl(url);
+      });
+
     return this;
   }
 
@@ -183,10 +193,6 @@ class SieveEditorUI extends SieveEditorController {
 
   /**
    * Loads the sieve script into the editor.
-   * All undo history will be flushed.
-   *
-   * @returns {boolean}
-   *   true in case the script could be loaded otherwise false.
    */
   async load() {
 
@@ -196,10 +202,7 @@ class SieveEditorUI extends SieveEditorController {
 
     this.checksum = await editor.getChecksum();
 
-    editor.clearHistory();
     editor.focus();
-
-    return true;
   }
 
   /**

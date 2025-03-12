@@ -1,0 +1,224 @@
+
+
+
+Pigeonhole Project                                              S. Bosch
+                                                          August 9, 2012
+
+
+             Sieve Email Filtering: Logging Debug Messages
+
+Abstract
+
+   This document defines a new vendor-defined test command "debug_log"
+   for the "Sieve" email filtering language.  It provides the means to
+   debug a Sieve script by logging debug messages.
+
+
+Table of Contents
+
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . . . 2
+   2.  Conventions Used in This Document . . . . . . . . . . . . . . . 2
+   3.  Command "debug_log" . . . . . . . . . . . . . . . . . . . . . . 2
+   4.  Sieve Capability Strings  . . . . . . . . . . . . . . . . . . . 2
+   5.  Examples  . . . . . . . . . . . . . . . . . . . . . . . . . . . 3
+   6.  Security Considerations . . . . . . . . . . . . . . . . . . . . 3
+   7.  Normative References  . . . . . . . . . . . . . . . . . . . . . 3
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . . . 4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Bosch                                                           [Page 1]
+
+                          Sieve: Debug Logging               August 2012
+
+
+1.  Introduction
+
+   This is an extension to the Sieve filtering language defined by RFC
+   5228 [SIEVE].  It adds a command that provides the means to debug a
+   Sieve script by logging debug messages.
+
+   Much like any other kind of computer program, Sieve scripts are prone
+   to all kinds of mistakes.  Often, there are no real error conditions,
+   e.g.  Sieve language violations, that cause the failure and no error
+   or warning messages are logged for the user or administrator to
+   determine what caused the erroneous result.  A convenient method of
+   debugging such issues is printing debug messages to some kind of
+   logging facility.  This way for example, script authors can check
+   whether specific sections of the script are executed.  When combined
+   with the "variables" [VARIABLES] extension, intermittent results,
+   message data and status information can be included in those log
+   messages, further improving the information available for debugging.
+
+   This extension is specific to the Pigeonhole Sieve implementation for
+   the Dovecot Secure IMAP server.  It will therefore most likely not be
+   supported by web interfaces and GUI-based Sieve editors.
+
+
+2.  Conventions Used in This Document
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+   document are to be interpreted as described in [KEYWORDS].
+
+   Conventions for notations are as in [SIEVE] Section 1.1, including
+   use of the "Usage:" label for the definition of action and tagged
+   arguments syntax.
+
+
+3.  Command "debug_log"
+
+   Usage: "debug_log" <message: string>
+
+   The "debug_log" command prints the debug message provided as the
+   command's "message" argument to an implementation-defined logging
+   facility.  The message MAY contain variable substitutions as provided
+   by the "variables" [VARIABLES] extension to dynamically compose the
+   message from information available at runtime.
+
+
+4.  Sieve Capability Strings
+
+   A Sieve implementation that defines the "debug_log" action command
+
+
+
+Bosch                                                           [Page 2]
+
+                          Sieve: Debug Logging               August 2012
+
+
+   will advertise the capability string "vnd.dovecot.debug".
+
+
+5.  Examples
+
+   The following example logs a message when the message's subject
+   contains the "hello":
+
+   require "vnd.dovecot.debug";
+
+   if header :contains "subject" "hello" {
+     debug_log "Subject header contains hello!";
+   }
+
+   The next example logs the envelope of the message using the
+   "variables" [VARIABLES] extension and the "envelope" [SIEVE]
+   extension:
+
+   require ["variables", "envelope", "vnd.dovecot.debug"];
+
+   if envelope :matches "to" "*" { set "to" "${1}"; }
+   if envelope :matches "from" "*" { set "from" "${1}"; }
+
+   debug_log "Received message TO=${to} FROM=${from}";
+
+
+6.  Security Considerations
+
+   If the "vnd.dovecot.debug" extension is used from scripts that are
+   managed by a user, the log messages SHOULD only be logged to a
+   personal log file specific to that user.  Otherwise, users could
+   litter system log files with loads of log messages.
+
+
+7.  Normative References
+
+   [KEYWORDS]
+              Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119, March 1997.
+
+   [SIEVE]    Guenther, P. and T. Showalter, "Sieve: An Email Filtering
+              Language", RFC 5228, January 2008.
+
+   [VARIABLES]
+              Homme, K., "Sieve Email Filtering: Variables Extension",
+              RFC 5229, January 2008.
+
+
+
+
+
+Bosch                                                           [Page 3]
+
+                          Sieve: Debug Logging               August 2012
+
+
+Author's Address
+
+   Stephan Bosch
+   Enschede
+   NL
+
+   Email: stephan@rename-it.nl
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Bosch                                                           [Page 4]
+

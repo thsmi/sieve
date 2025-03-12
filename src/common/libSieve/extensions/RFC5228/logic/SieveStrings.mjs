@@ -10,8 +10,10 @@
  *
  */
 
-import { SieveLexer } from "./../../../toolkit/SieveLexer.mjs";
 import { SieveAbstractElement } from "./../../../toolkit/logic/AbstractElements.mjs";
+
+import { SieveGrammar } from "../../../toolkit/logic/GenericElements.mjs";
+import { id, items, token } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 
 const TOKEN_NOT_FOUND = -1;
 
@@ -33,35 +35,13 @@ class SieveMultiLineString extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, id) {
-    super(docshell, id);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
 
     this.text = "";
 
-    this.whiteSpace = this._createByName("whitespace", "\r\n");
+    this.whiteSpace = this.createByName("whitespace", "\r\n");
     this.hashComment = null;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  // eslint-disable-next-line no-unused-vars
-  static isElement(parser, lexer) {
-    return parser.startsWith("text:");
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeName() {
-    return "string/multiline";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeType() {
-    return "string/";
   }
 
   /**
@@ -75,8 +55,8 @@ class SieveMultiLineString extends SieveAbstractElement {
 
     this.whiteSpace.init(parser, true);
 
-    if (this._probeByName("comment/hashcomment", parser))
-      this.hashComment = this._createByName("comment/hashcomment", parser);
+    if (this.probeByName("comment/hashcomment", parser))
+      this.hashComment = this.createByName("comment/hashcomment", parser);
 
     // we include the previously extracted linebreak. this makes life way easier...
     //  and allows us to match against the unique "\r\n.\r\n" Pattern instead of
@@ -135,31 +115,10 @@ class SieveQuotedString extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, id) {
+  constructor(docshell, name, type) {
 
-    super(docshell, id);
+    super(docshell, name, type);
     this.text = "";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static isElement(parser) {
-    return parser.isChar("\"");
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeName() {
-    return "string/quoted";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeType() {
-    return "string/";
   }
 
   /**
@@ -268,8 +227,8 @@ class SieveStringList extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, id) {
-    super(docshell, id);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
 
     this.elements = [];
 
@@ -282,42 +241,14 @@ class SieveStringList extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  static isElement(parser, lexer) {
-    // the [ is not necessary if the list contains only one entry!
-    if (parser.isChar("["))
-      return true;
-
-    if (lexer.probeByName("string/quoted", parser))
-      return true;
-
-    return false;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeName() {
-    return "stringlist";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeType() {
-    return "stringlist";
-  }
-
-  /**
-   * @inheritdoc
-   */
   init(parser) {
 
     this.elements = [];
 
-    if (this._probeByName("string/quoted", parser)) {
+    if (this.probeByName("string/quoted", parser)) {
       this.compact = true;
       const item = [];
-      item[STRING_VALUE] = this._createByName("string/quoted", parser);
+      item[STRING_VALUE] = this.createByName("string/quoted", parser);
       this.elements = [item];
 
       return this;
@@ -333,16 +264,16 @@ class SieveStringList extends SieveAbstractElement {
 
       const element = [null, null, null];
 
-      if (this._probeByName("whitespace", parser))
-        element[LEADING_WHITESPACE] = this._createByName("whitespace", parser);
+      if (this.probeByName("whitespace", parser))
+        element[LEADING_WHITESPACE] = this.createByName("whitespace", parser);
 
-      if (this._probeByName("string/quoted", parser) === false)
+      if (this.probeByName("string/quoted", parser) === false)
         throw new Error("Quoted String expected but found: \n" + parser.bytes(MAX_QUOTE_LEN) + "...");
 
-      element[STRING_VALUE] = this._createByName("string/quoted", parser);
+      element[STRING_VALUE] = this.createByName("string/quoted", parser);
 
-      if (this._probeByName("whitespace", parser))
-        element[TAILING_WHITESPACE] = this._createByName("whitespace", parser);
+      if (this.probeByName("whitespace", parser))
+        element[TAILING_WHITESPACE] = this.createByName("whitespace", parser);
 
       this.elements.push(element);
     }
@@ -428,7 +359,7 @@ class SieveStringList extends SieveAbstractElement {
     }
 
     const elm = [null, "", null];
-    elm[STRING_VALUE] = this._createByName("string/quoted", '""');
+    elm[STRING_VALUE] = this.createByName("string/quoted", '""');
     elm[STRING_VALUE].value(str);
 
     this.elements.push(elm);
@@ -532,37 +463,16 @@ class SieveString extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, id) {
-    super(docshell, id);
-    this.string = this._createByName("string/quoted");
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static isElement(parser, lexer) {
-    return lexer.probeByClass(["string/"], parser);
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeName() {
-    return "string";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeType() {
-    return "string";
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
+    this.string = this.createByName("string/quoted");
   }
 
   /**
    * @inheritdoc
    */
   init(parser) {
-    this.string = this._createByClass(["string/"], parser);
+    this.string = this.createByClass(["@string/"], parser);
 
     return this;
   }
@@ -594,13 +504,13 @@ class SieveString extends SieveAbstractElement {
 
       // The string has linebreaks so it has to be a multiline string!
       if (!(this.string instanceof SieveMultiLineString))
-        string = this._createByName("string/multiline");
+        string = this.createByName("string/multiline");
     }
     else {
 
       // No linebreaks, it's better to use a quoted string. Makes scripts more readable
       if (!(this.string instanceof SieveQuotedString))
-        string = this._createByName("string/quoted");
+        string = this.createByName("string/quoted");
     }
 
     // Add the new value...
@@ -645,7 +555,35 @@ class SieveString extends SieveAbstractElement {
 }
 
 
-SieveLexer.register(SieveStringList);
-SieveLexer.register(SieveString);
-SieveLexer.register(SieveQuotedString);
-SieveLexer.register(SieveMultiLineString);
+SieveGrammar.addGeneric(
+  id("string/multiline", "@string/"),
+
+  SieveMultiLineString,
+  token("text:"));
+
+SieveGrammar.addGeneric(
+  id("string/quoted", "@string/"),
+
+  SieveQuotedString,
+  token('"'));
+
+SieveGrammar.addGeneric(
+  id("stringlist", "@stringlist"),
+
+  SieveStringList,
+  { "matcher" : (property, spec, parser, document) => {
+    if (parser.isChar("["))
+      return true;
+
+    if (document.probeByName("string/quoted", parser))
+      return true;
+
+    return false;
+  }});
+
+SieveGrammar.addGeneric(
+  id("string", "@string"),
+
+  SieveString,
+  items("@string/")
+);

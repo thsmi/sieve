@@ -85,7 +85,8 @@ class SieveSizeTestUI extends SieveTestDialogBoxUI {
       .replace("${relation}",
         '<em data-i18n="size.larger" class="sivSizeLarger d-none"></em><em data-i18n="size.smaller" class="sivSizeSmaller d-none"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    // FIMXE
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
 
     const name = this.getSieve().getElement("operator").getCurrentElement().nodeName();
     if (name === "test/size/operator/over")
@@ -154,7 +155,8 @@ class SieveBooleanTestUI extends SieveTestDialogBoxUI {
           <span data-i18n="boolean.summary.false" class="sivBooleanFalse d-none"></span>
          </div>`;
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    // FIMXE
+    const elm = (new SieveTemplate()).convertFragment(FRAGMENT);
 
     const name = this.getSieve().getCurrentElement().nodeName();
     if (name === "test/boolean/true") {
@@ -219,7 +221,8 @@ class SieveExistsUI extends SieveTestDialogBoxUI {
     const msg = SieveI18n.getInstance().getString("exists.summary")
       .replace("${headers}", '<em class="sivExistsHeaders"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    // FIMXE
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivExistsHeaders").textContent
       = this.headers().values();
 
@@ -320,7 +323,8 @@ class SieveHeaderUI extends SieveTestDialogBoxUI {
       .replace("${matchtype}", '<span class="sivHeaderMatchType"></span>')
       .replace("${keys}", '<em class="sivHeaderKeys"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    // FIMXE
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivHeaderValues").textContent
       = this.headers().values();
     elm.querySelector(".sivHeaderMatchType").textContent
@@ -442,7 +446,8 @@ class SieveAddressUI extends SieveTestDialogBoxUI {
       .replace("${addresspart}", '<span class="sivAddressAddressPart d-none"></span>')
       .replace("${keys}", '<em class="sivAddressKeys"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    // FIMXE
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
 
     elm.querySelector(".sivAddressHeaders").textContent
       = this.headers().values();
@@ -570,7 +575,8 @@ class SieveEnvelopeUI extends SieveTestDialogBoxUI {
       .replace("${addresspart}", '<span class="sivEnvelopesAddressPart d-none"></span>')
       .replace("${keys}", '<em class="sivEnvelopeKeys"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    // FIMXE
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivEnvelopeEnvelopes").textContent
       = this.envelopes().values();
     elm.querySelector(".sivEnvelopeMatchType").textContent

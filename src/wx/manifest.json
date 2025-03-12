@@ -8,13 +8,13 @@
   "background": {
     "page": "background.html"
   },
-  "manifest_version": 2,
+  "manifest_version": 3,
   "default_locale": "en_US",
   "browser_specific_settings": {
     "gecko": {
       "id": "sieve@mozdev.org",
       "update_url": "https://thsmi.github.io/sieve/update.json",
-      "strict_min_version": "68.0a1"
+      "strict_min_version": "78.6.0"
     }
   },
   "permissions": [
@@ -23,6 +23,14 @@
     "storage"
   ],
   "experiment_apis": {
+    "tcpSocket": {
+      "schema": "api/schemas/tcp_socket.json",
+      "parent" : {
+        "scopes": [ "addon_parent" ],
+        "script" : "api/parent/ext-tcp-socket.js",
+        "paths": [["tcpSocket"]]
+      }
+    },
     "SieveAccountsApi": {
       "schema": "api/sieve/SieveAccountsApi.json",
       "parent": {
@@ -34,21 +42,6 @@
           [
             "sieve",
             "accounts"
-          ]
-        ]
-      }
-    },
-    "SieveSocketApi": {
-      "schema": "api/sieve/SieveSocketApi.json",
-      "parent": {
-        "scopes": [
-          "addon_parent"
-        ],
-        "script": "api/sieve/SieveSocketApi.js",
-        "paths": [
-          [
-            "sieve",
-            "socket"
           ]
         ]
       }

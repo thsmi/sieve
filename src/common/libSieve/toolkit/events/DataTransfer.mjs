@@ -71,7 +71,9 @@ class SieveDataTransfer {
    *   a unique token
    */
   generateToken() {
-    return Math.floor(Math.random() * RANDOM_SEED_SIZE).toString(HEX_STRING) + Date.now().toString(HEX_STRING);
+    return "siv-"
+      + (Math.floor(Math.random() * RANDOM_SEED_SIZE).toString(HEX_STRING))
+      + Date.now().toString(HEX_STRING);
   }
 
   /**
@@ -96,7 +98,7 @@ class SieveDataTransfer {
    * @param {string} flavour
    *   the flavour as string
    * @returns {string}
-   *   the data stored in the dragtarget.
+   *   the data stored in the drag target as plain string
    */
   getData(flavour) {
 
@@ -112,6 +114,26 @@ class SieveDataTransfer {
       return "";
 
     return _transfer;
+  }
+
+  /**
+   * Returns the meta information for the given flavour.
+   *
+   * @param {string} flavour
+   *   the flavour as string
+   * @returns {object}
+   *   the meta data stored in the drop information as object.
+   */
+  getMetaData(flavour) {
+    let data = this.getData(flavour);
+    if (!data || !data.length)
+      return null;
+
+    data = JSON.parse(data);
+    if (!data)
+      return null;
+
+    return data;
   }
 
   /**

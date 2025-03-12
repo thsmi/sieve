@@ -19,9 +19,6 @@ import {
 
 import { SieveBlockDropHandler } from "./../../../toolkit/events/DropHandler.mjs";
 
-
-const FIRST_ELEMENT = 1;
-
 /**
  * The UI Element which renders the root node.
  */
@@ -30,9 +27,9 @@ class SieveRootNodeUI extends SieveAbstractBoxUI {
   /**
    * @inheritdoc
    */
-  createHtml(parent) {
+  createHtml(parent, invalidate) {
     parent.append(
-      this.getSieve().elms[FIRST_ELEMENT].html());
+      this.getSieve().getElement("body").html(invalidate));
 
     return parent;
   }
@@ -45,33 +42,15 @@ class SieveRootNodeUI extends SieveAbstractBoxUI {
  */
 class SieveBlockUI extends SieveAbstractBoxUI {
 
-  // TODO is this really needed to wrap the item?
-  /**
-   * Wraps the given child item in to a block.
-   * @private
-   *
-   * @param {HTMLElement} item
-   *   the item to be wrapped
-   * @returns {HTMLElement}
-   *   the ui element
-   */
-  createBlockChild(item) {
-    const child = document.createElement('div');
-    child.append(item);
-    child.classList.add("sivBlockChild");
-
-    return child;
-  }
-
   /**
    * @inheritdoc
    */
-  createHtml(parent) {
-    const elm = document.createElement("div");
+  createHtml(parent, invalidate) {
+    const elm = parent;
     elm.classList.add("sivBlock");
 
     for (const sivElm of this.getSieve().elms) {
-      const item = sivElm.html();
+      const item = sivElm.html(invalidate);
 
       if (!item)
         continue;
@@ -79,14 +58,13 @@ class SieveBlockUI extends SieveAbstractBoxUI {
       elm.append((new SieveDropBoxUI(this, "sivBlockSpacer"))
         .drop(new SieveBlockDropHandler(), sivElm)
         .html());
-      elm.append(this.createBlockChild(item));
+      elm.append(item);
     }
 
     elm.append((new SieveDropBoxUI(this, "sivBlockSpacer"))
       .drop(new SieveBlockDropHandler())
       .html());
 
-    parent.append(elm);
     return parent;
   }
 }

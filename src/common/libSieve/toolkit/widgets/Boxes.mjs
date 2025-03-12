@@ -48,7 +48,9 @@ class SieveAbstractBoxUI {
     this._handler = {};
 
     // create a unique id, which makes identifying the dom object easier.
-    this.uniqueId = "siv-" + Math.floor(Math.random() * RANDOM_SEED_SIZE).toString(HEX_STRING) + Date.now().toString(HEX_STRING);
+    this.uniqueId = "siv-"
+      + Math.floor(Math.random() * RANDOM_SEED_SIZE).toString(HEX_STRING)
+      + Date.now().toString(HEX_STRING);
   }
 
   /**
@@ -59,6 +61,8 @@ class SieveAbstractBoxUI {
    *   An Integer as unique identifier for the nested sieve element.
    */
   id() {
+
+    // FIXME: Can this ever be that we have an element without id?
     if (this._elm.document)
       return this._elm.id();
 
@@ -100,11 +104,15 @@ class SieveAbstractBoxUI {
    * @param {HTMLElement} parent
    *   the parent element to which this box should be appended.
    *
+   * @param {boolean} [invalidate]
+   *   optional if set to true any cached element will be invalidated and
+   *   recreated.
+   *
    * @returns {HTMLElement}
    *   the created element. It may nest the parent element.
    */
-  createHtml(parent) {
-    throw new Error(`Implement html(${parent}`);
+  createHtml(parent, invalidate) {
+    throw new Error(`Implement html(${parent},${invalidate})`);
   }
 
   /**
@@ -125,8 +133,9 @@ class SieveAbstractBoxUI {
     if (this._domElm && !invalidate)
       return this._domElm;
 
-    this._domElm = this.createHtml(document.createElement('div'));
+    this._domElm = this.createHtml(document.createElement('div'), invalidate);
 
+    // FIXME: Can this ever be that we have an element without id?
     if (this.id() !== UNKNOWN_ID)
       this._domElm.id = `sivElm${this.id()}`;
 
@@ -143,12 +152,17 @@ class SieveAbstractBoxUI {
    * content with a clean rendering.
    */
   reflow() {
-    if (this.id() < 0)
+    if (!this.id())
       throw new Error("Invalid id");
 
     const item = document.querySelectorAll(`#sivElm${this.id()}`);
 
-    if ((!item.length) || (item.length > 1))
+    // Element is not part of the tom so no need to reflow.
+    if (!item.length)
+      return;
+
+    // This is bad we have more than one element.
+    if (item.length > 1)
       throw new Error(`${item.length} Elements found for #sivElm${this.id()}`);
 
     item[0].parentElement.replaceChild(this.html(true), item[0]);
@@ -253,7 +267,6 @@ class SieveDropBoxUI extends SieveAbstractBoxUI {
   createHtml(parent) {
     parent.classList.add("sivDropBox");
     parent.classList.add(this.name);
-    parent.append(document.createElement("div"));
 
     return parent;
   }
@@ -484,7 +497,7 @@ class SieveDialogBoxUI extends SieveSourceBoxUI {
            </div>
          </div>`;
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convertFragment(FRAGMENT);
 
     // First assign unique ids...
     const content = elm.querySelector(".sivSummaryContent");
@@ -510,8 +523,10 @@ class SieveDialogBoxUI extends SieveSourceBoxUI {
 
     content.append(this.getSummary());
 
+    // FIXME: Is this really true?
     // We need this container to make customizing the box easier.
     // e.g. for the allof/anyof operator.
+    /*
     const div = document.createElement("div");
     div.classList.add("sivEditableElement");
 
@@ -520,6 +535,13 @@ class SieveDialogBoxUI extends SieveSourceBoxUI {
     div.append(controls);
 
     parent.append(div);
+    */
+
+
+    parent.classList.add("sivEditableElement");
+    parent.append(content);
+    parent.append(code);
+    parent.append(controls);
 
     return parent;
   }
@@ -589,9 +611,11 @@ class SieveActionDialogBoxUI extends SieveDialogBoxUI {
   /**
    * @inheritdoc
    */
-  createHtml(parent) {
-    const elm = super.createHtml(parent);
+  createHtml(parent, invalidate) {
+    const elm = super.createHtml(parent, invalidate);
+
     elm.classList.add("sivAction");
+    elm.classList.add("siv-" + this.getSieve().nodeName().replace("/", "-"));
     return elm;
   }
 }
@@ -615,9 +639,11 @@ class SieveTestDialogBoxUI extends SieveDialogBoxUI {
   /**
    * @inheritdoc
    */
-  createHtml(parent) {
-    const elm = super.createHtml(parent);
+  createHtml(parent, invalidate) {
+    const elm = super.createHtml(parent, invalidate);
     elm.classList.add("sivTest");
+    elm.classList.add("siv-" + this.getSieve().nodeName().replace("/", "-"));
+    // elm.classList.add("badge", "rounded-pill", "text-bg-light", "fw-normal");
     return elm;
   }
 }

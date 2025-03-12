@@ -106,7 +106,7 @@ class SieveConvertTestUI extends SieveTestDialogBoxUI {
       .replace("${from}", '<em class="sivConvertFrom"></em>')
       .replace("${to}", '<em class="sivConvertTo"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivConvertFrom").textContent = this.from().value();
     elm.querySelector(".sivConvertTo").textContent = this.to().value();
     return elm;
@@ -194,7 +194,7 @@ class SieveConvertActionUI extends SieveActionDialogBoxUI {
       .replace("${from}", '<em class="sivConvertFrom"></em>')
       .replace("${to}", '<em class="sivConvertTo"></em>');
 
-    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    const elm = (new SieveTemplate()).convertFragment(`<div>${msg}</div>`);
     elm.querySelector(".sivConvertFrom").textContent = this.from().value();
     elm.querySelector(".sivConvertTo").textContent = this.to().value();
     return elm;

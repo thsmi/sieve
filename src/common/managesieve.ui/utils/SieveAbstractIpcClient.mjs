@@ -194,10 +194,12 @@ class SieveAbstractIpcClient {
    *   the payload to be send
    * @param {Window} [target]
    *   the target which host the receiver. In case it is omitted "parent" is used.
+   * @param {int} [delay]
+   *   the optional message timeout.
    * @returns {*}
    *   the messages response or an exception in case of an error.
    */
-  static async sendMessage(subject, action, payload, target) {
+  static async sendMessage(subject, action, payload, target, delay) {
 
     const id = this.generateId();
 
@@ -211,7 +213,20 @@ class SieveAbstractIpcClient {
 
     return await new Promise((resolve, reject) => {
 
+      let timeout = null;
+
+      if (delay) {
+        timeout = setTimeout(() => {
+          reject(new Error("IPC message timeout "));
+          _responseHandlers.delete(id);
+        }, delay);
+      }
+
       const onResponse = (message) => {
+
+        if (timeout !== null)
+          clearTimeout(timeout);
+
         if (message.error) {
           reject(message.error);
           return;

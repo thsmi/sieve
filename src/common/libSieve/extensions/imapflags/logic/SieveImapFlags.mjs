@@ -12,211 +12,95 @@
 
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
+import {
+  id, token,
+  tags, parameters,
+  stringList, string, optional, tag,
+  insert, before
+} from "../../../toolkit/logic/SieveGrammarHelper.mjs";
+
 // Flags and keywords are defined in http://tools.ietf.org/html/rfc5788
 
 // Inject :flags into  fileinto
 // :flags" <list-of-flags: string-list>
-SieveGrammar.addTag({
-  node: "action/fileinto/flags",
-  type: "action/fileinto/",
+SieveGrammar.addTag(
+  id("action/fileinto/flags", "@action/fileinto/", "imap4flags"),
 
-  requires: "imap4flags",
+  token(":flags"),
+  parameters(
+    stringList("flags", ["\\\\Flagged"]))
+);
 
-  token: ":flags",
-
-
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "flags",
-
-      type: "stringlist",
-      value: '["\\\\Flagged"]'
-    }]
-  }]
-});
-
-SieveGrammar.extendAction({
-  extends: "action/fileinto",
-
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "flags",
-      type: "action/fileinto/flags",
-      requires: "imap4flags"
-    }]
-  }]
-});
+SieveGrammar.extendAction(
+  "action/fileinto",
+  insert(
+    tags(tag("flags", "action/fileinto/flags", "imap4flags")),
+    before(parameters()))
+);
 
 // Inject :flags into keep
-SieveGrammar.addTag({
-  node: "action/keep/flags",
-  type: "action/keep/",
+SieveGrammar.addTag(
+  id("action/keep/flags", "@action/keep/", "imap4flags"),
 
-  requires: "imap4flags",
+  token(":flags"),
+  parameters(
+    stringList("flags", ["\\\\Flagged"]))
+);
 
-  token: ":flags",
-
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "flags",
-
-      type: "stringlist",
-      value: '["\\\\Flagged"]'
-    }]
-  }]
-});
-
-SieveGrammar.extendAction({
-  extends: "action/keep",
-
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "flags",
-      type: "action/keep/flags",
-      requires: "imap4flags"
-    }]
-  }]
-});
+SieveGrammar.extendAction(
+  "action/keep",
+  insert(
+    tags(tag("flags", "action/keep/flags", "imap4flags")),
+    before(parameters()))
+);
 
 // Usage:   setflag [<variablename: string>]  <list-of-flags: string-list>
-SieveGrammar.addAction({
-  node: "action/setflag",
-  type: "action",
-  token: "setflag",
+SieveGrammar.addAction(
+  id("action/setflag", "@action", "imap4flags"),
 
-  requires: "imap4flags",
-
-  properties: [{
-    id: "variablename",
-    type: "string",
-
-    dependent: true,
-
-    requires: "variables"
-  }, {
-    id: "parameters",
-
-    elements: [{
-      id: "flags",
-
-      type: "stringlist",
-      value: '"\\\\Flagged"'
-    }]
-  }]
-});
+  token("setflag"),
+  parameters(
+    optional(stringList("variable"), "variables"),
+    stringList("flags", ["\\\\Flagged"]))
+);
 
 //     Usage:   addflag [<variablename: string>]
 //            <list-of-flags: string-list>
-SieveGrammar.addAction({
-  node: "action/addflag",
-  type: "action",
-  token: "addflag",
+SieveGrammar.addAction(
+  id("action/addflag", "@action", "imap4flags"),
 
-  requires: "imap4flags",
-
-  properties: [{
-    id: "variablename",
-    type: "string",
-
-    dependent: true,
-
-    requires: "variables"
-  }, {
-    id: "parameters",
-
-    elements: [{
-      id: "flags",
-
-      type: "stringlist",
-      value: '"\\\\Flagged"'
-    }]
-  }]
-});
+  token("addflag"),
+  parameters(
+    optional(string("variable"), "variables"),
+    stringList("flags", ["\\\\Flagged"]))
+);
 
 
 //  Usage:   removeflag [<variablename: string>]
 //         <list-of-flags: string-list>
 
-SieveGrammar.addAction({
+SieveGrammar.addAction(
+  id("action/removeflag", "@action", "imap4flags"),
 
-  node: "action/removeflag",
-  type: "action",
+  token("removeflag"),
 
-  requires: "imap4flags",
-
-  token: "removeflag",
-
-  properties: [{
-    id: "variablename",
-    type: "string",
-
-    dependent: true,
-
-    requires: "variables"
-  },
-  {
-    id: "parameters",
-
-    elements: [{
-
-      id: "flags",
-      type: "stringlist",
-
-      value: '"\\Flagged"'
-    }]
-  }]
-});
+  parameters(
+    optional(string("variable"), "variables"),
+    stringList("flags", ["\\\\Flagged"]))
+);
 
 
 //     Usage: hasflag [MATCH-TYPE] [COMPARATOR]
 //          [<variable-list: string-list>]
 //          <list-of-flags: string-list>
+SieveGrammar.addTest(
+  id("test/hasflag", "@test", "imap4flags"),
 
-SieveGrammar.addTest({
-
-  node: "test/hasflag",
-  type: "test",
-
-  requires: "imap4flags",
-
-  token: "hasflag",
-
-  properties: [{
-    id: "tags",
-    optional: true,
-
-    elements: [{
-      id: "match-type",
-      type: "match-type"
-    }, {
-      id: "comparator",
-      type: "comparator"
-    }]
-
-  }, {
-
-    id: "variables",
-    type: "stringlist",
-
-    dependent: true,
-
-    requires: "variables"
-  }, {
-
-    id: "parameters",
-    elements: [{
-      id: "flags",
-      type: "stringlist"
-    }]
-  }]
-});
+  token("hasflag"),
+  tags(
+    tag("match-type"),
+    tag("comparator")),
+  parameters(
+    optional(stringList("variables"), "variables"),
+    stringList("flags", ["\\\\Flagged"]))
+);

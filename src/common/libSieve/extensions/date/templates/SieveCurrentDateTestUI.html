@@ -1,104 +1,112 @@
-<div>
-  <ul id="template-tabs">
-    <li class="nav-item">
-      <a data-i18n="currentdate.tab.home" class="nav-link active" data-bs-toggle="tab" href="#sieve-widget-date" role="tab"></a>
-    </li>
-    <li class="nav-item">
-      <a data-i18n="currentdate.tab.timezone" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-timezone" role="tab"></a>
-    </li>
-    <li class="nav-item">
-      <a data-i18n="currentdate.tab.advanced" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-advanced" role="tab"></a>
-    </li>
-    <li class="nav-item">
-      <a data-i18n="currentdate.tab.help" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-help" role="tab"></a>
-    </li>
-  </ul>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <div>
+      <ul id="template-tabs">
+        <li class="nav-item">
+          <a data-i18n="currentdate.tab.home" class="nav-link active" data-bs-toggle="tab" href="#sieve-widget-date" role="tab"></a>
+        </li>
+        <li class="nav-item">
+          <a data-i18n="currentdate.tab.timezone" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-timezone" role="tab"></a>
+        </li>
+        <li class="nav-item">
+          <a data-i18n="currentdate.tab.advanced" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-advanced" role="tab"></a>
+        </li>
+        <li class="nav-item">
+          <a data-i18n="currentdate.tab.help" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-help" role="tab"></a>
+        </li>
+      </ul>
 
-  <div id="template-content">
-    <div class="tab-content m-2">
-      <div class="tab-pane fade show active" id="sieve-widget-date" role="tabpanel">
-        <div class="mb-3">
-          <h5 data-i18n="currentdate.datepart"></h5>
-          <div id="sivDateDatepart" data-list-dropdown="#sivDateDatepartTemplate"></div>
+      <div id="template-content">
+        <div class="tab-content m-2">
+          <div class="tab-pane fade show active" id="sieve-widget-date" role="tabpanel">
+            <div class="mb-3">
+              <h5 data-i18n="currentdate.datepart"></h5>
+              <div id="sivDateDatepart" data-list-dropdown="#sivDateDatepartTemplate"></div>
 
-          <div id="sivDateDatepartTemplate" class="d-none">
-            <div class="dropdown-menu dropdown-menu-end" style="min-width:100%">
-              <button class="dropdown-item" type="button" data-value="year">
-                <span data-i18n="datepart.year"></span>
-                <small class="text-muted">- <span data-i18n="datepart.year.text"></span></small>
-              </button>
-              <button class="dropdown-item" type="button" data-value="month">
-                <span data-i18n="datepart.month"></span>
-                <small class="text-muted">- <span data-i18n="datepart.month.text"></span></small>
-              </button>
-              <button class="dropdown-item" type="button" data-value="day">
-                <span data-i18n="datepart.day"></span>
-                <small class="text-muted">- <span data-i18n="datepart.day.text"></span></small>
-              </button>
-              <button class="dropdown-item" type="button" data-value="date">
-                <span data-i18n="datepart.date"></span>
-                <small class="text-muted">- <span data-i18n="datepart.date.text"></span></small>
-              </button>
-              <div class="dropdown-divider"> </div>
-              <button class="dropdown-item" type="button" data-value="hour">
-                <span data-i18n="datepart.hour"></span>
-                <small class="text-muted">- <span data-i18n="datepart.hour.text"></span></small>
-              </button>
-              <button class="dropdown-item" type="button" data-value="minute">
-                <span data-i18n="datepart.minute"></span>
-                <small class="text-muted">- <span data-i18n="datepart.minute.text"></span></small>
-              </button>
-              <button class="dropdown-item" type="button" data-value="second">
-                <span data-i18n="datepart.second"></span>
-                <small class="text-muted">- <span data-i18n="datepart.second.text"></span></small>
-              </button>
-              <button class="dropdown-item" type="button" data-value="time">
-                <span data-i18n="datepart.time"></span>
-                <small class="text-muted">- <span data-i18n="datepart.time.text"></span></small>
-              </button>
-              <div class="dropdown-divider"> </div>
-              <button class="dropdown-item" type="button" data-value="iso8601">
-                <span data-i18n="datepart.iso8601"></span>
-                <small class="text-muted">- <span data-i18n="datepart.iso8601.text"></span></small>
-              </button>
-              <button class="dropdown-item" type="button" data-value="std11">
-                <span data-i18n="datepart.std11"></span>
-                <small class="text-muted">- <span data-i18n="datepart.std11.text"></span></small>
-              </button>
-              <div class="dropdown-divider"> </div>
-              <button class="dropdown-item" type="button" data-value="zone">
-                <span data-i18n="datepart.zone"></span>
-                <small class="text-muted">- <span data-i18n="datepart.zone.text"></span></small>
-              </button>
-              <button class="dropdown-item" type="button" data-value="weekday">
-                <span data-i18n="datepart.weekday"></span>
-                <small class="text-muted">- <span data-i18n="datepart.weekday.text"></span></small>
-              </button>
-              <button class="dropdown-item" type="button" data-value="julian">
-                <span data-i18n="datepart.julian"></span>
-                <small class="text-muted">- <span data-i18n="datepart.julian.text"></span></small>
-              </button>
+              <div id="sivDateDatepartTemplate" class="d-none">
+                <div class="dropdown-menu dropdown-menu-end" style="min-width:100%">
+                  <button class="dropdown-item" type="button" data-value="year">
+                    <span data-i18n="datepart.year"></span>
+                    <small class="text-body-secondary">- <span data-i18n="datepart.year.text"></span></small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="month">
+                    <span data-i18n="datepart.month"></span>
+                    <small class="text-body-secondary">- <span data-i18n="datepart.month.text"></span></small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="day">
+                    <span data-i18n="datepart.day"></span>
+                    <small class="text-body-secondary">- <span data-i18n="datepart.day.text"></span></small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="date">
+                    <span data-i18n="datepart.date"></span>
+                    <small class="text-body-secondary">- <span data-i18n="datepart.date.text"></span></small>
+                  </button>
+                  <div class="dropdown-divider"> </div>
+                  <button class="dropdown-item" type="button" data-value="hour">
+                    <span data-i18n="datepart.hour"></span>
+                    <small class="text-body-secondary">- <span data-i18n="datepart.hour.text"></span></small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="minute">
+                    <span data-i18n="datepart.minute"></span>
+                    <small class="text-body-secondary">- <span data-i18n="datepart.minute.text"></span></small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="second">
+                    <span data-i18n="datepart.second"></span>
+                    <small class="text-body-secondary">- <span data-i18n="datepart.second.text"></span></small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="time">
+                    <span data-i18n="datepart.time"></span>
+                    <small class="text-body-secondary">- <span data-i18n="datepart.time.text"></span></small>
+                  </button>
+                  <div class="dropdown-divider"> </div>
+                  <button class="dropdown-item" type="button" data-value="iso8601">
+                    <span data-i18n="datepart.iso8601"></span>
+                    <small class="text-body-secondary">- <span data-i18n="datepart.iso8601.text"></span></small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="std11">
+                    <span data-i18n="datepart.std11"></span>
+                    <small class="text-body-secondary">- <span data-i18n="datepart.std11.text"></span></small>
+                  </button>
+                  <div class="dropdown-divider"> </div>
+                  <button class="dropdown-item" type="button" data-value="zone">
+                    <span data-i18n="datepart.zone"></span>
+                    <small class="text-body-secondary">- <span data-i18n="datepart.zone.text"></span></small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="weekday">
+                    <span data-i18n="datepart.weekday"></span>
+                    <small class="text-body-secondary">- <span data-i18n="datepart.weekday.text"></span></small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="julian">
+                    <span data-i18n="datepart.julian"></span>
+                    <small class="text-body-secondary">- <span data-i18n="datepart.julian.text"></span></small>
+                  </button>
+                </div>
+              </div>
+
+              <div id="sivDateMatchTypes"> </div>
+
+              <h5 data-i18n="currentdate.keyword"></h5>
+              <div id="sivDateKeyList"></div>
+
             </div>
           </div>
 
-          <div id="sivDateMatchTypes"> </div>
+          <div class="tab-pane fade" id="sieve-widget-timezone" role="tabpanel">
+            <div id="sivDateZone"> </div>
+          </div>
 
-          <h5 data-i18n="currentdate.keyword"></h5>
-          <div id="sivDateKeyList"></div>
+          <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
+            <div id="sivDateComparator"> </div>
+          </div>
 
+          <div data-i18n="currentdate.help" style="white-space: pre-line" class="tab-pane fade form-text" id="sieve-widget-help"
+            role="tabpanel"></div>
         </div>
       </div>
-
-      <div class="tab-pane fade" id="sieve-widget-timezone" role="tabpanel">
-        <div id="sivDateZone"> </div>
-      </div>
-
-      <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
-        <div id="sivDateComparator"> </div>
-      </div>
-
-      <div data-i18n="currentdate.help" style="white-space: pre-line" class="tab-pane fade form-text" id="sieve-widget-help"
-        role="tabpanel"></div>
     </div>
-  </div>
-</div>
+  </body>
+</html>

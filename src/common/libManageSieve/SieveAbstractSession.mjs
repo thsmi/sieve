@@ -176,11 +176,12 @@ class SieveAbstractSession {
    * @returns {boolean}
    *   true in case the session is connected otherwise false.
    */
-  isConnected() {
+  async isConnected() {
+
     if (!this.getSieve())
       return false;
 
-    return this.getSieve().isAlive();
+    return await (this.getSieve().isAlive());
   }
 
   /**
@@ -660,11 +661,13 @@ class SieveAbstractSession {
 
     this.getLogger().logSession(`SieveAbstractSession: Disconnecting Session ${force}`);
     // We try to exit with a graceful Logout request...
-    if (!force && this.isConnected()) {
-      try {
-        await this.logout();
-      } catch (ex) {
-        this.getLogger().logSession(`Graceful logout failed ${ex}`);
+    if (!force) {
+      if (await (this.isConnected())) {
+        try {
+          await this.logout();
+        } catch (ex) {
+          this.getLogger().logSession(`Graceful logout failed ${ex}`);
+        }
       }
     }
 

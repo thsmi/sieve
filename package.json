@@ -15,7 +15,7 @@
     "codemirror": "^5.65.4",
 
     "@eslint/js": "^9.22.0",
-    "eslint-plugin-jsdoc": "^50.6.3",
+    "eslint-plugin-jsdoc": "^50.6.6",
     "globals": "^16.0.0",
 
     "gulp": "^5.0.0",

@@ -1,0 +1,26 @@
+<div>
+    <ul id="template-tabs">
+        <li class="nav-item">
+            <a data-i18n="pgpencrypt.tab.home" class="nav-link active" data-bs-toggle="tab" href="#sieve-widget-pgpencrypt" role="tab"></a>
+        </li>
+        <li class="nav-item">
+            <a data-i18n="pgpencrypt.tab.help" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-help" role="tab"></a>
+        </li>
+    </ul>
+
+    <div id="template-content">
+        <div class="tab-content m-2">
+            <div class="tab-pane fade show active" id="sieve-widget-pgpencrypt" role="tabpanel">
+
+                <div class="mb-3">
+                    <label data-i18n="pgpencrypt.key.label" class="form-label"></label>
+                    <textarea id="sivPgpKey"
+                              class="form-control col-lg-8"
+                              style="height: 300px"
+                              required="required"></textarea>
+                </div>
+            </div>
+            <div style="white-space: pre-line" class="tab-pane fade form-text" id="sieve-widget-help" role="tabpanel" data-i18n="pgpencrypt.help"></div>
+        </div>
+    </div>
+</div>

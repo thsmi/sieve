@@ -61,11 +61,23 @@
             },
 
             async getUsername(id) {
-              return await getIncomingServer(id).realUsername;
+              const server = getIncomingServer(id);
+              let username = await server.username;
+	      if (username) {
+                return username;
+	      }
+              // old API property
+	      return await server.realUsername;
             },
 
             async getHostname(id) {
-              return await getIncomingServer(id).realHostName;
+              const server = getIncomingServer(id);
+	      let hostName = await server.hostName;
+	      if (hostName) {
+		return hostName;
+	      }
+              // old API property
+	      return await server.realHostName;
             }
           }
         }

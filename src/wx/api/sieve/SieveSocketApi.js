@@ -13,8 +13,7 @@
 
   /* global ExtensionCommon */
   /* global Components */
-  /* global ChromeUtils */
-  const { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
+  /* global Services */
 
   // Input & output stream constants.
   const STREAM_BUFFERED = 0;
@@ -242,6 +241,13 @@
       if (this.state !== STATE_OPEN)
         throw new Error("Socket not in open state");
 
+      // test for Thunderbird 128 Socket API
+      if (this.socket.tlsSocketControl) {
+	// return the promise returned by the async API call to be awaited
+	return this.socket.tlsSocketControl.asyncStartTLS();
+      }
+
+      // logic for older socket API
       const control = this.socket.securityInfo
         .QueryInterface(Ci.nsISSLSocketControl);
 

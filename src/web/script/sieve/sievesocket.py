@@ -17,6 +17,7 @@ class SieveSocket:
 
     self.__hostname = hostname
     self.__port = port
+    self.__timeout = 3.0
 
   def __enter__(self):
     self.connect()
@@ -30,6 +31,7 @@ class SieveSocket:
 
   def connect(self):
     self.__socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    self.__socket.settimeout(self.__timeout)
     self.__socket.connect((self.__hostname, self.__port))
 
     capabilities = Capabilities()
@@ -58,6 +60,7 @@ class SieveSocket:
     ssl_context.load_default_certs()
 
     self.__socket = ssl_context.wrap_socket(self.__old_socket)
+    self.__socket.settimeout(self.__timeout)
 
   def wait(self):
     while True:

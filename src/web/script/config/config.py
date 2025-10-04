@@ -1,6 +1,7 @@
 import configparser
-import pathlib
 import hashlib
+import logging
+import pathlib
 
 class NoSuchPropertyException(Exception):
   pass
@@ -56,14 +57,18 @@ class SieveClientAccount(SieveAccount):
   def get_auth_username(self, request):
 
     if self._has_property("AuthUser"):
-      return self._config[self._section]["AuthUser"]
+      user = self._config[self._section]["AuthUser"]
+      logging.debug(f"Sieve user with client auth type and pre-configured AuthUser: {user}")
+      return user
 
     header = self._get_property("AuthUserHeader")
 
     if request.get_header(header) is None:
       raise NoSuchPropertyException(f"No header {header} in request.")
 
-    return request.get_header(header)
+    user = request.get_header(header)
+    logging.debug(f"Sieve user with client auth type via {header} header: {user}")
+    return user
 
   def can_authorize(self):
     return self._config[self._section].getboolean("AuthClientAuthorization", fallback=False)
@@ -86,7 +91,9 @@ class SieveTokenAccount(SieveAccount):
     if request.get_header(header) is None:
       raise NoSuchPropertyException(f"No header {header} in request.")
 
-    return request.get_header(header)
+    user = request.get_header(header)
+    logging.debug(f"Sieve user with token auth type via {header} header: {user}")
+    return user
 
   def get_sieve_password(self, request):
 
@@ -115,11 +122,19 @@ class SieveAuthorizationAccount(SieveAccount):
       header = self._get_property("AuthUserHeader")
 
       if request.get_header(header) is not None:
-        return request.get_header(header)
+        user = request.get_header(header)
+        logging.debug(f"Sieve user with authorization auth type via {header} header: {user}")
+        return user
+      else:
+        logging.warning(f"{header} header didn't arrive to identify Sieve user with authorization auth type. "
+                        "Falling back to AuthUser config option.")
 
     ## FIXME only temporarily disabled
     #raise NoSuchPropertyException("Invalid username")
-    return self._config[self._section]["AuthUser"]
+
+    user = self._config[self._section]["AuthUser"]
+    logging.debug(f"Sieve user with authorization auth type and pre-configured AuthUser: {user}")
+    return user
 
 
 class Config:

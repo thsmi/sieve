@@ -1,3 +1,4 @@
+import logging
 import select
 import time
 
@@ -68,7 +69,12 @@ class HttpRequest:
 
     for header in headers:
       header = header.split(":", 1)
-      self.__headers[header[0]] = header[1].lstrip()
+      value = header[1].lstrip()
+
+      if value:
+        self.__headers[header[0]] = value
+      else:
+        logging.warning(f"Received header {header[0]} is empty.")
 
     self.__payload = data[1]
 

@@ -76,7 +76,11 @@ class HttpRequest:
       else:
         logging.warning(f"Received header {header[0]} is empty.")
 
-    self.__payload = data[1]
+    if len(data) > 1:
+      self.__payload = data[1]
+    else:
+      self.__payload = ""
+      logging.warning(f"Received request with empty body")
 
 
 class HttpResponse:

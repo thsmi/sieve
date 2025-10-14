@@ -41,7 +41,7 @@ const LINUX_PLATFORM = "linux";
 const MAC_ARCH = "x64";
 const MAC_PLATFORM = "mas";
 
-const APP_IMAGE_RELEASE_URL = "https://api.github.com/repos/AppImage/AppImageKit/releases";
+const APP_IMAGE_RELEASE_URL = "https://api.github.com/repos/AppImage/appimagetool/releases";
 const APP_IMAGE_TOOL_NAME = "appimagetool-x86_64.AppImage";
 const APP_IMAGE_DIR = path.join(OUTPUT_DIR_APP, "sieve.AppDir");
 

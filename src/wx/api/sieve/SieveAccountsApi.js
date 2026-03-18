@@ -52,8 +52,11 @@
             async getPassword(id) {
               const server = getIncomingServer(id);
 
-              // in case the passwordPromptRequired attribute is true...
-              // ... thunderbird will take care on retrieving a valid password...
+              // passwordPromptRequired is false when Thunderbird already has a
+              // stored password for this account. In that case server.password
+              // returns the stored value directly. If the user has not yet been
+              // prompted (or the password was removed), we return undefined and
+              // let the caller deal with a missing password.
               if (server.passwordPromptRequired === false)
                 return await server.password;
 
@@ -61,11 +64,13 @@
             },
 
             async getUsername(id) {
-              return await getIncomingServer(id).realUsername;
+              // TB 128+: realUsername was removed; use username instead.
+              return await getIncomingServer(id).username;
             },
 
             async getHostname(id) {
-              return await getIncomingServer(id).realHostName;
+              // TB 128+: realHostName was removed; use hostName instead.
+              return getIncomingServer(id).hostName;
             }
           }
         }

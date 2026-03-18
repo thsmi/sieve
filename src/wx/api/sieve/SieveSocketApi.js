@@ -14,7 +14,9 @@
   /* global ExtensionCommon */
   /* global Components */
   /* global ChromeUtils */
-  const { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
+  // Services is a built-in global in privileged/experiment API contexts in TB 128+
+  // Do not import it — the import path changed and is no longer needed.
+  /* global Services */
 
   // Input & output stream constants.
   const STREAM_BUFFERED = 0;
@@ -199,19 +201,13 @@
         return;
       }
 
-      this.log(`Lookup Proxy Configuration for x-sieve://${this.host}:${this.port} ...`);
-
-      const ios = Cc["@mozilla.org/network/io-service;1"]
-        .getService(Ci.nsIIOService);
-
-      // const uri = ios.newURI("x-sieve://" + this.host + ":" + this.port, null, null);
-      const uri = ios.newURI(`http://${this.host}:${this.port}`, null, null);
-
-      const pps = Cc["@mozilla.org/network/protocol-proxy-service;1"]
-        .getService(Ci.nsIProtocolProxyService);
-      pps.asyncResolve(uri, 0, this);
-
-      this.log("[SieveSocketApi:connect()] ... waiting for proxy info.");
+      // TB 128+: nsIProtocolProxyService.asyncResolve() behaviour changed and
+      // caused connection hangs with proxy auto-detection (PAC/WPAD). Since
+      // ManageSieve always connects directly (no proxy awareness needed), skip
+      // the async proxy lookup and call onProxyAvailable() directly with null
+      // (= direct connection).
+      this.log(`[SieveSocketApi:connect()] Connecting directly to ${this.host}:${this.port} (no proxy lookup)`);
+      this.onProxyAvailable(null, null, null, null);
     }
 
     /**
@@ -235,20 +231,55 @@
      * trigger onStopRequest to be called. The request object can then be used
      * to analyze what caused the error.
      */
-    startTLS() {
+    async startTLS() {
 
       this.log("[SieveSocketApi:startTLS()] Requesting upgrade to secure...");
 
       if (this.state !== STATE_OPEN)
         throw new Error("Socket not in open state");
 
-      const control = this.socket.securityInfo
-        .QueryInterface(Ci.nsISSLSocketControl);
+      // nsISSLSocketControl was replaced by nsITLSSocketControl in TB 115+.
+      // In TB 128+ tlsSocketControl is a direct property on nsISocketTransport.
+      // In TB 148+ the method was renamed from StartTLS() to asyncStartTLS().
+      let control = null;
+      if (Ci.nsITLSSocketControl) {
+        try {
+          // tlsSocketControl is available before TLS is started; QI needed to expose methods
+          if (this.socket.tlsSocketControl)
+            control = this.socket.tlsSocketControl.QueryInterface(Ci.nsITLSSocketControl);
+        } catch (ex) {
+          // fall through to securityInfo path
+        }
+      }
+
+      if (!control && Ci.nsITLSSocketControl) {
+        try {
+          control = this.socket.securityInfo
+            .QueryInterface(Ci.nsITLSSocketControl);
+        } catch (ex) {
+          // fall through to legacy path
+        }
+      }
+
+      if (!control && Ci.nsISSLSocketControl) {
+        try {
+          control = this.socket.securityInfo
+            .QueryInterface(Ci.nsISSLSocketControl);
+        } catch (ex) {
+          // no legacy interface either
+        }
+      }
 
       if (!control)
-        throw new Error("Socket can not be upgraded.");
+        throw new Error("Socket can not be upgraded - no TLS control interface found.");
 
-      control.StartTLS();
+      // TB 148+ uses asyncStartTLS(); older TB used StartTLS()
+      if (control.asyncStartTLS)
+        await control.asyncStartTLS();
+      else if (control.StartTLS)
+        control.StartTLS();
+      else
+        throw new Error("No StartTLS method found on TLS control interface.");
 
       this.log("[SieveSocketApi:startTLS()] ... done");
     }
@@ -672,7 +703,12 @@
       else
         this.log("Using Proxy: Direct");
 
-      this.socket = this.createTransport(aProxyInfo);
+      try {
+        this.socket = this.createTransport(aProxyInfo);
+      } catch (ex) {
+        console.error(`[SieveSocketApi:onProxyAvailable()] createTransport FAILED: ${ex} (result=${ex.result}) (message=${ex.message})`);
+        throw ex;
+      }
 
       this.state = STATE_CONNECTING;
 
@@ -820,7 +856,6 @@
              *   return the unique id.
              */
             async create(host, port, level) {
-
               const socket = new SieveSocket(host, port, level);
 
               const id = Math.random().toString(STRING_AS_HEX).substr(HEX_PREFIX_LEN, HEX_UINT32_LEN)
@@ -841,7 +876,12 @@
              *   the socket's unique id.
              */
             async connect(socket) {
-              await (getSocket(socket).connect());
+              try {
+                await (getSocket(socket).connect());
+              } catch (ex) {
+                console.error(`[SieveSocketApi:connect()] FAILED: ${ex} result=${ex.result} message=${ex.message}`);
+                throw new Error(`Socket connect failed: ${ex.message || ex}`);
+              }
             },
 
             /**

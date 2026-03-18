@@ -2,6 +2,53 @@
 
 ***The changelog for newer releases can be found here https://github.com/thsmi/sieve/releases***
 
+## Thunderbird 128+ / 148+ Compatibility Fixes
+
+The following breaking API changes in Thunderbird's Gecko engine required
+fixes in the WebExtension experiment APIs (`src/wx/api/sieve/`).
+
+### SieveSocketApi.js
+
+**`Services.jsm` import removed (TB 128+)**
+`ChromeUtils.import("resource://gre/modules/Services.jsm")` no longer works.
+`Services` is now a built-in global in privileged experiment API contexts and
+must not be imported manually.
+
+**Proxy lookup bypassed (TB 128+)**
+`nsIProtocolProxyService.asyncResolve()` changed behaviour and caused
+connection hangs with proxy auto-detection (PAC/WPAD). Since ManageSieve
+connects directly without proxy awareness, the async lookup is skipped and
+`onProxyAvailable()` is called directly with `null` (= direct connection).
+
+**`nsISSLSocketControl` → `nsITLSSocketControl` (TB 115+)**
+`nsISSLSocketControl` was replaced by `nsITLSSocketControl`. Additionally,
+in TB 128+ the TLS control object is exposed as a direct property
+`nsISocketTransport.tlsSocketControl` (with QueryInterface required to
+expose methods) rather than through `securityInfo`. Both paths are tried
+with fallback to the legacy interface for older TB versions.
+
+**`StartTLS()` → `asyncStartTLS()` (TB 148+)**
+`nsITLSSocketControl.StartTLS()` was renamed to `asyncStartTLS()` and now
+returns a Promise. `startTLS()` in SieveSocketApi is now `async` and awaits
+`asyncStartTLS()`, with fallback to the synchronous `StartTLS()` for older
+Thunderbird versions.
+
+### SieveAccountsApi.js
+
+**`realHostName` → `hostName` (TB 128+)**
+`nsIMsgIncomingServer.realHostName` was removed; use `hostName` instead.
+
+**`realUsername` → `username` (TB 128+)**
+`nsIMsgIncomingServer.realUsername` was removed; use `username` instead.
+Without this fix, `undefined` was interpolated into the SASL PLAIN credential
+string and sent as the literal username `"undefined"`, causing authentication
+to fail.
+
+### manifest.json
+
+`strict_min_version` raised from `68.0a1` to `128.0` to reflect the minimum
+Thunderbird version actually supported after the API changes above.
+
 ## Sieve 0.2.3 - ([in Progress](https://github.com/thsmi/sieve/issues?milestone=2&state=open))
 Development builds can be found in the [Downloads section](https://github.com/thsmi/sieve/blob/master/nightly/README.md). 
 * [FIXED] [Quoted Strings ignored escape characters](https://github.com/thsmi/sieve/issues/8)

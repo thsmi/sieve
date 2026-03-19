@@ -247,7 +247,7 @@
           // tlsSocketControl is available before TLS is started; QI needed to expose methods
           if (this.socket.tlsSocketControl)
             control = this.socket.tlsSocketControl.QueryInterface(Ci.nsITLSSocketControl);
-        } catch (ex) {
+        } catch {
           // fall through to securityInfo path
         }
       }
@@ -256,7 +256,7 @@
         try {
           control = this.socket.securityInfo
             .QueryInterface(Ci.nsITLSSocketControl);
-        } catch (ex) {
+        } catch {
           // fall through to legacy path
         }
       }
@@ -265,7 +265,7 @@
         try {
           control = this.socket.securityInfo
             .QueryInterface(Ci.nsISSLSocketControl);
-        } catch (ex) {
+        } catch {
           // no legacy interface either
         }
       }

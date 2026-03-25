@@ -290,7 +290,7 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
           if (secInfo.isDomainMismatch)
             overrideBits |= ERROR_MISMATCH;
 
-          await (browser.sieve.socket.addCertErrorOverride(
+          await (browser.tcpSocket.addCertErrorOverride(
             secInfo.host, `${secInfo.port}`, secInfo.rawDER, overrideBits));
 
           await (actions["account-connect"](msg));

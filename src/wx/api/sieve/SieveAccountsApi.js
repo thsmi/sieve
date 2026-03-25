@@ -61,11 +61,25 @@
             },
 
             async getUsername(id) {
-              return await getIncomingServer(id).realUsername;
+              const server = getIncomingServer(id);
+
+              // realUsername was removed in TB 102 (Bug 1483485),
+              // consolidated into username.
+              if (server.realUsername)
+                return server.realUsername;
+
+              return server.username;
             },
 
             async getHostname(id) {
-              return await getIncomingServer(id).realHostName;
+              const server = getIncomingServer(id);
+
+              // realHostName was removed in TB 102 (Bug 1483485),
+              // consolidated into hostName.
+              if (server.realHostName)
+                return server.realHostName;
+
+              return server.hostName;
             }
           }
         }

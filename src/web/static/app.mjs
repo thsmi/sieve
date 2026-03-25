@@ -166,7 +166,7 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
       if (!sessions.has(msg.payload.account))
         return false;
 
-      return sessions.get(msg.payload.account).isConnected();
+      return await sessions.get(msg.payload.account).isConnected();
     },
 
 

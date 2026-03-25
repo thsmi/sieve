@@ -202,7 +202,7 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
       if (!sessions.has(msg.payload.account))
         return false;
 
-      return sessions.get(msg.payload.account).isConnected();
+      return await sessions.get(msg.payload.account).isConnected();
     },
 
     "account-connect": async function (msg) {

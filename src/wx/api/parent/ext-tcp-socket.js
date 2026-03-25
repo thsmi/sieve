@@ -680,7 +680,8 @@
               sockets.getSocket(socket).setListener("onopen", callback);
 
               return () => {
-                sockets.getSocket(socket).deleteListener("onopen");
+                if (sockets.hasSocket(socket))
+                  sockets.getSocket(socket).deleteListener("onopen");
               };
             }
           }).api(),
@@ -692,7 +693,8 @@
               sockets.getSocket(socket).setListener("ondrain", callback);
 
               return () => {
-                sockets.getSocket(socket).deleteListener("ondrain");
+                if (sockets.hasSocket(socket))
+                  sockets.getSocket(socket).deleteListener("ondrain");
               };
             }
           }).api(),
@@ -707,7 +709,8 @@
               });
 
               return () => {
-                sockets.getSocket(socket).deleteListener("ondata");
+                if (sockets.hasSocket(socket))
+                  sockets.getSocket(socket).deleteListener("ondata");
               };
             }
           }).api(),
@@ -721,7 +724,8 @@
               });
 
               return () => {
-                sockets.getSocket(socket).deleteListener("onerror");
+                if (sockets.hasSocket(socket))
+                  sockets.getSocket(socket).deleteListener("onerror");
               };
             }
           }).api(),
@@ -735,7 +739,8 @@
               });
 
               return () => {
-                sockets.getSocket(socket).deleteListener("onclose");
+                if (sockets.hasSocket(socket))
+                  sockets.getSocket(socket).deleteListener("onclose");
               };
             }
           }).api()

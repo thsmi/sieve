@@ -196,7 +196,7 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
       return sessions.get(msg.payload.account).isConnecting();
     },
 
-    "account-connected": function (msg) {
+    "account-connected": async function (msg) {
       logger.logAction(`Is connected ${msg.payload.account}`);
 
       if (!sessions.has(msg.payload.account))

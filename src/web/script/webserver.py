@@ -53,7 +53,7 @@ class WebServer:
   def get_handlers(self):
     return self.__handlers
 
-  def handle_message(self, context) -> None:
+  def handle_message(self, context: HttpContext) -> None:
 
     try:
       request = HttpRequest()
@@ -81,8 +81,9 @@ class WebServer:
       response.add_headers({'Connection': 'close'})
 
       exc_type, exc_value, exc_tb = sys.exc_info()
-      response.send(context,"Internal Server error\r\n\r\n"
-        + "\r\n".join(traceback.format_exception(exc_type, exc_value, exc_tb)))
+      response.send(context,
+                    ("Internal Server error\r\n\r\n"
+                    + "\r\n".join(traceback.format_exception(exc_type, exc_value, exc_tb))).encode())
 
       logging.warning(str(ex))
       logging.warning("".join(traceback.format_exception(exc_type, exc_value, exc_tb)))

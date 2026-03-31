@@ -3,13 +3,14 @@ import logging
 from ..websocket import WebSocket
 from ..sieve.sievesocket import SieveSocket
 from ..messagepump import MessagePump
+from ..webserver import HttpContext, HttpRequest
 
 class WebSocketHandler:
 
   def __init__(self, config):
     self.__config = config
 
-  def can_handle_request(self, request) -> bool:
+  def can_handle_request(self, request: HttpRequest) -> bool:
     if request.method != "GET":
       return False
 
@@ -18,7 +19,7 @@ class WebSocketHandler:
 
     return True
 
-  def handle_request(self, context, request) -> None:
+  def handle_request(self, context: HttpContext, request: HttpRequest) -> None:
 
     logging.info(f"Websocket Request for {request.path}")
 

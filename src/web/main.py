@@ -45,10 +45,7 @@ webServer = WebServer(
   certfile = config.get_certfile())
 
 webServer.add_handler(ConfigHandler(config))
-
-
 webServer.add_handler(FileHandler(str(config.get_http_root())))
-
 webServer.add_handler(WebSocketHandler(config))
 
 webServer.listen()

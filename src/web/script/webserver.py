@@ -54,7 +54,6 @@ class WebServer:
     return self.__handlers
 
   def handle_message(self, context: HttpContext) -> None:
-
     try:
       request = HttpRequest()
       request.recv(context)

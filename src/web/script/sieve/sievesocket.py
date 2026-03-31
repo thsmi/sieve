@@ -38,6 +38,8 @@ class SieveSocket:
     capabilities.decode(self.recv())
     self.__capabilities = capabilities
 
+    logging.debug(f"Sieve socket, nr. {self.__socket.fileno()}, was created successfully")
+
   def __del__(self) -> None:
     self.disconnect()
 
@@ -86,7 +88,7 @@ class SieveSocket:
       self.__socket.send(data)
 
   def start_tls(self) -> None:
-    logging.debug("Securing connection with STARTTLS")
+    logging.debug("Securing the Sieve socket connection with STARTTLS")
 
     if b'"STARTTLS"' not in self.__capabilities.get_capabilities():
       raise Exception("STARTTLS is not supported")

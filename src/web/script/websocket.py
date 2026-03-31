@@ -1,212 +1,84 @@
-from hashlib import sha1
-from base64 import b64encode
 import logging
+import traceback
+from socket import socket as socket_module
+from typing import Callable
 
-from .http import HttpException, HttpResponse
+from websockets.http11 import Request as WsRequest
+from websockets.protocol import SEND_EOF
+from websockets.sync.server import ServerProtocol, ServerConnection
+
+from .webserver import HttpContext, HttpRequest
 
 
-# class SocketMock:
+class PreHandshakedConnection(ServerConnection):
+  """
+  ServerConnection subclass that replaces the socket-reading handshake
+  with one driven by an already-parsed HttpRequest.
+  """
 
-#   def __init__(self, data):
-#     self.__data = data
+  def handshake_from_http_request(self, http_request: HttpRequest) -> None:
+    """
+    Perform the WS opening handshake using pre-parsed HttpRequest data.
+    """
+    self.protocol.receive_data(http_request.original_payload)
 
-#   @property
-#   def data(self):
-#     return self.__data
+    request = next(
+      (e for e in self.protocol.events_received() if isinstance(e, WsRequest)),
+      None,
+    )
+    if request is None:
+      raise ValueError(
+        "Could not reconstruct a WebSocket Request from the given HttpRequest"
+      )
 
-#   def recv(self, length):
-#     result = self.__data[:length]
-#     del self.__data[:length]
+    response = self.protocol.accept(request)
+    self.protocol.send_response(response)
 
-#     return result
+    # Write the 101 Switching Protocols response to the real socket
+    for chunk in self.protocol.data_to_send():
+      if chunk is not SEND_EOF:
+        self.socket.sendall(chunk)
+      else:
+        self.socket.shutdown(socket_module.SHUT_WR)
 
-#   def send(self, payload) -> None:
-#     for data in payload:
-#       self.__data.append(data)
+    if self.protocol.handshake_exc:
+      raise self.protocol.handshake_exc
 
-# class ContextMock:
+    # Mirror the attributes that ServerConnection.handshake() would set,
+    # so that code inspecting ws.request and ws.response works properly
+    self.request = request
+    self.response = response
 
-#   def __init__(self, data):
-#     self.__socket = SocketMock(data)
-
-#   @property
-#   def socket(self):
-#     return self.__socket
 
 class WebSocket:
-
-  def __init__(self, request, context):
-    self.__context = context
-    # we cache the initial request so that we have access to the headers.
-    self.__request = request
-
-  @property
-  def request(self):
-    return self.__request
-
-  def fileno(self):
-    return self.__context.socket.fileno()
-
+  def __init__(self, handler: Callable[[PreHandshakedConnection], None], context: HttpContext, request: HttpRequest):
+    self._handler = handler
+    self._context = context
+    self._request = request
+    self._ws: PreHandshakedConnection | None = None
 
   def __enter__(self):
-    if self.request.get_header("Upgrade") != "websocket":
-      raise HttpException(400, "Upgrade header expected")
-
-    key = self.request.get_header("Sec-WebSocket-Key")
-
-    if key is None:
-      raise HttpException(400, "Upgrade header expected")
-
-    message = sha1()
-    message.update(key.encode())
-    message.update(b"258EAFA5-E914-47DA-95CA-C5AB0DC85B11")
-
-    accept = b64encode(message.digest()).decode()
-
-    response = HttpResponse()
-    response.set_status(101, "Switching Protocols")
-    response.add_headers(headers={
-      "Upgrade": "websocket",
-      "Connection": "Upgrade",
-      "Sec-WebSocket-Accept": accept
-    })
-    response.send(self.__context)
-
+    self._create_connection()
     return self
 
   def __exit__(self, exc_type, exc_val, exc_tb) -> None:
-    logging.debug("On Exit")
-    #TODO send a websocket disconnect message...
-    #self.disconnect()
+    self._ws.close()  # No-op if it's already closed
 
-  def extract_masked_data(self, length : int) -> bytearray:
-    payload = bytearray()
+  def _create_connection(self, *, close_timeout=10) -> None:
+    """
+    Perform the WebSocket opening handshake on an already accepted TCP socket
+    and call the handler function.
+    """
+    self._ws = PreHandshakedConnection(
+      self._context.socket,
+      ServerProtocol(),
+      close_timeout=close_timeout,
+    )
 
-    mask = self.__context.socket.recv(4)
-    payload += self.__context.socket.recv(length)
-
-    for idx, value in enumerate(payload):
-      payload[idx] = mask[idx % 4] ^ value #payload[i]
-
-    return payload
-
-  def handle_pong(self, data) -> None:
-    raise Exception("Implement me")
-
-  def extract_length(self, data) -> int:
-    length = data[1] & 0b01111111
-
-    if length == 126:
-      data = self.__context.socket.recv(2)
-      return (data[0] << (1*8)) + (data[1] << (0*8))
-
-
-    if length == 127:
-      data = self.__context.socket.recv(8)
-      return (data[0] << (7*8)) + (data[1] << (6*8)) + (data[2] << (5*8)) + (data[3] << (4*8)) \
-        + (data[4] << (3*8)) + (data[5] << (2*8)) + (data[6] << (1*8)) + (data[7] << (0*8))
-
-    return length
-
-  def recv(self) -> bytearray:
-
-    fin = False
-    payload = bytearray()
-
-    while not fin:
-      data = self.__context.socket.recv(2)
-
-      if not len(data):
-        logging.debug("Connection closed.")
-        return payload
-
-      opcode = data[0] & 0b00001111
-      fin = bool(data[0] & 0b10000000)
-      length = self.extract_length(data)
-
-      if opcode == 8:
-        if not length:
-          logging.debug("Connection gracefully closed.")
-          return bytearray()
-
-        message = self.extract_masked_data(length)
-        code = (message[0] << (1*8)) + (message[1] << (0*8))
-        text = message[2:]
-        logging.debug(f"Connection gracefully closed with code {code}. Text: {text.decode()}")
-
-        return bytearray()
-
-      if opcode == 10:
-        self.handle_pong(data)
-        continue
-
-      if (opcode == 0) or (opcode == 1) or (opcode == 2):
-
-        if not bool(data[1] & 0b10000000):
-          raise Exception("Client to server messages have to be masked.")
-
-        payload += self.extract_masked_data(length)
-
-        if fin:
-          break
-
-    return payload
-
-  def send(self, payload) -> None:
-
-    data = bytearray()
-    data.append(0b10000001)
-
-    length = len(payload)
-    #FIXME the length is in Network byte order and needs to be converted to host byte order
-
-    if length < 126:
-      data.append(length & 0b01111111)
-    elif length <= 0xFFFF:
-      data.append(126)
-      data.append((length >> (1*8)) & 0xFF)
-      data.append((length >> (0*8)) & 0xFF)
-    elif length <= 0xFFFFFFFFFFFFFFFF:
-      data.append(127)
-      data.append((length >> (7*8)) & 0xFF)
-      data.append((length >> (6*8)) & 0xFF)
-      data.append((length >> (5*8)) & 0xFF)
-      data.append((length >> (4*8)) & 0xFF)
-      data.append((length >> (3*8)) & 0xFF)
-      data.append((length >> (2*8)) & 0xFF)
-      data.append((length >> (1*8)) & 0xFF)
-      data.append((length >> (0*8)) & 0xFF)
-
-    if isinstance(payload, (bytes, bytearray)):
-      data.extend(payload)
-    else:
-      data.extend(payload.encode())
-
-    self.__context.socket.send(data)
-
-
-#ws = WebSocket(None, ContextMock(bytearray([0x81,0x05,0x48,0x65,0x6c,0x6c,0x6f])))
-#ws.recv() == "Hello"
-
-
-#data2.append(0x81)
-#data2.append(0x85)
-#data2.append(0x37)
-#data2.append(0xfa)
-#data2.append(0x21)
-#data2.append(0x3d)
-#data2.append(0x7f)
-#data2.append(0x9f)
-#data2.append(0x4d)
-#data2.append(0x51)
-#data2.append(0x58)
-
-#ws = WebSocket(None, ContextMock(bytearray()))
-#ws.send("Hello")
-
-#data = ""
-#for i in range(256):
-#  data += "A"
-
-#ws = WebSocket(None, ContextMock(bytearray()))
-#ws.send(data)
+    try:
+      self._ws.handshake_from_http_request(self._request)
+      logging.debug(f"Websocket has been initialised on socket nr. {self._context.socket.fileno()}")
+      self._handler(self._ws)
+    except Exception as exc:
+      logging.error(f"Websocket connection error: {exc}\n{traceback.format_exc()}")
+      self._ws.close()

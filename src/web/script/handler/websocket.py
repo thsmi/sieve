@@ -1,9 +1,10 @@
 import logging
 
-from ..websocket import WebSocket
-from ..sieve.sievesocket import SieveSocket
 from ..messagepump import MessagePump
+from ..sieve.sievesocket import SieveSocket
 from ..webserver import HttpContext, HttpRequest
+from ..websocket import WebSocket
+
 
 class WebSocketHandler:
 
@@ -31,19 +32,16 @@ class WebSocketHandler:
 
     logging.debug(f'Communicating with "{host}:{port}" with auth username "{account.get_auth_username(request)}"')
 
-    # Websocket is read
-    with WebSocket(request, context) as websocket, SieveSocket(host, port) as sievesocket:
-      sievesocket.start_tls()
+    with SieveSocket(host, port) as sieve_socket:
+      sieve_socket.start_tls()
 
       if not account.can_authenticate():
         logging.info(f"Do Proxy authentication for {account.get_name()}")
-        sievesocket.authenticate(
+        sieve_socket.authenticate(
           account.get_sieve_user(request),
           account.get_sieve_password(request),
           account.get_auth_username(request))
 
-      # Publish capabilities to client...
-      logging.debug(f'Publishing capabilities to web client: "{sievesocket.capabilities.decode()}"')
-      websocket.send(sievesocket.capabilities)
-
-      MessagePump(websocket, sievesocket).run()
+      message_pump = MessagePump(sieve_socket)
+      with WebSocket(message_pump.run, context, request):
+        pass

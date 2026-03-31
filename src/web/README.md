@@ -23,8 +23,9 @@ backend with a reverse proxy.
 
 ## Installation
 
-* Install a python 3.8 or up
-  No external python packages are required, a raw python is sufficient.
+* Install a Python 3.8 or up.
+  Python [`websockets`](https://pypi.org/project/websockets/) is a necessary dependency.
+  Other than this, no other external python packages are required.
 
 * Optional, create a python virtual env.
   A [venv or virtual environment](https://docs.python.org/3/tutorial/venv.html)

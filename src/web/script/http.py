@@ -16,6 +16,11 @@ class HttpRequest:
     self.__headers = {}
     self.__request = ["", "", ""]
     self.__payload = None
+    self.__original_payload : bytes | None = None
+
+  @property
+  def original_payload(self) -> bytes | None:
+    return self.__original_payload
 
   @property
   def url(self) -> str:
@@ -58,8 +63,9 @@ class HttpRequest:
     if blocking:
       self.wait(context)
 
-    data = context.socket.recv(4096).decode()
+    self.__original_payload = context.socket.recv(4096)
 
+    data = self.__original_payload.decode()
     data = data.split("\r\n\r\n", 1)
 
     headers = data[0].split("\r\n")

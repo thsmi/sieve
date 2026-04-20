@@ -18,6 +18,18 @@ delete and add Sieve scripts with a convenient interface? That is exactly what t
 
 … it provides an implementation of [A Protocol for Remotely Managing Sieve Scripts (RFC 5804)](https://wiki.tools.ietf.org/html/rfc5804) as well as a graphical editor for [Sieve: An Email Filtering Language (RFC 5228)](https://tools.ietf.org/html/rfc5228)
 
+## Keyboard Shortcuts
+
+The text editor supports the following keyboard shortcuts:
+
+| Shortcut | Action |
+|---|---|
+| Ctrl+F / Cmd+F | Open search bar and focus search field |
+| F3 | Find next match |
+| Shift+F3 | Find previous match |
+| Enter | Find next match (when search field is focused) |
+| Shift+Enter | Find previous match (when search field is focused) |
+
 
 ## History
 

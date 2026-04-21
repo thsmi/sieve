@@ -377,13 +377,13 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
       return sessions.get(msg.payload.account).isConnecting();
     },
 
-    "account-connected": function (msg) {
+    "account-connected": async function (msg) {
       logger.logAction(`Is connected ${msg.payload.account}`);
 
       if (!sessions.has(msg.payload.account))
         return false;
 
-      return sessions.get(msg.payload.account).isConnected();
+      return await sessions.get(msg.payload.account).isConnected();
     },
 
 

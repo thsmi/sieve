@@ -36,9 +36,17 @@ class SieveUrl {
       throw new Error(`Not a valid sieve url ${url}`);
 
     this.host = match.groups["host"];
-    this.port = match.groups["port"];
     this.user = match.groups["user"];
     this.password = match.groups["password"];
+
+    if (match.groups["port"] !== undefined) {
+      this.port = Number.parseInt(match.groups["port"], 10);
+
+      if (Number.isNaN(this.port))
+        throw new Error(`Not a valid port in sieve url ${url}`);
+    } else {
+      this.port = SIEVE_PORT;
+    }
   }
 
   /**
@@ -55,13 +63,10 @@ class SieveUrl {
    * Returns the uri's remote port.
    * In case it was not specified it will return the default sieve port.
    *
-   * @returns {string}
+   * @returns {int}
    *   the remote port
    */
   getPort() {
-    if ((this.port === null) || (typeof(this.port) === "undefined"))
-      this.port = `${SIEVE_PORT}`;
-
     return this.port;
   }
 

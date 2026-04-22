@@ -236,6 +236,14 @@
     ]
   });
 
+  tests.set("pgpencrypt", {
+    script: "${workspace}/libSieve/extensions/pgpencrypt/tests/SievePgpEncryptTest.mjs",
+    extend: "rfc5228",
+    require: [
+      "${workspace}/libSieve/extensions/pgpencrypt/logic/SievePgpEncrypt.mjs"
+    ]
+  });
+
   tests.set("examples-fastmail", {
     script: "${workspace}/libSieve/tests/SieveFastMailTest.mjs",
     extend: "rfc5228",

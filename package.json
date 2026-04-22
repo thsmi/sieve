@@ -8,11 +8,16 @@
     "test": "tests"
   },
   "devDependencies": {
+
+    "codemirror": "^6.0.1",
+    "@codemirror/legacy-modes": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "rollup": "^4.35.0",
+
     "electron": "^35.0.1",
     "@electron/packager": "^18.3.6",
 
     "bootstrap": "^5.3.3",
-    "codemirror": "^5.65.4",
 
     "@eslint/js": "^9.22.0",
     "eslint-plugin-jsdoc": "^50.6.6",
@@ -25,7 +30,7 @@
     "start-win32": "gulp \"app:package-win32\" && cd ./build/electron/out/sieve-win32-x64/ && sieve.exe",
     "start": "cd node_modules/.bin && electron ./../../build/electron/resources",
     "debug": "cd node_modules/.bin && electron ./../../build/electron/resources --debug",
-    "test": "gulp \"test:package\" && node ./tests/index.js ./build/test/app",
+    "test": "gulp \"test:package\" && node ./tests/unittests/index.js ./build/test/app",
     "server": "node ./tools/Server/Server.js",
     "gulp": "gulp",
     "lint": "eslint"

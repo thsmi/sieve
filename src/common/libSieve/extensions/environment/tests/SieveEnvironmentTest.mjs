@@ -40,5 +40,5 @@ suite.add("Example 2", () => {
 suite.add("Validate environment test constructor", () => {
 
   const snippet = 'environment "domain" "imap.example.com"';
-  suite.expectValidSnippet("test/environment", snippet, ["environment"]);
+  suite.expectDefaultSnippet("test/environment", snippet, ["environment"]);
 });

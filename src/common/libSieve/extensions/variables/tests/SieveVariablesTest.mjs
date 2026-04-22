@@ -272,11 +272,11 @@ suite.add("Manipulate SetVariable - All values set - Remove all values", () => {
 suite.add("Validate set action constructors", () => {
 
   const snippet = 'set "variable" "";\r\n';
-  suite.expectValidSnippet("action/set", snippet, ["variables"]);
+  suite.expectDefaultSnippet("action/set", snippet, ["variables"]);
 });
 
 suite.add("Validate string test constructors", () => {
 
   const snippet = 'string "${somevariable}" "some value"';
-  suite.expectValidSnippet("test/string", snippet, ["variables"]);
+  suite.expectDefaultSnippet("test/string", snippet, ["variables"]);
 });

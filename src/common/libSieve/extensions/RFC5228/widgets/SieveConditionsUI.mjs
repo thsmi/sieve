@@ -31,17 +31,17 @@ class SieveIfUI extends SieveBlockUI {
   /**
    * @inheritdoc
    */
-  createHtml(parent) {
+  createHtml(parent, invalidate) {
 
     const test = document.createElement("div");
-    test.append(this.getSieve().test().html());
+    test.append(this.getSieve().test().html(invalidate));
     test.classList.add("sivConditionalChild");
 
     const elm = document.createElement("div");
     elm.id = `sivElm${this.id()}`;
     elm.classList.add("sivConditional");
     elm.append(test);
-    elm.append(super.createHtml(parent));
+    elm.append(super.createHtml(parent, invalidate));
 
     return elm;
   }
@@ -56,11 +56,11 @@ class SieveElseUI extends SieveBlockUI {
   /**
    * @inheritdoc
    */
-  createHtml(parent) {
+  createHtml(parent, invalidate) {
     const elm = document.createElement("div");
     elm.id = `sivElm${this.id()}`;
     elm.classList.add("sivConditional");
-    elm.append(super.createHtml(parent));
+    elm.append(super.createHtml(parent, invalidate));
 
     return elm;
   }
@@ -83,7 +83,7 @@ class SieveConditionUI extends SieveSourceBoxUI {
   /**
    * @inheritdoc
    */
-  createHtml(parent) {
+  createHtml(parent, invalidate) {
 
     const FRAGMENT =
       `<div>
@@ -119,14 +119,14 @@ class SieveConditionUI extends SieveSourceBoxUI {
          </div>
        </div>`;
 
-    const item = (new SieveTemplate()).convert(FRAGMENT);
+    const item = (new SieveTemplate()).convertFragment(FRAGMENT);
 
     parent.classList.add("sivCondition");
     parent.id = `sivElm${this.id()}`;
 
     const elm2 = document.createElement("div");
 
-    const children = this.getSieve().children();
+    const children = this.getSieve().getChildren();
     for (let i = 0; i < children.length; i++) {
 
       elm2.append((new SieveDropBoxUI(this, "sivConditionSpacer"))
@@ -148,8 +148,9 @@ class SieveConditionUI extends SieveSourceBoxUI {
       elm2.append(condition);
 
       const child = item.querySelector(".sivConditionChild").cloneNode(true);
-      child.append(children[i].html());
+      child.append(children[i].html(invalidate));
       elm2.append(child);
+      // condition.querySelector(".sivConditionChild").append(child);
     }
 
     elm2.append((new SieveDropBoxUI(this, "sivConditionSpacer"))

@@ -12,6 +12,10 @@
 
 import { SieveDataTransfer } from "./DataTransfer.mjs";
 
+const FIRST_CHILD = 0;
+const SECOND_CHILD = 1;
+const LAST_CHILD = -1;
+
 /**
  * Consumes drop events.
  */
@@ -34,7 +38,7 @@ class SieveDropHandler {
   }
 
   /**
-   * Gets the flavour for this drop type
+   * Gets the flavour for this drop type.
    *
    * @returns {string[]}
    *   a string array containing all supported drop flavours.
@@ -104,6 +108,7 @@ class SieveDropHandler {
    */
   attach(html) {
     html.addEventListener("drop", (e) => { return this.onDragDrop(e); });
+
     html.addEventListener("dragover", (e) => { return this.onDragOver(e); });
     html.addEventListener("dragleave", (e) => { return this.onDragExit(e); });
     html.addEventListener("dragenter", (e) => { return this.onDragEnter(e); });
@@ -123,11 +128,11 @@ class SieveDropHandler {
   onDragEnter(event) {
 
     if (!this.canDrop(event))
-      return true;
+      return false;
 
     this.owner().html().dataset.sieveDragging = true;
 
-    return false;
+    return true;
   }
 
 
@@ -135,14 +140,14 @@ class SieveDropHandler {
    * Called when the drag operation exits the drop handler.
    * It is used to remove the style change from the onDragEnter event.
    *
-   * @param {Event} event
+   * @param {Event} _event
    *   the dom event which was fired.
    *
    * @returns {boolean}
    *   always true.
    */
   // eslint-disable-next-line no-unused-vars
-  onDragExit(event) {
+  onDragExit(_event) {
 
     delete (this.owner().html().dataset.sieveDragging);
 
@@ -195,16 +200,13 @@ class SieveDropHandler {
    *
    * @param {string} flavour
    *   the data transfers preferred flavour.
-   * @param {Event} event
-   *   the dom event which was fired.
+   * @param {object} meta
+   *   the meta information attached to this drop.
    *
    * @returns {boolean}
    *   true in case the element can be dropped other wise false.
    */
-  onDrop(flavour, event) {
-    const dt = new SieveDataTransfer(event.dataTransfer);
-
-    const meta = JSON.parse(dt.getData(flavour));
+  onDrop(flavour, meta) {
 
     switch (meta.action) {
       case "create":
@@ -212,11 +214,6 @@ class SieveDropHandler {
           return false;
 
         this.createElement(flavour, meta.type);
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        dt.clear();
         return true;
 
       case "move":
@@ -224,11 +221,6 @@ class SieveDropHandler {
           return false;
 
         this.moveElement(flavour, meta.id);
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        dt.clear();
         return true;
     }
 
@@ -245,11 +237,22 @@ class SieveDropHandler {
    *   true in case the drop was successful otherwise false.
    */
   drop(event) {
+    const dt = new SieveDataTransfer(event.dataTransfer);
+
     for (const flavour of this.flavours()) {
-      if (!this.onCanDrop(flavour, event))
+      const data = dt.getMetaData(flavour);
+
+      if (!this.onCanDrop(flavour, data))
         continue;
 
-      return this.onDrop(flavour, event);
+      if (!this.onDrop(flavour, data))
+        continue;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      dt.clear();
+      return true;
     }
 
     return true;
@@ -260,24 +263,15 @@ class SieveDropHandler {
    *
    * @param {string} flavour
    *   the flavour which should be checked.
-   * @param {Event} event
-   *   the dom event which was fired.
+   * @param {object} meta
+   *   the meta information attached to this drop.
    *
    * @returns {boolean}
    *   true in case the flavour is supported by this drop handler otherwise false.
    */
-  onCanDrop(flavour, event) {
-    const dt = new SieveDataTransfer(event.dataTransfer);
+  onCanDrop(flavour, meta) {
 
-    let meta = dt.getData(flavour);
-
-    if (!meta || !meta.length)
-      return false;
-
-    meta = JSON.parse(meta);
-
-    // accept only the registered drop flavour...
-    if (!meta)
+    if ((typeof(meta) === "undefined") || (meta === null))
       return false;
 
     switch (meta.action) {
@@ -294,29 +288,47 @@ class SieveDropHandler {
   /**
    * Checks if the drop handler can create elements of the given flavour and type.
    *
-   * @param {string} sivFlavour
+   * @param {string} _sivFlavour
    *   the drag and drop operations flavour.
-   * @param {string} type
+   * @param {string} _type
    *   the sieve element type to be created
    * @returns {boolean}
    *   true in cae the element can be created otherwise false.
    */
   // eslint-disable-next-line no-unused-vars
-  canCreateElement(sivFlavour, type) {
+  canCreateElement(_sivFlavour, _type) {
     return false;
   }
 
   /**
    * Checks if the drop handler can move the given element.
+   *
    * @param {string} sivFlavour
    *   the drag and drop operations flavour.
    * @param {string} id
    *   the unique id of the sieve element to be moved
+   *
    * @returns {boolean}
    *   true in case the element can be moved otherwise false.
    */
   // eslint-disable-next-line no-unused-vars
   canMoveElement(sivFlavour, id) {
+    const source = this.document().id(id);
+    const target = this.parent().getSieve();
+
+    if (this.canMoveAction)
+      if (sivFlavour === "sieve/action")
+        return this.canMoveAction(source, target);
+
+    if (this.canMoveTest)
+      if (sivFlavour === "sieve/test")
+        return this.canMoveTest(source, target);
+
+    if (this.canMoveOperator)
+      if (sivFlavour === "sieve/operator")
+        return this.canMoveOperator(source, target);
+
+    // we got an incompatible drop means we just silently ignore it.
     return false;
   }
 
@@ -329,8 +341,13 @@ class SieveDropHandler {
    *   true in case the element can be dropped otherwise false.
    */
   canDrop(event) {
+
+    const dt = new SieveDataTransfer(event.dataTransfer);
+
     for (const flavour of this.flavours()) {
-      if (!this.onCanDrop(flavour, event))
+      const data = dt.getMetaData(flavour);
+
+      if (!this.onCanDrop(flavour, data))
         continue;
 
       event.preventDefault();
@@ -357,78 +374,234 @@ class SieveBlockDropHandler extends SieveDropHandler {
       ["sieve/action", "sieve/test", "sieve/operator"]);
   }
 
+  /**
+   * Check if the descendant is related to the ancestor.
+   *
+   * We do this by walking the family tree from starting from the descendant
+   * until we either stumble upon the desired ancestor or we reach the root
+   * element.
+   *
+   * @param {SieveAbstractElement} descendant
+   *   the descendant
+   * @param {SieveAbstractElement} ancestor
+   *   the ancestor
+   * @returns {boolean}
+   *   true in case the descendant relates to the ancestor.
+   */
+  isDescendant(descendant, ancestor) {
+
+    // Only if the ancestor is a test it can have descendants...
+    while (descendant) {
+      if (descendant.id() === ancestor.id())
+        return true;
+
+      descendant = descendant.parent();
+    }
+
+    return false;
+  }
+
+  /**
+   * Check if the descendant is related an ancestor which is a test.
+   *
+   * We to this by walking the family tree starting from the descendant
+   * until we either stumble upon the desired ancestor or we read the root
+   * element.
+   *
+   * It is very similar to isDescendant but using inverse checks.
+   *
+   * @param {SieveAbstractElement} descendant
+   *   the descendant
+   * @param {SieveAbstractElement} ancestor
+   *   the ancestor
+   * @returns {boolean}
+   *   true in case the descendant relates to the ancestor.
+   */
+  isAncestor(descendant, ancestor) {
+
+    while (descendant) {
+
+      if (descendant.test)
+        if (descendant.id() === ancestor.id())
+          return true;
+
+      descendant = descendant.parent();
+    }
+
+    return false;
+  }
 
   /**
    * @inheritdoc
    */
-  canMoveElement(sivFlavour, id) {
-    const source = this.document().id(id);
+  canMoveAction(source, target) {
 
-    if (source.html().parentElement.previousElementSibling === this.owner().html())
+    // We reject if the action should be moved to the drop target
+    // directly before or after the action. Because this does not change
+    // anything.
+    if (source.html().previousElementSibling === this.owner().html())
       return false;
 
-    if (source.html().parentElement.nextElementSibling === this.owner().html())
+    if (source.html().nextElementSibling === this.owner().html())
+      return false;
+
+    if (this.isDescendant(target, source))
       return false;
 
     return true;
   }
 
   /**
-   * Moves a the given test from the source to the target destination.
+   * Checks if the source and this drop target depend on each other.
+   * If so they can't be safely merged.
+   *
+   * @param {AbstractSieveElement} source
+   *   the element which should be checked.
+   * @returns {boolean}
+   *   true in case both point to the same target.
+   */
+  isDependent(source) {
+    while (source.nodeType() === "@test" || source.nodeType() === "@condition/") {
+      source = source.parent();
+
+      if ((source.html().nextElementSibling === this.owner().html()) ||
+        (source.html().previousElementSibling === this.owner().html())) {
+        // In case it is a single if or a single if/else then dropping directly
+        // in front or behind the parent would result in a singularity.
+        if (source.nodeType() !== "@condition")
+          return true;
+
+        if (source.getChildren().length === 1)
+          return true;
+
+        if (source.getChildren().length === 2)
+          if (!source.getChild(LAST_CHILD).test)
+            return true;
+
+        return false;
+      }
+
+    }
+
+    return false;
+  }
+
+  /**
    *
    * @param {*} source
    * @param {*} target
+   * @returns
+   */
+  isDescendent2(source, target) {
+    if (source.nodeType() !== "@test")
+      return false;
+
+    source = source.parent();
+    if (source.nodeType() !== "@condition/")
+      return false;
+
+    return this.isDescendant(target, source);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  canMoveTest(source, target) {
+
+    if (this.isDependent(source))
+      return false;
+
+    if (this.isDescendent2(source, target))
+      return false;
+
+    // We reject in case our block and the test have a common parent and
+    // removing the parent would end-up in in removing the current block.
+    if (this.isAncestor(source, target))
+      return false;
+
+    return true;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  // eslint-disable-next-line no-unused-vars
+  canMoveOperator(source, target) {
+    return false;
+  }
+
+  /**
+   * Moves a test from a condition to a block.
+   *
+   * First it adds a new condition to the bock and then moves the test from
+   * the old condition to the new one.
+   *
+   * @param {SieveAbstractElement} source
+   *   the test to be moved.
+   * @param {SieveAbstractElement} target
+   *   the target block to which the element should be added.
    */
   moveTest(source, target) {
 
     // Create a new Condition...
     const newCondition = this.document().createByName("condition");
 
-    // Find the if element which owns this test...
-    let conditional = source;
+    // Find the conditional which owns this test...
+    let conditional = source.parent();
+
     while (conditional.parent().test)
       conditional = conditional.parent();
 
+    let origin = source.parent();
     // ... remove everything between our test and the conditional...
-    let oldOwner = source.remove(true, conditional);
+    source.remove();
 
-    // ... in case the conditional has no more a test...
-    // ... we need to transfer all block element...
+    // Collapse the source if it is empty.
+    origin = this.document().collapse(origin);
+
+    // We need to transfer all block elements, in case the conditional
+    // has no children after collapsing the origin.
     if (!conditional.test()) {
-      oldOwner = conditional.remove(true, target);
-
       newCondition.append(conditional);
-      newCondition.children(1).test(source);
-      newCondition.children(0).remove(true);
+      newCondition.getChild(SECOND_CHILD).test(source);
+      newCondition.getChild(FIRST_CHILD).remove();
     }
     else
-      newCondition.children(0).test(source);
+      newCondition.getChild(FIRST_CHILD).test(source);
 
     target.append(newCondition, this.sibling());
 
     target.widget().reflow();
-    if (conditional.parent())
-      conditional.widget().reflow();
-    source.widget().reflow();
-    oldOwner.widget().reflow();
+    origin.widget().reflow();
 
+    // Do an async garbage collection
+    setTimeout(() => { this.document().compact(); }, 0);
   }
 
   /**
+   * Moves an action between blocks.
    *
    * @param {SieveAbstractElement} source
+   *   the source element which should be moved
    * @param {SieveAbstractElement} target
+   *   the target where the element should be added.
    */
   moveAction(source, target) {
 
-    // remember owner
-    const oldOwner = source.remove(true, target);
-    // Move Item to new owner
+    // Remember our origin
+    let origin = source.parent();
+
+    // Move it to the new parent.
     target.append(source, this.sibling());
 
     // refresh old and new Owner
     target.widget().reflow();
-    oldOwner.widget().reflow();
+
+    origin = this.document().collapse(origin);
+    origin.widget().reflow();
+
+    // Do an async garbage collection
+    setTimeout(() => { this.document().compact(); }, 0);
   }
 
   /**
@@ -466,7 +639,7 @@ class SieveBlockDropHandler extends SieveDropHandler {
    * @inheritdoc
    */
   // eslint-disable-next-line no-unused-vars
-  canCreateElement(sivFlavour, type) {
+  canCreateElement(sivFlavour, _type) {
     if (sivFlavour === "sieve/operator")
       return false;
 
@@ -475,7 +648,8 @@ class SieveBlockDropHandler extends SieveDropHandler {
 
   /**
    *
-   * @param {*} sivFlavour
+   * @param {string} sivFlavour
+   *   the drag operation's flavour.
    * @param {*} type
    */
   createElement(sivFlavour, type) {
@@ -522,39 +696,49 @@ class SieveTrashBoxDropHandler extends SieveDropHandler {
    * @inheritdoc
    */
   // eslint-disable-next-line no-unused-vars
-  canMoveElement(sivFlavour, id) {
+  canMoveElement(_sivFlavour, _id) {
     return true;
   }
 
   /**
    * Moves a sieve element to the trash bin and removes it from the document.
    *
-   * @param {string} sivFlavour
-   *   the drag operations flavour.
+   * @param {string} _sivFlavour
+   *   the drag operation's flavour.
    * @param {string} id
    *   the id of the sieve element to be removed
    */
-  moveElement(sivFlavour, id) {
+  moveElement(_sivFlavour, id) {
 
-    let item = this.document().id(id);
-    if (!item)
+    const item = this.document().id(id);
+    if (!item) {
+      // FIXME: instead of throwing we should try to repair the document.
+      // this.document().root().widget().reflow();
       throw new Error("Trash Drop Handler: No Element found for " + id);
+    }
 
-    item = item.remove(true);
+    let parent = item.parent();
 
-    if (!item)
-      throw new Error("Trash Drop Handler: No Element found for " + id);
+    item.remove();
 
-    item.widget().reflow();
+    // We need to cleanup empty parent elements.
+    parent = this.document().collapse(parent);
 
-    window.setTimeout(() => { this.document().compact(); }, 0);
+    // Reflow the root node in case the parent is unknown.
+    if (!parent)
+      parent = this.document().root();
+
+    parent.widget().reflow();
+
+    // We defer the call to compact this avoids blocking the main thread.
+    setTimeout(() => { this.document().compact(); }, 0);
   }
 }
 
 // ****************************************************************************//
 
 /**
- * Implements an handler for Sieve Test actions..
+ * Implements a drop handler which accepts elements dropped onto a conditional element
  */
 class SieveConditionDropHandler extends SieveDropHandler {
 
@@ -566,39 +750,71 @@ class SieveConditionDropHandler extends SieveDropHandler {
   }
 
   /**
+   * Checks if the action can be moved to this conditional.
+   *
+   * It makes only sense when dropping an action after the if or elsif which
+   * will then create an else else.
+   *
+   * @param {SieveAbstractElement} source
+   *   the source containing the action
+   * @param {SieveAbstractElement} target
+   *   the target element where it should be dropped.
+   * @returns {boolean}
+   *   true in case it can be moved otherwise false.
+   */
+  canMoveAction(source, target) {
+
+    // We don't support moving a condition. It is too tricky and needs lots of magic.
+    //
+    // In case the conditions is simple and only made of if and elsif we just
+    // need to prepend the source to the target.
+    //
+    // But both conditions can have an else block and this makes it really
+    // complicated because we would need to merge both else blocks....
+    if (source.nodeType() === "@condition")
+      return false;
+
+    // An action can only be dropped on the conditions last element
+    // this will create an else branch.
+    if (this.sibling())
+      return false;
+
+    // But this works only if the last element is not an else.
+    // Otherwise we would endup with two drop markers basically doing the same.
+    if (target.getChild(LAST_CHILD).nodeName() === "condition/else")
+      return false;
+
+    return true;
+  }
+
+
+  /**
    * @inheritdoc
    */
-  canMoveElement(flavour, id) {
-
-    // actions can only be added as last element...
-    if (flavour === "sieve/action")
-      if (this.sibling())
-        return false;
+  canMoveTest(source, target) {
 
     // if there is no source node we can skip right here...
-    let source = this.document().id(id);
     if (!source)
       return false;
 
     // nested test might be dropped directly in front of a test, in order to...
     // ... remove an operator. But it does not make any sense to drop the ...
     // ... source directly before or after the target.
-    if (flavour !== "sieve/action") {
-      // we have to the check if the test's parent is a conditional
-      source = source.parent();
 
-      // if the node has no parent something is wrong...
-      if (!source || !source.parent())
+    // we have to the check if the test's parent is a conditional
+    source = source.parent();
+
+    // if the node has no parent something is wrong...
+    if (!source || !source.parent())
+      return false;
+
+    // if it's a conditional statement it's parent does not have a test method
+    if (!source.parent().test) {
+      if (source.html().parentElement.previousElementSibling.previousElementSibling === this.owner().html())
         return false;
 
-      // if it's a conditional statement it's parent does not have a test method
-      if (!source.parent().test) {
-        if (source.html().parentElement.previousElementSibling.previousElementSibling === this.owner().html())
-          return false;
-
-        if (source.html().parentElement.nextElementSibling === this.owner().html())
-          return false;
-      }
+      if (source.html().parentElement.nextElementSibling === this.owner().html())
+        return false;
     }
 
     // ... it's safe to add any other element everywhere except as...
@@ -608,50 +824,90 @@ class SieveConditionDropHandler extends SieveDropHandler {
 
     // ... if the last element has no test, it's an else statement...
     // ... and it's not possible to add anything...
-    const target = this.parent().getSieve();
     if (!target)
       return false;
 
-    if (!target.children(":last").test)
+    if (!target.getChild(LAST_CHILD).test)
       return false;
 
     return true;
   }
 
   /**
-   * Moves a sieve element to the element bound by the drop handler.
-   *
-   * @param {string} flavour
-   *   the drag operations flavour.
-   * @param {string} id
-   *   the id of the sieve element to be moved
+   * @inheritdoc
+   */
+  // eslint-disable-next-line no-unused-vars
+  canMoveOperator(source, target) {
+    return false;
+  }
+
+  /**
+   * @inheritdoc
    */
   moveElement(flavour, id) {
-    let oldOwner;
 
+    // TODO move to parent...
     const source = this.document().id(id);
     if (!source)
-      throw new Error("Block Drop Handler: No Element found for " + id);
+      throw new Error("Condition Drop Handler: No Element found for " + id);
 
     const target = this.parent().getSieve();
     if (!target)
-      throw new Error("Block Drop Handler: No Element found for " + this.parent().id());
+      throw new Error("Condition Drop Handler: No Element found for " + this.parent().id());
 
     if (flavour === "sieve/action") {
-      oldOwner = source.remove(true, target);
-
-      // we need to warp the action into an else statement
-      target.append(
-        this.document().createByName("condition/else")
-          .append(source));
-
-      target.widget().reflow();
-      oldOwner.widget().reflow();
-
+      this.moveAction(source, target);
       return;
     }
 
+    if (flavour === "sieve/test") {
+      this.moveTest(source, target);
+      return;
+    }
+
+    if (flavour === "sieve/operator") {
+      this.moveOperator(source, target);
+      return;
+    }
+  }
+
+  /**
+   * Moves an action to this drop target.
+   * Action can only be dropped on the else.
+   *
+   * @param {SieveAbstractElement} source
+   *   the source which should be moved.
+   *
+   * @param {SieveAbstractElement} target
+   *   the target element where it should be placed.
+   */
+  moveAction(source, target) {
+
+    const parent = source.parent();
+    source.remove();
+
+    // we need to warp the action into an else statement
+    target.append(
+      this.document().createByName("condition/else")
+        .append(source));
+
+    target.widget().reflow();
+    parent.widget().reflow();
+  }
+
+  /**
+   * Moves a test to this drop target.
+   *
+   * @param {SieveAbstractElement} source
+   *   the source which should be moved.
+   *
+   * @param {SieveAbstractElement} target
+   *   the target element where it should be placed.
+   */
+  moveTest(source, target) {
     // "sieve/test" || "sieve/operator"
+
+    let oldOwner;
 
     // Find the if element which owns this test...
     let conditional = source;
@@ -659,7 +915,7 @@ class SieveConditionDropHandler extends SieveDropHandler {
       conditional = conditional.parent();
 
     // ... remove everything between our test and the conditional...
-    oldOwner = source.remove(true, conditional);
+    oldOwner = source.remove();
 
     // in case the conditional is empty we can reuse it ...
     // ... this keep all block elements intact...
@@ -670,7 +926,7 @@ class SieveConditionDropHandler extends SieveDropHandler {
     }
     else {
       conditional.test(source);
-      oldOwner = conditional.remove(true, target);
+      oldOwner = conditional.remove();
     }
 
     target.append(conditional, this.sibling());
@@ -679,14 +935,21 @@ class SieveConditionDropHandler extends SieveDropHandler {
     oldOwner.widget().reflow();
     conditional.widget().reflow();
 
-    return;
   }
 
   /**
    * @inheritdoc
    */
+  moveOperator(source, target) {
+    this.moveTest(source, target);
+  }
+
+
+  /**
+   * @inheritdoc
+   */
   // eslint-disable-next-line no-unused-vars
-  canCreateElement(flavour, type) {
+  canCreateElement(flavour, _type) {
     if (flavour === "sieve/operator")
       return false;
 
@@ -706,7 +969,7 @@ class SieveConditionDropHandler extends SieveDropHandler {
     if (!target)
       return false;
 
-    if (!target.children(":last").test)
+    if (!target.getChild(LAST_CHILD).test)
       return false;
 
     return true;
@@ -768,7 +1031,8 @@ class SieveTestDropHandler extends SieveDropHandler {
   /**
    * @inheritdoc
    */
-  canMoveElement(sivFlavour, id) {
+  canMoveElement(_sivFlavour, id) {
+
     let target = this.owner().getSieve();
     if (!target)
       return false;
@@ -800,12 +1064,15 @@ class SieveTestDropHandler extends SieveDropHandler {
   /**
    * Moves a sieve element to the element bound by the drop handler.
    *
-   * @param {string} sivFlavour
+   * @param {string} _sivFlavour
    *   the drag operations flavour.
    * @param {string} id
    *   the id of the sieve element to be moved
    */
-  moveElement(sivFlavour, id) {
+  moveElement(_sivFlavour, id) {
+
+    // TODO Test moving a test.
+
     const source = this.document().id(id);
     if (!source)
       throw new Error("Test Drop Handler: No Element found for " + id);
@@ -837,7 +1104,7 @@ class SieveTestDropHandler extends SieveDropHandler {
     target.parent(inner);
 
     // cleanup but stop at the source's parent condition
-    let oldOwner = source.remove(true, conditional);
+    let oldOwner = source.remove();
     let newConditional;
 
     // in case the conditional is empty we should migrate all actions ...
@@ -849,11 +1116,11 @@ class SieveTestDropHandler extends SieveDropHandler {
         newConditional = newConditional.parent();
 
       // migrate our children...
-      while (conditional.children().length)
-        newConditional.append(conditional.children(0).remove());
+      while (conditional.getChildren().length)
+        newConditional.append(conditional.getChild(FIRST_CHILD).remove());
 
       // do the remaining cleanup...
-      oldOwner = oldOwner.remove(true, target);
+      oldOwner = oldOwner.remove();
     }
 
     inner.append(source);
@@ -936,7 +1203,8 @@ class SieveMultaryDropHandler extends SieveDropHandler {
   /**
    * @inheritdoc
    */
-  canMoveElement(sivFlavour, id) {
+  canMoveElement(_sivFlavour, id) {
+
     // We have to prevent that someone drops a parent onto a child...
     //  ... this would generate a ring reference
     let target = this.parent().getSieve();
@@ -968,12 +1236,12 @@ class SieveMultaryDropHandler extends SieveDropHandler {
   /**
    * Moves a sieve element to the element bound by the drop handler.
    *
-   * @param {string} sivFlavour
+   * @param {string} _sivFlavour
    *   the drag operations flavour.
    * @param {string} id
    *   the id of the sieve element to be moved
    */
-  moveElement(sivFlavour, id) {
+  moveElement(_sivFlavour, id) {
     const target = this.parent().getSieve();
 
     if (!target)
@@ -990,7 +1258,7 @@ class SieveMultaryDropHandler extends SieveDropHandler {
       conditional = conditional.parent();
 
     // ... remove everything between our test and the conditional...
-    let oldOwner = source.remove(true, conditional);
+    let oldOwner = source.remove();
     let newConditional;
 
     // in case the conditional is empty we should migrate all actions ...
@@ -1002,11 +1270,11 @@ class SieveMultaryDropHandler extends SieveDropHandler {
         newConditional = newConditional.parent();
 
       // migrate our children...
-      while (conditional.children().length)
-        newConditional.append(conditional.children(0).remove());
+      while (conditional.getChildren().length)
+        newConditional.append(conditional.getChild(FIRST_CHILD).remove());
 
       // continue cleanup
-      oldOwner = oldOwner.remove(true, target);
+      oldOwner = oldOwner.remove();
     }
 
     target.append(source, this.sibling());
@@ -1022,7 +1290,7 @@ class SieveMultaryDropHandler extends SieveDropHandler {
    * @inheritdoc
    */
   // eslint-disable-next-line no-unused-vars
-  canCreateElement(sivFlavour, type) {
+  canCreateElement(sivFlavour, _type) {
     if (sivFlavour !== "sieve/test")
       return false;
 
@@ -1031,10 +1299,10 @@ class SieveMultaryDropHandler extends SieveDropHandler {
 
   /**
    *
-   * @param {*} sivFlavour
+   * @param {string} _sivFlavour
    * @param {*} type
    */
-  createElement(sivFlavour, type) {
+  createElement(_sivFlavour, type) {
     const item = this.parent().getSieve();
 
     if (!item)

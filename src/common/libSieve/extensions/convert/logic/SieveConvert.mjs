@@ -12,49 +12,34 @@
 
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
-// Usage: convert  <quoted-from-media-type: string>
-//                 <quoted-to-media-type: string>
-//                 <transcoding-params: string-list>
+import {
+  id, token,
+  string, stringList, parameters
+} from "./../../../toolkit/logic/SieveGrammarHelper.mjs";
+
+
+// Usage: convert
+//    <quoted-from-media-type: string>
+//    <quoted-to-media-type: string>
+//    <transcoding-params: string-list>
 //
 // can be either a test or an action...
 
-const properties = [{
-  id: "parameters",
+const properties = [
+  parameters(
+    string("from", 'image/tiff'),
+    string("to", 'mage/jpeg'),
+    stringList("transcoding", ["pix-x=320", "pix-y=240"]))
+];
 
-  elements: [{
-    id: "from",
-    type: "string",
-    value: '"image/tiff"'
-  }, {
-    id: "to",
-    type: "string",
-    value: '"image/jpeg"'
-  }, {
-    id: "transcoding",
-    type: "stringlist",
-    value: '["pix-x=320","pix-y=240"]'
-  }]
-}];
+SieveGrammar.addTest(
+  id("test/convert", "@test", "convert"),
+  token("convert"),
+  ...properties);
 
-SieveGrammar.addTest({
-  node: "test/convert",
-  type: "test",
-
-  requires: "convert",
-
-  token: "convert",
-
-  properties: properties
-});
-
-SieveGrammar.addAction({
-  node: "action/convert",
-  type: "action",
-
-  requires: "convert",
-
-  token: "convert",
-
-  properties: properties
-});
+SieveGrammar.addAction(
+  id("action/convert", "@action", "convert"),
+  token("convert"),
+  ...properties
+);
 

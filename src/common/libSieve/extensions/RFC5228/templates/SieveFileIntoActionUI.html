@@ -1,28 +1,36 @@
-<div>
-    <ul id="template-tabs">
-        <li class="nav-item">
-            <a class="nav-link active" data-bs-toggle="tab" href="#sieve-widget-fileinto" data-i18n="fileinto.tab.home" role="tab"></a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#sieve-widget-help" data-i18n="fileinto.tab.help" role="tab"></a>
-        </li>
-    </ul>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <div>
+        <ul id="template-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#sieve-widget-fileinto" data-i18n="fileinto.tab.home" role="tab"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#sieve-widget-help" data-i18n="fileinto.tab.help" role="tab"></a>
+            </li>
+        </ul>
 
-    <div id="template-content">
-        <div class="tab-content m-2">
-            <div class="tab-pane fade show active" id="sieve-widget-fileinto" role="tabpanel">
-                <div class="mb-3">
-                    <label data-i18n="fileinto.folder.label"></label>
-                    <form class="was-validated" novalidate="novalidate">
-                      <input id="sivFileIntoPath" type="text" class="form-control col-lg-8" data-i18n="fileinto.folder.placeholder" required="required"/>
-                      <div class="invalid-feedback" data-i18n="fileinto.folder.invalid"></div>
-                    </form>
+        <div id="template-content">
+            <div class="tab-content m-2">
+                <div class="tab-pane fade show active" id="sieve-widget-fileinto" role="tabpanel">
+                    <div class="mb-3">
+                        <label data-i18n="fileinto.folder.label"></label>
+                        <form class="was-validated" novalidate="novalidate">
+                          <input id="sivFileIntoPath" type="text" class="form-control col-lg-8" data-i18n="fileinto.folder.placeholder" required="required"/>
+                          <div class="invalid-feedback" data-i18n="fileinto.folder.invalid"></div>
+                        </form>
 
-                    <div id="sivFileIntoOverlay"> </div>
+                        <div id="sivFileIntoOverlay"> </div>
+                    </div>
                 </div>
-            </div>
-            <div data-i18n="fileinto.help.text" style="white-space: pre-line" class="tab-pane fade form-text" id="sieve-widget-help" role="tabpanel">
+                <div data-i18n="fileinto.help.text" style="white-space: pre-line" class="tab-pane fade form-text" id="sieve-widget-help" role="tabpanel">
+                </div>
             </div>
         </div>
     </div>
-</div>
+  </body>
+</html>

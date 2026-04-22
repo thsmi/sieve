@@ -19,7 +19,31 @@ if (!suite)
 
 suite.description("RFC5228 unit tests...");
 
-suite.add("Test Case insensitivity", () => {
+suite.add("Script without imports", () => {
+  const script = ""
+    + "keep;\r\n";
+
+  suite.expectValidScript(script);
+});
+
+suite.add("Script without body", () => {
+
+  const script = ""
+    + "require \"fileinto\"; \r\n";
+
+  suite.expectValidScript(script, ["fileinto"]);
+});
+
+suite.add("Script with body and imports", () => {
+  const script = ""
+    + "require \"fileinto\"; \r\n"
+    + "\r\n"
+    + "keep;\r\n";
+
+  suite.expectValidScript(script, ["fileinto"]);
+});
+
+suite.add("Case insensitivity", () => {
 
   const script = ""
     + 'if NOT address :DOMAIN :is ["From", "To"] "example.com"\r\n'

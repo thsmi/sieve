@@ -98,7 +98,7 @@ class SieveParser {
   extractChar(ch) {
     if (typeof (ch) !== "undefined" && ch !== null)
       if (!this.isChar(ch))
-        throw new Error("" + ch + " expected but found:\n" + this.bytes(QUOTE_LENGTH) + "...");
+        throw new Error(">>" + ch + "<< expected but found:\n" + this.bytes(QUOTE_LENGTH) + "...");
 
     this._pos++;
     return this._data.charAt(this._pos - ONE_CHARACTER);
@@ -183,7 +183,7 @@ class SieveParser {
       const str = length;
 
       if (!this.startsWith(str))
-        throw new Error("" + str + " expected but found:\n" + this.bytes(QUOTE_LENGTH) + "...");
+        throw new Error(">>" + str + "<< expected but found:\n" + this.bytes(QUOTE_LENGTH) + "...");
 
       result = this.bytes(str.length);
       this._pos += str.length;

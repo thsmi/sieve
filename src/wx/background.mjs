@@ -17,63 +17,25 @@ import { SieveLogger } from "./libs/managesieve.ui/utils/SieveLogger.mjs";
 import { SieveIpcClient } from "./libs/managesieve.ui/utils/SieveIpcClient.mjs";
 import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccounts.mjs";
 
+import { SieveSpace } from "./libs/managesieve.ui/spaces/SieveSpace.mjs";
+
 (async function () {
 
   const ERROR_UNTRUSTED = 1;
   const ERROR_MISMATCH = 2;
   const ERROR_TIME = 4;
 
-  const FIRST_ENTRY = 0;
-
   const logger = SieveLogger.getInstance();
 
   const accounts = await (new SieveAccounts().load());
 
   const sessions = new Map();
-  // TODO Extract into separate class..
-  /**
-   * Gets a tab by its script and account name.
-   *
-   * @param {string} account
-   *   the account name
-   * @param {string} name
-   *   the script name
-   *
-   * @returns {*}
-   *   the webextension tab object.
-   */
-  async function getTabs(account, name) {
-    const url = new URL("./libs/managesieve.ui/editor.html", window.location);
 
-    url.searchParams.append("account", account);
-    url.searchParams.append("script", name);
+  const space = await ((new SieveSpace()).init());
 
-    return await browser.tabs.query({ url: url.toString() });
-  }
+  space.addCloseListener(async () => {
 
-  /**
-   *
-   * @param {*} tab
-   */
-  async function showTab(tab) {
-
-    await browser.tabs.update(
-      tab.id,
-      { active: true }
-    );
-
-    await browser.windows.update(
-      tab.windowId,
-      { focused: true }
-    );
-  }
-
-  browser.tabs.onRemoved.addListener(async () => {
-
-    const url = new URL("./libs/managesieve.ui/*", window.location);
-    const tabs = await browser.tabs.query({ url: url.toString() });
-
-    if (tabs.length)
+    if (await space.hasTabs())
       return;
 
     for (const id of accounts.getAccountIds()) {
@@ -147,22 +109,7 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
   }
 
   await browser.sieve.menu.onCommand.addListener(
-    async () => {
-      const url = new URL("./libs/managesieve.ui/accounts.html", window.location);
-
-      const tabs = await browser.tabs.query({ url: url.toString() });
-
-      if (tabs.length) {
-        await showTab(tabs[FIRST_ENTRY]);
-        return;
-      }
-
-      await browser.tabs.create({
-        active: true,
-        url: "./libs/managesieve.ui/accounts.html"
-      });
-    });
-
+    async () => { await space.showAccount(); });
 
   for (const window of await browser.windows.getAll()) {
     populateMenus(window);
@@ -171,7 +118,6 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
   browser.windows.onCreated.addListener((window) => {
     populateMenus(window);
   });
-
 
   // ------------------------------------------------------------------------ //
 
@@ -196,13 +142,13 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
       return sessions.get(msg.payload.account).isConnecting();
     },
 
-    "account-connected": function (msg) {
+    "account-connected": async function (msg) {
       logger.logAction(`Is connected ${msg.payload.account}`);
 
       if (!sessions.has(msg.payload.account))
         return false;
 
-      return sessions.get(msg.payload.account).isConnected();
+      return await (sessions.get(msg.payload.account).isConnected());
     },
 
     "account-connect": async function (msg) {
@@ -290,7 +236,7 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
           if (secInfo.isDomainMismatch)
             overrideBits |= ERROR_MISMATCH;
 
-          await (browser.sieve.socket.addCertErrorOverride(
+          await (browser.tcpSocket.addCertErrorOverride(
             secInfo.host, `${secInfo.port}`, secInfo.rawDER, overrideBits));
 
           await (actions["account-connect"](msg));
@@ -346,7 +292,7 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
 
       logger.logAction(`Rename Script ${oldName} for account: ${account}`);
 
-      if ((await getTabs(account, oldName)).length) {
+      if (await space.hasEditor(account, oldName)) {
         await SieveIpcClient.sendMessage("accounts", "script-show-busy", oldName);
         return false;
       }
@@ -366,7 +312,7 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
 
       logger.logAction(`Delete Script ${name} for account: ${account}`);
 
-      if ((await getTabs(account, name)).length) {
+      if (await space.hasEditor(account, name)) {
         await SieveIpcClient.sendMessage("accounts", "script-show-busy", name);
         return false;
       }
@@ -398,27 +344,12 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
 
     "script-edit": async function (msg) {
 
-      const name = msg.payload.data;
+      const script = msg.payload.data;
       const account = msg.payload.account;
 
-      logger.logAction(`Edit ${name} on ${account}`);
+      logger.logAction(`Edit ${script} on ${account}`);
 
-      const url = new URL("./libs/managesieve.ui/editor.html", window.location);
-
-      url.searchParams.append("account", account);
-      url.searchParams.append("script", name);
-
-      const tabs = await getTabs(account, name);
-      if (tabs.length) {
-        await showTab(tabs[FIRST_ENTRY]);
-        return;
-      }
-
-      // create a new tab...
-      await browser.tabs.create({
-        active: true,
-        url: url.toString()
-      });
+      await space.showEditor(account, script);
     },
 
     "script-get": async function (msg) {
@@ -544,7 +475,17 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
       logger.logAction(`Set default value for ${name}`);
 
       await accounts.getEditor().setValue(name, value);
+    },
+
+    "open-web-address": async (msg) => {
+      browser.windows.openDefaultBrowser(msg.payload.data);
+    },
+
+    "ping" : async () => {
+      logger.logAction("Keep alive ping received");
+      return "pong";
     }
+
   };
 
   for (const [key, value] of Object.entries(actions)) {

@@ -36,7 +36,7 @@ suite.add("include ambiguous location ", () => {
     + '\r\n'
     + 'include :personal :global "always_allow";\r\n';
 
-  const exception = "Error: Unknown or incompatible type >>string/<< at >>:global";
+  const exception = "Unknown or incompatible type >>@string/<< at >>:global";
 
   suite.expectInvalidScript(script, exception, ["include"]);
 });

@@ -10,6 +10,7 @@
  *
  */
 
+import { id, token, items, value } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
 /**
@@ -30,19 +31,15 @@ import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
  *   end of string.
  **/
 
-SieveGrammar.addTag({
-  node: "comparator/i;octet",
-  type: "comparator/",
+SieveGrammar.addTag(
+  id("comparator/i;octet", "@comparator/"),
+  token("\"i;octet\"")
+);
 
-  token: "\"i;octet\""
-});
-
-SieveGrammar.addTag({
-  node: "comparator/i;ascii-casemap",
-  type: "comparator/",
-
-  token: "\"i;ascii-casemap\""
-});
+SieveGrammar.addTag(
+  id("comparator/i;ascii-casemap", "@comparator/"),
+  token("\"i;ascii-casemap\"")
+);
 
 /**
  * 9.1.1.  ASCII Numeric Collation Description
@@ -72,25 +69,15 @@ SieveGrammar.addTag({
  * "4294967298". "4294967298", "04294967298", and "4294967298b" are all
  * equal. "04294967298" is less than "". "", "x", and "y" are equal.
  */
-SieveGrammar.addTag({
-  node: "comparator/i;ascii-numeric",
-  type: "comparator/",
+SieveGrammar.addTag(
+  id("comparator/i;ascii-numeric", "@comparator/", "comparator-i;ascii-numeric"),
+  token("\"i;ascii-numeric\"")
+);
 
-  requires: "comparator-i;ascii-numeric",
-
-  token: "\"i;ascii-numeric\""
-});
-
-// *******************************************************************
-
-SieveGrammar.addGroup({
-  node: "comparator",
-  type: "comparator",
-
-  token: ":comparator",
-
-  value: "\"i;ascii-casemap\"",
-
-  items: ["comparator/"]
-});
+SieveGrammar.addGroup(
+  id("comparator"),
+  token(":comparator"),
+  items("@comparator/"),
+  value("\"i;ascii-casemap\"")
+);
 

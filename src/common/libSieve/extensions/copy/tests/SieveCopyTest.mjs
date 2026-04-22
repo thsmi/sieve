@@ -35,5 +35,5 @@ suite.add("RFC 3894 - Example Ia", () => {
     + 'require ["fileinto"];\r\n'
     + 'fileinto :copy "incoming";\r\n';
 
-  suite.expectInvalidScript(script, 'Error: Unknown or incompatible type >>string/<< at >>:copy "inc', ["fileinto"]);
+  suite.expectInvalidScript(script, 'Unknown or incompatible type >>@string/<< at >>:copy "inc', ["fileinto"]);
 });

@@ -89,8 +89,7 @@ function packageLicense() {
  *   a stream to be consumed by gulp
  */
 function packageCodeMirror() {
-  return common.packageCodeMirror(
-    `${BUILD_DIR_APP}/libs/CodeMirror`);
+  return common.packageCodeMirror(BUILD_DIR_APP_LIBS);
 }
 
 /**

@@ -30,7 +30,6 @@ suite.add("Parse :is match-type", () => {
   suite.expectValidScript(script);
 });
 
-
 suite.add("Parse :matches match-type", () => {
 
   const script =

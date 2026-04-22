@@ -327,5 +327,5 @@ suite.add("Manipulate Vacation Element - All values set - Remove all values", ()
 suite.add("Validate vacation action's constructor", () => {
 
   const snippet = 'vacation "";\r\n';
-  suite.expectValidSnippet("action/vacation", snippet, ["vacation"]);
+  suite.expectDefaultSnippet("action/vacation", snippet, ["vacation"]);
 });

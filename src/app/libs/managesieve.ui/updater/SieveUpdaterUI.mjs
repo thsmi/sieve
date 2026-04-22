@@ -26,9 +26,11 @@ class SieveUpdaterUI {
     if (status !== true)
       return;
 
+    const url = (new SieveTemplate()).getI18n().getString("updater.url.latest");
     const template = await (new SieveTemplate()).load("./updater/update.html");
+
     template.querySelector(".sieve-update-msg").addEventListener("click", () => {
-      SieveIpcClient.sendMessage("core", "update-goto-url");
+      SieveIpcClient.sendMessage("core", "open-web-address", url);
     });
 
     const parent = document.querySelector("#ctx");

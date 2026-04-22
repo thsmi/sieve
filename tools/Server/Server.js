@@ -24,14 +24,20 @@ const SERVER_PORT = 8125;
 const GUI_URL = "gui/";
 const GUI_PATH = "./build/electron/resources/libs";
 
-const TEST_URL = "test/";
-const TEST_PATH = "./build/test";
+const UNIT_TEST_URL = "unittests/";
+const UNIT_TEST_PATH = "./build/test/unittests";
+
+const GUI_TEST_URL = "guitests/";
+const GUI_TEST_PATH = "./tests/guitests";
 
 const HTTP_SUCCESS = 200;
 const HTTP_FILE_NOT_FOUND = 404;
 const HTTP_INTERNAL_ERROR = 500;
 
 const CONTENT_TYPE_HTML = "text/html";
+
+const IS_SMALLER = -1;
+const IS_LARGER = 1;
 
 /**
  * Guesses the mime type by the file extensions
@@ -68,15 +74,15 @@ function getContentType(filePath) {
 }
 
 /**
- * Compares  the given path elements.
+ * Compares the given path elements.
  *
  * A directory always wins the comparison.
  * Otherwise in case two directories or two
  * files are compared alphabetically.
  *
- * @param {*} a
+ * @param {fs.Dirent} a
  *   the first path
- * @param {*} b
+ * @param {fs.Dirent} b
  *   the second path.
  *
  * @returns {int}
@@ -88,19 +94,23 @@ function sortDirectory(a, b) {
     return a.name.localeCompare(b.name);
 
   if (a.isDirectory())
-    return -1;
+    return IS_SMALLER;
 
   if (b.isDirectory())
-    return 1;
+    return IS_LARGER;
 
   return a.name.localeCompare(b.name);
 }
 
 /**
+ * Lists a directory.
  *
- * @param {*} filePath
- * @param {*} url
- * @param {*} response
+ * @param {string} filePath
+ *   the local path the directory to be listed.
+ * @param {URL} url
+ *   the url of the original call.
+ * @param {http.ServerResponse} response
+ *   the server's response object.
  */
 async function doDirectoryListing(filePath, url, response) {
   const items = await (util.promisify(fs.readdir))(filePath, { withFileTypes: true });
@@ -130,8 +140,10 @@ async function doDirectoryListing(filePath, url, response) {
 }
 
 /**
+ * Displays the server's index page.
  *
- * @param {*} response
+ * @param {http.ServerResponse} response
+ *   the server's response object.
  */
 function doIndex(response) {
 
@@ -143,7 +155,8 @@ function doIndex(response) {
   content += "<p>This server is used to bypass cross site scripting problems during development.</p>";
   content += "<ul>";
   content += `<li><a href="http://127.0.0.1:${SERVER_PORT}/${GUI_URL}libSieve/SieveGui.html">&#128448;&nbsp;Run GUI Editor</a></li>`;
-  content += `<li><a href="http://127.0.0.1:${SERVER_PORT}/${TEST_URL}index.html">&#128448;&nbsp;Run Unit Tests</a></li>`;
+  content += `<li><a href="http://127.0.0.1:${SERVER_PORT}/${UNIT_TEST_URL}index.html">&#128448;&nbsp;Run Unit Tests</a></li>`;
+  content += `<li><a href="http://127.0.0.1:${SERVER_PORT}/${GUI_TEST_URL}index.html">&#128448;&nbsp;Run Graphical Interface Tests</a></li>`;
   content += "</ul>";
   response.end(content, 'utf-8');
   return;
@@ -156,9 +169,11 @@ http.createServer(async function (request, response) {
   const url = new URL(request.url, `http://${request.headers.host}`);
 
   if (url.pathname.startsWith(`/${GUI_URL}`)) {
-    filePath = GUI_PATH + url.pathname.substr(GUI_URL.length);
-  } else if (url.pathname.startsWith(`/${TEST_URL}`)) {
-    filePath = TEST_PATH + url.pathname.substr(TEST_URL.length);
+    filePath = GUI_PATH + url.pathname.substring(GUI_URL.length);
+  } else if (url.pathname.startsWith(`/${UNIT_TEST_URL}`)) {
+    filePath = UNIT_TEST_PATH + url.pathname.substring(UNIT_TEST_URL.length);
+  } else if (url.pathname.startsWith(`/${GUI_TEST_URL}`)) {
+    filePath = GUI_TEST_PATH + url.pathname.substring(GUI_TEST_URL.length);
   } else {
     doIndex(response);
     return;
@@ -206,4 +221,9 @@ http.createServer(async function (request, response) {
 
 }).listen(SERVER_PORT);
 
-console.log(`Server running at http://127.0.0.1:${SERVER_PORT}/${GUI_URL}libSieve/SieveGui.html or http://127.0.0.1:${SERVER_PORT}/${TEST_URL}index.html`);
+console.log(``
+  + `Server running at \n`
+  + `  * http://127.0.0.1:${SERVER_PORT}/${GUI_URL}libSieve/SieveGui.html \n`
+  + `  * http://127.0.0.1:${SERVER_PORT}/${UNIT_TEST_URL}index.html \n`
+  + `  * http://127.0.0.1:${SERVER_PORT}/${GUI_TEST_URL}index.html`);
+

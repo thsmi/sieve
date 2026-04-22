@@ -10,45 +10,25 @@
  *
  */
 
+import { id, token, parameters, string } from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
-const reject = {
-  node: "action/reject",
-  type: "action",
-  token: "reject",
 
-  requires: "reject",
+SieveGrammar.addAction(
+  id("action/reject", "@action", "reject"),
 
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "reason",
-      type: "string",
-      value: "text:\r\n.\r\n"
-    }]
-  }]
-};
-
-SieveGrammar.addAction(reject);
+  token("reject"),
+  parameters(
+    // FIXME initialize this with a multi line string...
+    string("reason"))
+);
 
 
-const ereject = {
-  node: "action/ereject",
-  type: "action",
-  token: "ereject",
+SieveGrammar.addAction(
+  id("action/ereject", "@action", "ereject"),
 
-  requires: "ereject",
-
-  properties: [{
-    id: "parameters",
-
-    elements: [{
-      id: "reason",
-      type: "string",
-      value: "text:\r\n.\r\n"
-    }]
-  }]
-};
-
-SieveGrammar.addAction(ereject);
+  token("ereject"),
+  parameters(
+    // FIXME initialize this with a multi line string...
+    string("reason"))
+);

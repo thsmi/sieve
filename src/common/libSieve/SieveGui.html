@@ -55,7 +55,11 @@
     }
 
     .was-validated .form-control:valid {
-      border: 1px solid #ced4da
+      border: var(--bs-border-width) solid #ced4da
+    }
+
+    html[data-bs-theme=dark] .form-control:valid {
+      border: var(--bs-border-width) solid var(--bs-border-color)
     }
 
     .was-validated .form-control:focus {

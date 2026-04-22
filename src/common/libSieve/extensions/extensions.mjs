@@ -55,4 +55,7 @@ import "./convert/widgets/SieveConvertUI.mjs";
 import "./notify/widgets/SieveNotifyUI.mjs";
 
 // vnd.dovecot.pipe - pipe
-import "./pipe/widgets/SievePipeUI.mjs";
+import "./vnd.dovecot.pipe/widgets/SievePipeUI.mjs";
+
+// vnd.dovecot.debug - debug
+import "./vnd.dovecot.debug/widgets/SieveDebugUI.mjs";

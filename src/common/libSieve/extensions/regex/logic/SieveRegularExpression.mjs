@@ -12,11 +12,11 @@
 
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
-SieveGrammar.addTag({
-  node: "match-type/regex",
-  type: "match-type/",
+import {
+  id, token
+} from "../../../toolkit/logic/SieveGrammarHelper.mjs";
 
-  requires: "regex",
-
-  token: ":regex"
-});
+SieveGrammar.addTag(
+  id("match-type/regex", "@match-type/", "regex"),
+  token(":regex")
+);

@@ -315,7 +315,8 @@ class SieveDropDownWidget {
    *
    */
   initWidgets(sivElement) {
-    const widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
+    const widgets = SieveDesigner.getWidgetsByType(
+      this.nodeType, this.selector, sivElement.document().capabilities());
 
     for (const widget of widgets)
       widget.init(sivElement);
@@ -330,7 +331,8 @@ class SieveDropDownWidget {
    */
   async init(sivElement) {
 
-    const template = await (new SieveTemplate()).load("./toolkit/templates/SieveDropDownWidget.html");
+    const template = await (new SieveTemplate())
+      .load("./toolkit/templates/SieveDropDownWidget.html");
 
     const elm = document.querySelector(this.selector);
     while (elm.firstChild)
@@ -350,7 +352,9 @@ class SieveDropDownWidget {
    */
   save(sivElement) {
 
-    const widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
+    const widgets = SieveDesigner.getWidgetsByType(
+      this.nodeType, this.selector, sivElement.document().capabilities());
+
     for (const widget of widgets)
       widget.save(sivElement);
   }
@@ -443,7 +447,8 @@ class SieveAbstractItemWidget {
    */
   async init(sivElement) {
 
-    const template = await (new SieveTemplate()).load(this.getTemplate());
+    const template = await (new SieveTemplate())
+      .load(this.getTemplate());
 
     const container = document.createElement("div");
 
@@ -607,7 +612,8 @@ class SieveRadioGroupWidget {
    *
    */
   init(sivElement) {
-    const widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
+    const widgets = SieveDesigner.getWidgetsByType(
+      this.nodeType, this.selector, sivElement.document().capabilities());
 
     for (const widget of widgets)
       widget.init(sivElement);
@@ -621,7 +627,9 @@ class SieveRadioGroupWidget {
    */
   save(sivElement) {
 
-    const widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
+    const widgets = SieveDesigner.getWidgetsByType(
+      this.nodeType, this.selector, sivElement.document().capabilities());
+
     for (const widget of widgets)
       widget.save(sivElement);
   }
@@ -722,7 +730,8 @@ class SieveOverlayWidget {
    *   the sieve element which should be rendered.
    */
   async init(sivElement) {
-    const widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
+    const widgets = SieveDesigner.getWidgetsByType(
+      this.nodeType, this.selector, sivElement.document().capabilities());
 
     for (const widget of widgets)
       await widget.init(sivElement);
@@ -735,7 +744,8 @@ class SieveOverlayWidget {
    *
    */
   save(sivElement) {
-    const widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
+    const widgets = SieveDesigner.getWidgetsByType(
+      this.nodeType, this.selector, sivElement.document().capabilities());
 
     for (const widget of widgets)
       widget.save(sivElement);
@@ -967,7 +977,8 @@ class SieveNumericWidget {
     const value = sivElement.getValue();
     const unit = sivElement.getUnit();
 
-    const template = await (new SieveTemplate()).load("./toolkit/templates/SieveNumericWidget.html");
+    const template = await (new SieveTemplate())
+      .load("./toolkit/templates/SieveNumericWidget.html");
 
     const elm = document.querySelector(this._selector);
     while (elm.firstChild)

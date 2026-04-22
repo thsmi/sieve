@@ -10,8 +10,10 @@
  *
  */
 
-import { SieveLexer } from "./../../../toolkit/SieveLexer.mjs";
 import { SieveAbstractElement } from "./../../../toolkit/logic/AbstractElements.mjs";
+
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
+import { id } from "./../../../toolkit/logic/SieveGrammarHelper.mjs";
 
 /**
  * Implements a sieve numeric atom as defined in the rfc.
@@ -25,31 +27,10 @@ class SieveNumber extends SieveAbstractElement {
   /**
    * @inheritdoc
    */
-  constructor(docshell, id) {
-    super(docshell, id);
+  constructor(docshell, name, type) {
+    super(docshell, name, type);
     this._number = "1";
     this._unit = "";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static isElement(parser) {
-    return parser.isNumber(parser);
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeName() {
-    return "number";
-  }
-
-  /**
-   * @inheritdoc
-   */
-  static nodeType() {
-    return "number/";
   }
 
   /**
@@ -133,4 +114,10 @@ class SieveNumber extends SieveAbstractElement {
   }
 }
 
-SieveLexer.register(SieveNumber);
+SieveGrammar.addGeneric(
+  id("number", "@number/"),
+
+  SieveNumber,
+  { "matcher" : (property, spec, parser) => { return parser.isNumber(parser); } }
+);
+

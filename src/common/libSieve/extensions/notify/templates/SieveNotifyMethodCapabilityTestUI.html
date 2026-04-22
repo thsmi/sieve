@@ -1,79 +1,87 @@
-<div>
-  <ul id="template-tabs">
-    <li class="nav-item">
-      <a data-i18n="notifymethodcapability.tab.home" class="nav-link active" data-bs-toggle="tab" href="#sieve-widget-notifymethodcapability" role="tab"></a>
-    </li>
-    <li class="nav-item">
-      <a data-i18n="notifymethodcapability.tab.advanced" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-advanced" role="tab"></a>
-    </li>
-    <li class="nav-item">
-      <a data-i18n="notifymethodcapability.tab.help" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-help" role="tab"></a>
-    </li>
-  </ul>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <div>
+      <ul id="template-tabs">
+        <li class="nav-item">
+          <a data-i18n="notifymethodcapability.tab.home" class="nav-link active" data-bs-toggle="tab" href="#sieve-widget-notifymethodcapability" role="tab"></a>
+        </li>
+        <li class="nav-item">
+          <a data-i18n="notifymethodcapability.tab.advanced" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-advanced" role="tab"></a>
+        </li>
+        <li class="nav-item">
+          <a data-i18n="notifymethodcapability.tab.help" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-help" role="tab"></a>
+        </li>
+      </ul>
 
-  <div id="template-content">
-    <div class="tab-content m-2">
-      <div class="tab-pane fade show active" id="sieve-widget-notifymethodcapability" role="tabpanel">
+      <div id="template-content">
+        <div class="tab-content m-2">
+          <div class="tab-pane fade show active" id="sieve-widget-notifymethodcapability" role="tabpanel">
 
-        <label data-i18n="notifymethodcapability.method"></label>
-        <div id="txtSieveNotifyUri" data-list-dropdown="#sivNotifyUriTemplate">
-        </div>
+            <label data-i18n="notifymethodcapability.method"></label>
+            <div id="txtSieveNotifyUri" data-list-dropdown="#sivNotifyUriTemplate">
+            </div>
 
-        <div id="sivNotifyUriTemplate" class="d-none">
-          <div class="dropdown-menu dropdown-menu-end" style="min-width:100%">
-            <button class="dropdown-item" type="button" data-value="tel:+1234567890">
-              <div data-i18n="notifymethodcapability.method.tel"></div>
-              <div data-i18n="notifymethodcapability.method.tel.text" class="text-muted"></div>
-            </button>
-            <button class="dropdown-item" type="button" data-value="xmpp:me@example.com?message;subject=SIEVE;body=You%20got%20mail">
-              <div data-i18n="notifymethodcapability.method.xmpp"></div>
-              <div data-i18n="notifymethodcapability.method.xmpp.text" class="text-muted"></div>
-            </button>
-            <button class="dropdown-item" type="button" data-value="mailto:me@example.com">
-              <div data-i18n="notifymethodcapability.method.mail"></div>
-              <div data-i18n="notifymethodcapability.method.mail.text" class="text-muted"></div>
-            </button>
+            <div id="sivNotifyUriTemplate" class="d-none">
+              <div class="dropdown-menu dropdown-menu-end" style="min-width:100%">
+                <button class="dropdown-item" type="button" data-value="tel:+1234567890">
+                  <div data-i18n="notifymethodcapability.method.tel"></div>
+                  <div data-i18n="notifymethodcapability.method.tel.text" class="text-body-secondary"></div>
+                </button>
+                <button class="dropdown-item" type="button" data-value="xmpp:me@example.com?message;subject=SIEVE;body=You%20got%20mail">
+                  <div data-i18n="notifymethodcapability.method.xmpp"></div>
+                  <div data-i18n="notifymethodcapability.method.xmpp.text" class="text-body-secondary"></div>
+                </button>
+                <button class="dropdown-item" type="button" data-value="mailto:me@example.com">
+                  <div data-i18n="notifymethodcapability.method.mail"></div>
+                  <div data-i18n="notifymethodcapability.method.mail.text" class="text-body-secondary"></div>
+                </button>
+              </div>
+
+            </div>
+
+            <label data-i18n="notifymethodcapability.capability"></label>
+
+            <div id="txtSieveNotifyCapability">
+            </div>
+
+            <br/>
+            <div id="sivNotifyMatchTypes">
+            </div>
+
+            <br/>
+            <label data-i18n="notifymethodcapability.keywords"></label>
+            <div id="sivNotifyKeyList" data-list-dropdown="#sivNotifyKeyListTemplate">
+            </div>
+
+            <div id="sivNotifyKeyListTemplate" class="d-none">
+              <div class="dropdown-menu dropdown-menu-start" style="min-width:100%">
+                <button class="dropdown-item" type="button" data-value="yes">
+                  <span data-i18n="notifymethodcapability.yes"></span><br />
+                  <small class="text-body-secondary" data-i18n="notifymethodcapability.yes.text">
+                  </small>
+                </button>
+                <button class="dropdown-item" type="button" data-value="no">
+                  <span data-i18n="notifymethodcapability.no"></span><br />
+                  <small class="text-body-secondary" data-i18n="notifymethodcapability.no.text"></small>
+                </button>
+                <button class="dropdown-item" type="button" data-value="maybe">
+                  <span data-i18n="notifymethodcapability.maybe"></span><br />
+                  <small class="text-body-secondary" data-i18n="notifymethodcapability.maybe.text"></small>
+                </button>
+              </div>
+            </div>
           </div>
-
-        </div>
-
-        <label data-i18n="notifymethodcapability.capability"></label>
-
-        <div id="txtSieveNotifyCapability">
-        </div>
-
-        <br/>
-        <div id="sivNotifyMatchTypes">
-        </div>
-
-        <br/>
-        <label data-i18n="notifymethodcapability.keywords"></label>
-        <div id="sivNotifyKeyList" data-list-dropdown="#sivNotifyKeyListTemplate">
-        </div>
-
-        <div id="sivNotifyKeyListTemplate" class="d-none">
-          <div class="dropdown-menu dropdown-menu-start" style="min-width:100%">
-            <button class="dropdown-item" type="button" data-value="yes">
-              <span data-i18n="notifymethodcapability.yes"></span><br />
-              <small class="text-muted" data-i18n="notifymethodcapability.yes.text">
-              </small>
-            </button>
-            <button class="dropdown-item" type="button" data-value="no">
-              <span data-i18n="notifymethodcapability.no"></span><br />
-              <small class="text-muted" data-i18n="notifymethodcapability.no.text"></small>
-            </button>
-            <button class="dropdown-item" type="button" data-value="maybe">
-              <span data-i18n="notifymethodcapability.maybe"></span><br />
-              <small class="text-muted" data-i18n="notifymethodcapability.maybe.text"></small>
-            </button>
+          <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
+            <div id="sivNotifyComparator"> </div>
+          </div>
+          <div class="tab-pane fade form-text" data-i18n="notifymethodcapability.help" id="sieve-widget-help" role="tabpanel">
           </div>
         </div>
-      </div>
-      <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
-        <div id="sivNotifyComparator"> </div>
-      </div>
-      <div class="tab-pane fade form-text" data-i18n="notifymethodcapability.help" id="sieve-widget-help" role="tabpanel">
       </div>
     </div>
-  </div>
-</div>
+  </body>
+</html>

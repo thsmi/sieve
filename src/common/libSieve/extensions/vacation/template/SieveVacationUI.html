@@ -1,118 +1,126 @@
-<div>
-    <ul id="template-tabs">
-        <li class="nav-item">
-            <a data-i18n="vacation.tab.home" class="nav-link active" data-bs-toggle="tab" href="#sieve-widget-vacation" role="tab"></a>
-        </li>
-        <li class="nav-item">
-            <a data-i18n="vacation.tab.envelope" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-envelope" role="tab"></a>
-        </li>
-        <li class="nav-item">
-            <a data-i18n="vacation.tab.advanced" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-advanced" role="tab"></a>
-        </li>
-        <li class="nav-item">
-            <a data-i18n="vacation.tab.help" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-help" role="tab"></a>
-        </li>
-    </ul>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <div>
+        <ul id="template-tabs">
+            <li class="nav-item">
+                <a data-i18n="vacation.tab.home" class="nav-link active" data-bs-toggle="tab" href="#sieve-widget-vacation" role="tab"></a>
+            </li>
+            <li class="nav-item">
+                <a data-i18n="vacation.tab.envelope" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-envelope" role="tab"></a>
+            </li>
+            <li class="nav-item">
+                <a data-i18n="vacation.tab.advanced" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-advanced" role="tab"></a>
+            </li>
+            <li class="nav-item">
+                <a data-i18n="vacation.tab.help" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-help" role="tab"></a>
+            </li>
+        </ul>
 
-    <div id="template-content">
-        <div class="tab-content m-2">
-            <div class="tab-pane fade show active" id="sieve-widget-vacation" role="tabpanel">
-                <div>
-                    <!-- Envelope Controls -->
-                    <div id="vacationEnvelopeEdit">
-                        <div class="d-flex">
-                            <div data-i18n="vacation.envelope.subject"></div>
-                            <div class="flex-grow-1 text-truncate text-secondary ps-1">
-                                <span id="vacationSubjectDesc"></span>
-                                <span class="d-none" id="vacationSubjectDescDefault" data-i18n="vacation.envelope.subject.default"></span>
+        <div id="template-content">
+            <div class="tab-content m-2">
+                <div class="tab-pane fade show active" id="sieve-widget-vacation" role="tabpanel">
+                    <div>
+                        <!-- Envelope Controls -->
+                        <div id="vacationEnvelopeEdit">
+                            <div class="d-flex">
+                                <div data-i18n="vacation.envelope.subject"></div>
+                                <div class="flex-grow-1 text-truncate text-secondary ps-1">
+                                    <span id="vacationSubjectDesc"></span>
+                                    <span class="d-none" id="vacationSubjectDescDefault" data-i18n="vacation.envelope.subject.default"></span>
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                <div data-i18n="vacation.envelope.from"></div>
+                                <div class="flex-grow-1 text-truncate text-secondary ps-1">
+                                   <span id="vacationFromDesc"></span>
+                                   <span class="d-none" id="vacationFromDescDefault" data-i18n="vacation.envelope.from.default"></span>
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                <div data-i18n="vacation.envelope.addresses"></div>
+                                <div id="vacationAddressesDesc" class="flex-grow-1 text-truncate text-secondary ps-1"></div>
                             </div>
                         </div>
-                        <div class="d-flex">
-                            <div data-i18n="vacation.envelope.from"></div>
-                            <div class="flex-grow-1 text-truncate text-secondary ps-1">
-                               <span id="vacationFromDesc"></span>
-                               <span class="d-none" id="vacationFromDescDefault" data-i18n="vacation.envelope.from.default"></span>
-                            </div>
-                        </div>
-                        <div class="d-flex">
-                            <div data-i18n="vacation.envelope.addresses"></div>
-                            <div id="vacationAddressesDesc" class="flex-grow-1 text-truncate text-secondary ps-1"></div>
-                        </div>
+                        <br/>
+                        <!-- Reason textarea -->
+                        <textarea data-i18n="vacation.envelope.text" class="form-control" rows="10" id="sivVacationReason"> </textarea>
+
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="sieve-widget-envelope" role="tabpanel">
+                    <h5 data-i18n="vacation.subject"></h5>
+                    <small data-i18n="vacation.subject.text" class="text-body-secondary"></small>
+                    <div>
+                        <input type="radio" name="subject" value="false" />
+                        <span data-i18n="vacation.subject.default"></span>
+                    </div>
+                    <div>
+                        <input type="radio" name="subject" value="true" />
+                        <input data-i18n="vacation.subject.custom" type="text" class="form-control" id="sivVacationSubject"/>
+                    </div>
+
+                    <br/>
+                    <h5 data-i18n="vacation.from"></h5>
+                    <small data-i18n="vacation.from.text" class="text-body-secondary"></small>
+                    <div>
+                        <input type="radio" name="from" value="false" />
+                        <span data-i18n="vacation.from.default"></span>
+                    </div>
+                    <div>
+                        <input type="radio" name="from" value="true" />
+                        <input data-i18n="vacation.from.custom" type="email" class="form-control" id="sivVacationFrom" />
                     </div>
                     <br/>
-                    <!-- Reason textarea -->
-                    <textarea data-i18n="vacation.envelope.text" class="form-control" rows="10" id="sivVacationReason"> </textarea>
+                    <h5 data-i18n="vacation.addresses"></h5>
+                    <div>
+                        <small data-i18n="vacation.addresses.text" style="white-space: pre-line" class="form-text text-body-secondary"></small>
+                    </div>
 
-                </div>
-            </div>
-
-            <div class="tab-pane fade" id="sieve-widget-envelope" role="tabpanel">
-                <h5 data-i18n="vacation.subject"></h5>
-                <small data-i18n="vacation.subject.text" class="text-muted"></small>
-                <div>
-                    <input type="radio" name="subject" value="false" />
-                    <span data-i18n="vacation.subject.default"></span>
-                </div>
-                <div>
-                    <input type="radio" name="subject" value="true" />
-                    <input data-i18n="vacation.subject.custom" type="text" class="form-control" id="sivVacationSubject"/>
+                    <div id="sivAddresses" data-list-min="0">
+                    </div>
                 </div>
 
-                <br/>
-                <h5 data-i18n="vacation.from"></h5>
-                <small data-i18n="vacation.from.text" class="text-muted"></small>
-                <div>
-                    <input type="radio" name="from" value="false" />
-                    <span data-i18n="vacation.from.default"></span>
-                </div>
-                <div>
-                    <input type="radio" name="from" value="true" />
-                    <input data-i18n="vacation.from.custom" type="email" class="form-control" id="sivVacationFrom" />
-                </div>
-                <br/>
-                <h5 data-i18n="vacation.addresses"></h5>
-                <div>
-                    <small data-i18n="vacation.addresses.text" style="white-space: pre-line" class="form-text text-muted"></small>
+                <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
+
+                    <h5 data-i18n="vacation.contenttype"></h5>
+                    <p data-i18n="vacation.contenttype.text" class="form-text"></p>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="mime" value="false" />
+                        <label class= "form-check-label" data-i18n="vacation.contenttype.default"></label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="mime" value="true" />
+                        <label class= "form-check-label" data-i18n="vacation.contenttype.mime"></label>
+                    </div>
+                    <br/>
+                    <h5 data-i18n="vacation.tracking"></h5>
+                    <p data-i18n="vacation.tracking.text" class="form-text"></p>
+                    <div id="sivVacationIntervalOverlay"> </div>
+                    <br/>
+                    <h5 data-i18n="vacation.response"></h5>
+                    <p data-i18n="vacation.response.text" style="white-space: pre-line" class="form-text"></p>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="handle" value="false" />
+                        <label class="form-label" data-i18n="vacation.response.default"></label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input mt-2" type="radio" name="handle" value="true" />
+                        <label class="form-label">
+                            <input class="form-control" data-i18n="vacation.response.custom" type="text" id="sivVacationHandle"/>
+                        </label>
+                    </div>
                 </div>
 
-                <div id="sivAddresses" data-list-min="0">
+                <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+                    <p data-i18n="vacation.help" class="form-text" style="white-space: pre-line"></p>
                 </div>
-            </div>
-
-            <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
-
-                <h5 data-i18n="vacation.contenttype"></h5>
-                <p data-i18n="vacation.contenttype.text" class="form-text"></p>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="mime" value="false" />
-                    <label class= "form-check-label" data-i18n="vacation.contenttype.default"></label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="mime" value="true" />
-                    <label class= "form-check-label" data-i18n="vacation.contenttype.mime"></label>
-                </div>
-                <br/>
-                <h5 data-i18n="vacation.tracking"></h5>
-                <p data-i18n="vacation.tracking.text" class="form-text"></p>
-                <div id="sivVacationIntervalOverlay"> </div>
-                <br/>
-                <h5 data-i18n="vacation.response"></h5>
-                <p data-i18n="vacation.response.text" style="white-space: pre-line" class="form-text"></p>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="handle" value="false" />
-                    <label class="form-label" data-i18n="vacation.response.default"></label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input mt-2" type="radio" name="handle" value="true" />
-                    <label class="form-label">
-                        <input class="form-control" data-i18n="vacation.response.custom" type="text" id="sivVacationHandle"/>
-                    </label>
-                </div>
-            </div>
-
-            <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
-                <p data-i18n="vacation.help" class="form-text" style="white-space: pre-line"></p>
             </div>
         </div>
     </div>
-</div>
+  </body>
+</html>

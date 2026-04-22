@@ -14,9 +14,7 @@ import { SieveI18n } from "./toolkit/utils/SieveI18n.mjs";
 import { SieveLogger } from "./toolkit/utils/SieveLogger.mjs";
 import { SieveTemplate } from "./toolkit/utils/SieveTemplate.mjs";
 
-import { SieveLexer } from "./toolkit/SieveLexer.mjs";
 import { SieveDesigner } from "./toolkit/SieveDesigner.mjs";
-import { SieveDocument } from "./toolkit/SieveScriptDOM.mjs";
 
 import { SieveSimpleBoxUI, SieveTrashBoxUI } from "./toolkit/widgets/Boxes.mjs";
 import { SieveCreateDragHandler } from "./toolkit/events/DragHandler.mjs";
@@ -55,6 +53,7 @@ function createMenuItem(action, flavour, docShell) {
   elm.classList.add("border");
   elm.classList.add("rounded");
   elm.textContent = action.split('/')[NAME];
+  elm.classList.add("siv-" + action.replace("/", "-"));
 
   return elm;
 }
@@ -68,43 +67,40 @@ function compact() {
 }
 
 /**
+ * Triggers a complete UI reflow.
+ */
+function reflow() {
+  dom2.root().widget().reflow();
+}
+
+/**
  * Initializes the sieve rendering ui and script parser
  *
+ * @param {object} capabilities
+ *   the server's capabilities.
  **/
-function init() {
+function init(capabilities) {
+
   // Yes it's a global object
-  dom2 = new SieveDocument(SieveLexer, SieveDesigner);
+  dom2 = SieveGrammar.create(capabilities, SieveDesigner);
 
   const docShell = dom2;
-  let key;
 
-  // populate the action section
-  const actions = document.querySelector("#sivActions");
-  while (actions.firstChild)
-    actions.firstChild.remove();
+  for (const name of ["Action", "Test", "Operator"]) {
+    const items = document.querySelector(`#siv${name}s`);
+    while (items.firstChild)
+      items.firstChild.remove();
 
-  for (key in SieveLexer.types["action"])
-    if (SieveLexer.types["action"][key].onCapable(SieveLexer.capabilities()))
-      actions.append(createMenuItem(key, "sieve/action", docShell));
+    for (const type of docShell.getSpecsByType(`@${name.toLowerCase()}`)) {
+      if (!type.onCapable(docShell.capabilities()))
+        continue;
 
-  // populate the test section
-  const tests = document.querySelector("#sivTests");
-  while (tests.firstChild)
-    tests.firstChild.remove();
+      if (type.spec.id.node === "test/boolean")
+        continue;
 
-  for (key in SieveLexer.types["test"])
-    if (SieveLexer.types["test"][key].onCapable(SieveLexer.capabilities()))
-      if (key !== "test/boolean")
-        tests.append(createMenuItem(key, "sieve/test", docShell));
-
-  // populate the operator section
-  const operators = document.querySelector("#sivOperators");
-  while (operators.firstChild)
-    operators.firstChild.remove();
-
-  for (key in SieveLexer.types["operator"])
-    if (SieveLexer.types["operator"][key].onCapable(SieveLexer.capabilities()))
-      operators.append(createMenuItem(key, "sieve/operator", docShell));
+      items.append(createMenuItem(type.spec.id.node, `sieve/${name.toLowerCase()}`, docShell));
+    }
+  }
 
   // create the trash bin
   const trash = document.querySelector("#sivTrash");
@@ -121,7 +117,7 @@ function init() {
  *   the current sieve script as string
  **/
 function getSieveScript() {
-  return dom2.script();
+  return dom2.getScript();
 }
 
 /**
@@ -149,23 +145,20 @@ function setSieveScript(script, capabilities) {
 
       capabilities = tmp;
     }
-
-    SieveLexer.capabilities(capabilities);
   }
 
-  SieveGrammar.create();
   // reset environment
-  init();
+  init(capabilities);
 
   if (!script)
     script = document.querySelector('#txtScript').value;
   else
     document.querySelector('#txtScript').value = script;
 
-  dom2.script(script);
+  dom2.setScript(script);
 
   document.querySelector("#txtOutput")
-    .value = dom2.script();
+    .value = dom2.getScript();
 
   const output = document.querySelector(`#divOutput`);
   while (output.firstChild)
@@ -211,7 +204,7 @@ function loadCapabilities(value) {
 
   items.forEach((item) => { item.checked = false; });
 
-  const capabilities = SieveLexer.capabilities();
+  const capabilities = dom2.capabilities();
 
   items
     .forEach((item) => {
@@ -320,6 +313,9 @@ async function main() {
 
   document.querySelector("#DebugCompact")
     .addEventListener("click", () => { compact(); });
+
+  document.querySelector("#DebugReflow")
+    .addEventListener("click", () => { reflow(); });
 
   const url = new URL(window.location);
 

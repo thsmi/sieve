@@ -1,43 +1,51 @@
-<div>
-    <ul id="template-tabs">
-        <li class="nav-item">
-            <a data-i18n="setflags.tab.home" class="nav-link active" data-bs-toggle="tab" href="#sieve-widget-setflag" role="tab"></a>
-        </li>
-        <li class="nav-item">
-            <a data-i18n="setflags.tab.help" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-help" role="tab"></a>
-        </li>
-    </ul>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+      <div>
+          <ul id="template-tabs">
+              <li class="nav-item">
+                  <a data-i18n="setflags.tab.home" class="nav-link active" data-bs-toggle="tab" href="#sieve-widget-setflag" role="tab"></a>
+              </li>
+              <li class="nav-item">
+                  <a data-i18n="setflags.tab.help" class="nav-link" data-bs-toggle="tab" href="#sieve-widget-help" role="tab"></a>
+              </li>
+          </ul>
 
-    <div id="template-content">
-        <div class="tab-content m-2">
-            <div class="tab-pane fade show active" id="sieve-widget-setflag" role="tabpanel">
+          <div id="template-content">
+              <div class="tab-content m-2">
+                  <div class="tab-pane fade show active" id="sieve-widget-setflag" role="tabpanel">
 
-                <div class="mb-3">
-                    <h5 data-i18n="setflags.flags.title"></h5>
-                    <p data-i18n="setflags.flags.text" class="form-text"></p>
-                    <div id="sivFlagKeywordList"
-                         data-list-dropdown="#sivFlagKeywordListTemplate">
-                    </div>
+                      <div class="mb-3">
+                          <h5 data-i18n="setflags.flags.title"></h5>
+                          <p data-i18n="setflags.flags.text" class="form-text"></p>
+                          <div id="sivFlagKeywordList"
+                               data-list-dropdown="#sivFlagKeywordListTemplate">
+                          </div>
 
-                    <div id="sivFlagKeywordListTemplate" class="d-none">
-                        <div class="dropdown-menu dropdown-menu-end">
-                            <button class="dropdown-item" type="button">\Seen</button>
-                            <button class="dropdown-item" type="button">\Answered</button>
-                            <button class="dropdown-item" type="button">\Flagged</button>
-                            <button class="dropdown-item" type="button">\Delete</button>
-                            <button class="dropdown-item" type="button">\Draft</button>
-                            <button class="dropdown-item" type="button">\Recent</button>
-                            <button class="dropdown-item" type="button">\$Label1</button>
-                            <button class="dropdown-item" type="button">\$Label2</button>
-                            <button class="dropdown-item" type="button">\$Label3</button>
-                            <button class="dropdown-item" type="button">\$Label4</button>
-                            <button class="dropdown-item" type="button">\$Label5</button>
-                        </div>
-                    </div>
+                          <div id="sivFlagKeywordListTemplate" class="d-none">
+                              <div class="dropdown-menu dropdown-menu-end">
+                                  <button class="dropdown-item" type="button">\Seen</button>
+                                  <button class="dropdown-item" type="button">\Answered</button>
+                                  <button class="dropdown-item" type="button">\Flagged</button>
+                                  <button class="dropdown-item" type="button">\Delete</button>
+                                  <button class="dropdown-item" type="button">\Draft</button>
+                                  <button class="dropdown-item" type="button">\Recent</button>
+                                  <button class="dropdown-item" type="button">$Label1</button>
+                                  <button class="dropdown-item" type="button">$Label2</button>
+                                  <button class="dropdown-item" type="button">$Label3</button>
+                                  <button class="dropdown-item" type="button">$Label4</button>
+                                  <button class="dropdown-item" type="button">$Label5</button>
+                              </div>
+                          </div>
 
-                </div>
-            </div>
-            <div data-i18n="setflag.help" style="white-space: pre-line" class="tab-pane fade form-text" id="sieve-widget-help" role="tabpanel"></div>
-        </div>
-    </div>
-</div>
+                      </div>
+                  </div>
+                  <div data-i18n="setflag.help" style="white-space: pre-line" class="tab-pane fade form-text" id="sieve-widget-help" role="tabpanel"></div>
+              </div>
+          </div>
+      </div>
+  </body>
+</html>

@@ -18,7 +18,7 @@
     "eslint-plugin-jsdoc": "^50.6.6",
     "globals": "^16.0.0",
 
-    "gulp": "^5.0.0",
+    "gulp": "^5.0.1",
     "yazl": "^3.3.1"
   },
   "scripts": {

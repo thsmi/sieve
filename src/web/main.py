@@ -14,20 +14,15 @@ from script.config.config import Config
 
 parser = ArgumentParser(description='Starts the websocket to sieve proxy.')
 parser.add_argument("--config", help="The configuration file if omitted it will fallback to ./config.ini")
-parser.add_argument('--verbose', '-v', action='count', default=1)
+parser.add_argument('--verbose', '-v', action='count')
 
 args = parser.parse_args()
 
-args.verbose = 40 - (10*args.verbose) if args.verbose > 0 else 0
+args.verbose = max(10, 40 - (10*args.verbose)) if args.verbose > 0 else 0
 
 logging.basicConfig(level=args.verbose, format='%(asctime)s %(levelname)s [%(funcName)s] %(filename)s : %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
-
-logging.debug('im a DEBUG message')
-logging.info('im a INFO message')
-logging.warning('im a WARNING message')
-logging.critical('im a CRITICAL message')
-logging.error('im a ERROR message')
+logging.info(f"Application started. Log level: {logging.getLevelName(args.verbose)}")
 
 if args.config is None:
   args.config = "config.ini"
@@ -45,14 +40,12 @@ config = Config().load(configfile)
 webServer = WebServer(
   address = config.get_address(),
   port = config.get_port(),
+  use_ssl = config.get_use_ssl(),
   keyfile = config.get_keyfile(),
   certfile = config.get_certfile())
 
 webServer.add_handler(ConfigHandler(config))
-
-
 webServer.add_handler(FileHandler(str(config.get_http_root())))
-
 webServer.add_handler(WebSocketHandler(config))
 
 webServer.listen()

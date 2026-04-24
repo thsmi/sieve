@@ -26,7 +26,7 @@ class HttpContext:
 class WebServer:
 
   def __init__(self,
-    port : int = 8765, address: str = None,
+    port : int = 8765, address: str = None, use_ssl : bool = True,
     keyfile : str = None, certfile : str = None):
 
     if keyfile is None:
@@ -43,6 +43,7 @@ class WebServer:
     self.__handlers = []
     self.__executor = None
 
+    self.__use_ssl = use_ssl
     self.__certfile = certfile
     self.__keyfile = keyfile
 
@@ -52,8 +53,7 @@ class WebServer:
   def get_handlers(self):
     return self.__handlers
 
-  def handle_message(self, context) -> None:
-
+  def handle_message(self, context: HttpContext) -> None:
     try:
       request = HttpRequest()
       request.recv(context)
@@ -80,8 +80,9 @@ class WebServer:
       response.add_headers({'Connection': 'close'})
 
       exc_type, exc_value, exc_tb = sys.exc_info()
-      response.send(context,"Internal Server error\r\n\r\n"
-        + "\r\n".join(traceback.format_exception(exc_type, exc_value, exc_tb)))
+      response.send(context,
+                    ("Internal Server error\r\n\r\n"
+                    + "\r\n".join(traceback.format_exception(exc_type, exc_value, exc_tb))).encode())
 
       logging.warning(str(ex))
       logging.warning("".join(traceback.format_exception(exc_type, exc_value, exc_tb)))
@@ -95,8 +96,9 @@ class WebServer:
     Starts listening for incoming requests
     """
 
-    ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-    ssl_context.load_cert_chain(self.__certfile, self.__keyfile)
+    if self.__use_ssl:
+        ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        ssl_context.load_cert_chain(self.__certfile, self.__keyfile)
 
     self.__executor = ThreadPoolExecutor(max_workers=3)
 
@@ -104,28 +106,32 @@ class WebServer:
       sock.bind((self.__address, self.__port))
       sock.listen(5)
 
-      logging.info(f"Listening on https://{self.__address}:{self.__port}")
+      logging.info(f"Listening on {'https' if self.__use_ssl else 'http'}://{self.__address}:{self.__port}")
 
       while True:
         # accept connections from outside
         clientsocket, _address = sock.accept()
 
+        if self.__use_ssl:
+            connstream = ssl_context.wrap_socket(
+              clientsocket,
+              server_side=True,
+              do_handshake_on_connect=False)
 
-        connstream = ssl_context.wrap_socket(
-          clientsocket,
-          server_side=True,
-          do_handshake_on_connect=False)
+            try:
+              connstream.do_handshake()
+            except ConnectionAbortedError:
+              continue
+            except ssl.SSLError as err:
+              if err.args[1].find("sslv3 alert") == -1:
+                raise
+            except OSError:
+              continue
 
-        try:
-          connstream.do_handshake()
-        except ConnectionAbortedError:
-          continue
-        except OSError:
-          continue
-        except ssl.SSLError as err:
-          if err.args[1].find("sslv3 alert") == -1:
-            raise
+            http_socket = connstream
+        else:
+            http_socket = clientsocket
 
         self.__executor.submit(
           self.handle_message,
-          HttpContext(connstream, self.__handlers))
+          HttpContext(http_socket, self.__handlers))

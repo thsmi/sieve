@@ -71,7 +71,7 @@ class Capabilities(Response):
       self._capabilities[key.upper()] = value
 
     if b'"IMPLEMENTATION"' not in self._capabilities:
-      raise Exception("Implementation expected")
+      raise Exception("IMPLEMENTATION expected")
 
     super().decode(parser.get_data())
 

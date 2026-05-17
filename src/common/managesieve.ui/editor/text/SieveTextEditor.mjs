@@ -170,6 +170,22 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
       },
       "Shift-Tab": function (cm) {
         cm.indentSelection("subtract");
+      },
+      "Ctrl-F": () => {
+        this.showFindToolbar();
+      },
+      "Cmd-F": () => {
+        this.showFindToolbar();
+      },
+      "F3": () => {
+        const token = document.querySelector("#sieve-editor-txt-find").value;
+        const isCaseSensitive = document.querySelector("#sieve-editor-casesensitive").checked;
+        this.find(token, isCaseSensitive, false);
+      },
+      "Shift-F3": () => {
+        const token = document.querySelector("#sieve-editor-txt-find").value;
+        const isCaseSensitive = document.querySelector("#sieve-editor-casesensitive").checked;
+        this.find(token, isCaseSensitive, true);
       }
     });
 
@@ -230,7 +246,49 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
         document.querySelector("#sieve-editor-find-toolbar").classList.toggle("d-none");
       });
 
+    document
+      .querySelector("#sieve-editor-txt-find")
+      .addEventListener("keydown", (e) => {
+        if (e.key !== "Enter")
+          return;
+        e.preventDefault();
+        const token = document.querySelector("#sieve-editor-txt-find").value;
+        const isCaseSensitive = document.querySelector("#sieve-editor-casesensitive").checked;
+        this.find(token, isCaseSensitive, e.shiftKey);
+      });
+
+    // Global keyboard shortcuts for search (handles focus outside CodeMirror, e.g. in the search field)
+    document.addEventListener("keydown", (e) => {
+      // Skip if the event originated from within CodeMirror (extraKeys already handled it)
+      if (e.target.closest && e.target.closest(".CodeMirror"))
+        return;
+
+      if ((e.ctrlKey || e.metaKey) && (e.key === "f" || e.key === "F")) {
+        e.preventDefault();
+        this.showFindToolbar();
+        return;
+      }
+
+      if (e.key === "F3") {
+        e.preventDefault();
+        const token = document.querySelector("#sieve-editor-txt-find").value;
+        const isCaseSensitive = document.querySelector("#sieve-editor-casesensitive").checked;
+        this.find(token, isCaseSensitive, e.shiftKey);
+      }
+    });
+
     await this.renderSettings();
+  }
+
+  /**
+   * Shows the find/replace toolbar and focuses the search input.
+   */
+  showFindToolbar() {
+    const toolbar = document.querySelector("#sieve-editor-find-toolbar");
+    toolbar.classList.remove("d-none");
+    const input = document.querySelector("#sieve-editor-txt-find");
+    input.focus();
+    input.select();
   }
 
   /**

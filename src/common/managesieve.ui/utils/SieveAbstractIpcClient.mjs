@@ -127,6 +127,15 @@ class SieveAbstractIpcClient {
   }
 
   /**
+   * Called when an error happened during processing
+   * @param {Event} e
+   *   incoming "messages"-type event.
+   */
+  static onError(e) {
+    throw new Error(`Could not handle incoming event "${e}"`);
+  }
+
+  /**
    * Sends a message via the ipc communication
    * @abstract
    * @param {string} message

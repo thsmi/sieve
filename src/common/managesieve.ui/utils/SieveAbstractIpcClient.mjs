@@ -45,6 +45,11 @@ class SieveAbstractIpcClient {
    *   the ipc message containing the data.
    */
   static onMessage(e) {
+    if (typeof e.data != 'string') {
+      // Ignore browser-specific events, like "calculateSubFramePositioning"
+      return;
+    }
+
     const msg = this.parseMessageFromEvent(e);
 
     if (msg.isResponse === true) {

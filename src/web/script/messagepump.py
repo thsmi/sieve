@@ -40,7 +40,7 @@ class MessagePump:
     select() via the wakeup socket."""
     try:
       while True:
-        data = websocket_conn.recv(timeout=10, decode=False)  # blocks on internal Assembler queue
+        data = websocket_conn.recv(timeout=None, decode=False)  # blocks on internal Assembler queue
         self._websocket_data_queue.put(data)
         self._wake_w.send(b'\x00')  # wake up select()
     except ConnectionClosedError as e:
@@ -54,9 +54,6 @@ class MessagePump:
         logging.info(f"Websocket closed with code {e.rcvd.code} and reason '{e.rcvd.reason}'")
       else:
         logging.info(f"Websocket closed without a code")
-      self._websocket_data_queue.put(None)  # sentinel - signals shutdown
-    except TimeoutError as e:
-      logging.error(f"Websocket handler didn't receive all parts of the message in time. Exiting'")
       self._websocket_data_queue.put(None)  # sentinel - signals shutdown
     finally:
       self._wake_w.send(b'\x00')  # wake up select()

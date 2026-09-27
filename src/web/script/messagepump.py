@@ -4,7 +4,7 @@ from queue import SimpleQueue
 from select import select
 from socket import socketpair
 
-from websockets.exceptions import ConnectionClosed
+from websockets.exceptions import ConnectionClosed, ConnectionClosedError
 from websockets.sync.server import Server
 
 from script.sieve.sievesocket import SieveSocket
@@ -28,7 +28,7 @@ class MessagePump:
     self._websocket_data_queue: SimpleQueue = SimpleQueue()
 
   @property
-  def websocket_server(self) -> Server:
+  def websocket_server(self) -> Server | None:
     return self._websocket_server
 
   @websocket_server.setter
@@ -43,8 +43,17 @@ class MessagePump:
         data = websocket_conn.recv(timeout=10, decode=False)  # blocks on internal Assembler queue
         self._websocket_data_queue.put(data)
         self._wake_w.send(b'\x00')  # wake up select()
+    except ConnectionClosedError as e:
+      if e.rcvd is not None:
+        logging.info(f"Websocket terminated with an error with code {e.rcvd.code} and reason '{e.rcvd.reason}'")
+      else:
+        logging.info(f"Websocket terminated with an error but without an error code")
+      self._websocket_data_queue.put(None)  # sentinel - signals shutdown
     except ConnectionClosed as e:
-      logging.info(f"Websocket terminated with code {e.rcvd.code} and reason '{e.rcvd.reason}'")
+      if e.rcvd is not None:
+        logging.info(f"Websocket closed with code {e.rcvd.code} and reason '{e.rcvd.reason}'")
+      else:
+        logging.info(f"Websocket closed without a code")
       self._websocket_data_queue.put(None)  # sentinel - signals shutdown
     except TimeoutError as e:
       logging.error(f"Websocket handler didn't receive all parts of the message in time. Exiting'")

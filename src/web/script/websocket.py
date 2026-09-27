@@ -5,7 +5,8 @@ from typing import Callable
 
 from websockets.http11 import Request as WsRequest
 from websockets.protocol import SEND_EOF
-from websockets.sync.server import ServerProtocol, ServerConnection
+from websockets.server import ServerProtocol
+from websockets.sync.server import ServerConnection
 
 from .webserver import HttpContext, HttpRequest
 
@@ -20,6 +21,10 @@ class PreHandshakedConnection(ServerConnection):
     """
     Perform the WS opening handshake using pre-parsed HttpRequest data.
     """
+    if http_request.original_payload is None:
+      logging.error("Tried to establish a WS connection with empty HTTP request")
+      return
+
     self.protocol.receive_data(http_request.original_payload)
 
     request = next(
@@ -62,7 +67,8 @@ class WebSocket:
     return self
 
   def __exit__(self, exc_type, exc_val, exc_tb) -> None:
-    self._ws.close()  # No-op if it's already closed
+    if self._ws:
+      self._ws.close()  # No-op if it's already closed
 
   def _create_connection(self, *, close_timeout=10) -> None:
     """

@@ -12,6 +12,11 @@ body {
   flex-direction: column;
 }
 
+.navbar-dark .nav-link,
+.navbar[data-bs-theme=dark] .nav-link {
+    color: var(--bs-gray-200);
+}
+
 #tabs-content > * {
   height: 100%;
   width: 100%;

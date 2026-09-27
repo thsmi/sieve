@@ -15,6 +15,8 @@ import { SieveCustomHost } from "./SieveAbstractHost.mjs";
 
 const CONFIG_KEEP_ALIVE_INTERVAL = "keepalive";
 // eslint-disable-next-line no-magic-numbers
+const THIRTY_SECONDS = 30 * 1000;
+// eslint-disable-next-line no-magic-numbers
 const ONE_MINUTE = 60 * 1000;
 // eslint-disable-next-line no-magic-numbers
 const FIVE_MINUTES = 5 * ONE_MINUTE;
@@ -43,7 +45,7 @@ class SieveMozHost extends SieveCustomHost {
    * @inheritdoc
    */
   async getKeepAlive() {
-    return await this.account.getConfig().getInteger(CONFIG_KEEP_ALIVE_INTERVAL, FIVE_MINUTES);
+    return await this.account.getConfig().getInteger(CONFIG_KEEP_ALIVE_INTERVAL, THIRTY_SECONDS);
   }
 }
 

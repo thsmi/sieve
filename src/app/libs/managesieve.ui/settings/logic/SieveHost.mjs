@@ -11,6 +11,8 @@
 
 const CONFIG_KEEP_ALIVE_INTERVAL = "keepalive";
 // eslint-disable-next-line no-magic-numbers
+const THIRTY_SECONDS = 30 * 1000;
+// eslint-disable-next-line no-magic-numbers
 const ONE_MINUTE = 60 * 1000;
 // eslint-disable-next-line no-magic-numbers
 const FIVE_MINUTES = 5 * ONE_MINUTE;
@@ -63,9 +65,9 @@ class SieveElectronHost extends SieveCustomHost {
   }
 
   /**
-   * Configures the maximum idle time after a message is send.
-   * In case the time span elapsed an keep alive message will be
-   * send to the server.
+   * Configures the maximum idle time after a message is sent.
+   * After the time elapsed a keep alive message will be
+   * sent to the server.
    *
    * @param {int} value
    *   the maximal time in seconds. zero disables keep alive messages
@@ -82,7 +84,7 @@ class SieveElectronHost extends SieveCustomHost {
    * @inheritdoc
    */
   async getKeepAlive() {
-    return await this.account.getConfig().getInteger(CONFIG_KEEP_ALIVE_INTERVAL, FIVE_MINUTES);
+    return await this.account.getConfig().getInteger(CONFIG_KEEP_ALIVE_INTERVAL, THIRTY_SECONDS);
   }
 
   /**

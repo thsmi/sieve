@@ -12,6 +12,8 @@
 import { SieveAbstractHost } from "./SieveAbstractHost.mjs";
 
 // eslint-disable-next-line no-magic-numbers
+const THIRTY_SECONDS = 30 * 1000;
+// eslint-disable-next-line no-magic-numbers
 const ONE_MINUTE = 60 * 1000;
 // eslint-disable-next-line no-magic-numbers
 const FIVE_MINUTES = 5 * ONE_MINUTE;
@@ -70,7 +72,7 @@ class SieveWebSocketHost extends SieveAbstractHost {
    * @inheritdoc
    */
   async getKeepAlive() {
-    return FIVE_MINUTES;
+    return THIRTY_SECONDS;
   }
 
   /**

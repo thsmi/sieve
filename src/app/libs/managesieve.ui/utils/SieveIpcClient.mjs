@@ -28,7 +28,11 @@ class SieveIpcClient extends SieveAbstractIpcClient {
    * @inheritdoc
    */
   static parseMessageFromEvent(e) {
-    return JSON.parse(e.data);
+    try {
+        return JSON.parse(e.data);
+    } catch (exception) {
+        return {};
+    }
   }
 
   /**

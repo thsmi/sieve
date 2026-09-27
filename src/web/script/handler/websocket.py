@@ -1,15 +1,17 @@
 import logging
 
-from ..websocket import WebSocket
-from ..sieve.sievesocket import SieveSocket
 from ..messagepump import MessagePump
+from ..sieve.sievesocket import SieveSocket
+from ..webserver import HttpContext, HttpRequest
+from ..websocket import WebSocket
+
 
 class WebSocketHandler:
 
   def __init__(self, config):
     self.__config = config
 
-  def can_handle_request(self, request) -> bool:
+  def can_handle_request(self, request: HttpRequest) -> bool:
     if request.method != "GET":
       return False
 
@@ -18,7 +20,7 @@ class WebSocketHandler:
 
     return True
 
-  def handle_request(self, context, request) -> None:
+  def handle_request(self, context: HttpContext, request: HttpRequest) -> None:
 
     logging.info(f"Websocket Request for {request.path}")
 
@@ -28,21 +30,18 @@ class WebSocketHandler:
     host = account.get_sieve_host()
     port = int(account.get_sieve_port())
 
-    # Websocket is read
-    with WebSocket(request, context) as websocket:
-      with SieveSocket(host, port) as sievesocket:
+    logging.debug(f'Communicating with "{host}:{port}" with auth username "{account.get_auth_username(request)}"')
 
-        sievesocket.start_tls()
+    with SieveSocket(host, port) as sieve_socket:
+      sieve_socket.start_tls()
 
-        if not account.can_authenticate():
-          logging.info(f"Do Proxy authentication for {account.get_name()}")
-          sievesocket.authenticate(
-            account.get_sieve_user(request),
-            account.get_sieve_password(request),
-            account.get_auth_username(request))
+      if not account.can_authenticate():
+        logging.info(f"Do Proxy authentication for {account.get_name()}")
+        sieve_socket.authenticate(
+          account.get_sieve_user(request),
+          account.get_sieve_password(request),
+          account.get_auth_username(request))
 
-        # Publish capabilities to client...
-        websocket.send(
-          sievesocket.capabilities)
-
-        MessagePump().run(websocket, sievesocket)
+      message_pump = MessagePump(sieve_socket)
+      with WebSocket(message_pump.run, context, request):
+        pass

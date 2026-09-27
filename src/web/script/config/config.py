@@ -1,6 +1,7 @@
 import configparser
-import pathlib
 import hashlib
+import logging
+import pathlib
 
 class NoSuchPropertyException(Exception):
   pass
@@ -17,7 +18,7 @@ class SieveAccount:
     if self._has_property(name):
       return self._config[self._section][name]
 
-    raise NoSuchPropertyException("Unknown Property "+name)
+    raise NoSuchPropertyException(f'Unknown Property "{name}"')
 
   def get_id(self):
     """
@@ -56,14 +57,18 @@ class SieveClientAccount(SieveAccount):
   def get_auth_username(self, request):
 
     if self._has_property("AuthUser"):
-      return self._config[self._section]["AuthUser"]
+      user = self._config[self._section]["AuthUser"]
+      logging.debug(f"Sieve user with client auth type and pre-configured AuthUser: {user}")
+      return user
 
     header = self._get_property("AuthUserHeader")
 
     if request.get_header(header) is None:
       raise NoSuchPropertyException(f"No header {header} in request.")
 
-    return request.get_header(header)
+    user = request.get_header(header)
+    logging.debug(f"Sieve user with client auth type via {header} header: {user}")
+    return user
 
   def can_authorize(self):
     return self._config[self._section].getboolean("AuthClientAuthorization", fallback=False)
@@ -86,7 +91,9 @@ class SieveTokenAccount(SieveAccount):
     if request.get_header(header) is None:
       raise NoSuchPropertyException(f"No header {header} in request.")
 
-    return request.get_header(header)
+    user = request.get_header(header)
+    logging.debug(f"Sieve user with token auth type via {header} header: {user}")
+    return user
 
   def get_sieve_password(self, request):
 
@@ -115,11 +122,19 @@ class SieveAuthorizationAccount(SieveAccount):
       header = self._get_property("AuthUserHeader")
 
       if request.get_header(header) is not None:
-        return request.get_header(header)
+        user = request.get_header(header)
+        logging.debug(f"Sieve user with authorization auth type via {header} header: {user}")
+        return user
+      else:
+        logging.warning(f"{header} header didn't arrive to identify Sieve user with authorization auth type. "
+                        "Falling back to AuthUser config option.")
 
     ## FIXME only temporarily disabled
     #raise NoSuchPropertyException("Invalid username")
-    return self._config[self._section]["AuthUser"]
+
+    user = self._config[self._section]["AuthUser"]
+    logging.debug(f"Sieve user with authorization auth type and pre-configured AuthUser: {user}")
+    return user
 
 
 class Config:
@@ -151,17 +166,32 @@ class Config:
     """
     return self._config["DEFAULT"]["ServerAddress"]
 
+  def get_use_ssl(self):
+    """
+    Whether to use SSL/HTTPS
+    """
+    if "UseSSL" in self._config["DEFAULT"]:
+        return self._config["DEFAULT"].getboolean("UseSSL")
+    else:
+        return True
+
   def get_keyfile(self):
     """
     The keyfile used for securing the server.
     """
-    return self._config["DEFAULT"]["ServerKeyFile"]
+    if self.get_use_ssl() and "ServerKeyFile" in self._config["DEFAULT"]:
+        return self._config["DEFAULT"]["ServerKeyFile"]
+    else:
+        return None
 
   def get_certfile(self):
     """
     The certificate file used for securing the server.
     """
-    return self._config["DEFAULT"]["ServerCertFile"]
+    if self.get_use_ssl() and "ServerCertFile" in self._config["DEFAULT"]:
+        return self._config["DEFAULT"]["ServerCertFile"]
+    else:
+        return None
 
   def get_auth_type(self, section : str):
 

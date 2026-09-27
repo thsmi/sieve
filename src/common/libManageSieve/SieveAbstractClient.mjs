@@ -827,9 +827,8 @@ class SieveAbstractClient {
       return;
     }
 
-    this.getLogger().logState(
-      `[SieveAbstractClient:cancel()] Retrying still ${this.queue.length()} requests pending.`);
-    await this.drain(reason);
+    // At this point the queue may still have items in it (this.queue.length() > 0) that are
+    // abandonded but still counting towards to its length.
   }
 
   /**

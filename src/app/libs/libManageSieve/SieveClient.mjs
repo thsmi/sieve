@@ -182,9 +182,12 @@ class SieveNodeClient extends SieveAbstractClient {
           // It will be non null e.g. for self signed certificates.
           const error = this.tlsSocket.ssl.verifyError();
 
-          if ((error !== null ) && (options.ignoreCertErrors.includes(error.code))) {
+          if (error !== null ) {
 
-            if (this.isPinnedCert(cert, options.fingerprints)) {
+            // Check if certificate is white listed...
+            if ((options.ignoreCertErrors.includes(error.code)) &&
+              (this.isPinnedCert(cert, options.fingerprints))) {
+
               this.secured = true;
               resolve();
               return;

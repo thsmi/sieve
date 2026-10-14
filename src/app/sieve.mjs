@@ -47,7 +47,7 @@ async function createWindow() {
   win = new BrowserWindow({
     width: DEFAULT_WINDOW_WIDTH,
     height: DEFAULT_WINDOW_HEIGHT,
-    icon: icon,
+    ...(icon ? { icon } : {}),
     webPreferences: {
       // nodeIntegrationInSubFrames: true,
       nodeIntegration: true,
@@ -58,7 +58,14 @@ async function createWindow() {
   // Hide the menu bar.
   win.removeMenu();
 
-  await win.loadFile('app.html');
+  try {
+    await win.loadFile(path.join(__dirname, 'app.html'));
+  } catch (err) {
+    console.error('Failed to load app.html:', err);
+  }
+
+  win.show();
+  win.focus();
 
   // Open the DevTools.
   // win.webContents.openDevTools();
@@ -99,6 +106,9 @@ async function createWindow() {
  */
 async function main() {
 
+  app.commandLine.appendSwitch('no-sandbox');
+  app.commandLine.appendSwitch('disable-gpu');
+
   // ensure we are running as a singleton.
   const isLocked = app.requestSingleInstanceLock();
 
@@ -114,8 +124,9 @@ async function main() {
     if (!win)
       return;
 
-    if (win.isMinimized());
-    win.restore();
+    if (win.isMinimized()) {
+      win.restore();
+    }
 
     win.focus();
   });

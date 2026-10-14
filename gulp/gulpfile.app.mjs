@@ -114,7 +114,8 @@ function packageBootstrap() {
 function packageSrc() {
   return gulp.src([
     BASE_DIR_APP + "/**",
-    `!${BASE_DIR_APP}/libs/libManageSieve/**`
+    `!${BASE_DIR_APP}/libs/libManageSieve/**`,
+    `!${BASE_DIR_APP}/**/tests/**`
   ], { encoding: false} ).pipe(gulp.dest(BUILD_DIR_APP));
 }
 
